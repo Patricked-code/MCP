@@ -1,0 +1,1027 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    189,
+    204
+  ],
+  "items": [
+    {
+      "pr": 273,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "31b4a12cf024dae6a6bdd8eacf88a36f0e0e6a15",
+          "date": "2026-10-09T18:31:26Z",
+          "parents": [
+            "3df9778dc44202b0e20fb56ce020a089f3a6ea2a"
+          ],
+          "subject": "docs(governance): persist issue #65+ architecture chronology and repeatable audit handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/31b4a12cf024dae6a6bdd8eacf88a36f0e0e6a15"
+        },
+        {
+          "sha": "3ee17ef600e2f302f97d6317f81b14c3f0ed38f9",
+          "date": "2026-10-09T18:32:35Z",
+          "parents": [
+            "31b4a12cf024dae6a6bdd8eacf88a36f0e0e6a15"
+          ],
+          "subject": "docs(governance): preserve first batch of complete issue and PR conversation comments",
+          "url": "https://github.com/Patricked-code/MCP/commit/3ee17ef600e2f302f97d6317f81b14c3f0ed38f9"
+        },
+        {
+          "sha": "83a1e5f4d6b011f9d8311a3ecbafb8c281f412f7",
+          "date": "2026-10-09T18:32:49Z",
+          "parents": [
+            "3ee17ef600e2f302f97d6317f81b14c3f0ed38f9"
+          ],
+          "subject": "docs(governance): preserve second batch of issue and PR conversation comments",
+          "url": "https://github.com/Patricked-code/MCP/commit/83a1e5f4d6b011f9d8311a3ecbafb8c281f412f7"
+        },
+        {
+          "sha": "b7884a4552dd43178a843f9cfd3e1f75645d319a",
+          "date": "2026-10-09T18:33:04Z",
+          "parents": [
+            "83a1e5f4d6b011f9d8311a3ecbafb8c281f412f7"
+          ],
+          "subject": "docs(governance): preserve third batch of issue and PR conversation comments",
+          "url": "https://github.com/Patricked-code/MCP/commit/b7884a4552dd43178a843f9cfd3e1f75645d319a"
+        },
+        {
+          "sha": "7c6d28f85239b30969627ef80fc8e2a228740d64",
+          "date": "2026-10-09T18:33:16Z",
+          "parents": [
+            "b7884a4552dd43178a843f9cfd3e1f75645d319a"
+          ],
+          "subject": "docs(governance): preserve fourth batch of issue and PR conversation comments",
+          "url": "https://github.com/Patricked-code/MCP/commit/7c6d28f85239b30969627ef80fc8e2a228740d64"
+        },
+        {
+          "sha": "a1e21b4278b94ba31fd569815cdb2c5f71bd005c",
+          "date": "2026-10-09T18:33:30Z",
+          "parents": [
+            "7c6d28f85239b30969627ef80fc8e2a228740d64"
+          ],
+          "subject": "docs(governance): preserve fifth batch of issue and PR conversation comments",
+          "url": "https://github.com/Patricked-code/MCP/commit/a1e21b4278b94ba31fd569815cdb2c5f71bd005c"
+        },
+        {
+          "sha": "1a30ddcd840cf5ade2fff71a16f50c2d0b1095b4",
+          "date": "2026-10-09T18:33:42Z",
+          "parents": [
+            "a1e21b4278b94ba31fd569815cdb2c5f71bd005c"
+          ],
+          "subject": "docs(governance): preserve final remaining issue/PR conversation comments since #65",
+          "url": "https://github.com/Patricked-code/MCP/commit/1a30ddcd840cf5ade2fff71a16f50c2d0b1095b4"
+        },
+        {
+          "sha": "67b9dcd8d1e6dfc4e6889395dadebbf1650b9d16",
+          "date": "2026-10-09T18:33:57Z",
+          "parents": [
+            "1a30ddcd840cf5ade2fff71a16f50c2d0b1095b4"
+          ],
+          "subject": "docs(governance): attest full issue conversation capture and expose remaining review gaps",
+          "url": "https://github.com/Patricked-code/MCP/commit/67b9dcd8d1e6dfc4e6889395dadebbf1650b9d16"
+        },
+        {
+          "sha": "e8477395fd28750ea7865f8bcb0ea3335afe7338",
+          "date": "2026-10-09T18:34:20Z",
+          "parents": [
+            "67b9dcd8d1e6dfc4e6889395dadebbf1650b9d16"
+          ],
+          "subject": "docs(governance): preserve 94-blueprint architecture, dependencies and acceptance crosswalk",
+          "url": "https://github.com/Patricked-code/MCP/commit/e8477395fd28750ea7865f8bcb0ea3335afe7338"
+        }
+      ]
+    },
+    {
+      "pr": 274,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "65dd866577325d68e9df8713b1e11157f3066600",
+          "date": "2026-10-09T18:47:55Z",
+          "parents": [
+            "765eecf8c9dc86280a51a41cbb888432037bfeeb"
+          ],
+          "subject": "docs(governance): capture critical inline PR reviews with evidence and coverage limits",
+          "url": "https://github.com/Patricked-code/MCP/commit/65dd866577325d68e9df8713b1e11157f3066600"
+        },
+        {
+          "sha": "9d6725babc4c75e6c36eee3dacfdd40aa6671483",
+          "date": "2026-10-09T20:59:21Z",
+          "parents": [
+            "65dd866577325d68e9df8713b1e11157f3066600"
+          ],
+          "subject": "docs(audit): index 261/267 review submissions and unresolved thread provenance",
+          "url": "https://github.com/Patricked-code/MCP/commit/9d6725babc4c75e6c36eee3dacfdd40aa6671483"
+        }
+      ]
+    },
+    {
+      "pr": 275,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b18f78184b8d417b8425379d7984f0ba72f94bca",
+          "date": "2026-10-09T20:08:51Z",
+          "parents": [
+            "765eecf8c9dc86280a51a41cbb888432037bfeeb"
+          ],
+          "subject": "docs(governance): persist successive collision-gated audit-to-terminal workblock",
+          "url": "https://github.com/Patricked-code/MCP/commit/b18f78184b8d417b8425379d7984f0ba72f94bca"
+        },
+        {
+          "sha": "df4fb2cce6c5656a2ec0555b04e73829f8009010",
+          "date": "2026-10-10T02:56:09Z",
+          "parents": [
+            "b18f78184b8d417b8425379d7984f0ba72f94bca"
+          ],
+          "subject": "test(governance): reject invalid workblock dependencies and runtime authority drift (RED)",
+          "url": "https://github.com/Patricked-code/MCP/commit/df4fb2cce6c5656a2ec0555b04e73829f8009010"
+        },
+        {
+          "sha": "e66025f1ada8c82b426c0cba42f06c9c222012e6",
+          "date": "2026-10-10T12:03:27Z",
+          "parents": [
+            "df4fb2cce6c5656a2ec0555b04e73829f8009010"
+          ],
+          "subject": "fix(governance): repair GWB-01 dependency after RED graph test",
+          "url": "https://github.com/Patricked-code/MCP/commit/e66025f1ada8c82b426c0cba42f06c9c222012e6"
+        },
+        {
+          "sha": "ebd087063cd7bd0fc8ad99dc4656f4473484c49e",
+          "date": "2026-10-11T19:11:53Z",
+          "parents": [
+            "e66025f1ada8c82b426c0cba42f06c9c222012e6",
+            "c91c1a1191f40f20a6de841914947e94356658df"
+          ],
+          "subject": "Merge main into governed audit workblock without replacing PR #274 evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/ebd087063cd7bd0fc8ad99dc4656f4473484c49e"
+        },
+        {
+          "sha": "fb7d483e80031f8ab77eb3db137ba458d76e75fd",
+          "date": "2026-10-11T19:13:30Z",
+          "parents": [
+            "ebd087063cd7bd0fc8ad99dc4656f4473484c49e"
+          ],
+          "subject": "docs(suivi): GWB-00 502 diagnostics, S1 evidence and exact-head continuation",
+          "url": "https://github.com/Patricked-code/MCP/commit/fb7d483e80031f8ab77eb3db137ba458d76e75fd"
+        },
+        {
+          "sha": "37e32c874c968f46fee3445f204d976e46feb28c",
+          "date": "2026-10-11T19:13:59Z",
+          "parents": [
+            "fb7d483e80031f8ab77eb3db137ba458d76e75fd"
+          ],
+          "subject": "docs(changelog): record GWB-00 evidence and scoped PR #275 continuation",
+          "url": "https://github.com/Patricked-code/MCP/commit/37e32c874c968f46fee3445f204d976e46feb28c"
+        },
+        {
+          "sha": "f196920d69f7c2630ea4d212f74841415e2557ec",
+          "date": "2026-10-11T19:14:24Z",
+          "parents": [
+            "37e32c874c968f46fee3445f204d976e46feb28c"
+          ],
+          "subject": "docs(governance): persist GWB-00 deployment failure evidence and next-action checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/f196920d69f7c2630ea4d212f74841415e2557ec"
+        },
+        {
+          "sha": "484d6e2d9ff8dcc8aaf1dcafddc093569583ad87",
+          "date": "2026-10-11T19:17:16Z",
+          "parents": [
+            "f196920d69f7c2630ea4d212f74841415e2557ec"
+          ],
+          "subject": "docs(governance): persist hash-verified S1 OIDC evidence and deployment-502 caveats",
+          "url": "https://github.com/Patricked-code/MCP/commit/484d6e2d9ff8dcc8aaf1dcafddc093569583ad87"
+        }
+      ]
+    },
+    {
+      "pr": 289,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "62d91e438c6dfdc271ab80ff23bf0fd914a8ec0d",
+          "date": "2026-10-15T18:25:07Z",
+          "parents": [
+            "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2"
+          ],
+          "subject": "docs(governance): record GitHub OIDC-first continuity after OAuth failure",
+          "url": "https://github.com/Patricked-code/MCP/commit/62d91e438c6dfdc271ab80ff23bf0fd914a8ec0d"
+        },
+        {
+          "sha": "83852ed493101caa4978e3b4076a16f96ae3b231",
+          "date": "2026-10-15T18:25:14Z",
+          "parents": [
+            "62d91e438c6dfdc271ab80ff23bf0fd914a8ec0d"
+          ],
+          "subject": "docs(governance): record GitHub OIDC-first continuity after OAuth failure",
+          "url": "https://github.com/Patricked-code/MCP/commit/83852ed493101caa4978e3b4076a16f96ae3b231"
+        },
+        {
+          "sha": "6aecc9d53e5af5133bf638e76be56a130e064acd",
+          "date": "2026-10-15T18:25:17Z",
+          "parents": [
+            "83852ed493101caa4978e3b4076a16f96ae3b231"
+          ],
+          "subject": "docs(governance): record GitHub OIDC-first continuity after OAuth failure",
+          "url": "https://github.com/Patricked-code/MCP/commit/6aecc9d53e5af5133bf638e76be56a130e064acd"
+        },
+        {
+          "sha": "20bcb891c111a5515bdfe398300040db8dfe14e1",
+          "date": "2026-10-15T18:25:20Z",
+          "parents": [
+            "6aecc9d53e5af5133bf638e76be56a130e064acd"
+          ],
+          "subject": "docs(governance): record GitHub OIDC-first continuity after OAuth failure",
+          "url": "https://github.com/Patricked-code/MCP/commit/20bcb891c111a5515bdfe398300040db8dfe14e1"
+        },
+        {
+          "sha": "9fefbfb4d1fe72b489a1d0f7153cf68f6399fe06",
+          "date": "2026-10-15T18:25:23Z",
+          "parents": [
+            "20bcb891c111a5515bdfe398300040db8dfe14e1"
+          ],
+          "subject": "docs(governance): record GitHub OIDC-first continuity after OAuth failure",
+          "url": "https://github.com/Patricked-code/MCP/commit/9fefbfb4d1fe72b489a1d0f7153cf68f6399fe06"
+        }
+      ]
+    },
+    {
+      "pr": 290,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "25a77e7b4a37bd7f05a7038d1a84302aff2c23e4",
+          "date": "2026-10-15T18:33:52Z",
+          "parents": [
+            "f9aeaf9c0b6f1e97866c131833fd32ade58031a9"
+          ],
+          "subject": "docs(governance): verify 94 blueprint source/test path existence at exact main tree",
+          "url": "https://github.com/Patricked-code/MCP/commit/25a77e7b4a37bd7f05a7038d1a84302aff2c23e4"
+        },
+        {
+          "sha": "22e9875ad746c077cb7f856ad1ab51ebf62b7cec",
+          "date": "2026-10-15T18:34:18Z",
+          "parents": [
+            "25a77e7b4a37bd7f05a7038d1a84302aff2c23e4"
+          ],
+          "subject": "docs(governance): use actual client presence and tool-surface test filenames",
+          "url": "https://github.com/Patricked-code/MCP/commit/22e9875ad746c077cb7f856ad1ab51ebf62b7cec"
+        }
+      ]
+    },
+    {
+      "pr": 291,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "d6228ea328ea79424a55fe89b8a2c96d513636c0",
+          "date": "2026-10-15T18:31:51Z",
+          "parents": [
+            "f9aeaf9c0b6f1e97866c131833fd32ade58031a9"
+          ],
+          "subject": "docs(governance): archive all repository inline PR review comments from #65 with exact links",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6228ea328ea79424a55fe89b8a2c96d513636c0"
+        },
+        {
+          "sha": "99cfe75c6b189d061acf3858099ce0638453c253",
+          "date": "2026-10-15T18:35:00Z",
+          "parents": [
+            "d6228ea328ea79424a55fe89b8a2c96d513636c0"
+          ],
+          "subject": "docs(governance): PR review submissions batch 1 of historical 130 PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/99cfe75c6b189d061acf3858099ce0638453c253"
+        },
+        {
+          "sha": "7bea4644653c76d7846b589bbf697958968e4267",
+          "date": "2026-10-15T18:35:46Z",
+          "parents": [
+            "99cfe75c6b189d061acf3858099ce0638453c253"
+          ],
+          "subject": "docs(governance): PR review submissions batch 2 of 130 historical PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/7bea4644653c76d7846b589bbf697958968e4267"
+        },
+        {
+          "sha": "bad26f1be7dd6d5a479892c8ca64d3f1de9ff9ee",
+          "date": "2026-10-15T18:36:13Z",
+          "parents": [
+            "7bea4644653c76d7846b589bbf697958968e4267"
+          ],
+          "subject": "docs(governance): PR review submissions batch 3 of historical 130 PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/bad26f1be7dd6d5a479892c8ca64d3f1de9ff9ee"
+        },
+        {
+          "sha": "88e469ef323f40c3eddc87d9e2d660423a011c19",
+          "date": "2026-10-15T18:36:41Z",
+          "parents": [
+            "bad26f1be7dd6d5a479892c8ca64d3f1de9ff9ee"
+          ],
+          "subject": "docs(governance): PR review submissions batch 4 of historical 130 PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/88e469ef323f40c3eddc87d9e2d660423a011c19"
+        },
+        {
+          "sha": "81bdfbbdf96eaf27d45b0d9634be2b8de92b261b",
+          "date": "2026-10-15T18:37:06Z",
+          "parents": [
+            "88e469ef323f40c3eddc87d9e2d660423a011c19"
+          ],
+          "subject": "docs(governance): PR review submissions batch 5 of historical 130 PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/81bdfbbdf96eaf27d45b0d9634be2b8de92b261b"
+        },
+        {
+          "sha": "2be7149092dfb336b5fa9a32407eed2ce499917a",
+          "date": "2026-10-15T18:37:28Z",
+          "parents": [
+            "81bdfbbdf96eaf27d45b0d9634be2b8de92b261b"
+          ],
+          "subject": "docs(governance): PR review submissions batch 6 of historical 130 PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/2be7149092dfb336b5fa9a32407eed2ce499917a"
+        },
+        {
+          "sha": "f8147db8ae7d17b69c418c47eeaa0a23b7132161",
+          "date": "2026-10-15T18:37:55Z",
+          "parents": [
+            "2be7149092dfb336b5fa9a32407eed2ce499917a"
+          ],
+          "subject": "docs(governance): PR review submissions batch 7 of historical 130 PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/f8147db8ae7d17b69c418c47eeaa0a23b7132161"
+        },
+        {
+          "sha": "4e11bd65beaa2db590164adc185e4c6456e300a6",
+          "date": "2026-10-15T18:38:15Z",
+          "parents": [
+            "f8147db8ae7d17b69c418c47eeaa0a23b7132161"
+          ],
+          "subject": "docs(governance): PR review submissions batch 8 of historical 130 PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/4e11bd65beaa2db590164adc185e4c6456e300a6"
+        },
+        {
+          "sha": "65173cbca3e031c968d169b4fedbb7f12c1c5085",
+          "date": "2026-10-15T18:38:39Z",
+          "parents": [
+            "4e11bd65beaa2db590164adc185e4c6456e300a6"
+          ],
+          "subject": "docs(governance): final historical PR review submission batch (130 indexed PRs)",
+          "url": "https://github.com/Patricked-code/MCP/commit/65173cbca3e031c968d169b4fedbb7f12c1c5085"
+        },
+        {
+          "sha": "c949635c21a432c7c2dba097eccaae322f0f3d15",
+          "date": "2026-10-15T18:40:06Z",
+          "parents": [
+            "65173cbca3e031c968d169b4fedbb7f12c1c5085"
+          ],
+          "subject": "docs(governance): capture review decisions on all five post-index PRs",
+          "url": "https://github.com/Patricked-code/MCP/commit/c949635c21a432c7c2dba097eccaae322f0f3d15"
+        },
+        {
+          "sha": "7073a7ac8fba154a96996fcb4c29d36cb61729af",
+          "date": "2026-10-15T18:40:55Z",
+          "parents": [
+            "c949635c21a432c7c2dba097eccaae322f0f3d15"
+          ],
+          "subject": "docs(governance): certify source coverage of all 135 PR review submissions and 282 inline comments",
+          "url": "https://github.com/Patricked-code/MCP/commit/7073a7ac8fba154a96996fcb4c29d36cb61729af"
+        },
+        {
+          "sha": "92d892301d8bbd55d4dbcf7c04e15e909a23aee9",
+          "date": "2026-10-15T18:43:28Z",
+          "parents": [
+            "7073a7ac8fba154a96996fcb4c29d36cb61729af",
+            "b3454eab0cdac60332365dc0edabbd93bde514ae"
+          ],
+          "subject": "Merge main GWB-04 audit into GWB-02 provenance without replacing either archive",
+          "url": "https://github.com/Patricked-code/MCP/commit/92d892301d8bbd55d4dbcf7c04e15e909a23aee9"
+        }
+      ]
+    },
+    {
+      "pr": 292,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "0a3ba0fcccab04dc124b206dac065dc7e038c879",
+          "date": "2026-10-15T18:46:06Z",
+          "parents": [
+            "b3454eab0cdac60332365dc0edabbd93bde514ae"
+          ],
+          "subject": "docs(governance): triage historical P1/P2 reviews without inferring code defect status",
+          "url": "https://github.com/Patricked-code/MCP/commit/0a3ba0fcccab04dc124b206dac065dc7e038c879"
+        },
+        {
+          "sha": "7153deb4c5d23d06e823597eb35eadba7fc84dce",
+          "date": "2026-10-15T18:48:12Z",
+          "parents": [
+            "0a3ba0fcccab04dc124b206dac065dc7e038c879",
+            "dec94d9892a1fe56af91845bde4a85f3327f90cb"
+          ],
+          "subject": "Merge main GWB-02 corpus into GWB-03 review triage without losing either evidence file",
+          "url": "https://github.com/Patricked-code/MCP/commit/7153deb4c5d23d06e823597eb35eadba7fc84dce"
+        },
+        {
+          "sha": "822b515a446a9b9949fbbadf58a9a60ee8ee057e",
+          "date": "2026-10-15T18:49:11Z",
+          "parents": [
+            "7153deb4c5d23d06e823597eb35eadba7fc84dce"
+          ],
+          "subject": "docs(governance): checkpoint GWB-02/GWB-04 results and exact GWB-03 next work in SUIVI.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/822b515a446a9b9949fbbadf58a9a60ee8ee057e"
+        },
+        {
+          "sha": "2284bec85b40dfaab7ced667c84fcb66266e132f",
+          "date": "2026-10-15T18:49:14Z",
+          "parents": [
+            "822b515a446a9b9949fbbadf58a9a60ee8ee057e"
+          ],
+          "subject": "docs(governance): checkpoint GWB-02/GWB-04 results and exact GWB-03 next work in TASKS.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/2284bec85b40dfaab7ced667c84fcb66266e132f"
+        },
+        {
+          "sha": "fd47a3e62f3cac20137000f9dba82943522d02e5",
+          "date": "2026-10-15T18:49:17Z",
+          "parents": [
+            "2284bec85b40dfaab7ced667c84fcb66266e132f"
+          ],
+          "subject": "docs(governance): checkpoint GWB-02/GWB-04 results and exact GWB-03 next work in CHANGELOG.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/fd47a3e62f3cac20137000f9dba82943522d02e5"
+        },
+        {
+          "sha": "dfe12e2e5d9120210bc34ff7d677fc6d1ec78e48",
+          "date": "2026-10-15T18:51:14Z",
+          "parents": [
+            "fd47a3e62f3cac20137000f9dba82943522d02e5"
+          ],
+          "subject": "docs(governance): add source-and-test verified spot-check for first PR261 P1 consent finding",
+          "url": "https://github.com/Patricked-code/MCP/commit/dfe12e2e5d9120210bc34ff7d677fc6d1ec78e48"
+        },
+        {
+          "sha": "983dc07fe28d0f10cf163b2fdaab15cb9c3d887a",
+          "date": "2026-10-15T18:51:42Z",
+          "parents": [
+            "dfe12e2e5d9120210bc34ff7d677fc6d1ec78e48"
+          ],
+          "subject": "docs(governance): verify F03 consent ticket binding is used at actual POST route",
+          "url": "https://github.com/Patricked-code/MCP/commit/983dc07fe28d0f10cf163b2fdaab15cb9c3d887a"
+        },
+        {
+          "sha": "5af5439e377229bdfe4423771d5588cf1048ebb3",
+          "date": "2026-10-15T18:52:55Z",
+          "parents": [
+            "983dc07fe28d0f10cf163b2fdaab15cb9c3d887a"
+          ],
+          "subject": "docs(governance): verify two F04 P1 findings against current fail-closed code and tests",
+          "url": "https://github.com/Patricked-code/MCP/commit/5af5439e377229bdfe4423771d5588cf1048ebb3"
+        }
+      ]
+    },
+    {
+      "pr": 293,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "e4d63a9048da6867933df62e7058c2761c51f54a",
+          "date": "2026-10-15T20:54:55Z",
+          "parents": [
+            "b187953de89d8f6529e2af97abc1de4570c53146"
+          ],
+          "subject": "docs(governance): index audit progress and safe multi-agent resume without new authority",
+          "url": "https://github.com/Patricked-code/MCP/commit/e4d63a9048da6867933df62e7058c2761c51f54a"
+        },
+        {
+          "sha": "d5b278bef88fc3037a52ad857c055779d9578ef6",
+          "date": "2026-10-15T20:55:01Z",
+          "parents": [
+            "e4d63a9048da6867933df62e7058c2761c51f54a"
+          ],
+          "subject": "docs(governance): index audit progress and safe multi-agent resume without new authority",
+          "url": "https://github.com/Patricked-code/MCP/commit/d5b278bef88fc3037a52ad857c055779d9578ef6"
+        },
+        {
+          "sha": "0bb790142ac901e5699c31c25dacedfeae320715",
+          "date": "2026-10-15T20:55:06Z",
+          "parents": [
+            "d5b278bef88fc3037a52ad857c055779d9578ef6"
+          ],
+          "subject": "docs(governance): index audit progress and safe multi-agent resume without new authority",
+          "url": "https://github.com/Patricked-code/MCP/commit/0bb790142ac901e5699c31c25dacedfeae320715"
+        },
+        {
+          "sha": "b9bc486c5e25ab8cb38b46309b590ee5ac97da70",
+          "date": "2026-10-15T20:55:13Z",
+          "parents": [
+            "0bb790142ac901e5699c31c25dacedfeae320715"
+          ],
+          "subject": "docs(governance): index audit progress and safe multi-agent resume without new authority",
+          "url": "https://github.com/Patricked-code/MCP/commit/b9bc486c5e25ab8cb38b46309b590ee5ac97da70"
+        },
+        {
+          "sha": "f14ed10b4e1b6cde7acbc5fb0c3841c9da6cedb4",
+          "date": "2026-10-15T20:55:52Z",
+          "parents": [
+            "b9bc486c5e25ab8cb38b46309b590ee5ac97da70"
+          ],
+          "subject": "docs(governance): checkpoint audited GWB stages without converting projections into runtime tasks",
+          "url": "https://github.com/Patricked-code/MCP/commit/f14ed10b4e1b6cde7acbc5fb0c3841c9da6cedb4"
+        },
+        {
+          "sha": "bc6229d864afb08b64430b35f4ed85f9fdd51624",
+          "date": "2026-10-15T20:56:27Z",
+          "parents": [
+            "f14ed10b4e1b6cde7acbc5fb0c3841c9da6cedb4"
+          ],
+          "subject": "docs(governance): trace cold-start audit handoff and exact next action",
+          "url": "https://github.com/Patricked-code/MCP/commit/bc6229d864afb08b64430b35f4ed85f9fdd51624"
+        },
+        {
+          "sha": "59e40c49e113a5aa9415b75f4e9337592ac79956",
+          "date": "2026-10-15T20:56:33Z",
+          "parents": [
+            "bc6229d864afb08b64430b35f4ed85f9fdd51624"
+          ],
+          "subject": "docs(governance): trace cold-start audit handoff and exact next action",
+          "url": "https://github.com/Patricked-code/MCP/commit/59e40c49e113a5aa9415b75f4e9337592ac79956"
+        },
+        {
+          "sha": "355921a24c8642080a9a5016579fb5e35c90e262",
+          "date": "2026-10-15T20:57:11Z",
+          "parents": [
+            "59e40c49e113a5aa9415b75f4e9337592ac79956"
+          ],
+          "subject": "test(governance): guarantee new agents discover audit evidence and dated handoff without task promotion",
+          "url": "https://github.com/Patricked-code/MCP/commit/355921a24c8642080a9a5016579fb5e35c90e262"
+        }
+      ]
+    },
+    {
+      "pr": 294,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "4ae2accef8c1fd7fdb726386f25b74cbe4f42d27",
+          "date": "2026-10-15T21:09:39Z",
+          "parents": [
+            "92f4e51c1e7e3489b5d6e5c78369dcf0249e8703"
+          ],
+          "subject": "docs(governance): record chronological multi-agent priority map over existing program and runtime authorities",
+          "url": "https://github.com/Patricked-code/MCP/commit/4ae2accef8c1fd7fdb726386f25b74cbe4f42d27"
+        },
+        {
+          "sha": "2496f42164d6f430666020b1c3683bc7561b3cef",
+          "date": "2026-10-15T21:10:21Z",
+          "parents": [
+            "4ae2accef8c1fd7fdb726386f25b74cbe4f42d27"
+          ],
+          "subject": "docs(governance): avoid artificial global audit gate for existing collision-free READY work",
+          "url": "https://github.com/Patricked-code/MCP/commit/2496f42164d6f430666020b1c3683bc7561b3cef"
+        },
+        {
+          "sha": "91343d6ddf12c168d4b9d3b071ba32d499771b8f",
+          "date": "2026-10-15T21:11:48Z",
+          "parents": [
+            "2496f42164d6f430666020b1c3683bc7561b3cef"
+          ],
+          "subject": "docs(governance): surface ordered program priorities and anti-collision handoff to all agents",
+          "url": "https://github.com/Patricked-code/MCP/commit/91343d6ddf12c168d4b9d3b071ba32d499771b8f"
+        },
+        {
+          "sha": "2889ce0f67cc4fda3de855af56f80ba50f9eae37",
+          "date": "2026-10-15T21:11:54Z",
+          "parents": [
+            "91343d6ddf12c168d4b9d3b071ba32d499771b8f"
+          ],
+          "subject": "docs(governance): surface ordered program priorities and anti-collision handoff to all agents",
+          "url": "https://github.com/Patricked-code/MCP/commit/2889ce0f67cc4fda3de855af56f80ba50f9eae37"
+        },
+        {
+          "sha": "8df1c6817e90fcf2237a0fa836fc34ccc1374a92",
+          "date": "2026-10-15T21:12:00Z",
+          "parents": [
+            "2889ce0f67cc4fda3de855af56f80ba50f9eae37"
+          ],
+          "subject": "docs(governance): surface ordered program priorities and anti-collision handoff to all agents",
+          "url": "https://github.com/Patricked-code/MCP/commit/8df1c6817e90fcf2237a0fa836fc34ccc1374a92"
+        },
+        {
+          "sha": "f05e76e65e0eca76bdf3f99488dbf8f3adaf869a",
+          "date": "2026-10-15T21:12:06Z",
+          "parents": [
+            "8df1c6817e90fcf2237a0fa836fc34ccc1374a92"
+          ],
+          "subject": "docs(governance): surface ordered program priorities and anti-collision handoff to all agents",
+          "url": "https://github.com/Patricked-code/MCP/commit/f05e76e65e0eca76bdf3f99488dbf8f3adaf869a"
+        },
+        {
+          "sha": "add74a61fdd6d64638671015edf629b62a667bd4",
+          "date": "2026-10-15T21:12:12Z",
+          "parents": [
+            "f05e76e65e0eca76bdf3f99488dbf8f3adaf869a"
+          ],
+          "subject": "docs(governance): surface ordered program priorities and anti-collision handoff to all agents",
+          "url": "https://github.com/Patricked-code/MCP/commit/add74a61fdd6d64638671015edf629b62a667bd4"
+        },
+        {
+          "sha": "e7d7c25c58517fa7b5551a40e41902b2442071ec",
+          "date": "2026-10-15T21:12:19Z",
+          "parents": [
+            "add74a61fdd6d64638671015edf629b62a667bd4"
+          ],
+          "subject": "docs(governance): surface ordered program priorities and anti-collision handoff to all agents",
+          "url": "https://github.com/Patricked-code/MCP/commit/e7d7c25c58517fa7b5551a40e41902b2442071ec"
+        },
+        {
+          "sha": "a85da4422d601905692d1fa1ad7fd2aeed1bba8a",
+          "date": "2026-10-15T21:12:26Z",
+          "parents": [
+            "e7d7c25c58517fa7b5551a40e41902b2442071ec"
+          ],
+          "subject": "docs(governance): surface ordered program priorities and anti-collision handoff to all agents",
+          "url": "https://github.com/Patricked-code/MCP/commit/a85da4422d601905692d1fa1ad7fd2aeed1bba8a"
+        },
+        {
+          "sha": "49e520c00114a45212e1ff21574b6feba56657fb",
+          "date": "2026-10-15T21:12:34Z",
+          "parents": [
+            "a85da4422d601905692d1fa1ad7fd2aeed1bba8a"
+          ],
+          "subject": "docs(governance): surface ordered program priorities and anti-collision handoff to all agents",
+          "url": "https://github.com/Patricked-code/MCP/commit/49e520c00114a45212e1ff21574b6feba56657fb"
+        },
+        {
+          "sha": "089c16d00884dc90d758b69567d7107599b5d84e",
+          "date": "2026-10-15T21:13:22Z",
+          "parents": [
+            "49e520c00114a45212e1ff21574b6feba56657fb"
+          ],
+          "subject": "test(governance): validate 15-stage DAG, full 94-blueprint map and cold-start anti-collision entrypoints",
+          "url": "https://github.com/Patricked-code/MCP/commit/089c16d00884dc90d758b69567d7107599b5d84e"
+        },
+        {
+          "sha": "b315bc07eaf6c6a2f86f56e0fdad815065c10636",
+          "date": "2026-10-15T21:13:56Z",
+          "parents": [
+            "089c16d00884dc90d758b69567d7107599b5d84e"
+          ],
+          "subject": "docs(governance): clarify shared agent coordination channels and live ownership truth",
+          "url": "https://github.com/Patricked-code/MCP/commit/b315bc07eaf6c6a2f86f56e0fdad815065c10636"
+        },
+        {
+          "sha": "c161b900f04605caaa4a7790ea626ceda75be302",
+          "date": "2026-10-15T21:14:12Z",
+          "parents": [
+            "b315bc07eaf6c6a2f86f56e0fdad815065c10636"
+          ],
+          "subject": "test(governance): verify shared GitHub and runtime coordination boundaries",
+          "url": "https://github.com/Patricked-code/MCP/commit/c161b900f04605caaa4a7790ea626ceda75be302"
+        }
+      ]
+    },
+    {
+      "pr": 295,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "0243cf5191c9f51d31a950d6482b28f2bf88b512",
+          "date": "2026-10-15T21:28:39Z",
+          "parents": [
+            "0817f340dcd57f59b348b8a023082efd472342e3"
+          ],
+          "subject": "docs(governance): reconcile 73 PR261 reviews, 17 source/test spotchecks and two bounded-policy risks",
+          "url": "https://github.com/Patricked-code/MCP/commit/0243cf5191c9f51d31a950d6482b28f2bf88b512"
+        },
+        {
+          "sha": "217d571723873757b66771f692e616099fcf410b",
+          "date": "2026-10-15T21:29:05Z",
+          "parents": [
+            "0243cf5191c9f51d31a950d6482b28f2bf88b512"
+          ],
+          "subject": "test(governance): assert 73 historic PR261 findings and 17 line-anchored evidence checks",
+          "url": "https://github.com/Patricked-code/MCP/commit/217d571723873757b66771f692e616099fcf410b"
+        },
+        {
+          "sha": "6d15a7321c77d9941434f8298a0475ef88800b1d",
+          "date": "2026-10-15T21:29:47Z",
+          "parents": [
+            "217d571723873757b66771f692e616099fcf410b"
+          ],
+          "subject": "docs(governance): checkpoint 17 PR261 source/test anchors and bounded resource risks",
+          "url": "https://github.com/Patricked-code/MCP/commit/6d15a7321c77d9941434f8298a0475ef88800b1d"
+        },
+        {
+          "sha": "1062fe23f67b6fc2344293276dc2955ac3781b1f",
+          "date": "2026-10-15T21:29:55Z",
+          "parents": [
+            "6d15a7321c77d9941434f8298a0475ef88800b1d"
+          ],
+          "subject": "docs(governance): checkpoint 17 PR261 source/test anchors and bounded resource risks",
+          "url": "https://github.com/Patricked-code/MCP/commit/1062fe23f67b6fc2344293276dc2955ac3781b1f"
+        },
+        {
+          "sha": "eb7d4b812a23b03ec04b51723e5191620e37025a",
+          "date": "2026-10-15T21:30:02Z",
+          "parents": [
+            "1062fe23f67b6fc2344293276dc2955ac3781b1f"
+          ],
+          "subject": "docs(governance): checkpoint 17 PR261 source/test anchors and bounded resource risks",
+          "url": "https://github.com/Patricked-code/MCP/commit/eb7d4b812a23b03ec04b51723e5191620e37025a"
+        }
+      ]
+    },
+    {
+      "pr": 296,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "82072fe7b35634bea9d3e8df6787c9812e08417a",
+          "date": "2026-10-15T21:34:30Z",
+          "parents": [
+            "773abe5542b3cd209943a648e750e2ec863b1e62"
+          ],
+          "subject": "docs(governance): map F04 26 review findings and 4 known live authority limits",
+          "url": "https://github.com/Patricked-code/MCP/commit/82072fe7b35634bea9d3e8df6787c9812e08417a"
+        },
+        {
+          "sha": "6adf1f19580db53d36fedfdee781df473939712b",
+          "date": "2026-10-15T21:34:55Z",
+          "parents": [
+            "82072fe7b35634bea9d3e8df6787c9812e08417a"
+          ],
+          "subject": "test(governance): verify 26 F04 review references and 18 source/test anchor checks",
+          "url": "https://github.com/Patricked-code/MCP/commit/6adf1f19580db53d36fedfdee781df473939712b"
+        },
+        {
+          "sha": "a9ff388d13814788c6d31942bd30b32072bcb8ac",
+          "date": "2026-10-15T21:35:39Z",
+          "parents": [
+            "6adf1f19580db53d36fedfdee781df473939712b"
+          ],
+          "subject": "docs(governance): checkpoint F04 domain audit and bounded known limits",
+          "url": "https://github.com/Patricked-code/MCP/commit/a9ff388d13814788c6d31942bd30b32072bcb8ac"
+        },
+        {
+          "sha": "741a7c19e36ad6fdc04341b213d4b04ba75982f5",
+          "date": "2026-10-15T21:35:48Z",
+          "parents": [
+            "a9ff388d13814788c6d31942bd30b32072bcb8ac"
+          ],
+          "subject": "docs(governance): checkpoint F04 domain audit and bounded known limits",
+          "url": "https://github.com/Patricked-code/MCP/commit/741a7c19e36ad6fdc04341b213d4b04ba75982f5"
+        },
+        {
+          "sha": "1d288a48e03768a71aff86b022b08c92f572a457",
+          "date": "2026-10-15T21:35:56Z",
+          "parents": [
+            "741a7c19e36ad6fdc04341b213d4b04ba75982f5"
+          ],
+          "subject": "docs(governance): checkpoint F04 domain audit and bounded known limits",
+          "url": "https://github.com/Patricked-code/MCP/commit/1d288a48e03768a71aff86b022b08c92f572a457"
+        }
+      ]
+    },
+    {
+      "pr": 300,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "27a237056e3742820f097657a68327214f2d1e91",
+          "date": "2026-10-15T21:44:47Z",
+          "parents": [
+            "c7d33d4477db5c6a974a97e4280ab1056efcc5c9"
+          ],
+          "subject": "docs(governance): reconcile 18 planning-READY blueprints against open PRs and live OIDC authority snapshots",
+          "url": "https://github.com/Patricked-code/MCP/commit/27a237056e3742820f097657a68327214f2d1e91"
+        },
+        {
+          "sha": "2e8f5caec5bf39630ed1aa3ffce8ea3da9658918",
+          "date": "2026-10-15T21:45:22Z",
+          "parents": [
+            "27a237056e3742820f097657a68327214f2d1e91"
+          ],
+          "subject": "test(governance): verify 18 ready blueprints and no fictitious runtime ownership",
+          "url": "https://github.com/Patricked-code/MCP/commit/2e8f5caec5bf39630ed1aa3ffce8ea3da9658918"
+        },
+        {
+          "sha": "f8d5242da120243fa006f2575420f68525590628",
+          "date": "2026-10-15T21:45:55Z",
+          "parents": [
+            "2e8f5caec5bf39630ed1aa3ffce8ea3da9658918"
+          ],
+          "subject": "docs(governance): checkpoint 18 READY candidate collision review and OIDC authority facts",
+          "url": "https://github.com/Patricked-code/MCP/commit/f8d5242da120243fa006f2575420f68525590628"
+        },
+        {
+          "sha": "6a81412bec44e7b3eb6831fefee941c5388a912b",
+          "date": "2026-10-15T21:46:03Z",
+          "parents": [
+            "f8d5242da120243fa006f2575420f68525590628"
+          ],
+          "subject": "docs(governance): checkpoint 18 READY candidate collision review and OIDC authority facts",
+          "url": "https://github.com/Patricked-code/MCP/commit/6a81412bec44e7b3eb6831fefee941c5388a912b"
+        },
+        {
+          "sha": "144248a0497c9d9c7c9895bcc0f8670e82d47d70",
+          "date": "2026-10-15T21:46:11Z",
+          "parents": [
+            "6a81412bec44e7b3eb6831fefee941c5388a912b"
+          ],
+          "subject": "docs(governance): checkpoint 18 READY candidate collision review and OIDC authority facts",
+          "url": "https://github.com/Patricked-code/MCP/commit/144248a0497c9d9c7c9895bcc0f8670e82d47d70"
+        }
+      ]
+    },
+    {
+      "pr": 304,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "8b4fca3b39fc23ca29d1c0f96cf4677a2c582341",
+          "date": "2026-10-15T22:49:11Z",
+          "parents": [
+            "cc31ce12bea236b4cfb31d99ecee700c543f0c17"
+          ],
+          "subject": "docs(intake): anchor shared cold-start and factual GWB04 handoff in AGENTS.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/8b4fca3b39fc23ca29d1c0f96cf4677a2c582341"
+        },
+        {
+          "sha": "39e3ce9de0329e6ecf2a90d55f87015b2648de33",
+          "date": "2026-10-15T22:49:14Z",
+          "parents": [
+            "8b4fca3b39fc23ca29d1c0f96cf4677a2c582341"
+          ],
+          "subject": "docs(intake): anchor shared cold-start and factual GWB04 handoff in README.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/39e3ce9de0329e6ecf2a90d55f87015b2648de33"
+        },
+        {
+          "sha": "b5ea9b041642626cad94696043bf1c0f8df5cae1",
+          "date": "2026-10-15T22:49:18Z",
+          "parents": [
+            "39e3ce9de0329e6ecf2a90d55f87015b2648de33"
+          ],
+          "subject": "docs(intake): anchor shared cold-start and factual GWB04 handoff in CLAUDE.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/b5ea9b041642626cad94696043bf1c0f8df5cae1"
+        },
+        {
+          "sha": "04e011ffcf017a11d4398b901a5d1ee2592b38c1",
+          "date": "2026-10-15T22:49:21Z",
+          "parents": [
+            "b5ea9b041642626cad94696043bf1c0f8df5cae1"
+          ],
+          "subject": "docs(intake): anchor shared cold-start and factual GWB04 handoff in docs/governance/README.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/04e011ffcf017a11d4398b901a5d1ee2592b38c1"
+        },
+        {
+          "sha": "bbfb5e7c9e0099b1fa77bcaab3504d1b70f20ae6",
+          "date": "2026-10-15T22:49:24Z",
+          "parents": [
+            "04e011ffcf017a11d4398b901a5d1ee2592b38c1"
+          ],
+          "subject": "docs(intake): anchor shared cold-start and factual GWB04 handoff in SUIVI.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/bbfb5e7c9e0099b1fa77bcaab3504d1b70f20ae6"
+        },
+        {
+          "sha": "73cde725b15331ade49bc29fa189d94b5a96a0b5",
+          "date": "2026-10-15T22:49:28Z",
+          "parents": [
+            "bbfb5e7c9e0099b1fa77bcaab3504d1b70f20ae6"
+          ],
+          "subject": "docs(intake): anchor shared cold-start and factual GWB04 handoff in CHANGELOG.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/73cde725b15331ade49bc29fa189d94b5a96a0b5"
+        },
+        {
+          "sha": "778f6e76b3a871733964e1fbb298d98f1a531a6d",
+          "date": "2026-10-15T22:49:30Z",
+          "parents": [
+            "73cde725b15331ade49bc29fa189d94b5a96a0b5"
+          ],
+          "subject": "test(governance): keep shared intake cold-start handoff discoverable and non-authoritative",
+          "url": "https://github.com/Patricked-code/MCP/commit/778f6e76b3a871733964e1fbb298d98f1a531a6d"
+        }
+      ]
+    },
+    {
+      "pr": 305,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "36e2bb03a564436872e9dd8979774ae24966eee2",
+          "date": "2026-10-15T23:04:37Z",
+          "parents": [
+            "cdae63af7140c10b411ed43a9ddfacc039c731eb"
+          ],
+          "subject": "docs(governance): inventory existing H.1 event audit IDs and unverified cross-hop gaps",
+          "url": "https://github.com/Patricked-code/MCP/commit/36e2bb03a564436872e9dd8979774ae24966eee2"
+        },
+        {
+          "sha": "ffa16547e1157f180826ca5b52e80ec9c80de399",
+          "date": "2026-10-15T23:05:04Z",
+          "parents": [
+            "36e2bb03a564436872e9dd8979774ae24966eee2"
+          ],
+          "subject": "test(governance): verify H.1 seven-hop inventory anchors and no false runtime acceptance",
+          "url": "https://github.com/Patricked-code/MCP/commit/ffa16547e1157f180826ca5b52e80ec9c80de399"
+        },
+        {
+          "sha": "359308bd606bacca05d09b9b8d33f4aac987417d",
+          "date": "2026-10-15T23:05:34Z",
+          "parents": [
+            "ffa16547e1157f180826ca5b52e80ec9c80de399"
+          ],
+          "subject": "docs(governance): checkpoint H.1 trace inventory without runtime claims",
+          "url": "https://github.com/Patricked-code/MCP/commit/359308bd606bacca05d09b9b8d33f4aac987417d"
+        },
+        {
+          "sha": "e77938486f80b79ae43b2748e0c18c49479cc084",
+          "date": "2026-10-15T23:05:41Z",
+          "parents": [
+            "359308bd606bacca05d09b9b8d33f4aac987417d"
+          ],
+          "subject": "docs(governance): checkpoint H.1 trace inventory without runtime claims",
+          "url": "https://github.com/Patricked-code/MCP/commit/e77938486f80b79ae43b2748e0c18c49479cc084"
+        },
+        {
+          "sha": "0d4b0d513e05ceb89b3b5eeb3e701bf9acde28e4",
+          "date": "2026-10-15T23:05:48Z",
+          "parents": [
+            "e77938486f80b79ae43b2748e0c18c49479cc084"
+          ],
+          "subject": "docs(governance): checkpoint H.1 trace inventory without runtime claims",
+          "url": "https://github.com/Patricked-code/MCP/commit/0d4b0d513e05ceb89b3b5eeb3e701bf9acde28e4"
+        }
+      ]
+    },
+    {
+      "pr": 311,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "d56b92c89944b8d2736490fe1330d28941d62f4c",
+          "date": "2026-10-15T23:32:16Z",
+          "parents": [
+            "cdae63af7140c10b411ed43a9ddfacc039c731eb"
+          ],
+          "subject": "docs(audit): anchor historical breadcrumbs to existing MCP evidence and agent handoffs",
+          "url": "https://github.com/Patricked-code/MCP/commit/d56b92c89944b8d2736490fe1330d28941d62f4c"
+        },
+        {
+          "sha": "196e2fbc63d05a4a9de4c9e355f9b4e242f9ecd0",
+          "date": "2026-10-15T23:32:36Z",
+          "parents": [
+            "d56b92c89944b8d2736490fe1330d28941d62f4c"
+          ],
+          "subject": "docs(agents): require historical origin-to-next checkpoints in README.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/196e2fbc63d05a4a9de4c9e355f9b4e242f9ecd0"
+        },
+        {
+          "sha": "52a5d5b4f45a140619f9696a3a860281cf7892c0",
+          "date": "2026-10-15T23:32:39Z",
+          "parents": [
+            "196e2fbc63d05a4a9de4c9e355f9b4e242f9ecd0"
+          ],
+          "subject": "docs(agents): require historical origin-to-next checkpoints in AGENTS.md",
+          "url": "https://github.com/Patricked-code/MCP/commit/52a5d5b4f45a140619f9696a3a860281cf7892c0"
+        },
+        {
+          "sha": "3df47da300c19dcc99392e5ac2f622c55846751f",
+          "date": "2026-10-15T23:33:00Z",
+          "parents": [
+            "52a5d5b4f45a140619f9696a3a860281cf7892c0"
+          ],
+          "subject": "test(governance): guard audit breadcrumb origin-evidence-gaps-next cold start",
+          "url": "https://github.com/Patricked-code/MCP/commit/3df47da300c19dcc99392e5ac2f622c55846751f"
+        },
+        {
+          "sha": "70abc80b1124a40f5df4ecc7dcdd4e103c7b42ec",
+          "date": "2026-10-15T23:34:28Z",
+          "parents": [
+            "3df47da300c19dcc99392e5ac2f622c55846751f"
+          ],
+          "subject": "docs(governance): register history breadcrumb Markdown in exact inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/70abc80b1124a40f5df4ecc7dcdd4e103c7b42ec"
+        },
+        {
+          "sha": "a7c059cd1b0eaf2191d89b8c5dbc7e5758c1112b",
+          "date": "2026-10-15T23:34:48Z",
+          "parents": [
+            "70abc80b1124a40f5df4ecc7dcdd4e103c7b42ec"
+          ],
+          "subject": "fix(docs): keep Markdown inventory original ordering with one added history guide",
+          "url": "https://github.com/Patricked-code/MCP/commit/a7c059cd1b0eaf2191d89b8c5dbc7e5758c1112b"
+        }
+      ]
+    },
+    {
+      "pr": 312,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "32b5fca039a023b397aa7e4d07760fff05c298be",
+          "date": "2026-10-16T15:36:50Z",
+          "parents": [
+            "8f804e3113daf37d5fe7e96bda86bf987b7043cb"
+          ],
+          "subject": "docs(suivi): checkpoint mandate A+B — inventory bus (B1-B4) + next audit step TB-W4-H-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/32b5fca039a023b397aa7e4d07760fff05c298be"
+        }
+      ]
+    }
+  ]
+}
