@@ -112,3 +112,33 @@ test('RED B3f: real store returns no bound session or malformed candidate, no wr
  assert.equal(denied.reason,'MCP_SESSION_BINDING_NOT_ATTESTED');
  assert.equal(denied.runtimeWriteAuthorized,false);
 });
+
+test('B3j RED: validated MCP OAuth and owned runtime proof has a private server-only handoff',async()=>{
+ const x=ports();
+ const proofs:unknown[]=[];
+ const result=await inspectPleskHttpToMcpAdmission({...input,trustedMcpTransport:transport},{
+   ...x.adapter,onVerifiedProof:proof=>{proofs.push(proof);}
+ });
+ assert.equal(result.status,'READ_ONLY_PROOFS_OBSERVED');
+ assert.equal(result.runtimeWriteAuthorized,false);
+ assert.equal(proofs.length,1);
+ const proof=proofs[0] as {transport:SessionRequest;candidate:PleskOwnedWebSessionProjection};
+ assert.equal(proof.transport.transportSessionId,transport.transportSessionId);
+ assert.equal(proof.candidate.taskId,taskId);
+ assert.doesNotMatch(JSON.stringify(result),/mcp-server-owned-transport-id|TASK-20261028/);
+});
+test('B3j RED: private proof never emitted for unmatched or expired authorization',async()=>{
+ const x=ports();
+ const proofs:unknown[]=[];
+ const result=await inspectPleskHttpToMcpAdmission({...input,trustedMcpTransport:transport},{
+   ...x.adapter,onVerifiedProof:proof=>{proofs.push(proof);},
+   checkRuntimeAuthority:async()=>({
+     snapshot:{...(await x.adapter.checkRuntimeAuthority(consent,candidate,transport,{
+       ...input,trustedMcpTransport:transport
+     })).snapshot,lockExpiresAt:'2026-10-28T06:00:00Z'},
+     blockers:['TARGET_LOCK_NOT_OWNED'],operationExecuted:false
+   })
+ });
+ assert.equal(result.status,'BLOCKED');
+ assert.deepEqual(proofs,[]);
+});
