@@ -97,3 +97,24 @@ test('GD-U-02B: configured canonical repository triggers a real scoped permissio
   assert.equal(result.githubRepository?.runtimeWriteAuthorized,false);
   assert.equal(result.adminWriteAuthorized,false);
 });
+
+
+test('FINDING-01: package manifest is found from both source and Docker dist/src module layouts',async()=>{
+  const {mkdtemp,mkdir,writeFile,rm}=await import('node:fs/promises');
+  const {tmpdir}=await import('node:os');
+  const {join}=await import('node:path');
+  const {pathToFileURL}=await import('node:url');
+  const {readCanonicalRepositoryFromModuleManifest}=await import('../src/provisioning/universalAdminLiveProbe.js');
+  const root=await mkdtemp(join(tmpdir(),'gd-u-layout-'));
+  try{
+    const manifest=join(root,'package.json');
+    await writeFile(manifest,JSON.stringify({mcpValidationProfile:{repository:'Patricked-code/MCP'}}));
+    for(const modulePath of ['src/provisioning/universalAdminLiveProbe.js',
+      'dist/src/provisioning/universalAdminLiveProbe.js']){
+      const absolute=join(root,modulePath);
+      await mkdir(join(absolute,'..'),{recursive:true});
+      const observed=await readCanonicalRepositoryFromModuleManifest(pathToFileURL(absolute).href);
+      assert.equal(observed,'Patricked-code/MCP',modulePath);
+    }
+  }finally{await rm(root,{recursive:true,force:true});}
+});
