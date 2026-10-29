@@ -1,0 +1,2467 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    85,
+    96
+  ],
+  "items": [
+    {
+      "pr": 91,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "00bea2d76d6205486d5ae478c7efde8353fd9f55",
+          "date": "2026-09-15T02:37:20Z",
+          "parents": [
+            "dc4698de66b7becfc924ea4fabe8037e089d3336"
+          ],
+          "subject": "docs(g3): reconcile canonical documentation after G3 merge",
+          "url": "https://github.com/Patricked-code/MCP/commit/00bea2d76d6205486d5ae478c7efde8353fd9f55"
+        },
+        {
+          "sha": "4dd5fdeb6d43e56e835fc24572a9736ccb3eaf1b",
+          "date": "2026-09-15T03:07:40Z",
+          "parents": [
+            "00bea2d76d6205486d5ae478c7efde8353fd9f55"
+          ],
+          "subject": "docs(g3): record the acquired exact-SHA deployment projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/4dd5fdeb6d43e56e835fc24572a9736ccb3eaf1b"
+        }
+      ]
+    },
+    {
+      "pr": 92,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "f71704dbfd2ad3fe2ba7c8545fa157435e97de7e",
+          "date": "2026-09-15T03:27:23Z",
+          "parents": [
+            "a533eeca5ca9e37fcad51ded161a2f1c8736c7fd"
+          ],
+          "subject": "test(c2): add repository-to-project resolution RED contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/f71704dbfd2ad3fe2ba7c8545fa157435e97de7e"
+        },
+        {
+          "sha": "45adc85925bf819b8c71df4621315e95bc3154ca",
+          "date": "2026-09-15T03:31:42Z",
+          "parents": [
+            "f71704dbfd2ad3fe2ba7c8545fa157435e97de7e"
+          ],
+          "subject": "feat(c2): resolve repository to governed project binding",
+          "url": "https://github.com/Patricked-code/MCP/commit/45adc85925bf819b8c71df4621315e95bc3154ca"
+        },
+        {
+          "sha": "6fc9c74b3a405a69f23e13d80c4557fa1d5b4538",
+          "date": "2026-09-15T03:33:04Z",
+          "parents": [
+            "45adc85925bf819b8c71df4621315e95bc3154ca"
+          ],
+          "subject": "test(c2): preserve historical MCP project binding",
+          "url": "https://github.com/Patricked-code/MCP/commit/6fc9c74b3a405a69f23e13d80c4557fa1d5b4538"
+        },
+        {
+          "sha": "d71ba1671adcadf94f263f00ec6eef02d915663f",
+          "date": "2026-09-15T03:34:36Z",
+          "parents": [
+            "6fc9c74b3a405a69f23e13d80c4557fa1d5b4538"
+          ],
+          "subject": "fix(c2): resolve historical mapping-only project identity",
+          "url": "https://github.com/Patricked-code/MCP/commit/d71ba1671adcadf94f263f00ec6eef02d915663f"
+        },
+        {
+          "sha": "9de6ceb4a3c17b1d3e1a2a8ba67b967da14ea88b",
+          "date": "2026-09-15T03:37:18Z",
+          "parents": [
+            "d71ba1671adcadf94f263f00ec6eef02d915663f"
+          ],
+          "subject": "docs(c2): record repository-project resolution evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/9de6ceb4a3c17b1d3e1a2a8ba67b967da14ea88b"
+        },
+        {
+          "sha": "8b71f14f9a4884d57699e093853f4ccfb84080ef",
+          "date": "2026-09-15T03:39:00Z",
+          "parents": [
+            "9de6ceb4a3c17b1d3e1a2a8ba67b967da14ea88b"
+          ],
+          "subject": "docs(c2): normalize decision log whitespace",
+          "url": "https://github.com/Patricked-code/MCP/commit/8b71f14f9a4884d57699e093853f4ccfb84080ef"
+        }
+      ]
+    },
+    {
+      "pr": 93,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "d124587f5c57c7941c7937a0d7b316a6f2e54e75",
+          "date": "2026-09-15T03:44:54Z",
+          "parents": [
+            "46d576e53820eba0360647b6fd96d41dd4a2bbc6"
+          ],
+          "subject": "docs(c2): reconcile terminal project-resolution state",
+          "url": "https://github.com/Patricked-code/MCP/commit/d124587f5c57c7941c7937a0d7b316a6f2e54e75"
+        }
+      ]
+    },
+    {
+      "pr": 94,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "8bc130ade6011333395dff6774cf9cc7932636cc",
+          "date": "2026-09-15T04:02:20Z",
+          "parents": [
+            "39662171bf89f1894cc84a0009e60840a772acaa"
+          ],
+          "subject": "docs(gwc): define governed workflow contract v1",
+          "url": "https://github.com/Patricked-code/MCP/commit/8bc130ade6011333395dff6774cf9cc7932636cc"
+        },
+        {
+          "sha": "bc4d63eec99dc039bfd5dfb54d9b12895763de02",
+          "date": "2026-09-15T04:03:40Z",
+          "parents": [
+            "8bc130ade6011333395dff6774cf9cc7932636cc"
+          ],
+          "subject": "docs(gwc): register design in markdown inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/bc4d63eec99dc039bfd5dfb54d9b12895763de02"
+        },
+        {
+          "sha": "590cc5a1a99f219be10e79a678fdd0e9cbdb2f4f",
+          "date": "2026-09-15T04:04:30Z",
+          "parents": [
+            "bc4d63eec99dc039bfd5dfb54d9b12895763de02"
+          ],
+          "subject": "docs(gwc): minimize governed inventory update",
+          "url": "https://github.com/Patricked-code/MCP/commit/590cc5a1a99f219be10e79a678fdd0e9cbdb2f4f"
+        }
+      ]
+    },
+    {
+      "pr": 95,
+      "status": "NEEDS_PAGE3",
+      "commits": [
+        {
+          "sha": "3eb4e04f23191c82eb92131ff6bad225202dbbcf",
+          "date": "2026-09-19T05:47:43Z",
+          "parents": [
+            "4f88e8453523bd62f04989bc7d76b1aa3ad3cf65"
+          ],
+          "subject": "docs(gwc): close intake 004 without disturbing GWC-6",
+          "url": "https://github.com/Patricked-code/MCP/commit/3eb4e04f23191c82eb92131ff6bad225202dbbcf"
+        },
+        {
+          "sha": "5c7177bfd4d5c6d6c03dee543cd76fb36e8da1fa",
+          "date": "2026-09-19T05:49:28Z",
+          "parents": [
+            "3eb4e04f23191c82eb92131ff6bad225202dbbcf"
+          ],
+          "subject": "fix(gwc): correct intake 004 checkpoint source digest",
+          "url": "https://github.com/Patricked-code/MCP/commit/5c7177bfd4d5c6d6c03dee543cd76fb36e8da1fa"
+        },
+        {
+          "sha": "d616849fecbbb33b8008befe8c1ca9dae38a4c0a",
+          "date": "2026-09-19T05:57:15Z",
+          "parents": [
+            "5c7177bfd4d5c6d6c03dee543cd76fb36e8da1fa"
+          ],
+          "subject": "fix(gwc): decouple server evidence digests",
+          "url": "https://github.com/Patricked-code/MCP/commit/d616849fecbbb33b8008befe8c1ca9dae38a4c0a"
+        },
+        {
+          "sha": "616fd99398a2f8c0c1c336df6d468ba19f94d46c",
+          "date": "2026-09-19T05:58:43Z",
+          "parents": [
+            "d616849fecbbb33b8008befe8c1ca9dae38a4c0a"
+          ],
+          "subject": "fix(gwc): make raw server evidence order deterministic",
+          "url": "https://github.com/Patricked-code/MCP/commit/616fd99398a2f8c0c1c336df6d468ba19f94d46c"
+        },
+        {
+          "sha": "28d0c1e30a9af5c78d3d7328049e4ca5869a2e3f",
+          "date": "2026-09-19T06:00:33Z",
+          "parents": [
+            "616fd99398a2f8c0c1c336df6d468ba19f94d46c"
+          ],
+          "subject": "chore(gwc): normalize test EOF whitespace",
+          "url": "https://github.com/Patricked-code/MCP/commit/28d0c1e30a9af5c78d3d7328049e4ca5869a2e3f"
+        },
+        {
+          "sha": "087b0a23230c83b6cb1c9069947f48a5d8cc0357",
+          "date": "2026-09-19T06:00:52Z",
+          "parents": [
+            "28d0c1e30a9af5c78d3d7328049e4ca5869a2e3f"
+          ],
+          "subject": "chore(gwc): normalize resolver test EOF whitespace",
+          "url": "https://github.com/Patricked-code/MCP/commit/087b0a23230c83b6cb1c9069947f48a5d8cc0357"
+        },
+        {
+          "sha": "4c61c1c4a131e014a43a12c7159fe8dde6cc955b",
+          "date": "2026-09-19T06:04:34Z",
+          "parents": [
+            "087b0a23230c83b6cb1c9069947f48a5d8cc0357"
+          ],
+          "subject": "docs(gwc): record GWC-6 server resolver checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/4c61c1c4a131e014a43a12c7159fe8dde6cc955b"
+        },
+        {
+          "sha": "0cac9047a39b06de1d6d67f17ed59e53991ca212",
+          "date": "2026-09-19T06:04:55Z",
+          "parents": [
+            "4c61c1c4a131e014a43a12c7159fe8dde6cc955b"
+          ],
+          "subject": "docs(gwc): add GWC-6 canonical bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/0cac9047a39b06de1d6d67f17ed59e53991ca212"
+        },
+        {
+          "sha": "202fa6e3ef53f715878271662aa9b7383d644269",
+          "date": "2026-09-19T06:06:00Z",
+          "parents": [
+            "0cac9047a39b06de1d6d67f17ed59e53991ca212"
+          ],
+          "subject": "docs(gwc): project GWC-6 checkpoint pending validation",
+          "url": "https://github.com/Patricked-code/MCP/commit/202fa6e3ef53f715878271662aa9b7383d644269"
+        },
+        {
+          "sha": "15a472e978d037716266cbf13ff6835c720c34ac",
+          "date": "2026-09-19T06:06:32Z",
+          "parents": [
+            "202fa6e3ef53f715878271662aa9b7383d644269"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-6 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/15a472e978d037716266cbf13ff6835c720c34ac"
+        },
+        {
+          "sha": "4b540891892f14d94eaccfcdacbf4d1e5704e72b",
+          "date": "2026-09-19T06:06:48Z",
+          "parents": [
+            "15a472e978d037716266cbf13ff6835c720c34ac"
+          ],
+          "subject": "docs(gwc): record GWC-6 green and checkpoint gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/4b540891892f14d94eaccfcdacbf4d1e5704e72b"
+        },
+        {
+          "sha": "c5fd584b25a90482626000d90c30ebe00ecd9ccc",
+          "date": "2026-09-19T06:06:56Z",
+          "parents": [
+            "4b540891892f14d94eaccfcdacbf4d1e5704e72b"
+          ],
+          "subject": "docs(gwc): changelog GWC-6 server resolver",
+          "url": "https://github.com/Patricked-code/MCP/commit/c5fd584b25a90482626000d90c30ebe00ecd9ccc"
+        },
+        {
+          "sha": "7c5c34669b9baa8fbe5e2975debf8205d9e5e05b",
+          "date": "2026-09-19T06:07:06Z",
+          "parents": [
+            "c5fd584b25a90482626000d90c30ebe00ecd9ccc"
+          ],
+          "subject": "docs(gwc): record OD-03 server identity decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/7c5c34669b9baa8fbe5e2975debf8205d9e5e05b"
+        },
+        {
+          "sha": "9dcb9396252d33a297cbb29b8bed5e1546442bad",
+          "date": "2026-09-19T06:08:53Z",
+          "parents": [
+            "7c5c34669b9baa8fbe5e2975debf8205d9e5e05b"
+          ],
+          "subject": "docs(gwc): close GWC-6 and dispatch GWC-7",
+          "url": "https://github.com/Patricked-code/MCP/commit/9dcb9396252d33a297cbb29b8bed5e1546442bad"
+        },
+        {
+          "sha": "aef801b8cb16dd4aa5fde74f0587bfe8c72c7dba",
+          "date": "2026-09-19T06:09:07Z",
+          "parents": [
+            "9dcb9396252d33a297cbb29b8bed5e1546442bad"
+          ],
+          "subject": "docs(gwc): advance candidate pointer to GWC-7",
+          "url": "https://github.com/Patricked-code/MCP/commit/aef801b8cb16dd4aa5fde74f0587bfe8c72c7dba"
+        },
+        {
+          "sha": "d564cbf9181dbd71228270559ed50d8b95dc9983",
+          "date": "2026-09-19T06:11:09Z",
+          "parents": [
+            "aef801b8cb16dd4aa5fde74f0587bfe8c72c7dba"
+          ],
+          "subject": "docs(gwc): bind GWC-7 RED scope and OD-04",
+          "url": "https://github.com/Patricked-code/MCP/commit/d564cbf9181dbd71228270559ed50d8b95dc9983"
+        },
+        {
+          "sha": "60f74ed208692f7e613d996f9b811cdc136a5ca2",
+          "date": "2026-09-19T06:11:41Z",
+          "parents": [
+            "d564cbf9181dbd71228270559ed50d8b95dc9983"
+          ],
+          "subject": "test(gwc): add GWC-7 runtime resolver RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/60f74ed208692f7e613d996f9b811cdc136a5ca2"
+        },
+        {
+          "sha": "2855d0e0a4033feb3670b3d3c71315b2ac83c7e6",
+          "date": "2026-09-19T06:11:50Z",
+          "parents": [
+            "60f74ed208692f7e613d996f9b811cdc136a5ca2"
+          ],
+          "subject": "test(gwc): register GWC-7 runtime resolver RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/2855d0e0a4033feb3670b3d3c71315b2ac83c7e6"
+        },
+        {
+          "sha": "ff3dcabf918e63969101d3d29f77f275ced104d2",
+          "date": "2026-09-19T06:28:15Z",
+          "parents": [
+            "2855d0e0a4033feb3670b3d3c71315b2ac83c7e6"
+          ],
+          "subject": "chore(gwc): transfer stale GWC-7 claim under human recovery",
+          "url": "https://github.com/Patricked-code/MCP/commit/ff3dcabf918e63969101d3d29f77f275ced104d2"
+        },
+        {
+          "sha": "7a4dc33ebe5a6491c762906ccaeaa89590ebb341",
+          "date": "2026-09-19T06:30:33Z",
+          "parents": [
+            "ff3dcabf918e63969101d3d29f77f275ced104d2"
+          ],
+          "subject": "feat(gwc): add bounded runtime resolver",
+          "url": "https://github.com/Patricked-code/MCP/commit/7a4dc33ebe5a6491c762906ccaeaa89590ebb341"
+        },
+        {
+          "sha": "dffc5c3a73814c97b2a3728826fd2719bddf34dc",
+          "date": "2026-09-19T06:32:13Z",
+          "parents": [
+            "7a4dc33ebe5a6491c762906ccaeaa89590ebb341"
+          ],
+          "subject": "test(gwc): bind GW-08 wrapper to canonical substrate fixture",
+          "url": "https://github.com/Patricked-code/MCP/commit/dffc5c3a73814c97b2a3728826fd2719bddf34dc"
+        },
+        {
+          "sha": "9a25bf544769e448e15c17b9006720212b5b888d",
+          "date": "2026-09-19T06:34:41Z",
+          "parents": [
+            "dffc5c3a73814c97b2a3728826fd2719bddf34dc"
+          ],
+          "subject": "test(gwc): cover Docker and systemd runtime bindings",
+          "url": "https://github.com/Patricked-code/MCP/commit/9a25bf544769e448e15c17b9006720212b5b888d"
+        },
+        {
+          "sha": "98c19178b67521df0b08874ce2fdd6eed17b900b",
+          "date": "2026-09-19T06:38:28Z",
+          "parents": [
+            "9a25bf544769e448e15c17b9006720212b5b888d"
+          ],
+          "subject": "docs(gwc): checkpoint GWC-7 runtime resolver",
+          "url": "https://github.com/Patricked-code/MCP/commit/98c19178b67521df0b08874ce2fdd6eed17b900b"
+        },
+        {
+          "sha": "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa",
+          "date": "2026-09-19T06:40:13Z",
+          "parents": [
+            "98c19178b67521df0b08874ce2fdd6eed17b900b"
+          ],
+          "subject": "docs(gwc): close GWC-7 and dispatch GWC-8",
+          "url": "https://github.com/Patricked-code/MCP/commit/4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa"
+        },
+        {
+          "sha": "b1c26293796553edc7ebf2f16afef7c7f6f50b96",
+          "date": "2026-09-19T06:53:50Z",
+          "parents": [
+            "4d887146bfe7ae00db6d966ded7e4ba1c35fb1fa"
+          ],
+          "subject": "docs(gwc): recover stale GWC-8 claim",
+          "url": "https://github.com/Patricked-code/MCP/commit/b1c26293796553edc7ebf2f16afef7c7f6f50b96"
+        },
+        {
+          "sha": "755a75bcdc80bc7f74554d25885a7f84684ab7cc",
+          "date": "2026-09-19T06:54:11Z",
+          "parents": [
+            "b1c26293796553edc7ebf2f16afef7c7f6f50b96"
+          ],
+          "subject": "docs(gwc): reconcile GWC-8 recovery pointer",
+          "url": "https://github.com/Patricked-code/MCP/commit/755a75bcdc80bc7f74554d25885a7f84684ab7cc"
+        },
+        {
+          "sha": "7634741e3fe73058b6d491e309e6bbfc9a896675",
+          "date": "2026-09-19T06:55:35Z",
+          "parents": [
+            "755a75bcdc80bc7f74554d25885a7f84684ab7cc"
+          ],
+          "subject": "docs(gwc): validate GWC-8 recovery and bind RED scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/7634741e3fe73058b6d491e309e6bbfc9a896675"
+        },
+        {
+          "sha": "02330b91ae24e4bef03f25ad27f61e3f5ba995e8",
+          "date": "2026-09-19T06:56:08Z",
+          "parents": [
+            "7634741e3fe73058b6d491e309e6bbfc9a896675"
+          ],
+          "subject": "docs(gwc): resume GWC-8 after recovery validation",
+          "url": "https://github.com/Patricked-code/MCP/commit/02330b91ae24e4bef03f25ad27f61e3f5ba995e8"
+        },
+        {
+          "sha": "c45847fb9c357520e2c117c736385fbb44c2142e",
+          "date": "2026-09-19T06:56:59Z",
+          "parents": [
+            "02330b91ae24e4bef03f25ad27f61e3f5ba995e8"
+          ],
+          "subject": "test(gwc): add GWC-8 domain resolver RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/c45847fb9c357520e2c117c736385fbb44c2142e"
+        },
+        {
+          "sha": "54a108d591801f9895309476c81cf350883ee122",
+          "date": "2026-09-19T06:57:07Z",
+          "parents": [
+            "c45847fb9c357520e2c117c736385fbb44c2142e"
+          ],
+          "subject": "test(gwc): register GWC-8 domain resolver RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/54a108d591801f9895309476c81cf350883ee122"
+        },
+        {
+          "sha": "197248bd7ebb4d8d3a2a00bc99799c0b72d12f41",
+          "date": "2026-09-19T06:59:49Z",
+          "parents": [
+            "54a108d591801f9895309476c81cf350883ee122"
+          ],
+          "subject": "feat(gwc): add read-only domain resolver",
+          "url": "https://github.com/Patricked-code/MCP/commit/197248bd7ebb4d8d3a2a00bc99799c0b72d12f41"
+        },
+        {
+          "sha": "4ceb3538ab1261e3d9790266c720cca38ebe9796",
+          "date": "2026-09-19T07:01:56Z",
+          "parents": [
+            "197248bd7ebb4d8d3a2a00bc99799c0b72d12f41"
+          ],
+          "subject": "test(gwc): cover legacy domain mapping compatibility",
+          "url": "https://github.com/Patricked-code/MCP/commit/4ceb3538ab1261e3d9790266c720cca38ebe9796"
+        },
+        {
+          "sha": "ba88d43010789e8255b91ca4221f73663c027e6e",
+          "date": "2026-09-19T07:03:16Z",
+          "parents": [
+            "4ceb3538ab1261e3d9790266c720cca38ebe9796"
+          ],
+          "subject": "fix(gwc): preserve optional domain component roles",
+          "url": "https://github.com/Patricked-code/MCP/commit/ba88d43010789e8255b91ca4221f73663c027e6e"
+        },
+        {
+          "sha": "d6240484e387770751d9d3db476ac3b9470c74ce",
+          "date": "2026-09-19T07:04:46Z",
+          "parents": [
+            "ba88d43010789e8255b91ca4221f73663c027e6e"
+          ],
+          "subject": "fix(gwc): merge legacy domain evidence without inventing roles",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6240484e387770751d9d3db476ac3b9470c74ce"
+        },
+        {
+          "sha": "9e34b6e5d91f923bc1d876d41cd5366f2576c9df",
+          "date": "2026-09-19T07:07:31Z",
+          "parents": [
+            "d6240484e387770751d9d3db476ac3b9470c74ce"
+          ],
+          "subject": "docs(gwc): record GWC-8 domain resolver checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/9e34b6e5d91f923bc1d876d41cd5366f2576c9df"
+        },
+        {
+          "sha": "ba659b14b85e51f8e75ec10948717cfea9c89ee9",
+          "date": "2026-09-19T07:09:10Z",
+          "parents": [
+            "9e34b6e5d91f923bc1d876d41cd5366f2576c9df"
+          ],
+          "subject": "docs(gwc): add GWC-8 canonical bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/ba659b14b85e51f8e75ec10948717cfea9c89ee9"
+        },
+        {
+          "sha": "196b06daa12073b908fc1ec66bac963a1af62520",
+          "date": "2026-09-19T07:09:29Z",
+          "parents": [
+            "ba659b14b85e51f8e75ec10948717cfea9c89ee9"
+          ],
+          "subject": "docs(gwc): project GWC-8 checkpoint pending validation",
+          "url": "https://github.com/Patricked-code/MCP/commit/196b06daa12073b908fc1ec66bac963a1af62520"
+        },
+        {
+          "sha": "f24a1882e09a2b9adf2b92ef78ed9a646410c258",
+          "date": "2026-09-19T07:09:42Z",
+          "parents": [
+            "196b06daa12073b908fc1ec66bac963a1af62520"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-8 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/f24a1882e09a2b9adf2b92ef78ed9a646410c258"
+        },
+        {
+          "sha": "ccc09493a3649fa344eee918910f57218bb249aa",
+          "date": "2026-09-19T07:10:04Z",
+          "parents": [
+            "f24a1882e09a2b9adf2b92ef78ed9a646410c258"
+          ],
+          "subject": "docs(gwc): record GWC-8 green and checkpoint gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/ccc09493a3649fa344eee918910f57218bb249aa"
+        },
+        {
+          "sha": "d40b484c71eaa7955115c13e263d1dc0a718e153",
+          "date": "2026-09-19T07:10:24Z",
+          "parents": [
+            "ccc09493a3649fa344eee918910f57218bb249aa"
+          ],
+          "subject": "docs(gwc): changelog GWC-8 domain resolver",
+          "url": "https://github.com/Patricked-code/MCP/commit/d40b484c71eaa7955115c13e263d1dc0a718e153"
+        },
+        {
+          "sha": "4c71dce479274f682a149386b73d22aa08a94a37",
+          "date": "2026-09-19T07:10:38Z",
+          "parents": [
+            "d40b484c71eaa7955115c13e263d1dc0a718e153"
+          ],
+          "subject": "docs(gwc): record GWC-8 domain resolution decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/4c71dce479274f682a149386b73d22aa08a94a37"
+        },
+        {
+          "sha": "01cdfad1fc99a281345f2497091a7c112c9de7ef",
+          "date": "2026-09-19T07:11:53Z",
+          "parents": [
+            "4c71dce479274f682a149386b73d22aa08a94a37"
+          ],
+          "subject": "docs(gwc): close GWC-8 and dispatch GWC-9",
+          "url": "https://github.com/Patricked-code/MCP/commit/01cdfad1fc99a281345f2497091a7c112c9de7ef"
+        },
+        {
+          "sha": "1ff6898c49440bfb3f13cf8e665438a28a4a7866",
+          "date": "2026-09-19T07:12:05Z",
+          "parents": [
+            "01cdfad1fc99a281345f2497091a7c112c9de7ef"
+          ],
+          "subject": "docs(gwc): advance candidate pointer to GWC-9",
+          "url": "https://github.com/Patricked-code/MCP/commit/1ff6898c49440bfb3f13cf8e665438a28a4a7866"
+        },
+        {
+          "sha": "3273385fe06688bae617bc5318d26e91feb43afa",
+          "date": "2026-09-19T07:13:59Z",
+          "parents": [
+            "1ff6898c49440bfb3f13cf8e665438a28a4a7866"
+          ],
+          "subject": "docs(gwc): bind GWC-9 RED and AF-32 scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/3273385fe06688bae617bc5318d26e91feb43afa"
+        },
+        {
+          "sha": "b59b394f1f06fa536a264d55ea2d1c298cdd1415",
+          "date": "2026-09-19T07:14:37Z",
+          "parents": [
+            "3273385fe06688bae617bc5318d26e91feb43afa"
+          ],
+          "subject": "test(gwc): add GWC-9 governance RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/b59b394f1f06fa536a264d55ea2d1c298cdd1415"
+        },
+        {
+          "sha": "e1d9caf1ee8704328113524348f273b689b67ecf",
+          "date": "2026-09-19T07:14:49Z",
+          "parents": [
+            "b59b394f1f06fa536a264d55ea2d1c298cdd1415"
+          ],
+          "subject": "test(gwc): register GWC-9 governance RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/e1d9caf1ee8704328113524348f273b689b67ecf"
+        },
+        {
+          "sha": "945ede12927833a9d73d79244b6c0ae14b612cd4",
+          "date": "2026-09-19T07:16:43Z",
+          "parents": [
+            "e1d9caf1ee8704328113524348f273b689b67ecf"
+          ],
+          "subject": "feat(gwc): compose existing governance capabilities",
+          "url": "https://github.com/Patricked-code/MCP/commit/945ede12927833a9d73d79244b6c0ae14b612cd4"
+        },
+        {
+          "sha": "2cfab21e393bf4f070b725aaf9bcf2360f8dc1b4",
+          "date": "2026-09-19T07:22:11Z",
+          "parents": [
+            "945ede12927833a9d73d79244b6c0ae14b612cd4"
+          ],
+          "subject": "fix(gwc): route operational writes through shadow gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/2cfab21e393bf4f070b725aaf9bcf2360f8dc1b4"
+        },
+        {
+          "sha": "2097d7ff912aa8f4de06963bd8c8872728c013fe",
+          "date": "2026-09-19T07:24:35Z",
+          "parents": [
+            "2cfab21e393bf4f070b725aaf9bcf2360f8dc1b4"
+          ],
+          "subject": "test(gwc): prove AF-32 shadow parity at runtime",
+          "url": "https://github.com/Patricked-code/MCP/commit/2097d7ff912aa8f4de06963bd8c8872728c013fe"
+        },
+        {
+          "sha": "ff85ab51ae59df044ad179abe0865374e41f2412",
+          "date": "2026-09-19T07:25:49Z",
+          "parents": [
+            "2097d7ff912aa8f4de06963bd8c8872728c013fe"
+          ],
+          "subject": "test(gwc): complete GWC-9 runtime fixture env",
+          "url": "https://github.com/Patricked-code/MCP/commit/ff85ab51ae59df044ad179abe0865374e41f2412"
+        },
+        {
+          "sha": "d7e3d826fdf7353f08666be148201956d0caa4ea",
+          "date": "2026-09-19T07:27:21Z",
+          "parents": [
+            "ff85ab51ae59df044ad179abe0865374e41f2412"
+          ],
+          "subject": "docs(gwc): record GWC-9 governance checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/d7e3d826fdf7353f08666be148201956d0caa4ea"
+        },
+        {
+          "sha": "39ebd1b4bded2e1698363f1dd5621c476b0aac9b",
+          "date": "2026-09-19T07:27:52Z",
+          "parents": [
+            "d7e3d826fdf7353f08666be148201956d0caa4ea"
+          ],
+          "subject": "docs(gwc): add GWC-9 canonical bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/39ebd1b4bded2e1698363f1dd5621c476b0aac9b"
+        },
+        {
+          "sha": "e190c6d494c000e057ee28d0f3351fc5b6e1d773",
+          "date": "2026-09-19T07:28:11Z",
+          "parents": [
+            "39ebd1b4bded2e1698363f1dd5621c476b0aac9b"
+          ],
+          "subject": "docs(gwc): project GWC-9 checkpoint pending validation",
+          "url": "https://github.com/Patricked-code/MCP/commit/e190c6d494c000e057ee28d0f3351fc5b6e1d773"
+        },
+        {
+          "sha": "434627af68edfa8d80dd90b450854763f0d33891",
+          "date": "2026-09-19T07:28:22Z",
+          "parents": [
+            "e190c6d494c000e057ee28d0f3351fc5b6e1d773"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-9 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/434627af68edfa8d80dd90b450854763f0d33891"
+        },
+        {
+          "sha": "1ba1458fe5d0df921dc00e70b8b0470055580a07",
+          "date": "2026-09-19T07:28:41Z",
+          "parents": [
+            "434627af68edfa8d80dd90b450854763f0d33891"
+          ],
+          "subject": "docs(gwc): record GWC-9 green checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/1ba1458fe5d0df921dc00e70b8b0470055580a07"
+        },
+        {
+          "sha": "bfdf0f71bca129d43857b03f9cc82ed85a7f221b",
+          "date": "2026-09-19T07:28:53Z",
+          "parents": [
+            "1ba1458fe5d0df921dc00e70b8b0470055580a07"
+          ],
+          "subject": "docs(gwc): changelog GWC-9 governance composer",
+          "url": "https://github.com/Patricked-code/MCP/commit/bfdf0f71bca129d43857b03f9cc82ed85a7f221b"
+        },
+        {
+          "sha": "e029c7b062abaafdf4b1190b1e964a19ecd4a6bf",
+          "date": "2026-09-19T07:29:08Z",
+          "parents": [
+            "bfdf0f71bca129d43857b03f9cc82ed85a7f221b"
+          ],
+          "subject": "docs(gwc): record GWC-9 governance decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/e029c7b062abaafdf4b1190b1e964a19ecd4a6bf"
+        },
+        {
+          "sha": "d40843b73e26e72931b4b17be5107cf0c8fe91b4",
+          "date": "2026-09-19T07:30:54Z",
+          "parents": [
+            "e029c7b062abaafdf4b1190b1e964a19ecd4a6bf"
+          ],
+          "subject": "docs(gwc): close GWC-9 and dispatch GWC-10",
+          "url": "https://github.com/Patricked-code/MCP/commit/d40843b73e26e72931b4b17be5107cf0c8fe91b4"
+        },
+        {
+          "sha": "30cb8e8421c32e307ace0e9c06bfe16975a6a334",
+          "date": "2026-09-19T07:31:06Z",
+          "parents": [
+            "d40843b73e26e72931b4b17be5107cf0c8fe91b4"
+          ],
+          "subject": "docs(gwc): advance candidate pointer to GWC-10",
+          "url": "https://github.com/Patricked-code/MCP/commit/30cb8e8421c32e307ace0e9c06bfe16975a6a334"
+        },
+        {
+          "sha": "e71cf48d153fbb8baf85c78c3983392ed300890e",
+          "date": "2026-09-19T07:34:53Z",
+          "parents": [
+            "30cb8e8421c32e307ace0e9c06bfe16975a6a334"
+          ],
+          "subject": "docs(gwc): bind GWC-10 target-scope RED decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/e71cf48d153fbb8baf85c78c3983392ed300890e"
+        },
+        {
+          "sha": "a7fe8a242e7d700a1f6a1068b3b5695bac64a1ef",
+          "date": "2026-09-19T07:36:09Z",
+          "parents": [
+            "e71cf48d153fbb8baf85c78c3983392ed300890e"
+          ],
+          "subject": "test(gwc): add GWC-10 TargetScope RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/a7fe8a242e7d700a1f6a1068b3b5695bac64a1ef"
+        },
+        {
+          "sha": "5c297b6bf229198296dec51651ca0080af9ab6ef",
+          "date": "2026-09-19T07:36:25Z",
+          "parents": [
+            "a7fe8a242e7d700a1f6a1068b3b5695bac64a1ef"
+          ],
+          "subject": "test(gwc): register GWC-10 TargetScope RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/5c297b6bf229198296dec51651ca0080af9ab6ef"
+        },
+        {
+          "sha": "1e2bf0edc8408ea21f986084f0d63736dc2ea540",
+          "date": "2026-09-19T07:39:01Z",
+          "parents": [
+            "5c297b6bf229198296dec51651ca0080af9ab6ef"
+          ],
+          "subject": "feat(gwc): add additive TargetContext and TargetScope",
+          "url": "https://github.com/Patricked-code/MCP/commit/1e2bf0edc8408ea21f986084f0d63736dc2ea540"
+        },
+        {
+          "sha": "a6abd8627d6c718c5e56d37f70049340f7b2fa4d",
+          "date": "2026-09-19T07:39:18Z",
+          "parents": [
+            "1e2bf0edc8408ea21f986084f0d63736dc2ea540"
+          ],
+          "subject": "feat(gwc): add optional target scope to operational records",
+          "url": "https://github.com/Patricked-code/MCP/commit/a6abd8627d6c718c5e56d37f70049340f7b2fa4d"
+        },
+        {
+          "sha": "0b20fcd7a0ebd580543d417234d33aa64d299402",
+          "date": "2026-09-19T07:39:44Z",
+          "parents": [
+            "a6abd8627d6c718c5e56d37f70049340f7b2fa4d"
+          ],
+          "subject": "feat(gwc): generalize connection repository target",
+          "url": "https://github.com/Patricked-code/MCP/commit/0b20fcd7a0ebd580543d417234d33aa64d299402"
+        },
+        {
+          "sha": "f0cfcca7c50315dc6f9ca226efcef1ecc1f09552",
+          "date": "2026-09-19T07:40:17Z",
+          "parents": [
+            "0b20fcd7a0ebd580543d417234d33aa64d299402"
+          ],
+          "subject": "feat(gwc): propagate optional target scope through sessions",
+          "url": "https://github.com/Patricked-code/MCP/commit/f0cfcca7c50315dc6f9ca226efcef1ecc1f09552"
+        },
+        {
+          "sha": "db0b630de9ab6d08d8c19d8b6303e2177e4da034",
+          "date": "2026-09-19T07:40:45Z",
+          "parents": [
+            "f0cfcca7c50315dc6f9ca226efcef1ecc1f09552"
+          ],
+          "subject": "feat(gwc): make task ownership target-scope aware",
+          "url": "https://github.com/Patricked-code/MCP/commit/db0b630de9ab6d08d8c19d8b6303e2177e4da034"
+        },
+        {
+          "sha": "c2915fdbc72ca66d6ad242e74f01b67ff8469801",
+          "date": "2026-09-19T07:41:20Z",
+          "parents": [
+            "db0b630de9ab6d08d8c19d8b6303e2177e4da034"
+          ],
+          "subject": "feat(gwc): add independent component lock scopes",
+          "url": "https://github.com/Patricked-code/MCP/commit/c2915fdbc72ca66d6ad242e74f01b67ff8469801"
+        },
+        {
+          "sha": "bf59728a4b15e9d00348b1082d3a95e3e769e119",
+          "date": "2026-09-19T07:41:32Z",
+          "parents": [
+            "c2915fdbc72ca66d6ad242e74f01b67ff8469801"
+          ],
+          "subject": "feat(gwc): carry optional TargetContext in Live State",
+          "url": "https://github.com/Patricked-code/MCP/commit/bf59728a4b15e9d00348b1082d3a95e3e769e119"
+        },
+        {
+          "sha": "747e6919e99fcb992db69c33171ad6e19741c3ba",
+          "date": "2026-09-19T07:41:46Z",
+          "parents": [
+            "bf59728a4b15e9d00348b1082d3a95e3e769e119"
+          ],
+          "subject": "feat(gwc): version Live State on TargetContext semantics",
+          "url": "https://github.com/Patricked-code/MCP/commit/747e6919e99fcb992db69c33171ad6e19741c3ba"
+        },
+        {
+          "sha": "25e162f0be42b339817768d1fe17eb5c90833682",
+          "date": "2026-09-19T07:41:59Z",
+          "parents": [
+            "747e6919e99fcb992db69c33171ad6e19741c3ba"
+          ],
+          "subject": "feat(gwc): expose TargetContext in governed context",
+          "url": "https://github.com/Patricked-code/MCP/commit/25e162f0be42b339817768d1fe17eb5c90833682"
+        },
+        {
+          "sha": "b5178d7be35f9a81721281ff303976a2656e0b59",
+          "date": "2026-09-19T07:42:11Z",
+          "parents": [
+            "25e162f0be42b339817768d1fe17eb5c90833682"
+          ],
+          "subject": "feat(gwc): project target scope in governed context",
+          "url": "https://github.com/Patricked-code/MCP/commit/b5178d7be35f9a81721281ff303976a2656e0b59"
+        },
+        {
+          "sha": "91645e8b45ba4bc1d2440ff986b74e3bed6baeb4",
+          "date": "2026-09-19T07:43:18Z",
+          "parents": [
+            "b5178d7be35f9a81721281ff303976a2656e0b59"
+          ],
+          "subject": "fix(gwc): align generalized repository target type",
+          "url": "https://github.com/Patricked-code/MCP/commit/91645e8b45ba4bc1d2440ff986b74e3bed6baeb4"
+        },
+        {
+          "sha": "e8848d0306145453f0275abba882b6bcc271b460",
+          "date": "2026-09-19T07:45:28Z",
+          "parents": [
+            "91645e8b45ba4bc1d2440ff986b74e3bed6baeb4"
+          ],
+          "subject": "docs(gwc): bind GWC-10 historical guard reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/e8848d0306145453f0275abba882b6bcc271b460"
+        },
+        {
+          "sha": "333b1461ae960e0ea3db5324a77c769aee71da42",
+          "date": "2026-09-19T07:45:48Z",
+          "parents": [
+            "e8848d0306145453f0275abba882b6bcc271b460"
+          ],
+          "subject": "test(gwc): reconcile GWC-4 guards after GWC-10",
+          "url": "https://github.com/Patricked-code/MCP/commit/333b1461ae960e0ea3db5324a77c769aee71da42"
+        },
+        {
+          "sha": "d150dc52b49b1cb74ab2063be5445d5e826f1673",
+          "date": "2026-09-19T07:46:20Z",
+          "parents": [
+            "333b1461ae960e0ea3db5324a77c769aee71da42"
+          ],
+          "subject": "test(gwc): reconcile GWC-5 lock guard after GWC-10",
+          "url": "https://github.com/Patricked-code/MCP/commit/d150dc52b49b1cb74ab2063be5445d5e826f1673"
+        },
+        {
+          "sha": "795cde7c69e51af21aaf582fb1a0fe340843e08f",
+          "date": "2026-09-19T07:53:56Z",
+          "parents": [
+            "d150dc52b49b1cb74ab2063be5445d5e826f1673"
+          ],
+          "subject": "test(gwc): deepen GWC-10 multi-repository self-review",
+          "url": "https://github.com/Patricked-code/MCP/commit/795cde7c69e51af21aaf582fb1a0fe340843e08f"
+        },
+        {
+          "sha": "67197cd12e13f450734b403c4b85e26dc9760c60",
+          "date": "2026-09-19T07:55:19Z",
+          "parents": [
+            "795cde7c69e51af21aaf582fb1a0fe340843e08f"
+          ],
+          "subject": "fix(gwc): canonicalize TargetScope equality",
+          "url": "https://github.com/Patricked-code/MCP/commit/67197cd12e13f450734b403c4b85e26dc9760c60"
+        },
+        {
+          "sha": "4e8fc5cd0528f82d06faa87a1d307ae54c48f502",
+          "date": "2026-09-19T07:57:18Z",
+          "parents": [
+            "67197cd12e13f450734b403c4b85e26dc9760c60"
+          ],
+          "subject": "docs(gwc): record GWC-10 TargetScope checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/4e8fc5cd0528f82d06faa87a1d307ae54c48f502"
+        },
+        {
+          "sha": "783fbbf1e9bef2dcfc23a70fc64d5345162fd087",
+          "date": "2026-09-19T07:57:57Z",
+          "parents": [
+            "4e8fc5cd0528f82d06faa87a1d307ae54c48f502"
+          ],
+          "subject": "docs(gwc): add GWC-10 canonical bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/783fbbf1e9bef2dcfc23a70fc64d5345162fd087"
+        },
+        {
+          "sha": "1733238ed00fb31f7f1824727349da1852edc384",
+          "date": "2026-09-19T07:58:26Z",
+          "parents": [
+            "783fbbf1e9bef2dcfc23a70fc64d5345162fd087"
+          ],
+          "subject": "docs(gwc): project GWC-10 checkpoint pending validation",
+          "url": "https://github.com/Patricked-code/MCP/commit/1733238ed00fb31f7f1824727349da1852edc384"
+        },
+        {
+          "sha": "b457b367c7f9a6345c20804bb78d1002c4beaa2c",
+          "date": "2026-09-19T07:58:42Z",
+          "parents": [
+            "1733238ed00fb31f7f1824727349da1852edc384"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-10 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/b457b367c7f9a6345c20804bb78d1002c4beaa2c"
+        },
+        {
+          "sha": "730ac486c81ee73606a48385da2ff005553f2f54",
+          "date": "2026-09-19T07:59:04Z",
+          "parents": [
+            "b457b367c7f9a6345c20804bb78d1002c4beaa2c"
+          ],
+          "subject": "docs(gwc): record GWC-10 green checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/730ac486c81ee73606a48385da2ff005553f2f54"
+        },
+        {
+          "sha": "e5a62699c4a385b62f3bf4d8c8c9104abd94eac6",
+          "date": "2026-09-19T07:59:20Z",
+          "parents": [
+            "730ac486c81ee73606a48385da2ff005553f2f54"
+          ],
+          "subject": "docs(gwc): changelog GWC-10 TargetScope",
+          "url": "https://github.com/Patricked-code/MCP/commit/e5a62699c4a385b62f3bf4d8c8c9104abd94eac6"
+        },
+        {
+          "sha": "50e05fbc398dad84612a8fff2e11e82084c2239b",
+          "date": "2026-09-19T07:59:37Z",
+          "parents": [
+            "e5a62699c4a385b62f3bf4d8c8c9104abd94eac6"
+          ],
+          "subject": "docs(gwc): record GWC-10 TargetScope decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/50e05fbc398dad84612a8fff2e11e82084c2239b"
+        },
+        {
+          "sha": "f848eea73491120344aea23ed33722d90677b370",
+          "date": "2026-09-19T08:01:09Z",
+          "parents": [
+            "50e05fbc398dad84612a8fff2e11e82084c2239b"
+          ],
+          "subject": "docs(gwc): close GWC-10 and dispatch GWC-11",
+          "url": "https://github.com/Patricked-code/MCP/commit/f848eea73491120344aea23ed33722d90677b370"
+        },
+        {
+          "sha": "c578623540788787da39e7d5f9afb36b8ac10365",
+          "date": "2026-09-19T08:01:27Z",
+          "parents": [
+            "f848eea73491120344aea23ed33722d90677b370"
+          ],
+          "subject": "docs(gwc): advance candidate pointer to GWC-11",
+          "url": "https://github.com/Patricked-code/MCP/commit/c578623540788787da39e7d5f9afb36b8ac10365"
+        },
+        {
+          "sha": "3cd23ac37ea108a514cf8e019f12d79719e05f9f",
+          "date": "2026-09-19T08:04:19Z",
+          "parents": [
+            "c578623540788787da39e7d5f9afb36b8ac10365"
+          ],
+          "subject": "docs(gwc): bind GWC-11 authority RED scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/3cd23ac37ea108a514cf8e019f12d79719e05f9f"
+        },
+        {
+          "sha": "c0570acd10ace15f9d62c305baaf4cede95bcffa",
+          "date": "2026-09-19T08:05:13Z",
+          "parents": [
+            "3cd23ac37ea108a514cf8e019f12d79719e05f9f"
+          ],
+          "subject": "test(gwc): add GWC-11 authority RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/c0570acd10ace15f9d62c305baaf4cede95bcffa"
+        },
+        {
+          "sha": "f2e08376762b7f81701a2a3ba9acc7ae5f4d68ea",
+          "date": "2026-09-19T08:05:34Z",
+          "parents": [
+            "c0570acd10ace15f9d62c305baaf4cede95bcffa"
+          ],
+          "subject": "test(gwc): add project-scoped doc governance RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/f2e08376762b7f81701a2a3ba9acc7ae5f4d68ea"
+        },
+        {
+          "sha": "faded07fa88873093afe1ea6bca0ab2607a964ef",
+          "date": "2026-09-19T08:05:51Z",
+          "parents": [
+            "f2e08376762b7f81701a2a3ba9acc7ae5f4d68ea"
+          ],
+          "subject": "test(gwc): register GWC-11 authority RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/faded07fa88873093afe1ea6bca0ab2607a964ef"
+        },
+        {
+          "sha": "34fb4cf3959a3d7f101a984b4fd9e6476ead242f",
+          "date": "2026-09-19T08:07:49Z",
+          "parents": [
+            "faded07fa88873093afe1ea6bca0ab2607a964ef"
+          ],
+          "subject": "feat(gwc): project-scope documentation governance declaration",
+          "url": "https://github.com/Patricked-code/MCP/commit/34fb4cf3959a3d7f101a984b4fd9e6476ead242f"
+        },
+        {
+          "sha": "0cdc2e01436351f41b144a7a45f5b7b15590ae9d",
+          "date": "2026-09-19T08:10:00Z",
+          "parents": [
+            "34fb4cf3959a3d7f101a984b4fd9e6476ead242f"
+          ],
+          "subject": "feat(gwc): add authority and baseline contract adapters",
+          "url": "https://github.com/Patricked-code/MCP/commit/0cdc2e01436351f41b144a7a45f5b7b15590ae9d"
+        },
+        {
+          "sha": "ac9aad1f3e73fb60e8a102ff46d86fecb29a09d4",
+          "date": "2026-09-19T08:12:06Z",
+          "parents": [
+            "0cdc2e01436351f41b144a7a45f5b7b15590ae9d"
+          ],
+          "subject": "test(gwc): deepen GWC-11 freshness self-review",
+          "url": "https://github.com/Patricked-code/MCP/commit/ac9aad1f3e73fb60e8a102ff46d86fecb29a09d4"
+        },
+        {
+          "sha": "e581a8dd1d2c380a6b42826019d39f640b0b2425",
+          "date": "2026-09-19T08:13:33Z",
+          "parents": [
+            "ac9aad1f3e73fb60e8a102ff46d86fecb29a09d4"
+          ],
+          "subject": "fix(gwc): fail closed on stale authority evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/e581a8dd1d2c380a6b42826019d39f640b0b2425"
+        },
+        {
+          "sha": "2a82e278319dd750db2a6d870fc029fe296a66a6",
+          "date": "2026-09-19T08:13:50Z",
+          "parents": [
+            "e581a8dd1d2c380a6b42826019d39f640b0b2425"
+          ],
+          "subject": "test(gwc): bind GW-22 tests to current inventory freshness",
+          "url": "https://github.com/Patricked-code/MCP/commit/2a82e278319dd750db2a6d870fc029fe296a66a6"
+        },
+        {
+          "sha": "7142ba356bc512de639e31cabb8b074c8bad032d",
+          "date": "2026-09-19T08:15:28Z",
+          "parents": [
+            "2a82e278319dd750db2a6d870fc029fe296a66a6"
+          ],
+          "subject": "docs(gwc): record GWC-11 authority checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/7142ba356bc512de639e31cabb8b074c8bad032d"
+        },
+        {
+          "sha": "ded7df7aee7de92806cc5b02b0b6f6521d037db8",
+          "date": "2026-09-19T08:16:00Z",
+          "parents": [
+            "7142ba356bc512de639e31cabb8b074c8bad032d"
+          ],
+          "subject": "docs(gwc): add GWC-11 canonical bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/ded7df7aee7de92806cc5b02b0b6f6521d037db8"
+        },
+        {
+          "sha": "4671d40cea2335c4c4e8fa7fc1ab9e7f7dc0375c",
+          "date": "2026-09-19T08:16:19Z",
+          "parents": [
+            "ded7df7aee7de92806cc5b02b0b6f6521d037db8"
+          ],
+          "subject": "docs(gwc): project GWC-11 checkpoint pending validation",
+          "url": "https://github.com/Patricked-code/MCP/commit/4671d40cea2335c4c4e8fa7fc1ab9e7f7dc0375c"
+        },
+        {
+          "sha": "a0a77009978e850d98176f2321159de1b5c58431",
+          "date": "2026-09-19T08:17:28Z",
+          "parents": [
+            "4671d40cea2335c4c4e8fa7fc1ab9e7f7dc0375c"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-11 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/a0a77009978e850d98176f2321159de1b5c58431"
+        },
+        {
+          "sha": "dff92ed9559af4706cf5130afb73d7b833402784",
+          "date": "2026-09-19T08:17:49Z",
+          "parents": [
+            "a0a77009978e850d98176f2321159de1b5c58431"
+          ],
+          "subject": "docs(gwc): record GWC-11 green checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/dff92ed9559af4706cf5130afb73d7b833402784"
+        },
+        {
+          "sha": "7211f165d53c53d252d16413062ec999bba759de",
+          "date": "2026-09-19T08:18:06Z",
+          "parents": [
+            "dff92ed9559af4706cf5130afb73d7b833402784"
+          ],
+          "subject": "docs(gwc): changelog GWC-11 authority baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/7211f165d53c53d252d16413062ec999bba759de"
+        },
+        {
+          "sha": "0d65005ed40bda9a9f909232517b632f121b6ec3",
+          "date": "2026-09-19T08:18:24Z",
+          "parents": [
+            "7211f165d53c53d252d16413062ec999bba759de"
+          ],
+          "subject": "docs(gwc): record GWC-11 authority decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/0d65005ed40bda9a9f909232517b632f121b6ec3"
+        },
+        {
+          "sha": "1278b012c2e32a53da9a0614f6e0573ad1af53fb",
+          "date": "2026-09-19T08:21:13Z",
+          "parents": [
+            "0d65005ed40bda9a9f909232517b632f121b6ec3"
+          ],
+          "subject": "docs(gwc): close GWC-11 and dispatch GWC-12",
+          "url": "https://github.com/Patricked-code/MCP/commit/1278b012c2e32a53da9a0614f6e0573ad1af53fb"
+        },
+        {
+          "sha": "45fb8f15ebc7152100925d188177700b08e45f82",
+          "date": "2026-09-19T08:21:27Z",
+          "parents": [
+            "1278b012c2e32a53da9a0614f6e0573ad1af53fb"
+          ],
+          "subject": "docs(gwc): advance candidate pointer to GWC-12",
+          "url": "https://github.com/Patricked-code/MCP/commit/45fb8f15ebc7152100925d188177700b08e45f82"
+        },
+        {
+          "sha": "f59b30d8338520bf63b690955ed1a422547ae46b",
+          "date": "2026-09-19T08:26:53Z",
+          "parents": [
+            "45fb8f15ebc7152100925d188177700b08e45f82"
+          ],
+          "subject": "docs(gwc): bind GWC-12 exact control-plane split",
+          "url": "https://github.com/Patricked-code/MCP/commit/f59b30d8338520bf63b690955ed1a422547ae46b"
+        },
+        {
+          "sha": "9e6611662ceab4c060f20148ec0696d013dbc94d",
+          "date": "2026-09-19T08:28:03Z",
+          "parents": [
+            "f59b30d8338520bf63b690955ed1a422547ae46b"
+          ],
+          "subject": "test(gwc): add GWC-12 exact control-plane RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/9e6611662ceab4c060f20148ec0696d013dbc94d"
+        },
+        {
+          "sha": "d605805a189f17f49424e3282cb6e673ac11b368",
+          "date": "2026-09-19T08:28:17Z",
+          "parents": [
+            "9e6611662ceab4c060f20148ec0696d013dbc94d"
+          ],
+          "subject": "test(gwc): register GWC-12 control-plane RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/d605805a189f17f49424e3282cb6e673ac11b368"
+        },
+        {
+          "sha": "85b3342160b667503d72ba2982c9c17db982d7c4",
+          "date": "2026-09-19T08:29:54Z",
+          "parents": [
+            "d605805a189f17f49424e3282cb6e673ac11b368"
+          ],
+          "subject": "feat(gwc): add bounded GitHub POST PUT transport",
+          "url": "https://github.com/Patricked-code/MCP/commit/85b3342160b667503d72ba2982c9c17db982d7c4"
+        },
+        {
+          "sha": "36e451edcc720a06b936914e2d3dc59b945c1519",
+          "date": "2026-09-19T08:30:21Z",
+          "parents": [
+            "85b3342160b667503d72ba2982c9c17db982d7c4"
+          ],
+          "subject": "fix(gwc): include required non-force ref PATCH",
+          "url": "https://github.com/Patricked-code/MCP/commit/36e451edcc720a06b936914e2d3dc59b945c1519"
+        },
+        {
+          "sha": "dc0311ada8cb3a9b0cb4ad8f0286d9a0e2017cc8",
+          "date": "2026-09-19T08:30:38Z",
+          "parents": [
+            "36e451edcc720a06b936914e2d3dc59b945c1519"
+          ],
+          "subject": "test(gwc): bind transport RED to required PATCH",
+          "url": "https://github.com/Patricked-code/MCP/commit/dc0311ada8cb3a9b0cb4ad8f0286d9a0e2017cc8"
+        },
+        {
+          "sha": "3e6c8ce53ae69559228706242ceafc92b4af995a",
+          "date": "2026-09-19T08:31:34Z",
+          "parents": [
+            "dc0311ada8cb3a9b0cb4ad8f0286d9a0e2017cc8"
+          ],
+          "subject": "feat(gwc): materialize exact-head GitHub control split",
+          "url": "https://github.com/Patricked-code/MCP/commit/3e6c8ce53ae69559228706242ceafc92b4af995a"
+        },
+        {
+          "sha": "ee62cd269104c9b8c15a7ed2e52e055f494008f0",
+          "date": "2026-09-19T08:31:50Z",
+          "parents": [
+            "3e6c8ce53ae69559228706242ceafc92b4af995a"
+          ],
+          "subject": "feat(gwc): register selected GitHub review-thread read",
+          "url": "https://github.com/Patricked-code/MCP/commit/ee62cd269104c9b8c15a7ed2e52e055f494008f0"
+        },
+        {
+          "sha": "e677d186100853bc87da1f28a419c249e22340eb",
+          "date": "2026-09-19T08:32:04Z",
+          "parents": [
+            "ee62cd269104c9b8c15a7ed2e52e055f494008f0"
+          ],
+          "subject": "feat(gwc): register selected exact-head GitHub writes",
+          "url": "https://github.com/Patricked-code/MCP/commit/e677d186100853bc87da1f28a419c249e22340eb"
+        },
+        {
+          "sha": "079bb190fd0559e468b0b3dd80cb588557a8afeb",
+          "date": "2026-09-19T08:32:18Z",
+          "parents": [
+            "e677d186100853bc87da1f28a419c249e22340eb"
+          ],
+          "subject": "feat(gwc): classify selected GitHub writes",
+          "url": "https://github.com/Patricked-code/MCP/commit/079bb190fd0559e468b0b3dd80cb588557a8afeb"
+        },
+        {
+          "sha": "3e053b4860ccea3d1668ed6d535012b4e8783249",
+          "date": "2026-09-19T08:35:07Z",
+          "parents": [
+            "079bb190fd0559e468b0b3dd80cb588557a8afeb"
+          ],
+          "subject": "docs(gwc): bind GWC-12 cartography reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/3e053b4860ccea3d1668ed6d535012b4e8783249"
+        },
+        {
+          "sha": "416a37c24ce2594b509efc3807cbf4d17848d1ef",
+          "date": "2026-09-19T08:37:36Z",
+          "parents": [
+            "3e053b4860ccea3d1668ed6d535012b4e8783249"
+          ],
+          "subject": "docs(gwc): reconcile GWC-12 runtime cartography",
+          "url": "https://github.com/Patricked-code/MCP/commit/416a37c24ce2594b509efc3807cbf4d17848d1ef"
+        },
+        {
+          "sha": "139200db49adfb0a1e41a0fb48477c78b602fd42",
+          "date": "2026-09-19T08:40:10Z",
+          "parents": [
+            "416a37c24ce2594b509efc3807cbf4d17848d1ef"
+          ],
+          "subject": "docs(gwc): bind GWC-12 C3 guard reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/139200db49adfb0a1e41a0fb48477c78b602fd42"
+        },
+        {
+          "sha": "a72863782779591765b23e2055638e394ebd8804",
+          "date": "2026-09-19T08:40:33Z",
+          "parents": [
+            "139200db49adfb0a1e41a0fb48477c78b602fd42"
+          ],
+          "subject": "test(gwc): reconcile C-90 guard after GWC-9 closure",
+          "url": "https://github.com/Patricked-code/MCP/commit/a72863782779591765b23e2055638e394ebd8804"
+        },
+        {
+          "sha": "a8d7b4a71ffd4963ee77f8a307596cd6a6164dee",
+          "date": "2026-09-19T08:42:37Z",
+          "parents": [
+            "a72863782779591765b23e2055638e394ebd8804"
+          ],
+          "subject": "test(gwc): deepen GWC-12 control-plane self-review",
+          "url": "https://github.com/Patricked-code/MCP/commit/a8d7b4a71ffd4963ee77f8a307596cd6a6164dee"
+        },
+        {
+          "sha": "31af704006e36de0e57d9f84c71140cd00355545",
+          "date": "2026-09-19T08:51:41Z",
+          "parents": [
+            "a8d7b4a71ffd4963ee77f8a307596cd6a6164dee"
+          ],
+          "subject": "fix(gwc): fail closed without merge check evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/31af704006e36de0e57d9f84c71140cd00355545"
+        },
+        {
+          "sha": "7bb970c3ddc577c3a6d9565aae8d558b4e33bc90",
+          "date": "2026-09-19T09:06:29Z",
+          "parents": [
+            "31af704006e36de0e57d9f84c71140cd00355545"
+          ],
+          "subject": "docs(gwc): checkpoint GWC-12 control-plane reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/7bb970c3ddc577c3a6d9565aae8d558b4e33bc90"
+        },
+        {
+          "sha": "1da66db4d682dac27f8cf58d2855edacfa068678",
+          "date": "2026-09-19T09:08:42Z",
+          "parents": [
+            "7bb970c3ddc577c3a6d9565aae8d558b4e33bc90"
+          ],
+          "subject": "docs(gwc): close GWC-12 and dispatch GWC-13",
+          "url": "https://github.com/Patricked-code/MCP/commit/1da66db4d682dac27f8cf58d2855edacfa068678"
+        },
+        {
+          "sha": "7825218eeaf785c514b1ed6651ff08150f403fa6",
+          "date": "2026-09-19T09:17:44Z",
+          "parents": [
+            "1da66db4d682dac27f8cf58d2855edacfa068678"
+          ],
+          "subject": "docs(gwc): bind GWC-13 development baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/7825218eeaf785c514b1ed6651ff08150f403fa6"
+        },
+        {
+          "sha": "fa8591bd9f560429d7b5955f529117725eb3cc27",
+          "date": "2026-09-19T09:19:04Z",
+          "parents": [
+            "7825218eeaf785c514b1ed6651ff08150f403fa6"
+          ],
+          "subject": "test(gwc): add GWC-13 development RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/fa8591bd9f560429d7b5955f529117725eb3cc27"
+        },
+        {
+          "sha": "a01b09d741bfde064e455a61379f52846456fc04",
+          "date": "2026-09-19T09:19:26Z",
+          "parents": [
+            "fa8591bd9f560429d7b5955f529117725eb3cc27"
+          ],
+          "subject": "test(gwc): register GWC-13 development RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/a01b09d741bfde064e455a61379f52846456fc04"
+        },
+        {
+          "sha": "91f108e43afe428073a5bfdd8a4b02b94baff162",
+          "date": "2026-09-19T09:23:23Z",
+          "parents": [
+            "a01b09d741bfde064e455a61379f52846456fc04"
+          ],
+          "subject": "feat(gwc): implement GWC-13 development contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/91f108e43afe428073a5bfdd8a4b02b94baff162"
+        },
+        {
+          "sha": "8410beed79ee5c7f70b1909026dc215b72b805fe",
+          "date": "2026-09-19T09:25:43Z",
+          "parents": [
+            "91f108e43afe428073a5bfdd8a4b02b94baff162"
+          ],
+          "subject": "fix(gwc): align validation profile readonly type",
+          "url": "https://github.com/Patricked-code/MCP/commit/8410beed79ee5c7f70b1909026dc215b72b805fe"
+        },
+        {
+          "sha": "060343fdc43c4d8aaef27b76fc75ea038e6ccf81",
+          "date": "2026-09-19T09:34:11Z",
+          "parents": [
+            "8410beed79ee5c7f70b1909026dc215b72b805fe"
+          ],
+          "subject": "fix(gwc): preserve required validation test evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/060343fdc43c4d8aaef27b76fc75ea038e6ccf81"
+        },
+        {
+          "sha": "2eb899699b8eea09b3d82988242fd9a16a63be52",
+          "date": "2026-09-19T09:34:22Z",
+          "parents": [
+            "060343fdc43c4d8aaef27b76fc75ea038e6ccf81"
+          ],
+          "subject": "fix(gwc): retain GWC-3 required test in discovery runner",
+          "url": "https://github.com/Patricked-code/MCP/commit/2eb899699b8eea09b3d82988242fd9a16a63be52"
+        },
+        {
+          "sha": "b39b696fe98ade2efb9b345fdb2a7eb25b7db990",
+          "date": "2026-09-19T09:36:10Z",
+          "parents": [
+            "2eb899699b8eea09b3d82988242fd9a16a63be52"
+          ],
+          "subject": "test(gwc): preserve discovery and GWC-3 coverage",
+          "url": "https://github.com/Patricked-code/MCP/commit/b39b696fe98ade2efb9b345fdb2a7eb25b7db990"
+        },
+        {
+          "sha": "3936ac5871fdadfe3d02145049aecbf8eb372804",
+          "date": "2026-09-19T09:37:35Z",
+          "parents": [
+            "b39b696fe98ade2efb9b345fdb2a7eb25b7db990"
+          ],
+          "subject": "test(gwc): reject stale self-review before regression red",
+          "url": "https://github.com/Patricked-code/MCP/commit/3936ac5871fdadfe3d02145049aecbf8eb372804"
+        },
+        {
+          "sha": "debae732d82dce58903b062014c221d40d44e0a2",
+          "date": "2026-09-19T09:39:01Z",
+          "parents": [
+            "3936ac5871fdadfe3d02145049aecbf8eb372804"
+          ],
+          "subject": "fix(gwc): reject stale self-review evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/debae732d82dce58903b062014c221d40d44e0a2"
+        },
+        {
+          "sha": "21356d12105fd5ca28f97ee7280f571f6a626f5a",
+          "date": "2026-09-19T09:42:37Z",
+          "parents": [
+            "debae732d82dce58903b062014c221d40d44e0a2"
+          ],
+          "subject": "docs(gwc): stage GWC-13 checkpoint evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/21356d12105fd5ca28f97ee7280f571f6a626f5a"
+        },
+        {
+          "sha": "48375c9c7967432bb188faf5ae1ba18548bc9eec",
+          "date": "2026-09-19T09:42:58Z",
+          "parents": [
+            "21356d12105fd5ca28f97ee7280f571f6a626f5a"
+          ],
+          "subject": "docs(gwc): stage GWC-13 canonical bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/48375c9c7967432bb188faf5ae1ba18548bc9eec"
+        },
+        {
+          "sha": "d6452681182cd37ad43d2a23736f2bae5bce3e67",
+          "date": "2026-09-19T09:43:24Z",
+          "parents": [
+            "48375c9c7967432bb188faf5ae1ba18548bc9eec"
+          ],
+          "subject": "docs(gwc): checkpoint GWC-13 status",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6452681182cd37ad43d2a23736f2bae5bce3e67"
+        },
+        {
+          "sha": "c360b86bf8d81c293e45dedbcafdfb0ef8e07292",
+          "date": "2026-09-19T09:43:42Z",
+          "parents": [
+            "d6452681182cd37ad43d2a23736f2bae5bce3e67"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-13 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/c360b86bf8d81c293e45dedbcafdfb0ef8e07292"
+        },
+        {
+          "sha": "70b2aa19553af46f64f2ec0d9843d2000f77b79c",
+          "date": "2026-09-19T09:45:37Z",
+          "parents": [
+            "c360b86bf8d81c293e45dedbcafdfb0ef8e07292"
+          ],
+          "subject": "docs(gwc): close GWC-13 and dispatch GWC-14",
+          "url": "https://github.com/Patricked-code/MCP/commit/70b2aa19553af46f64f2ec0d9843d2000f77b79c"
+        },
+        {
+          "sha": "0660338aa24e559d1dd28afe48b532c30ae597cd",
+          "date": "2026-09-19T09:45:51Z",
+          "parents": [
+            "70b2aa19553af46f64f2ec0d9843d2000f77b79c"
+          ],
+          "subject": "docs(gwc): dispatch GWC-14 review merge contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/0660338aa24e559d1dd28afe48b532c30ae597cd"
+        },
+        {
+          "sha": "6f3a80c1cba5c867b0d1a7a1383a34bd594f5000",
+          "date": "2026-09-19T09:48:39Z",
+          "parents": [
+            "0660338aa24e559d1dd28afe48b532c30ae597cd"
+          ],
+          "subject": "docs(gwc): expand GWC-14 test scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/6f3a80c1cba5c867b0d1a7a1383a34bd594f5000"
+        },
+        {
+          "sha": "417f799412d5e3c2003fb22dc7c93290bd74632f",
+          "date": "2026-09-19T09:50:05Z",
+          "parents": [
+            "6f3a80c1cba5c867b0d1a7a1383a34bd594f5000"
+          ],
+          "subject": "test(gwc): define GWC-14 review merge RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/417f799412d5e3c2003fb22dc7c93290bd74632f"
+        },
+        {
+          "sha": "92174a893aabaf38b960816e970f72983829e901",
+          "date": "2026-09-19T09:51:54Z",
+          "parents": [
+            "417f799412d5e3c2003fb22dc7c93290bd74632f"
+          ],
+          "subject": "docs(gwc): record GWC-14 proven RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/92174a893aabaf38b960816e970f72983829e901"
+        },
+        {
+          "sha": "0613e4d24a4db651f42fb1963c870d5af9b2468b",
+          "date": "2026-09-19T09:53:22Z",
+          "parents": [
+            "92174a893aabaf38b960816e970f72983829e901"
+          ],
+          "subject": "feat(gwc): implement GWC-14 review merge contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/0613e4d24a4db651f42fb1963c870d5af9b2468b"
+        },
+        {
+          "sha": "dd8f3a52babacb83e5eedb0e01c3a23d1edf562a",
+          "date": "2026-09-19T09:54:58Z",
+          "parents": [
+            "0613e4d24a4db651f42fb1963c870d5af9b2468b"
+          ],
+          "subject": "fix(gwc): tighten GWC-14 review contract types",
+          "url": "https://github.com/Patricked-code/MCP/commit/dd8f3a52babacb83e5eedb0e01c3a23d1edf562a"
+        },
+        {
+          "sha": "51dbb2848585faf5b1d90efa58739b4047461c8e",
+          "date": "2026-09-19T10:11:55Z",
+          "parents": [
+            "dd8f3a52babacb83e5eedb0e01c3a23d1edf562a"
+          ],
+          "subject": "fix(gwc): strip proof before task transition parse",
+          "url": "https://github.com/Patricked-code/MCP/commit/51dbb2848585faf5b1d90efa58739b4047461c8e"
+        },
+        {
+          "sha": "0e885fb998b917b9e73d415bec9d1e8e3a245379",
+          "date": "2026-09-19T10:13:43Z",
+          "parents": [
+            "51dbb2848585faf5b1d90efa58739b4047461c8e"
+          ],
+          "subject": "test(gwc): prove premerge proof is PR-bound",
+          "url": "https://github.com/Patricked-code/MCP/commit/0e885fb998b917b9e73d415bec9d1e8e3a245379"
+        },
+        {
+          "sha": "f42ce1b2804682c049b287acd7f9dd0d9039f11b",
+          "date": "2026-09-19T10:15:15Z",
+          "parents": [
+            "0e885fb998b917b9e73d415bec9d1e8e3a245379"
+          ],
+          "subject": "fix(gwc): bind premerge proof to pull request",
+          "url": "https://github.com/Patricked-code/MCP/commit/f42ce1b2804682c049b287acd7f9dd0d9039f11b"
+        },
+        {
+          "sha": "29ff055be9486ca3c0da32a94c86ac86298d6efa",
+          "date": "2026-09-19T10:17:02Z",
+          "parents": [
+            "f42ce1b2804682c049b287acd7f9dd0d9039f11b"
+          ],
+          "subject": "test(gwc): prove premerge proof is repository-bound",
+          "url": "https://github.com/Patricked-code/MCP/commit/29ff055be9486ca3c0da32a94c86ac86298d6efa"
+        },
+        {
+          "sha": "a1ace467dd063a73df27d4af59164fd4b58a08f1",
+          "date": "2026-09-19T10:18:42Z",
+          "parents": [
+            "29ff055be9486ca3c0da32a94c86ac86298d6efa"
+          ],
+          "subject": "fix(gwc): bind premerge proof to repository",
+          "url": "https://github.com/Patricked-code/MCP/commit/a1ace467dd063a73df27d4af59164fd4b58a08f1"
+        },
+        {
+          "sha": "b70324e1a54a3a1d0dbfb7579d2d68ad7a4491c6",
+          "date": "2026-09-19T10:20:29Z",
+          "parents": [
+            "a1ace467dd063a73df27d4af59164fd4b58a08f1"
+          ],
+          "subject": "test(gwc): prove premerge proof is task-bound",
+          "url": "https://github.com/Patricked-code/MCP/commit/b70324e1a54a3a1d0dbfb7579d2d68ad7a4491c6"
+        },
+        {
+          "sha": "df132ce73fa29ea467bc0208e47e69b5ea203ce1",
+          "date": "2026-09-19T10:22:24Z",
+          "parents": [
+            "b70324e1a54a3a1d0dbfb7579d2d68ad7a4491c6"
+          ],
+          "subject": "fix(gwc): bind premerge proof to task and session revisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/df132ce73fa29ea467bc0208e47e69b5ea203ce1"
+        },
+        {
+          "sha": "03979501b3c2337f7ed0dca90c91daac3eec9da5",
+          "date": "2026-09-19T10:23:00Z",
+          "parents": [
+            "df132ce73fa29ea467bc0208e47e69b5ea203ce1"
+          ],
+          "subject": "test(gwc): bind premerge fixtures to task and session",
+          "url": "https://github.com/Patricked-code/MCP/commit/03979501b3c2337f7ed0dca90c91daac3eec9da5"
+        },
+        {
+          "sha": "d7ea0e6d5556a7fe679a65b59389a4e4421da1d0",
+          "date": "2026-09-19T10:25:42Z",
+          "parents": [
+            "03979501b3c2337f7ed0dca90c91daac3eec9da5"
+          ],
+          "subject": "docs(gwc): add GWC-14 checkpoint source",
+          "url": "https://github.com/Patricked-code/MCP/commit/d7ea0e6d5556a7fe679a65b59389a4e4421da1d0"
+        },
+        {
+          "sha": "fa1dd8a6d23bf6a0991cb899e884e9892990a5dc",
+          "date": "2026-09-19T10:25:55Z",
+          "parents": [
+            "d7ea0e6d5556a7fe679a65b59389a4e4421da1d0"
+          ],
+          "subject": "docs(gwc): add GWC-14 canonical bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/fa1dd8a6d23bf6a0991cb899e884e9892990a5dc"
+        },
+        {
+          "sha": "c1a46d20460c99e7b13edefa6b0b07bf026bb4a6",
+          "date": "2026-09-19T10:26:21Z",
+          "parents": [
+            "fa1dd8a6d23bf6a0991cb899e884e9892990a5dc"
+          ],
+          "subject": "docs(gwc): stage GWC-14 checkpoint evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/c1a46d20460c99e7b13edefa6b0b07bf026bb4a6"
+        },
+        {
+          "sha": "f408b0869109e0e041c29b70a413bc18b1620be1",
+          "date": "2026-09-19T10:26:36Z",
+          "parents": [
+            "c1a46d20460c99e7b13edefa6b0b07bf026bb4a6"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-14 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/f408b0869109e0e041c29b70a413bc18b1620be1"
+        },
+        {
+          "sha": "d4b4b4485a73924bfb9500be66b1a54c275f51cf",
+          "date": "2026-09-19T10:29:52Z",
+          "parents": [
+            "f408b0869109e0e041c29b70a413bc18b1620be1"
+          ],
+          "subject": "chore(gwc): close GWC-14 and dispatch GWC-15",
+          "url": "https://github.com/Patricked-code/MCP/commit/d4b4b4485a73924bfb9500be66b1a54c275f51cf"
+        },
+        {
+          "sha": "471dfb82e6a663013a1ddd6f4759d0afdb398350",
+          "date": "2026-09-19T10:30:10Z",
+          "parents": [
+            "d4b4b4485a73924bfb9500be66b1a54c275f51cf"
+          ],
+          "subject": "docs(gwc): advance current work to GWC-15",
+          "url": "https://github.com/Patricked-code/MCP/commit/471dfb82e6a663013a1ddd6f4759d0afdb398350"
+        },
+        {
+          "sha": "d2b19760a5d91ded0238bf9bb87a4e436810a7f4",
+          "date": "2026-09-19T10:56:28Z",
+          "parents": [
+            "471dfb82e6a663013a1ddd6f4759d0afdb398350"
+          ],
+          "subject": "docs(gwc): resolve GWC-15 freshness policy and expand RED scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/d2b19760a5d91ded0238bf9bb87a4e436810a7f4"
+        },
+        {
+          "sha": "f7c2b2447537816919d3cfd653f2c5b37e806822",
+          "date": "2026-09-19T10:57:14Z",
+          "parents": [
+            "d2b19760a5d91ded0238bf9bb87a4e436810a7f4"
+          ],
+          "subject": "test(gwc): add GWC-15 deployment contract RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/f7c2b2447537816919d3cfd653f2c5b37e806822"
+        },
+        {
+          "sha": "6e92a0fbdc7decc0a8e070a109b25307ac6aab83",
+          "date": "2026-09-19T10:59:47Z",
+          "parents": [
+            "f7c2b2447537816919d3cfd653f2c5b37e806822"
+          ],
+          "subject": "feat(gwc): implement deployment evidence contracts GW-44..GW-57",
+          "url": "https://github.com/Patricked-code/MCP/commit/6e92a0fbdc7decc0a8e070a109b25307ac6aab83"
+        },
+        {
+          "sha": "0c27310196885818ba5fcadf13f808247d9a3b95",
+          "date": "2026-09-19T11:03:14Z",
+          "parents": [
+            "6e92a0fbdc7decc0a8e070a109b25307ac6aab83"
+          ],
+          "subject": "docs(gwc): claim GWC-15 attestation self-review scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/0c27310196885818ba5fcadf13f808247d9a3b95"
+        },
+        {
+          "sha": "add849dcc4f1ce01f29dff435c88d5ccc920ebbb",
+          "date": "2026-09-19T11:04:04Z",
+          "parents": [
+            "0c27310196885818ba5fcadf13f808247d9a3b95"
+          ],
+          "subject": "test(gwc): prove deploy attestation evidence gap",
+          "url": "https://github.com/Patricked-code/MCP/commit/add849dcc4f1ce01f29dff435c88d5ccc920ebbb"
+        },
+        {
+          "sha": "02b44839bda0d2d6720ee67621922c3aeb5c59ed",
+          "date": "2026-09-19T11:04:25Z",
+          "parents": [
+            "add849dcc4f1ce01f29dff435c88d5ccc920ebbb"
+          ],
+          "subject": "test(gwc): prove push admission evidence boundary",
+          "url": "https://github.com/Patricked-code/MCP/commit/02b44839bda0d2d6720ee67621922c3aeb5c59ed"
+        },
+        {
+          "sha": "6c08dc8f1043875fad1689a3287a7b9b1d606d41",
+          "date": "2026-09-19T11:04:37Z",
+          "parents": [
+            "02b44839bda0d2d6720ee67621922c3aeb5c59ed"
+          ],
+          "subject": "test(gwc): prove CI evidence propagation to deploy admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/6c08dc8f1043875fad1689a3287a7b9b1d606d41"
+        },
+        {
+          "sha": "57aab849edcb702c226f9d9952ef0870c921291a",
+          "date": "2026-09-19T11:07:36Z",
+          "parents": [
+            "6c08dc8f1043875fad1689a3287a7b9b1d606d41"
+          ],
+          "subject": "feat(gwc): version S1 deployment attestation evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/57aab849edcb702c226f9d9952ef0870c921291a"
+        },
+        {
+          "sha": "c4b0ab7892c419d89ddbf20639611287006e7c51",
+          "date": "2026-09-19T11:07:58Z",
+          "parents": [
+            "57aab849edcb702c226f9d9952ef0870c921291a"
+          ],
+          "subject": "feat(gwc): bind deploy admission evidence to OIDC event",
+          "url": "https://github.com/Patricked-code/MCP/commit/c4b0ab7892c419d89ddbf20639611287006e7c51"
+        },
+        {
+          "sha": "5e948c9c34ca977c431c5bef0f37c244a3d25325",
+          "date": "2026-09-19T11:08:13Z",
+          "parents": [
+            "c4b0ab7892c419d89ddbf20639611287006e7c51"
+          ],
+          "subject": "test(gwc): preserve manual dispatch and cover push admission",
+          "url": "https://github.com/Patricked-code/MCP/commit/5e948c9c34ca977c431c5bef0f37c244a3d25325"
+        },
+        {
+          "sha": "653e28060f5e2ec88b6530fd82dce9d215c2fdcb",
+          "date": "2026-09-19T11:08:48Z",
+          "parents": [
+            "5e948c9c34ca977c431c5bef0f37c244a3d25325"
+          ],
+          "subject": "feat(gwc): propagate CI admission evidence to deploy worker",
+          "url": "https://github.com/Patricked-code/MCP/commit/653e28060f5e2ec88b6530fd82dce9d215c2fdcb"
+        },
+        {
+          "sha": "07046b5bb7a7980c4b86372ba1501b97356315a5",
+          "date": "2026-09-19T11:10:19Z",
+          "parents": [
+            "653e28060f5e2ec88b6530fd82dce9d215c2fdcb"
+          ],
+          "subject": "test(gwc): assert validated attestation shell binding",
+          "url": "https://github.com/Patricked-code/MCP/commit/07046b5bb7a7980c4b86372ba1501b97356315a5"
+        },
+        {
+          "sha": "b86a015a8bc6775da9bb946f02b24b4f9a89e26e",
+          "date": "2026-09-19T11:12:05Z",
+          "parents": [
+            "07046b5bb7a7980c4b86372ba1501b97356315a5"
+          ],
+          "subject": "test(gwc): prove deployment proof job and CI binding",
+          "url": "https://github.com/Patricked-code/MCP/commit/b86a015a8bc6775da9bb946f02b24b4f9a89e26e"
+        },
+        {
+          "sha": "691f2d8024336a5d360c1b72e9f74d0ac0a86dac",
+          "date": "2026-09-19T11:13:42Z",
+          "parents": [
+            "b86a015a8bc6775da9bb946f02b24b4f9a89e26e"
+          ],
+          "subject": "fix(gwc): bind exact deployment proof to job and CI run",
+          "url": "https://github.com/Patricked-code/MCP/commit/691f2d8024336a5d360c1b72e9f74d0ac0a86dac"
+        },
+        {
+          "sha": "29e8314a709289d896b9816ed91a870cfb39e6a5",
+          "date": "2026-09-19T11:13:55Z",
+          "parents": [
+            "691f2d8024336a5d360c1b72e9f74d0ac0a86dac"
+          ],
+          "subject": "test(gwc): align deployment proofs with V2 admission evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/29e8314a709289d896b9816ed91a870cfb39e6a5"
+        },
+        {
+          "sha": "c73eba31b08008137e5aacec1028ee33cda95b29",
+          "date": "2026-09-19T11:16:50Z",
+          "parents": [
+            "29e8314a709289d896b9816ed91a870cfb39e6a5"
+          ],
+          "subject": "docs(gwc): stage GWC-15 deployment evidence checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/c73eba31b08008137e5aacec1028ee33cda95b29"
+        },
+        {
+          "sha": "4eaba227b015ed24366fdb2498f688fdfabb3953",
+          "date": "2026-09-19T11:17:16Z",
+          "parents": [
+            "c73eba31b08008137e5aacec1028ee33cda95b29"
+          ],
+          "subject": "docs(gwc): add GWC-15 canonical checkpoint bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/4eaba227b015ed24366fdb2498f688fdfabb3953"
+        },
+        {
+          "sha": "7b2a6299c37a0facd9ac93b5bff003fe2b623072",
+          "date": "2026-09-19T11:17:42Z",
+          "parents": [
+            "4eaba227b015ed24366fdb2498f688fdfabb3953"
+          ],
+          "subject": "docs(gwc): record GWC-15 final evidence pending checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/7b2a6299c37a0facd9ac93b5bff003fe2b623072"
+        },
+        {
+          "sha": "bc2dbefba26dba1a5f6b480325ee8a1201ad1c03",
+          "date": "2026-09-19T11:18:02Z",
+          "parents": [
+            "7b2a6299c37a0facd9ac93b5bff003fe2b623072"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-15 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/bc2dbefba26dba1a5f6b480325ee8a1201ad1c03"
+        },
+        {
+          "sha": "05f991a5b675c639df4f46aab2460866eafc4503",
+          "date": "2026-09-19T12:55:31Z",
+          "parents": [
+            "bc2dbefba26dba1a5f6b480325ee8a1201ad1c03"
+          ],
+          "subject": "chore(gwc): release GWC-15 and dispatch GWC-16",
+          "url": "https://github.com/Patricked-code/MCP/commit/05f991a5b675c639df4f46aab2460866eafc4503"
+        },
+        {
+          "sha": "dbfce5c4d492725a60afe42520fce0dfa6c19941",
+          "date": "2026-09-19T12:55:54Z",
+          "parents": [
+            "05f991a5b675c639df4f46aab2460866eafc4503"
+          ],
+          "subject": "chore(gwc): point PRECODE to GWC-16",
+          "url": "https://github.com/Patricked-code/MCP/commit/dbfce5c4d492725a60afe42520fce0dfa6c19941"
+        },
+        {
+          "sha": "d9c8a128914bdb06f3d6c7e2a9102974da895603",
+          "date": "2026-09-19T12:57:44Z",
+          "parents": [
+            "dbfce5c4d492725a60afe42520fce0dfa6c19941"
+          ],
+          "subject": "chore(gwc): expand GWC-16 claim for RED tests",
+          "url": "https://github.com/Patricked-code/MCP/commit/d9c8a128914bdb06f3d6c7e2a9102974da895603"
+        },
+        {
+          "sha": "c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906",
+          "date": "2026-09-19T12:59:34Z",
+          "parents": [
+            "d9c8a128914bdb06f3d6c7e2a9102974da895603"
+          ],
+          "subject": "test(gwc): add GWC-16 terminal closure RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906"
+        },
+        {
+          "sha": "768e8fcefb6d9dc9de82ad6320e3b733723544fd",
+          "date": "2026-09-19T13:01:14Z",
+          "parents": [
+            "c504f22277fa3b5b8dd5fa8ae9a8f79f86f1e906"
+          ],
+          "subject": "chore(gwc): record GWC-16 RED evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/768e8fcefb6d9dc9de82ad6320e3b733723544fd"
+        },
+        {
+          "sha": "476f676817500f7c7d520933d32cd9022e03c3fb",
+          "date": "2026-09-19T13:03:08Z",
+          "parents": [
+            "768e8fcefb6d9dc9de82ad6320e3b733723544fd"
+          ],
+          "subject": "feat(gwc): implement GWC-16 terminal closure contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/476f676817500f7c7d520933d32cd9022e03c3fb"
+        },
+        {
+          "sha": "5cad536c2a7dda3acd596e2ada6e5684f5badbe3",
+          "date": "2026-09-19T13:04:59Z",
+          "parents": [
+            "476f676817500f7c7d520933d32cd9022e03c3fb"
+          ],
+          "subject": "chore(gwc): record GWC-16 first green and self-review",
+          "url": "https://github.com/Patricked-code/MCP/commit/5cad536c2a7dda3acd596e2ada6e5684f5badbe3"
+        },
+        {
+          "sha": "f8ab3ce16132a74248516d805b5cadd233d08af0",
+          "date": "2026-09-19T13:06:52Z",
+          "parents": [
+            "5cad536c2a7dda3acd596e2ada6e5684f5badbe3"
+          ],
+          "subject": "test(gwc): harden GWC-16 terminal evidence RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/f8ab3ce16132a74248516d805b5cadd233d08af0"
+        },
+        {
+          "sha": "33bec63c092baa5ce335c235cb9329f3ce88c3ab",
+          "date": "2026-09-19T13:08:31Z",
+          "parents": [
+            "f8ab3ce16132a74248516d805b5cadd233d08af0"
+          ],
+          "subject": "chore(gwc): record GWC-16 self-review RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/33bec63c092baa5ce335c235cb9329f3ce88c3ab"
+        },
+        {
+          "sha": "77fcd4e85317939b7a24afad2d29630e2504eed5",
+          "date": "2026-09-19T13:09:35Z",
+          "parents": [
+            "33bec63c092baa5ce335c235cb9329f3ce88c3ab"
+          ],
+          "subject": "fix(gwc): harden GWC-16 terminal evidence and effect plans",
+          "url": "https://github.com/Patricked-code/MCP/commit/77fcd4e85317939b7a24afad2d29630e2504eed5"
+        },
+        {
+          "sha": "b8a86c48eb24902f998d4533e6bbeac5144102c6",
+          "date": "2026-09-19T13:11:18Z",
+          "parents": [
+            "77fcd4e85317939b7a24afad2d29630e2504eed5"
+          ],
+          "subject": "test(gwc): complete GW-63 stale merge case",
+          "url": "https://github.com/Patricked-code/MCP/commit/b8a86c48eb24902f998d4533e6bbeac5144102c6"
+        },
+        {
+          "sha": "76267176163b32238708174767d7c2c018ad755e",
+          "date": "2026-09-19T13:13:07Z",
+          "parents": [
+            "b8a86c48eb24902f998d4533e6bbeac5144102c6"
+          ],
+          "subject": "chore(gwc): record GWC-16 final green",
+          "url": "https://github.com/Patricked-code/MCP/commit/76267176163b32238708174767d7c2c018ad755e"
+        },
+        {
+          "sha": "cb009a430c800fea6d8d3a8037bbd9c96667b96b",
+          "date": "2026-09-19T13:13:38Z",
+          "parents": [
+            "76267176163b32238708174767d7c2c018ad755e"
+          ],
+          "subject": "docs(gwc): record GWC-16 final green",
+          "url": "https://github.com/Patricked-code/MCP/commit/cb009a430c800fea6d8d3a8037bbd9c96667b96b"
+        },
+        {
+          "sha": "0378f5f4dc80ec29ce9037be0334dea8620376d4",
+          "date": "2026-09-19T13:13:59Z",
+          "parents": [
+            "cb009a430c800fea6d8d3a8037bbd9c96667b96b"
+          ],
+          "subject": "docs(gwc): changelog GWC-16 closure",
+          "url": "https://github.com/Patricked-code/MCP/commit/0378f5f4dc80ec29ce9037be0334dea8620376d4"
+        },
+        {
+          "sha": "99155a1b476fa522204e6ae1400a5556124b6f26",
+          "date": "2026-09-19T13:14:30Z",
+          "parents": [
+            "0378f5f4dc80ec29ce9037be0334dea8620376d4"
+          ],
+          "subject": "docs(gwc): record GWC-16 terminal decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/99155a1b476fa522204e6ae1400a5556124b6f26"
+        },
+        {
+          "sha": "21ce3dc2669413d57cef9e2229361ccb1b099d33",
+          "date": "2026-09-19T13:15:08Z",
+          "parents": [
+            "99155a1b476fa522204e6ae1400a5556124b6f26"
+          ],
+          "subject": "docs(gwc): add GWC-16 checkpoint source",
+          "url": "https://github.com/Patricked-code/MCP/commit/21ce3dc2669413d57cef9e2229361ccb1b099d33"
+        },
+        {
+          "sha": "7e0270a56384258cd6929a8e2c07d6d1467a34bd",
+          "date": "2026-09-19T13:17:46Z",
+          "parents": [
+            "21ce3dc2669413d57cef9e2229361ccb1b099d33"
+          ],
+          "subject": "docs(gwc): add GWC-16 checkpoint bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/7e0270a56384258cd6929a8e2c07d6d1467a34bd"
+        },
+        {
+          "sha": "f38b4b4c1f99c7b5b3c270cc5bdccbf37e4ea67b",
+          "date": "2026-09-19T13:18:14Z",
+          "parents": [
+            "7e0270a56384258cd6929a8e2c07d6d1467a34bd"
+          ],
+          "subject": "chore(gwc): stage GWC-16 checkpoint validation",
+          "url": "https://github.com/Patricked-code/MCP/commit/f38b4b4c1f99c7b5b3c270cc5bdccbf37e4ea67b"
+        },
+        {
+          "sha": "a137d575f4d6118ebb7e9886d477aa4da001ec40",
+          "date": "2026-09-19T13:18:44Z",
+          "parents": [
+            "f38b4b4c1f99c7b5b3c270cc5bdccbf37e4ea67b"
+          ],
+          "subject": "docs(gwc): point canonical memory to GWC-16 checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/a137d575f4d6118ebb7e9886d477aa4da001ec40"
+        },
+        {
+          "sha": "b710029edebcae8c67ee9f1470f90ee72ca55ab4",
+          "date": "2026-09-19T13:23:25Z",
+          "parents": [
+            "a137d575f4d6118ebb7e9886d477aa4da001ec40"
+          ],
+          "subject": "chore(gwc): release GWC-16 and dispatch GWC-17",
+          "url": "https://github.com/Patricked-code/MCP/commit/b710029edebcae8c67ee9f1470f90ee72ca55ab4"
+        },
+        {
+          "sha": "303033cd639d3a2906fa31163da6c3ec1301e3ce",
+          "date": "2026-09-19T13:23:56Z",
+          "parents": [
+            "b710029edebcae8c67ee9f1470f90ee72ca55ab4"
+          ],
+          "subject": "chore(gwc): point PRECODE to GWC-17",
+          "url": "https://github.com/Patricked-code/MCP/commit/303033cd639d3a2906fa31163da6c3ec1301e3ce"
+        },
+        {
+          "sha": "0b55d140a6b32be82d81192d2df12c3cabd8a893",
+          "date": "2026-09-19T13:27:26Z",
+          "parents": [
+            "303033cd639d3a2906fa31163da6c3ec1301e3ce"
+          ],
+          "subject": "test(gwc): add GWC-17 universal acceptance RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/0b55d140a6b32be82d81192d2df12c3cabd8a893"
+        },
+        {
+          "sha": "2f339db79f948cfaaf441e4157d5233467a99aa6",
+          "date": "2026-09-19T13:29:16Z",
+          "parents": [
+            "0b55d140a6b32be82d81192d2df12c3cabd8a893"
+          ],
+          "subject": "chore(gwc): record GWC-17 universal acceptance RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/2f339db79f948cfaaf441e4157d5233467a99aa6"
+        }
+      ]
+    },
+    {
+      "pr": 96,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "99268e679102e791046837050fb249ba28544619",
+          "date": "2026-09-20T16:08:18Z",
+          "parents": [
+            "9da845822e122cc67fc86ad90243d4e7d6a6d4f4"
+          ],
+          "subject": "docs(gwc): prepend current PR95 terminal state",
+          "url": "https://github.com/Patricked-code/MCP/commit/99268e679102e791046837050fb249ba28544619"
+        },
+        {
+          "sha": "8a883d53dd24e599b043454759994c7d864fc182",
+          "date": "2026-09-20T16:08:22Z",
+          "parents": [
+            "99268e679102e791046837050fb249ba28544619"
+          ],
+          "subject": "docs(gwc): reconcile current production state after PR95",
+          "url": "https://github.com/Patricked-code/MCP/commit/8a883d53dd24e599b043454759994c7d864fc182"
+        },
+        {
+          "sha": "d6a0942c27d39ff10319c693b172e79adc5c20d7",
+          "date": "2026-09-20T16:08:26Z",
+          "parents": [
+            "8a883d53dd24e599b043454759994c7d864fc182"
+          ],
+          "subject": "docs(gwc): record PR95 integration attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/d6a0942c27d39ff10319c693b172e79adc5c20d7"
+        },
+        {
+          "sha": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+          "date": "2026-09-20T16:08:30Z",
+          "parents": [
+            "d6a0942c27d39ff10319c693b172e79adc5c20d7"
+          ],
+          "subject": "docs(gwc): record GW-59 to GW-65 decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/d112358d1f13757fdace7e1d3fd73b8d7922cadb"
+        }
+      ]
+    },
+    {
+      "pr": 97,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "711e1c600ae8d89a76a618024d3c3230f5e7dc39",
+          "date": "2026-09-20T16:36:45Z",
+          "parents": [
+            "5389f3a05ab22da551954c936fcc3fe5ab69872b"
+          ],
+          "subject": "docs(gwc): add post-integration terminal handoff source",
+          "url": "https://github.com/Patricked-code/MCP/commit/711e1c600ae8d89a76a618024d3c3230f5e7dc39"
+        },
+        {
+          "sha": "1ccdc551a69affb78e31538dd9ed2be8183a40bb",
+          "date": "2026-09-20T16:36:49Z",
+          "parents": [
+            "711e1c600ae8d89a76a618024d3c3230f5e7dc39"
+          ],
+          "subject": "docs(gwc): add post-integration terminal handoff bundle",
+          "url": "https://github.com/Patricked-code/MCP/commit/1ccdc551a69affb78e31538dd9ed2be8183a40bb"
+        },
+        {
+          "sha": "6b5b62ef88c7277e8e7ad71c7226bb026c9413b1",
+          "date": "2026-09-20T16:37:53Z",
+          "parents": [
+            "1ccdc551a69affb78e31538dd9ed2be8183a40bb"
+          ],
+          "subject": "docs(gwc): repoint canonical memory post integration",
+          "url": "https://github.com/Patricked-code/MCP/commit/6b5b62ef88c7277e8e7ad71c7226bb026c9413b1"
+        },
+        {
+          "sha": "c65d9c51ba616962558b7802a12afd5547677721",
+          "date": "2026-09-20T16:37:56Z",
+          "parents": [
+            "6b5b62ef88c7277e8e7ad71c7226bb026c9413b1"
+          ],
+          "subject": "docs(gwc): record post-integration canonical handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/c65d9c51ba616962558b7802a12afd5547677721"
+        },
+        {
+          "sha": "d488e74a57d184ed8d1d455c212c1788f07a37a5",
+          "date": "2026-09-20T16:38:01Z",
+          "parents": [
+            "c65d9c51ba616962558b7802a12afd5547677721"
+          ],
+          "subject": "docs(gwc): log post-integration canonical handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/d488e74a57d184ed8d1d455c212c1788f07a37a5"
+        },
+        {
+          "sha": "18d93abf2d576d93a985b8c004d820d43f304090",
+          "date": "2026-09-20T16:38:04Z",
+          "parents": [
+            "d488e74a57d184ed8d1d455c212c1788f07a37a5"
+          ],
+          "subject": "docs(gwc): record post-integration handoff decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/18d93abf2d576d93a985b8c004d820d43f304090"
+        }
+      ]
+    },
+    {
+      "pr": 98,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "9db7f64163789bf45488edb43c1d1dea35e9a4b1",
+          "date": "2026-09-20T16:44:57Z",
+          "parents": [
+            "21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15"
+          ],
+          "subject": "docs(gwc): declare terminal handoff baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/9db7f64163789bf45488edb43c1d1dea35e9a4b1"
+        },
+        {
+          "sha": "529384b6d5544da3f80e33c833077a5583e0e1a8",
+          "date": "2026-09-20T16:45:01Z",
+          "parents": [
+            "9db7f64163789bf45488edb43c1d1dea35e9a4b1"
+          ],
+          "subject": "docs(gwc): record terminal handoff reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/529384b6d5544da3f80e33c833077a5583e0e1a8"
+        },
+        {
+          "sha": "dce9d0b00af301d83d16ac7470e6c96c2e9f531d",
+          "date": "2026-09-20T16:45:05Z",
+          "parents": [
+            "529384b6d5544da3f80e33c833077a5583e0e1a8"
+          ],
+          "subject": "docs(gwc): record markdown-only terminal decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/dce9d0b00af301d83d16ac7470e6c96c2e9f531d"
+        }
+      ]
+    },
+    {
+      "pr": 99,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "36ea011354b28a8dbcb736561cd15c160c9684bd",
+          "date": "2026-09-20T17:30:04Z",
+          "parents": [
+            "847b775a0b64b42ba3bddfee518ca0a486d810ce"
+          ],
+          "subject": "feat(stablecoin): add read-only S2 status scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/36ea011354b28a8dbcb736561cd15c160c9684bd"
+        },
+        {
+          "sha": "5877ffc3503c199f170d0e4dd6e8612e8a33e4f9",
+          "date": "2026-09-20T17:30:19Z",
+          "parents": [
+            "36ea011354b28a8dbcb736561cd15c160c9684bd"
+          ],
+          "subject": "feat(stablecoin): register read-only S2 mapping",
+          "url": "https://github.com/Patricked-code/MCP/commit/5877ffc3503c199f170d0e4dd6e8612e8a33e4f9"
+        },
+        {
+          "sha": "cca1acb5a3d48de3083c4ac05f5e17f726eca73b",
+          "date": "2026-09-20T17:30:34Z",
+          "parents": [
+            "5877ffc3503c199f170d0e4dd6e8612e8a33e4f9"
+          ],
+          "subject": "test(stablecoin): enforce read-only registry mapping",
+          "url": "https://github.com/Patricked-code/MCP/commit/cca1acb5a3d48de3083c4ac05f5e17f726eca73b"
+        },
+        {
+          "sha": "48ae170f65e9afe74c0ce53b2990203ea9f1d85b",
+          "date": "2026-09-20T17:30:42Z",
+          "parents": [
+            "cca1acb5a3d48de3083c4ac05f5e17f726eca73b"
+          ],
+          "subject": "test(stablecoin): update registry V2 counts",
+          "url": "https://github.com/Patricked-code/MCP/commit/48ae170f65e9afe74c0ce53b2990203ea9f1d85b"
+        },
+        {
+          "sha": "162fa5038098b88dfc80767ec6ed6c50d6bf837a",
+          "date": "2026-09-20T17:30:52Z",
+          "parents": [
+            "48ae170f65e9afe74c0ce53b2990203ea9f1d85b"
+          ],
+          "subject": "test(stablecoin): extend read-only status contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/162fa5038098b88dfc80767ec6ed6c50d6bf837a"
+        },
+        {
+          "sha": "e977e75ecf208159cdd35854993fdd21dbd504b8",
+          "date": "2026-09-20T17:31:34Z",
+          "parents": [
+            "162fa5038098b88dfc80767ec6ed6c50d6bf837a"
+          ],
+          "subject": "test(stablecoin): prove read-only-first tool exposure",
+          "url": "https://github.com/Patricked-code/MCP/commit/e977e75ecf208159cdd35854993fdd21dbd504b8"
+        },
+        {
+          "sha": "702a3d3b3cf81dd33704e505408a33380c78d574",
+          "date": "2026-09-20T17:31:44Z",
+          "parents": [
+            "e977e75ecf208159cdd35854993fdd21dbd504b8"
+          ],
+          "subject": "test(stablecoin): fix status schema assertion",
+          "url": "https://github.com/Patricked-code/MCP/commit/702a3d3b3cf81dd33704e505408a33380c78d574"
+        },
+        {
+          "sha": "9d8a3df91c1d53619e24f4fc630f6a938b088639",
+          "date": "2026-09-20T17:33:56Z",
+          "parents": [
+            "702a3d3b3cf81dd33704e505408a33380c78d574"
+          ],
+          "subject": "chore(stablecoin): refresh function cartography",
+          "url": "https://github.com/Patricked-code/MCP/commit/9d8a3df91c1d53619e24f4fc630f6a938b088639"
+        }
+      ]
+    },
+    {
+      "pr": 100,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "6f759ccc25d4154a39528fbf64595443eaff064c",
+          "date": "2026-09-20T18:39:54Z",
+          "parents": [
+            "030ae3ab3444b5f9e30212bf9b8db0dee7815119"
+          ],
+          "subject": "feat(github-first): add operational continuity resolver",
+          "url": "https://github.com/Patricked-code/MCP/commit/6f759ccc25d4154a39528fbf64595443eaff064c"
+        },
+        {
+          "sha": "17e46eb231b6d3eea9475dc79f90a24be489eab7",
+          "date": "2026-09-20T18:39:56Z",
+          "parents": [
+            "6f759ccc25d4154a39528fbf64595443eaff064c"
+          ],
+          "subject": "test(github-first): cover bridge escalation rules",
+          "url": "https://github.com/Patricked-code/MCP/commit/17e46eb231b6d3eea9475dc79f90a24be489eab7"
+        },
+        {
+          "sha": "380af303f3e6e4ca5bd77b450e7eccc09df09a4e",
+          "date": "2026-09-20T18:39:58Z",
+          "parents": [
+            "17e46eb231b6d3eea9475dc79f90a24be489eab7"
+          ],
+          "subject": "feat(github-first): add machine-readable operational policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/380af303f3e6e4ca5bd77b450e7eccc09df09a4e"
+        },
+        {
+          "sha": "0364e92c3c46e0c051ab8ef9c5a6f25c2fc9c545",
+          "date": "2026-09-20T18:40:47Z",
+          "parents": [
+            "380af303f3e6e4ca5bd77b450e7eccc09df09a4e"
+          ],
+          "subject": "feat(github-first): add read-only evidence fallback",
+          "url": "https://github.com/Patricked-code/MCP/commit/0364e92c3c46e0c051ab8ef9c5a6f25c2fc9c545"
+        },
+        {
+          "sha": "fee200b942d8acf9be59c014321db1aa5689e1c0",
+          "date": "2026-09-20T18:41:07Z",
+          "parents": [
+            "0364e92c3c46e0c051ab8ef9c5a6f25c2fc9c545"
+          ],
+          "subject": "test(github-first): guard read-only evidence workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/fee200b942d8acf9be59c014321db1aa5689e1c0"
+        },
+        {
+          "sha": "374f9c565f421292e3f87a7481aac440a71d16c6",
+          "date": "2026-09-20T18:41:50Z",
+          "parents": [
+            "fee200b942d8acf9be59c014321db1aa5689e1c0"
+          ],
+          "subject": "docs(github-first): specify operational continuity v1",
+          "url": "https://github.com/Patricked-code/MCP/commit/374f9c565f421292e3f87a7481aac440a71d16c6"
+        },
+        {
+          "sha": "c887cfce9fa17a69d59ecc9029abcde0bc943ecc",
+          "date": "2026-09-20T18:42:10Z",
+          "parents": [
+            "374f9c565f421292e3f87a7481aac440a71d16c6"
+          ],
+          "subject": "docs(github-first): record operational continuity decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/c887cfce9fa17a69d59ecc9029abcde0bc943ecc"
+        },
+        {
+          "sha": "4bb0a492e053560c81c2c5c3cf2051e053f08699",
+          "date": "2026-09-20T18:42:15Z",
+          "parents": [
+            "c887cfce9fa17a69d59ecc9029abcde0bc943ecc"
+          ],
+          "subject": "docs(github-first): record operational continuity decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/4bb0a492e053560c81c2c5c3cf2051e053f08699"
+        },
+        {
+          "sha": "35229452b3e7064fb0f0c35db4001ee64daa8f2f",
+          "date": "2026-09-20T18:42:17Z",
+          "parents": [
+            "4bb0a492e053560c81c2c5c3cf2051e053f08699"
+          ],
+          "subject": "docs(github-first): record operational continuity decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/35229452b3e7064fb0f0c35db4001ee64daa8f2f"
+        },
+        {
+          "sha": "3cba3055861ced32565bc875c13e433817d56caf",
+          "date": "2026-09-20T18:42:21Z",
+          "parents": [
+            "35229452b3e7064fb0f0c35db4001ee64daa8f2f"
+          ],
+          "subject": "docs(github-first): record operational continuity decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/3cba3055861ced32565bc875c13e433817d56caf"
+        },
+        {
+          "sha": "1899b4940e3dc93ff39abfe4a7a765c9b8d870b3",
+          "date": "2026-09-20T18:43:00Z",
+          "parents": [
+            "3cba3055861ced32565bc875c13e433817d56caf"
+          ],
+          "subject": "docs(governance): register github-first continuity spec",
+          "url": "https://github.com/Patricked-code/MCP/commit/1899b4940e3dc93ff39abfe4a7a765c9b8d870b3"
+        },
+        {
+          "sha": "fc0228217fc33e3511964437d68e454f960c41ee",
+          "date": "2026-09-20T18:43:56Z",
+          "parents": [
+            "1899b4940e3dc93ff39abfe4a7a765c9b8d870b3"
+          ],
+          "subject": "docs(governance): minimize continuity inventory delta",
+          "url": "https://github.com/Patricked-code/MCP/commit/fc0228217fc33e3511964437d68e454f960c41ee"
+        },
+        {
+          "sha": "b97abff861ce0e8e0ad8e88741f53c99e9f8e571",
+          "date": "2026-09-20T18:47:29Z",
+          "parents": [
+            "fc0228217fc33e3511964437d68e454f960c41ee"
+          ],
+          "subject": "docs(github-first): make post-integration bootstrap GitHub-first",
+          "url": "https://github.com/Patricked-code/MCP/commit/b97abff861ce0e8e0ad8e88741f53c99e9f8e571"
+        },
+        {
+          "sha": "753bc5f759e3aef27321cc77cd0d149914ae92d2",
+          "date": "2026-09-20T18:47:31Z",
+          "parents": [
+            "b97abff861ce0e8e0ad8e88741f53c99e9f8e571"
+          ],
+          "subject": "docs(github-first): make bridge escalation operation-scoped",
+          "url": "https://github.com/Patricked-code/MCP/commit/753bc5f759e3aef27321cc77cd0d149914ae92d2"
+        },
+        {
+          "sha": "cd0443f9e483d498fd6dc2af30c78f74ccae074b",
+          "date": "2026-09-20T18:47:34Z",
+          "parents": [
+            "753bc5f759e3aef27321cc77cd0d149914ae92d2"
+          ],
+          "subject": "docs(github-first): make bridge escalation operation-scoped",
+          "url": "https://github.com/Patricked-code/MCP/commit/cd0443f9e483d498fd6dc2af30c78f74ccae074b"
+        }
+      ]
+    },
+    {
+      "pr": 102,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "56d7894a489dd808ee3d359955174c921882a3b1",
+          "date": "2026-09-20T18:54:30Z",
+          "parents": [
+            "fa5040b9879c3aa5443bcb495ff4487db3082572"
+          ],
+          "subject": "feat(github-first): generalize GitHub OIDC verification policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/56d7894a489dd808ee3d359955174c921882a3b1"
+        },
+        {
+          "sha": "16a467632da6df9c9d607d62b7541b3a3e792b21",
+          "date": "2026-09-20T18:54:52Z",
+          "parents": [
+            "56d7894a489dd808ee3d359955174c921882a3b1"
+          ],
+          "subject": "feat(github-first): add OIDC read-only evidence endpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/16a467632da6df9c9d607d62b7541b3a3e792b21"
+        },
+        {
+          "sha": "90bab587f5bfbd81ff5baee018f3d0cb1d932f68",
+          "date": "2026-09-20T18:55:01Z",
+          "parents": [
+            "16a467632da6df9c9d607d62b7541b3a3e792b21"
+          ],
+          "subject": "feat(github-first): register OIDC read-only evidence route",
+          "url": "https://github.com/Patricked-code/MCP/commit/90bab587f5bfbd81ff5baee018f3d0cb1d932f68"
+        },
+        {
+          "sha": "ace33859c693ef4f098de8019217e07e81878a93",
+          "date": "2026-09-20T18:55:44Z",
+          "parents": [
+            "90bab587f5bfbd81ff5baee018f3d0cb1d932f68"
+          ],
+          "subject": "test(github-first): cover read-only evidence OIDC policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/ace33859c693ef4f098de8019217e07e81878a93"
+        },
+        {
+          "sha": "b38ec8475f5726e33939f5671f429beba7ec4397",
+          "date": "2026-09-20T18:55:47Z",
+          "parents": [
+            "ace33859c693ef4f098de8019217e07e81878a93"
+          ],
+          "subject": "test(github-first): prove OIDC evidence endpoint is read-only",
+          "url": "https://github.com/Patricked-code/MCP/commit/b38ec8475f5726e33939f5671f429beba7ec4397"
+        },
+        {
+          "sha": "3f9a04171c29e38aacca93e395f8b0930405be22",
+          "date": "2026-09-20T18:56:42Z",
+          "parents": [
+            "b38ec8475f5726e33939f5671f429beba7ec4397"
+          ],
+          "subject": "feat(github-first): prefer OIDC for read-only evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/3f9a04171c29e38aacca93e395f8b0930405be22"
+        },
+        {
+          "sha": "bf24d994d5052fae9aaead86584db3b2b5df1a83",
+          "date": "2026-09-20T18:57:02Z",
+          "parents": [
+            "3f9a04171c29e38aacca93e395f8b0930405be22"
+          ],
+          "subject": "test(github-first): make OIDC the primary evidence transport",
+          "url": "https://github.com/Patricked-code/MCP/commit/bf24d994d5052fae9aaead86584db3b2b5df1a83"
+        },
+        {
+          "sha": "7b6f79bea72d18ffece459711bfd29003a9877aa",
+          "date": "2026-09-20T18:57:06Z",
+          "parents": [
+            "bf24d994d5052fae9aaead86584db3b2b5df1a83"
+          ],
+          "subject": "feat(github-first): declare OIDC read-only evidence primary",
+          "url": "https://github.com/Patricked-code/MCP/commit/7b6f79bea72d18ffece459711bfd29003a9877aa"
+        },
+        {
+          "sha": "ffde5dc0bd55b17ba6c949c839afb693cb1d7cd7",
+          "date": "2026-09-20T18:57:31Z",
+          "parents": [
+            "7b6f79bea72d18ffece459711bfd29003a9877aa"
+          ],
+          "subject": "docs(github-first): make OIDC primary for read-only evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/ffde5dc0bd55b17ba6c949c839afb693cb1d7cd7"
+        },
+        {
+          "sha": "12f0adc04529b81252df630a807ef80098bc08a5",
+          "date": "2026-09-20T18:57:34Z",
+          "parents": [
+            "ffde5dc0bd55b17ba6c949c839afb693cb1d7cd7"
+          ],
+          "subject": "docs(github-first): sequence OIDC evidence activation",
+          "url": "https://github.com/Patricked-code/MCP/commit/12f0adc04529b81252df630a807ef80098bc08a5"
+        },
+        {
+          "sha": "66f95beb90f50eca0e7e4251b42379ebe4e200dd",
+          "date": "2026-09-20T18:57:38Z",
+          "parents": [
+            "12f0adc04529b81252df630a807ef80098bc08a5"
+          ],
+          "subject": "docs(github-first): record OIDC evidence transport",
+          "url": "https://github.com/Patricked-code/MCP/commit/66f95beb90f50eca0e7e4251b42379ebe4e200dd"
+        },
+        {
+          "sha": "844f042de95ef8aa103095770139b3258184b3c6",
+          "date": "2026-09-20T18:57:42Z",
+          "parents": [
+            "66f95beb90f50eca0e7e4251b42379ebe4e200dd"
+          ],
+          "subject": "docs(github-first): adopt OIDC read-only evidence primary",
+          "url": "https://github.com/Patricked-code/MCP/commit/844f042de95ef8aa103095770139b3258184b3c6"
+        }
+      ]
+    },
+    {
+      "pr": 104,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "d4a02643ba8f84a01ade3a7a259ed36d106d23b5",
+          "date": "2026-09-20T19:23:28Z",
+          "parents": [
+            "1f058c61426110db458d449444374620c777bba6"
+          ],
+          "subject": "feat(stablecoin): add backend and runtime read-only probes",
+          "url": "https://github.com/Patricked-code/MCP/commit/d4a02643ba8f84a01ade3a7a259ed36d106d23b5"
+        },
+        {
+          "sha": "a8e46efeb2b46c8d35a961a839db6c76afb6fcbd",
+          "date": "2026-09-20T19:23:43Z",
+          "parents": [
+            "d4a02643ba8f84a01ade3a7a259ed36d106d23b5"
+          ],
+          "subject": "feat(stablecoin): expose reconciliation probes in evidence workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/a8e46efeb2b46c8d35a961a839db6c76afb6fcbd"
+        },
+        {
+          "sha": "d101e6f6053dca9bc1d16e81322e72dc6a6b2fa4",
+          "date": "2026-09-20T19:23:54Z",
+          "parents": [
+            "a8e46efeb2b46c8d35a961a839db6c76afb6fcbd"
+          ],
+          "subject": "test(stablecoin): cover backend and runtime read-only probes",
+          "url": "https://github.com/Patricked-code/MCP/commit/d101e6f6053dca9bc1d16e81322e72dc6a6b2fa4"
+        },
+        {
+          "sha": "5d8f80eacd1dd334fd564dab1e95ee758f4b2d63",
+          "date": "2026-09-20T19:24:02Z",
+          "parents": [
+            "d101e6f6053dca9bc1d16e81322e72dc6a6b2fa4"
+          ],
+          "subject": "test(stablecoin): require reconciliation probes in workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/5d8f80eacd1dd334fd564dab1e95ee758f4b2d63"
+        },
+        {
+          "sha": "160506ee60906ead8a3c04c25e49d449023cb1d0",
+          "date": "2026-09-20T19:24:09Z",
+          "parents": [
+            "5d8f80eacd1dd334fd564dab1e95ee758f4b2d63"
+          ],
+          "subject": "docs(stablecoin): register read-only reconciliation probes",
+          "url": "https://github.com/Patricked-code/MCP/commit/160506ee60906ead8a3c04c25e49d449023cb1d0"
+        }
+      ]
+    }
+  ]
+}
