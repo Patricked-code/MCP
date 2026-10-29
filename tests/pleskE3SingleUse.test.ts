@@ -115,3 +115,18 @@ test('GREEN: consent expiring during async governance check is rejected before a
     assert.deepEqual(await receiptsOrEmpty(dir),[]);
   });
 });
+
+
+test('FINDING-03: authentically issued E3 base64url ticket is consumable once, not hex-only',async()=>{
+  const {issueWebConsentTicket,verifyWebConsentTicket}=await import('../src/oauth.js');
+  await sandbox(async dir=>{
+    const valid=issueWebConsentTicket('plesk-create-subdomain',binding,now);
+    assert.match(valid,/^\\d{13}\\.[A-Za-z0-9_-]{43}$/);
+    assert.ok(verifyWebConsentTicket('plesk-create-subdomain',valid,binding,now));
+    const signed={...context,ticket:valid};
+    const ports={directory:dir,verifyTicket:verifyWebConsentTicket,verifyPreAdmission:async()=>true,now:()=>now};
+    const accepted=await consumeSignedPleskE3Once(signed,ports);
+    assert.equal(accepted.status,'CONSUMED');
+    assert.equal((await consumeSignedPleskE3Once(signed,ports)).reason,'ALREADY_CONSUMED');
+  });
+});
