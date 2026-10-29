@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 245,
+  "trackedCount": 246,
   "categories": {
     "canonical": 7,
     "documentation": 72,
     "engineering-plan": 8,
     "engineering-spec": 10,
-    "history": 23,
+    "history": 24,
     "memory": 61,
     "migration-history": 7,
     "root-documentation": 50,
@@ -604,6 +604,10 @@
     },
     {
       "path": "docs/history/governed-deploy-integral/15_NAVIGATION_COMPLEMENTAIRE.md",
+      "category": "history"
+    },
+    {
+      "path": "docs/history/governed-deploy-integral/16_202608_ORIGINE_AUTODEPLOY_ET_MEMORY.md",
       "category": "history"
     },
     {
