@@ -14,7 +14,13 @@ export type PleskWebDependencies = {
   policy: () => PleskPolicy;
   io: PleskRemotePort;
   writeEnabled: () => boolean;
-  authorizeRuntimeWrite: (input: PleskSubdomainInput) => Promise<boolean>;
+  /** Server-originated E3 request context; proof is untrusted until redeemed
+   * against the authenticated MCP transport using a server-owned broker. */
+  authorizeRuntimeWrite: (input: PleskSubdomainInput, context?: Readonly<{
+    req:Request;pairingProof:string;consentTicket:string;binding:string;
+  }>) => Promise<boolean>;
+  /** When installed by production, refuse web submissions without an MCP pairing proof. */
+  requireMcpPairing?:boolean;
   /**
    * Optional additive B3e single-use E3 consumption gate, evaluated AFTER
    * existing signed E3 and live governed runtime authority checks, BEFORE SSH.
@@ -36,7 +42,8 @@ const Params = z.object({
 const ConsentForm = Params.extend({
   consent_ticket: z.string().min(1).max(500),
   confirm_fqdn: z.string().min(4).max(320),
-  consent_creation: z.literal('CREATE_SUBDOMAIN')
+  consent_creation: z.literal('CREATE_SUBDOMAIN'),
+  mcp_pair_proof: z.string().max(128).optional()
 }).strict();
 
 function escapeHtml(text: string): string {
@@ -80,6 +87,9 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
           +hidden
           +'<input type="hidden" name="consent_ticket" value="'+escapeHtml(ticket)+'" />'
           +'<input type="hidden" name="confirm_fqdn" value="'+escapeHtml(fqdn)+'" />'
+          +(deps.requireMcpPairing
+            ?'<label>Preuve de liaison MCP OAuth (émise par l’outil MCP)<input name="mcp_pair_proof" type="password" maxlength="128" autocomplete="off" required /></label>'
+            :'')
           +'<label><input type="checkbox" name="consent_creation" value="CREATE_SUBDOMAIN" required /> '
           +'Je confirme la création de '+escapeHtml(fqdn)+'</label>'
           +'<button type="submit">Créer le sous-domaine</button></form>';
@@ -95,7 +105,8 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
   router.post('/provisioning/plesk-subdomain', deps.requireLogin, async (req, res) => {
     const parsed = ConsentForm.safeParse(req.body);
     if (!parsed.success) { res.status(403).json({status:'BLOCKED',reason:'CONSENT_INVALID'}); return; }
-    const {consent_ticket,confirm_fqdn,consent_creation: _consentCreation,...p} = parsed.data;
+    const {consent_ticket,confirm_fqdn,consent_creation: _consentCreation,
+      mcp_pair_proof:pairingProof,...p} = parsed.data;
     const fqdn = p.label + '.' + p.parentDomain;
     if (!deps.sameOrigin(req)
       || !deps.verifyTicket(PURPOSE,consent_ticket,binding(req,p,deps))
@@ -106,7 +117,11 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
     try {
       // E3 web consent is necessary but never grants runtime authority by itself.
       // A fresh governed session/claim/lock check must explicitly authorize this target.
-      if (!await deps.authorizeRuntimeWrite(toInput(p))) {
+      if ((deps.requireMcpPairing===true && !pairingProof)
+        || !await deps.authorizeRuntimeWrite(toInput(p),{
+          req,pairingProof:pairingProof??'',consentTicket:consent_ticket,
+          binding:binding(req,p,deps)
+        })) {
         res.status(403).json({status:'BLOCKED',reason:'GOVERNED_RUNTIME_AUTHORITY_REQUIRED'});
         return;
       }
