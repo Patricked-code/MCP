@@ -71,6 +71,9 @@ import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js
 import { readServerMapConfiguration } from './liveState/targetProject.js';
 import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
 import { createPleskSubdomainRouter } from './provisioning/pleskWebRoutes.js';
+import { createPleskGovernedWebExecutionBridge } from './provisioning/pleskGovernedWebExecutionBridge.js';
+import type { PleskVerifiedMcpAuthorityProof } from './provisioning/pleskHttpToMcpAdmission.js';
+import type { PleskGovernedReleaseEvidence } from './provisioning/pleskGovernedReleaseGate.js';
 import {
   createPleskWebTransportPairing,
   type PleskWebTransportPairing
@@ -570,24 +573,40 @@ export async function startHttpServer(): Promise<void> {
     execute: (input) => executeProjectRuntimeProvisioning(input, projectRuntimeProvisioning)
   }));
 
-  // Optional S1/S2 Plesk provisioning: reuse operator web session, signed E3 ticket,
-  // same-origin consent and existing bounded SSH channels. Disabled until explicit scope.
-  app.use(createPleskSubdomainRouter({
-    requireLogin: requireWebLogin,
-    session: webConsentBinding,
-    sameOrigin: isSameOriginSubmission,
-    issueTicket: issueWebConsentTicket,
-    verifyTicket: verifyWebConsentTicket,
-    policy: () => ({
-      enabled: env.MCP_PLESK_PROVISIONING_ENABLED,
-      allowedParents: parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
-    }),
-    writeEnabled: () => env.ENABLE_WRITE_TOOLS && env.MCP_PLESK_PROVISIONING_ENABLED,
-    requireMcpPairing:true,
-    // The one-use proof is issued through the authenticated MCP transport.
-    // Its opaque value comes from the form but identity/session/lock never do.
-    authorizeRuntimeWrite:async(input,context)=>{
-      if(!context||!isValidWebSession(webConsentBinding(context.req)))return false;
+  // B3j: enable REAL Plesk admission through existing authorities when verified.
+  // Server-controlled release settings are mandatory; missing or invalid
+  // proof never turns an owner instruction into an implicit SSH privilege.
+  const pleskReleaseConfiguration=()=>{
+    const pr=Number(process.env.MCP_PLESK_RELEASE_PR_NUMBER);
+    const head=process.env.MCP_PLESK_RELEASE_HEAD_SHA??'';
+    return Number.isSafeInteger(pr)&&pr>0
+      &&/^[a-f0-9]{40}$/.test(head)?{pr,head}:null;
+  };
+  const trustedPleskRelease=async()=>{
+    const configured=pleskReleaseConfiguration();
+    if(!configured)return null;
+    const {observeGithubReviewAndCiUsingExistingCredential}=await import(
+      './github/observeGithubReviewAndCi.js'
+    );
+    const observed=await observeGithubReviewAndCiUsingExistingCredential({
+      repository:'Patricked-code/MCP',
+      pullRequestNumber:configured.pr,
+      expectedHeadSha:configured.head,
+      expectedWorkflow:'MCP CI'
+    });
+    return observed.attestation;
+  };
+  type VerifiedPleskRequest=Readonly<{
+    verified:PleskVerifiedMcpAuthorityProof;
+    evidence:PleskGovernedReleaseEvidence;
+  }>;
+  const pleskExecutionBridge=createPleskGovernedWebExecutionBridge<VerifiedPleskRequest>({
+    prepare:async(input,context)=>{
+      const configured=pleskReleaseConfiguration();
+      if(!configured||!isValidWebSession(webConsentBinding(context.req))
+        ||!env.ENABLE_WRITE_TOOLS||!env.MCP_PLESK_PROVISIONING_ENABLED
+        ||!parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)[input.serverId]
+          ?.includes(input.parentDomain))return null;
       const linked=pairing.redeem({
         proof:context.pairingProof,
         target:{
@@ -596,11 +615,12 @@ export async function startHttpServer(): Promise<void> {
         },
         webSessionBinding:webConsentBinding(context.req)
       });
-      if(!linked)return false;
+      if(!linked)return null;
       const {inspectPleskHttpToMcpAdmissionFromRuntime}=await import(
         './provisioning/pleskHttpToMcpAdmission.js'
       );
-      const observed=await inspectPleskHttpToMcpAdmissionFromRuntime({
+      let verified:PleskVerifiedMcpAuthorityProof|null=null;
+      const observation=await inspectPleskHttpToMcpAdmissionFromRuntime({
         target:{
           serverId:input.serverId,parentDomain:input.parentDomain,
           label:input.label,documentRoot:input.documentRoot
@@ -612,21 +632,114 @@ export async function startHttpServer(): Promise<void> {
         sameOrigin:isSameOriginSubmission(context.req),
         oauthAuthorization:linked.oauthAuthorization,
         trustedMcpTransport:linked.transport
-      });
-      // Existing B3f is intentionally read-only: no false permission is
-      // inferred from an otherwise valid web/MCP pairing.
-      return observed.runtimeWriteAuthorized;
+      },proof=>{verified=proof;});
+      if(observation.status!=='READ_ONLY_PROOFS_OBSERVED'||!verified)return null;
+      const verifiedProof=verified as PleskVerifiedMcpAuthorityProof;
+      const {consent,candidate,transportLink,authority}=verifiedProof;
+      const evidence:PleskGovernedReleaseEvidence={
+        at:new Date().toISOString(),
+        mcpRepository:'Patricked-code/MCP',
+        pullRequestNumber:configured.pr,
+        proposedHeadSha:configured.head,
+        scope:consent.targetScope!,
+        principalId:consent.principalId!,
+        taskId:candidate.taskId!,
+        sessionId:candidate.sessionId!,
+        sha:candidate.expectedHeadSha!,
+        signedConsent:consent,
+        ownedCandidate:candidate,
+        transportBinding:transportLink,
+        runtimeAuthority:authority.snapshot
+      };
+      return {verified:verifiedProof,evidence};
     },
-    // E3 atomic single-use receipts and full runtime release gate must be
-    // installed and independently verified before any Plesk write.
-    consumeGovernedConsent: async () => false,
-    io: {
-      readonly: async (serverId, command) => runReadOnlyCommand(serverId, command),
-      guarded: async (serverId, command) => runGuardedCommand(serverId, command, {
-        intent: 'plesk_subdomain_web_signed_consent',
-        timeoutMs: 120_000,
-        maxOutputBytes: 16_384
-      })
+    consume:async(proof,signed)=>{
+      const {consumeGovernedPleskE3ForExistingRoute}=await import(
+        './provisioning/pleskE3GovernedConsumption.js'
+      );
+      const e=proof.evidence;
+      const result=await consumeGovernedPleskE3ForExistingRoute(e,{
+        ticket:signed.ticket,binding:signed.binding,
+        scope:e.scope,principalId:e.principalId,
+        governedSessionId:e.sessionId,taskId:e.taskId
+      },{
+        receiptDirectory:process.env.MCP_PLESK_E3_RECEIPT_DIR
+          ??'/app/data/plesk-e3-consumed',
+        now:()=>Date.now(),
+        verifyTicket:(purpose,ticket,binding,at)=>
+          verifyWebConsentTicket(purpose,ticket,binding,at),
+        readTrustedReleaseAttestation:trustedPleskRelease
+      });
+      return result.status==='E3_CONSUMED_PENDING_RUNTIME_GATE'
+        &&result.reason==='RECEIPT_CONSUMED';
+    },
+    execute:async(proof,input)=>{
+      const {readExistingPleskAuthorityFromRuntime}=await import(
+        './provisioning/existingPleskAuthorityReader.js'
+      );
+      const {executeGovernedPleskSubdomainOnExistingSsh}=await import(
+        './provisioning/governedPleskSubdomainExecutor.js'
+      );
+      const e=proof.evidence;
+      const request={
+        target:input,
+        policy:{
+          enabled:env.ENABLE_WRITE_TOOLS&&env.MCP_PLESK_PROVISIONING_ENABLED,
+          allowedParents:parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
+        },
+        expectedTaskId:e.taskId,expectedSessionId:e.sessionId,
+        expectedPrincipalId:e.principalId,expectedHeadSha:e.sha,
+        now:new Date().toISOString()
+      };
+      // Always re-observe the real runtime authority, Github release state
+      // and root/Plesk CLI availability at the guarded write boundary.
+      const readAuthority=async()=>{
+        const inspected=await readExistingPleskAuthorityFromRuntime({
+          ...request,now:new Date().toISOString()
+        },proof.verified.transport);
+        const snapshot=inspected.snapshot;
+        if(inspected.blockers.length!==1
+          ||inspected.blockers[0]!=='E3_AND_CI_ATTESTATION_UNAVAILABLE'
+          ||snapshot.source!=='EXISTING_GOVERNED_RUNTIME')return snapshot;
+        const [review,user,plesk]=await Promise.all([
+          trustedPleskRelease(),
+          runReadOnlyCommand(input.serverId,'id -u',5_000,128),
+          runReadOnlyCommand(input.serverId,'plesk version',5_000,1_024)
+        ]);
+        const releaseOk=review?.source==='SERVER_VALIDATED_GITHUB_API'
+          &&review.repository==='Patricked-code/MCP'
+          &&review.pr===e.pullRequestNumber
+          &&review.headSha===e.proposedHeadSha
+          &&review.approvalHeadSha===e.proposedHeadSha
+          &&review.independentReviewApproved===true
+          &&review.workflowConcludedSuccess===true
+          &&Date.parse(review.at)<=Date.now()
+          &&Date.now()-Date.parse(review.at)<=300_000;
+        if(!releaseOk||user.code!==0||user.stdout.trim()!=='0'
+          ||plesk.code!==0)return snapshot;
+        return {...snapshot,consent:'CREATE_SUBDOMAIN' as const,
+          reviewAndCiApproved:true};
+      };
+      return executeGovernedPleskSubdomainOnExistingSsh(request,readAuthority);
+    }
+  });
+  app.use(createPleskSubdomainRouter({
+    requireLogin:requireWebLogin,
+    session:webConsentBinding,
+    sameOrigin:isSameOriginSubmission,
+    issueTicket:issueWebConsentTicket,
+    verifyTicket:verifyWebConsentTicket,
+    policy:()=>({
+      enabled:env.MCP_PLESK_PROVISIONING_ENABLED,
+      allowedParents:parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
+    }),
+    writeEnabled:()=>env.ENABLE_WRITE_TOOLS&&env.MCP_PLESK_PROVISIONING_ENABLED,
+    requireMcpPairing:true,
+    ...pleskExecutionBridge,
+    // Direct generic guarded SSH is never a fallback for OAuth-paired writes.
+    io:{
+      readonly:async(serverId,command)=>runReadOnlyCommand(serverId,command),
+      guarded:async()=>({code:1,stdout:'',stderr:''})
     }
   }));
 
