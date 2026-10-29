@@ -689,4 +689,141 @@ export function registerGithubLifecycleWriteTools(
       });
     }
   );
+
+  server.tool(
+    'github_request_pull_request_review',
+    'Demande une review sur une pull request après validation du head exact. Cible des reviewers explicites.',
+    {
+      organization: OrganizationSchema,
+      repository: RepositorySchema,
+      pullRequestNumber: PullRequestSchema,
+      expectedHeadSha: ShaSchema,
+      reviewers: z.array(z.string().min(1).max(120).regex(/^[A-Za-z0-9_.-]+$/)).min(1).max(15),
+      teamReviewers: z.array(z.string().min(1).max(120).regex(/^[A-Za-z0-9_.-]+$/)).max(10).default([])
+    },
+    async ({
+      organization, repository, pullRequestNumber, expectedHeadSha, reviewers, teamReviewers
+    }, extra) => {
+      await requireWrite(dependencies, extra as GovernanceExtra);
+      const org = assertOrg(organization, dependencies.configuredOrg);
+      const projection = await readPullRequest(
+        dependencies, org, repository, pullRequestNumber
+      );
+      const expected = assertExpectedPrHead(projection, expectedHeadSha);
+      const jsonBody: Record<string, string[]> = { reviewers };
+      if (teamReviewers.length > 0) jsonBody.team_reviewers = teamReviewers;
+      const raw = object(await expect(
+        dependencies,
+        `${repoEndpoint(org, repository)}/pulls/${pullRequestNumber}/requested_reviewers`,
+        { method: 'POST', jsonBody }
+      ));
+      return respond({
+        pullRequestNumber,
+        headSha: expected,
+        requestedReviewers: array(raw?.requested_reviewers).map((r) => string(object(r)?.login)).filter(Boolean),
+        requestedTeams: array(raw?.requested_teams).map((t) => string(object(t)?.slug)).filter(Boolean)
+      });
+    }
+  );
+
+  server.tool(
+    'github_update_pull_request_metadata',
+    'Met à jour les métadonnées sûres d\'une pull request (titre, body, labels) après validation du head exact. N\'expose ni state, ni base, ni close.',
+    {
+      organization: OrganizationSchema,
+      repository: RepositorySchema,
+      pullRequestNumber: PullRequestSchema,
+      expectedHeadSha: ShaSchema,
+      title: z.string().min(1).max(256).optional(),
+      body: BodySchema.optional(),
+      labels: z.array(z.string().min(1).max(100)).max(30).optional()
+    },
+    async ({
+      organization, repository, pullRequestNumber, expectedHeadSha, title, body, labels
+    }, extra) => {
+      await requireWrite(dependencies, extra as GovernanceExtra);
+      const org = assertOrg(organization, dependencies.configuredOrg);
+      const projection = await readPullRequest(
+        dependencies, org, repository, pullRequestNumber
+      );
+      const expected = assertExpectedPrHead(projection, expectedHeadSha);
+      if (!title && body === undefined && !labels) {
+        throw new Error('GITHUB_PR_METADATA_NO_FIELDS');
+      }
+      const jsonBody: Record<string, unknown> = {};
+      if (title) jsonBody.title = title;
+      if (body !== undefined) jsonBody.body = body;
+      const raw = object(await expect(
+        dependencies,
+        `${repoEndpoint(org, repository)}/pulls/${pullRequestNumber}`,
+        { method: 'PATCH', jsonBody }
+      ));
+      if (labels) {
+        await expect(
+          dependencies,
+          `${repoEndpoint(org, repository)}/issues/${pullRequestNumber}/labels`,
+          { method: 'PUT', jsonBody: { labels } }
+        );
+      }
+      return respond({
+        pullRequestNumber,
+        headSha: expected,
+        title: string(raw?.title),
+        updatedAt: string(raw?.updated_at)
+      });
+    }
+  );
+
+  server.tool(
+    'github_create_repository',
+    'Crée un dépôt privé dans l\'organisation configurée. Idempotent : un nom déjà pris est existence, pas un écrasement. Aucun webhook, team, secret, deploy key ni ruleset implicite.',
+    {
+      organization: OrganizationSchema,
+      name: z.string().min(1).max(100).regex(/^[A-Za-z0-9._-]+$/),
+      description: z.string().max(1000).default(''),
+      autoInit: z.boolean().default(false)
+    },
+    async ({ organization, name, description, autoInit }, extra) => {
+      await requireWrite(dependencies, extra as GovernanceExtra);
+      const org = assertOrg(organization, dependencies.configuredOrg);
+      try {
+        const raw = object(await expect(
+          dependencies,
+          `/orgs/${org}/repos`,
+          {
+            method: 'POST',
+            jsonBody: {
+              name,
+              description,
+              private: true,
+              auto_init: autoInit,
+              has_issues: true,
+              has_projects: false,
+              has_wiki: false
+            }
+          }
+        ));
+        return respond({
+          name: string(raw?.name),
+          fullName: string(raw?.full_name),
+          private: boolean(raw?.private),
+          htmlUrl: string(raw?.html_url),
+          created: true,
+          already_exists: false
+        });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        if (message.includes('422') || message.includes('already_exists') || message.includes('name already exists')) {
+          return respond({
+            name,
+            fullName: `${org}/${name}`,
+            private: true,
+            created: false,
+            already_exists: true
+          });
+        }
+        throw err;
+      }
+    }
+  );
 }

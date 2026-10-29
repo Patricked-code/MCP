@@ -24,8 +24,11 @@ const C89_READ = [
   'github_compare_refs',
   'github_get_branch_state',
   'github_get_commit_checks',
+  'github_get_commit_diff',
   'github_get_commit_state',
   'github_get_deployments',
+  'github_get_organization_members',
+  'github_get_organization_state',
   'github_get_pull_request_reviews',
   'github_get_pull_request_state',
   'github_get_releases',
@@ -38,19 +41,29 @@ const C89_READ = [
 const C90_SPLIT_AFTER_GWC9 = [
   'github_create_branch',
   'github_create_pull_request',
+  'github_create_repository',
   'github_mark_pr_ready',
   'github_merge_pull_request',
   'github_get_review_threads',
   'github_reply_review_thread',
+  'github_request_pull_request_review',
   'github_resolve_review_thread',
+  'github_update_pull_request_metadata',
   'github_create_commit',
   'github_create_or_update_file'
 ] as const;
 
 const W2_READ_R1 = [
   'github_get_commits',
+  'github_get_environments',
+  'github_get_issue_state',
+  'github_get_issues',
+  'github_get_repo_secrets',
+  'github_get_repo_variables',
   'github_get_required_checks',
-  'github_get_tree'
+  'github_get_tree',
+  'github_get_workflow_jobs',
+  'github_get_workflow_run_logs'
 ] as const;
 
 const C90_DEFERRED = [
@@ -133,9 +146,9 @@ test('GWC-12 materializes the planned C-90 split only after the GWC-9 AF-32 gate
 
 test('the C-90 partition remains exact and exhaustive after W2 READ R1 materializes', () => {
   const all = [...C90_SPLIT_AFTER_GWC9, ...W2_READ_R1, ...C90_DEFERRED];
-  assert.equal(all.length, 18);
-  assert.equal(new Set(all).size, 18);
-  assert.equal(C90_SPLIT_AFTER_GWC9.length, 9);
-  assert.equal(W2_READ_R1.length, 3);
+  assert.equal(all.length, 28);
+  assert.equal(new Set(all).size, 28);
+  assert.equal(C90_SPLIT_AFTER_GWC9.length, 12);
+  assert.equal(W2_READ_R1.length, 10);
   assert.equal(C90_DEFERRED.length, 6);
 });

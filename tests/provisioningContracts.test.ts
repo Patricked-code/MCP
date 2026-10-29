@@ -208,7 +208,7 @@ test('the validator fails closed on drift, improvisation and implicit side effec
 
   // The inventory follows the registered surface: no write primitive escapes it, none is stale.
   assert.ok((await findings(none, (current) => {
-    current.tools.push({ name: 'github_create_repository', writeCapable: true });
+    current.tools.push({ name: 'github_create_repository_public', writeCapable: true });
   })).includes('WRITE_PRIMITIVE_UNCLASSIFIED'));
   assert.ok((await findings(none, (current) => {
     current.tools = current.tools.filter((tool: any) => tool.name !== 'github_create_branch');
@@ -230,7 +230,7 @@ test('the validator fails closed on drift, improvisation and implicit side effec
     .includes('STEP_PRIMITIVE_NOT_COMPOSABLE'));
   assert.ok((await findings(replaceGap('DOMAIN_BINDING', 'rollback', ['legacy_vhost_purge_s1'])))
     .includes('STEP_PRIMITIVE_NOT_COMPOSABLE'));
-  assert.ok((await findings(replaceGap('REPOSITORY', 'create-repository', ['github_create_repository'])))
+  assert.ok((await findings(replaceGap('REPOSITORY', 'create-repository', ['github_create_repository_public'])))
     .includes('STEP_PRIMITIVE_UNKNOWN'));
 
   // Consent is explicit, and activation carries its own.

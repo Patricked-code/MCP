@@ -1,4 +1,45 @@
 # SUIVI.md
+## 2026-10-28 — TB-W3-ADMIN-01 : Governed private repository creation (PASS_WITH_EVIDENCE)
+
+- **Blueprint** : TB-W3-ADMIN-01, Program Backlog V2, wave W3, collision domain `github:admin:create-repository`.
+- **Branche** : `claude/ecstatic-edison-v1dyt1`, HEAD `4f77f0b`.
+- **Objectif** : implémenter la création de dépôt privé, bornée à l'org, idempotente, sans effets de bord implicites.
+- **Résultat** : outil `github_create_repository` — POST `/orgs/{org}/repos`, privé forcé, 422 traité comme existence idempotente, aucun webhook/team/secret/deploy key/ruleset.
+- **Fichiers** : `src/tools/githubLifecycle.ts`, registrationPolicy, cartography, provisioning, `tests/githubCreateRepository.test.ts` (7/7 GREEN).
+- **Régression** : 6 échecs pré-existants, 0 nouvelle régression.
+- **NEXT_ACTION** : pousser, puis sélectionner le prochain blueprint READY.
+
+## 2026-10-28 — TB-W3-PRW-02 : Reduced PR metadata update (PASS_WITH_EVIDENCE)
+
+- **Blueprint** : TB-W3-PRW-02, Program Backlog V2, wave W3, collision domain `github:pr-write:metadata`.
+- **Branche** : `claude/ecstatic-edison-v1dyt1`, HEAD `31a9994`.
+- **Objectif** : séparer la mise à jour sûre des métadonnées PR des mutations dangereuses (state/base/close).
+- **Résultat** : outil `github_update_pull_request_metadata` — PATCH title/body + PUT labels, exact-head, aucune mutation state/base.
+- **Fichiers** : `src/tools/githubLifecycle.ts`, registrationPolicy, cartography, provisioning, `tests/githubPrMetadataUpdate.test.ts` (8/8 GREEN).
+- **Régression** : 6 échecs pré-existants, 0 nouvelle régression.
+
+## 2026-10-28 — TB-W3-PRW-01 : Exact-head request-review (PASS_WITH_EVIDENCE)
+
+- **Blueprint** : TB-W3-PRW-01, Program Backlog V2, wave W3, collision domain `github:pr-write:review-request`.
+- **Branche** : `claude/ecstatic-edison-v1dyt1`, HEAD `e2006c8`.
+- **Objectif** : ajouter un outil gouverné de demande de review avec reobservation du head exact et cibles de reviewers explicites.
+- **Résultat** : outil `github_request_pull_request_review` implémenté dans `src/tools/githubLifecycle.ts`, suit le pattern write existant (requireWrite → assertOrg → readPullRequest → assertExpectedPrHead → REST POST /requested_reviewers).
+- **Fichiers modifiés** : `src/tools/githubLifecycle.ts`, `src/tools/registrationPolicy.ts`, `.mcp/function-cartography.json`, `.mcp/provisioning-contracts.json`, `tests/githubRequestReview.test.ts` (7/7 GREEN), `tests/githubLifecycleControl.test.ts`, `tests/gwcGithubCapabilitySplit.test.ts`.
+- **Régression** : 6 échecs pré-existants (yaml manquant, dockerfile, etc.), 0 nouvelle régression introduite.
+- **NEXT_ACTION** : pousser, puis sélectionner le prochain blueprint READY via `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.
+
+## 2026-10-28 — TB-W4-H-01 : Trace evidence inventory (PASS_WITH_EVIDENCE)
+
+- **Blueprint** : TB-W4-H-01, Program Backlog V2, wave W4, lot H.1.
+- **Branche** : `claude/ecstatic-edison-v1dyt1`, HEAD `8214fe1` (rebased from main `48a5298`).
+- **Objectif** : inventorier les identifiants de traçabilité/audit/corrélation existants et cartographier les lacunes sans créer de second store.
+- **Résultat** : 15 identifiants inventoriés (12 propagés, 3 non-propagés), 11 points d'audit, 10 lacunes identifiées (2 HIGH, 4 MEDIUM, 4 LOW), 5 recommandations.
+- **Lacunes principales** : GAP-01 (pas d'operationId par requête MCP), GAP-09 (pas de trace ID end-to-end requête→journal→réponse).
+- **Fichiers** : `docs/audits/trace-evidence-inventory.json` (inventaire), `tests/traceEvidenceInventory.test.ts` (8/8 GREEN).
+- **Régression** : 55/55 tests GREEN (8 inventory + 14 happyPath + 34 candidateContinuity + 5 contractSubstrate - some counted in suites).
+- **PR** : #354 (draft, CI green, mergeable_state clean).
+- **NEXT_ACTION** : committer TB-W4-H-01, pousser, puis sélectionner le prochain blueprint READY via `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.
+
 ## 2026-10-23 — PR #350 : pilote GRT /gouvern et provisioning S1/S2, non fusionnés
 
 - Mandat : étendre sans migration le MCP existant, point d'ancrage issue #349 et PR #350. Baseline main/S1 `a3df3b0`, GRT `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Aucun déploiement S1 effectué.

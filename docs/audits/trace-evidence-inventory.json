@@ -1,0 +1,418 @@
+{
+  "schemaVersion": 1,
+  "inventoryDate": "2026-10-27",
+  "headSha": "8214fe19a621619c376e4c4574d1d720830e38ae",
+  "branch": "claude/ecstatic-edison-v1dyt1",
+  "blueprintId": "TB-W4-H-01",
+  "objective": "Inventory existing request/audit/correlation identifiers and map gaps without creating a second tracing store.",
+
+  "existingIdentifiers": [
+    {
+      "name": "governedSessionId",
+      "type": "UUID v4",
+      "files": [
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/eventJournal.ts",
+        "src/operationalMemory/operationalAudit.ts",
+        "src/operationalMemory/lockService.ts",
+        "src/operationalMemory/connectionContext.ts",
+        "src/tools/governedSessions.ts",
+        "src/tools/governedTasks.ts",
+        "src/tools/governedContext.ts",
+        "src/governedContext/service.ts",
+        "src/governedContext/agentCoordination.ts",
+        "src/governedWorkflow/adapters/session.ts",
+        "src/governedWorkflow/terminal/index.ts",
+        "src/governedWorkflow/review/index.ts",
+        "src/governedWorkflow/deploy/index.ts",
+        "src/governance/scopedWriteGate.ts",
+        "src/currentState/service.ts"
+      ],
+      "purpose": "Primary session-level correlation across all governed operations — sessions, tasks, locks, checkpoints, events, scoped writes",
+      "propagated": true,
+      "propagationPath": "transport → session open → all session-scoped operations → event journal → checkpoint → close"
+    },
+    {
+      "name": "eventId",
+      "type": "UUID v4 (randomUUID)",
+      "files": [
+        "src/operationalMemory/eventJournal.ts",
+        "src/operationalMemory/operationalAudit.ts",
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/types.ts"
+      ],
+      "purpose": "Unique identifier per operational event in the Event Journal; auto-generated on append",
+      "propagated": true,
+      "propagationPath": "eventJournal.append() → event record → checkpoint.eventIds[] (up to 64)"
+    },
+    {
+      "name": "transportSessionId",
+      "type": "string (MCP session ID from StreamableHTTPServerTransport)",
+      "files": [
+        "src/server.ts",
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/transportBindings.ts",
+        "src/operationalMemory/lockService.ts",
+        "src/currentState/service.ts",
+        "src/logger.ts"
+      ],
+      "purpose": "MCP-level transport session identity, binding transport ↔ governed session; REDACTED in logs",
+      "propagated": true,
+      "propagationPath": "HTTP header mcp-session-id → transport map → governed session binding → lock ownership"
+    },
+    {
+      "name": "connectionContextId",
+      "type": "UUID v4",
+      "files": [
+        "src/operationalMemory/connectionContext.ts",
+        "src/operationalMemory/types.ts",
+        "src/operationalMemory/sessionService.ts",
+        "src/governedWorkflow/adapters/session.ts"
+      ],
+      "purpose": "Identity of a specific connection context within a governed session (OAuth principal + client + assurance)",
+      "propagated": true,
+      "propagationPath": "session open/resume → connectionContext → attestation validation → session adapter reference"
+    },
+    {
+      "name": "taskId",
+      "type": "string (governed task identifier)",
+      "files": [
+        "src/operationalMemory/taskQueue.ts",
+        "src/tools/governedTasks.ts",
+        "src/operationalMemory/operationalAudit.ts",
+        "src/operationalMemory/eventJournal.ts",
+        "src/governedWorkflow/terminal/index.ts",
+        "src/governedWorkflow/adapters/task.ts",
+        "src/governance/nextWorkProjection.ts"
+      ],
+      "purpose": "Task-level correlation for governed task lifecycle (discovered→claimed→transitioning→completed)",
+      "propagated": true,
+      "propagationPath": "task discovery → claim → transitions → checkpoint → terminal chain → done"
+    },
+    {
+      "name": "bootstrapReceiptId",
+      "type": "UUID v4",
+      "files": [
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/types.ts",
+        "src/operationalMemory/operationalAudit.ts",
+        "src/tools/governedTasks.ts",
+        "src/governedWorkflow/terminal/index.ts",
+        "src/governedWorkflow/review/index.ts",
+        "src/governedWorkflow/deploy/index.ts"
+      ],
+      "purpose": "Links session bootstrap to its acknowledged state version, used in terminal verification chain",
+      "propagated": true,
+      "propagationPath": "session acknowledge → receipt → terminal chain verification"
+    },
+    {
+      "name": "lockId",
+      "type": "UUID v4",
+      "files": [
+        "src/operationalMemory/lockService.ts",
+        "src/operationalMemory/eventJournal.ts",
+        "src/operationalMemory/operationalAudit.ts",
+        "src/tools/governedSessions.ts",
+        "src/governedWorkflow/terminal/index.ts"
+      ],
+      "purpose": "Unique lock identifier for governed locks (scope-bound, session-owned)",
+      "propagated": true,
+      "propagationPath": "lock acquire → renew/conflict/release → event journal → terminal lock release"
+    },
+    {
+      "name": "checkpointId",
+      "type": "UUID v4",
+      "files": [
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/types.ts",
+        "src/operationalMemory/operationalAudit.ts",
+        "src/operationalMemory/eventJournal.ts"
+      ],
+      "purpose": "Unique checkpoint identity capturing session state at a point in time",
+      "propagated": true,
+      "propagationPath": "session checkpoint creation → event journal → audit → terminal checkpoint"
+    },
+    {
+      "name": "attestationId",
+      "type": "UUID v4 or synthetic (e.g. s1-deploy-{jobId})",
+      "files": [
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/types.ts",
+        "src/deploy/s1Deploy.ts",
+        "src/governance/toolSurfaceAttestation.ts",
+        "src/governedWorkflow/deploy/index.ts"
+      ],
+      "purpose": "Tool surface attestation and deploy attestation identity",
+      "propagated": true,
+      "propagationPath": "attestation creation → event journal → deploy verification"
+    },
+    {
+      "name": "requestId (GitHub readonly evidence / stablecoin fast-forward)",
+      "type": "string (pattern-validated, caller-supplied)",
+      "files": [
+        "src/evidence/githubReadonlyRoutes.ts",
+        "src/stablecoin/githubFastForward.ts"
+      ],
+      "purpose": "Caller-supplied request correlation for GitHub Actions OIDC bounded-write requests",
+      "propagated": false,
+      "propagationPath": "HTTP request body → response echo; NOT propagated to Event Journal or governed session"
+    },
+    {
+      "name": "x-github-request-id (GitHub API)",
+      "type": "string (from GitHub response headers)",
+      "files": [
+        "src/github/authorizationDiagnostics.ts"
+      ],
+      "purpose": "GitHub API response header captured for diagnostics; not propagated internally",
+      "propagated": false,
+      "propagationPath": "GitHub API response header → diagnostic probe result → log output only"
+    },
+    {
+      "name": "principalId / clientId (RequestIdentity)",
+      "type": "string (OAuth subject / client ID)",
+      "files": [
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/connectionContext.ts",
+        "src/tools/governedSessions.ts",
+        "src/operationalMemory/clientPresence.ts",
+        "src/auth.ts",
+        "src/oauth.ts"
+      ],
+      "purpose": "Identity correlation — who initiated the request (OAuth subject, client)",
+      "propagated": true,
+      "propagationPath": "auth middleware → RequestIdentity → session open → connectionContext → audit"
+    },
+    {
+      "name": "processSequence (Event Journal)",
+      "type": "number (monotonic per process)",
+      "files": [
+        "src/operationalMemory/eventJournal.ts"
+      ],
+      "purpose": "In-process ordering of events; monotonically incrementing within a single server process",
+      "propagated": false,
+      "propagationPath": "local to event journal; resets on process restart"
+    },
+    {
+      "name": "stateVersion",
+      "type": "number",
+      "files": [
+        "src/currentState/service.ts",
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/operationalAudit.ts",
+        "src/governance/scopedWriteGate.ts",
+        "src/governedWorkflow/terminal/index.ts"
+      ],
+      "purpose": "Versioned global state counter; used for optimistic concurrency across reconciliation and scoped writes",
+      "propagated": true,
+      "propagationPath": "context read → session acknowledge → scoped write gate → terminal chain"
+    },
+    {
+      "name": "registryDigest / catalogueDigest / governanceDigest",
+      "type": "string (SHA-256 hex)",
+      "files": [
+        "src/operationalMemory/sessionService.ts",
+        "src/github/registryV2.ts",
+        "src/governedWorkflow/contractSubstrate.ts"
+      ],
+      "purpose": "Content-addressable digests for registry and governance artefact integrity",
+      "propagated": true,
+      "propagationPath": "bootstrap acknowledge → receipt → event journal metadata"
+    }
+  ],
+
+  "auditPoints": [
+    {
+      "file": "src/operationalMemory/eventJournal.ts",
+      "function": "createOperationalEventJournal().append()",
+      "identifiersUsed": ["eventId", "processSequence", "governedSessionId"],
+      "description": "Core event journal — appends OperationalEvent with auto-generated eventId, processSequence, occurredAt. All other audit flows funnel through this."
+    },
+    {
+      "file": "src/operationalMemory/operationalAudit.ts",
+      "function": "createOperationalAudit().record()",
+      "identifiersUsed": ["governedSessionId", "eventId", "taskId", "lockId", "checkpointId", "bootstrapReceiptId", "attestationId", "stateVersion"],
+      "description": "Higher-level audit facade over the event journal; maps structured audit inputs (session, task, lock, checkpoint events) to event journal entries with validated metadata."
+    },
+    {
+      "file": "src/operationalMemory/sessionService.ts",
+      "function": "createGovernedSessionService()",
+      "identifiersUsed": ["governedSessionId", "transportSessionId", "connectionContextId", "bootstrapReceiptId", "checkpointId", "attestationId", "eventId"],
+      "description": "Session lifecycle: open, resume, heartbeat, pause, close, checkpoint, bootstrap acknowledge. Each operation audited via OperationalAudit."
+    },
+    {
+      "file": "src/operationalMemory/lockService.ts",
+      "function": "createGovernedLockService()",
+      "identifiersUsed": ["lockId", "governedSessionId", "transportSessionId"],
+      "description": "Lock lifecycle: acquire, renew, release, expire, conflict. Each operation audited."
+    },
+    {
+      "file": "src/operationalMemory/taskQueue.ts",
+      "function": "createGovernedTaskQueue()",
+      "identifiersUsed": ["taskId", "governedSessionId"],
+      "description": "Task lifecycle: discover, claim, transition, block, complete. Audited via OperationalAudit."
+    },
+    {
+      "file": "src/governance/scopedWriteGate.ts",
+      "function": "createScopedWriteGate().record()",
+      "identifiersUsed": ["governedSessionId", "stateVersion"],
+      "description": "Records scoped_write.shadow events with toolName, decision, lockConflict for all governed write operations."
+    },
+    {
+      "file": "src/operationalMemory/clientPresence.ts",
+      "function": "getDefaultClientObservationRecorder().observe()",
+      "identifiersUsed": ["principalId (hashed as principalDigest)"],
+      "description": "Observes MCP client connections; journals client.observed events with identity assurance and throttle."
+    },
+    {
+      "file": "src/server.ts",
+      "function": "app.use('/mcp') middleware",
+      "identifiersUsed": ["transportSessionId (mcp-session-id header)"],
+      "description": "MCP request routing: uses mcp-session-id header to look up transport; no request-level correlation ID generated."
+    },
+    {
+      "file": "src/evidence/githubReadonlyRoutes.ts",
+      "function": "createGithubReadonlyEvidenceRouter()",
+      "identifiersUsed": ["requestId (caller-supplied)"],
+      "description": "GitHub Actions OIDC bounded-read routes; caller supplies requestId for request/response correlation."
+    },
+    {
+      "file": "src/stablecoin/githubFastForward.ts",
+      "function": "createStablecoinFastForwardRouter()",
+      "identifiersUsed": ["requestId (caller-supplied)"],
+      "description": "GitHub Actions OIDC bounded-write route for stablecoin fast-forward; caller supplies requestId."
+    },
+    {
+      "file": "src/github/registryV2.ts",
+      "function": "validateRegistryV2()",
+      "identifiersUsed": ["eventId (auditEvents)"],
+      "description": "Registry V2 schema validation; auditEvents carry unique eventId for registry-level audit trail."
+    }
+  ],
+
+  "gaps": [
+    {
+      "id": "GAP-01",
+      "description": "No HTTP request-level correlation ID for MCP tool calls. Individual MCP requests (/mcp POST) do not generate or propagate a per-request correlation ID. The mcp-session-id maps to a transport session but individual tool invocations within that session are not individually traceable.",
+      "affectedFiles": ["src/server.ts", "src/tools/*.ts"],
+      "severity": "HIGH",
+      "category": "request-correlation"
+    },
+    {
+      "id": "GAP-02",
+      "description": "No HTTP request-level correlation ID for Express web routes (/dashboard, /git/*, /github/*, /login). These routes carry session authentication but no per-request trace ID.",
+      "affectedFiles": ["src/server.ts"],
+      "severity": "MEDIUM",
+      "category": "request-correlation"
+    },
+    {
+      "id": "GAP-03",
+      "description": "Deploy routes (createGithubDeployRouter) have no request-level or deploy-operation correlation ID. The attestationId exists for the deploy result but no ID correlates the inbound deploy request to its processing.",
+      "affectedFiles": ["src/deploy/routes.ts", "src/deploy/s1Deploy.ts"],
+      "severity": "MEDIUM",
+      "category": "request-correlation"
+    },
+    {
+      "id": "GAP-04",
+      "description": "SSH CA bootstrap and SSH access routes have no request-level correlation ID.",
+      "affectedFiles": ["src/ssh/githubRepositoryCaBootstrapRoutes.ts", "src/ssh/githubRepositoryAccessRoutes.ts"],
+      "severity": "LOW",
+      "category": "request-correlation"
+    },
+    {
+      "id": "GAP-05",
+      "description": "Provisioning routes (runtime executor, Plesk, GovernPilot) have no request-level correlation ID.",
+      "affectedFiles": ["src/provisioning/routes.ts", "src/provisioning/pleskWebRoutes.ts", "src/provisioning/governPilotRoutes.ts"],
+      "severity": "LOW",
+      "category": "request-correlation"
+    },
+    {
+      "id": "GAP-06",
+      "description": "Event Journal eventId is not propagated back to the MCP tool response. A tool caller cannot correlate a tool response to the specific events it generated in the journal.",
+      "affectedFiles": ["src/operationalMemory/eventJournal.ts", "src/tools/governedSessions.ts"],
+      "severity": "MEDIUM",
+      "category": "response-correlation"
+    },
+    {
+      "id": "GAP-07",
+      "description": "processSequence resets on server restart. There is no persistent sequence across process restarts; correlation across restarts relies only on timestamps and eventId.",
+      "affectedFiles": ["src/operationalMemory/eventJournal.ts"],
+      "severity": "LOW",
+      "category": "ordering"
+    },
+    {
+      "id": "GAP-08",
+      "description": "GitHub API request IDs (x-github-request-id) are captured in authorizationDiagnostics but not in normal GitHub API calls (src/github/connection.ts, registry.ts). Failed or slow GitHub API calls cannot be correlated with GitHub's support logs.",
+      "affectedFiles": ["src/github/connection.ts", "src/github/registry.ts", "src/github/projectResolution.ts"],
+      "severity": "LOW",
+      "category": "external-correlation"
+    },
+    {
+      "id": "GAP-09",
+      "description": "No end-to-end trace ID spanning MCP request → governed session operation → event journal → response. The governedSessionId provides session-level correlation but not request-level granularity within a session.",
+      "affectedFiles": ["src/server.ts", "src/tools/*.ts", "src/operationalMemory/eventJournal.ts"],
+      "severity": "HIGH",
+      "category": "end-to-end-tracing"
+    },
+    {
+      "id": "GAP-10",
+      "description": "Logger (pino) redacts transportSessionId and sessionId, which is correct for security but makes log-level correlation harder. No alternative non-sensitive request correlation ID exists to replace them in logs.",
+      "affectedFiles": ["src/logger.ts"],
+      "severity": "MEDIUM",
+      "category": "log-correlation"
+    }
+  ],
+
+  "recommendations": [
+    {
+      "id": "REC-01",
+      "description": "Add a per-request operationId (UUID) at the MCP /mcp POST handler entry point, propagated through tool execution context to the Event Journal as metadata.",
+      "strategy": "EXTEND",
+      "targetGap": ["GAP-01", "GAP-06", "GAP-09"],
+      "effort": "medium",
+      "risk": "low"
+    },
+    {
+      "id": "REC-02",
+      "description": "Add an Express middleware generating a requestId for all HTTP routes and attaching it to pino logger child context. This replaces GAP-02/03/04/05 without a second tracing store.",
+      "strategy": "EXTEND",
+      "targetGap": ["GAP-02", "GAP-03", "GAP-04", "GAP-05", "GAP-10"],
+      "effort": "low",
+      "risk": "low"
+    },
+    {
+      "id": "REC-03",
+      "description": "Capture x-github-request-id from all GitHub API responses (not just diagnostics) and include it in log context for GitHub operation correlation.",
+      "strategy": "EXTEND",
+      "targetGap": ["GAP-08"],
+      "effort": "low",
+      "risk": "low"
+    },
+    {
+      "id": "REC-04",
+      "description": "Add operationId to ALLOWED_METADATA_KEYS for relevant event types so the Event Journal can carry request-level correlation without schema changes.",
+      "strategy": "EXTEND",
+      "targetGap": ["GAP-06", "GAP-09"],
+      "effort": "low",
+      "risk": "low"
+    },
+    {
+      "id": "REC-05",
+      "description": "Accept an optional client-supplied X-Request-ID / X-Correlation-ID header on MCP and Express routes, falling back to server-generated UUID if absent. This enables upstream-to-downstream tracing.",
+      "strategy": "EXTEND",
+      "targetGap": ["GAP-01", "GAP-02", "GAP-09"],
+      "effort": "medium",
+      "risk": "low"
+    }
+  ],
+
+  "summary": {
+    "totalIdentifiers": 15,
+    "propagatedIdentifiers": 12,
+    "nonPropagatedIdentifiers": 3,
+    "auditPoints": 11,
+    "gaps": 10,
+    "recommendations": 5,
+    "primaryStrength": "Governed session lifecycle (governedSessionId) provides strong session-level correlation across all operational memory components — sessions, tasks, locks, checkpoints, events, scoped writes.",
+    "primaryWeakness": "No per-request/per-operation correlation ID exists. Individual MCP tool calls and HTTP requests within a session are not individually traceable end-to-end through the Event Journal."
+  }
+}
