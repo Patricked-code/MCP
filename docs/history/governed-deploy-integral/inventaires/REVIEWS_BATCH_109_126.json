@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{pr}/reviews",
+  "positions": [
+    109,
+    126
+  ],
+  "items": [
+    {
+      "pr": 146,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 149,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5284330734,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-22T22:02:31Z",
+          "commit_id": "1ba84589adbaa478babebd2c8aa1e63438820dcd",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/149#pullrequestreview-5284330734",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 154,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 159,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 164,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 168,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5307404844,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-24T16:43:29Z",
+          "commit_id": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/168#pullrequestreview-5307404844",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 171,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 174,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 176,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5313427653,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-25T04:35:23Z",
+          "commit_id": "ed3428148d9199240f04818ed6307129ff27d965",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/176#pullrequestreview-5313427653",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 178,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 181,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5313984004,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-25T05:54:41Z",
+          "commit_id": "eb2aff8ef30ed349cc8d477cb23e7e364ae088df",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/181#pullrequestreview-5313984004",
+          "body_length": 1447
+        }
+      ]
+    },
+    {
+      "pr": 184,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 187,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 188,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5316950922,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-25T11:12:16Z",
+          "commit_id": "ce8bc23af4b322bda46a48740a50173350c35f30",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5316950922",
+          "body_length": 623
+        },
+        {
+          "id": 5316999157,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-25T11:18:02Z",
+          "commit_id": "cafccd204cbdc4b6d614bea97b48a874e03a19a6",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5316999157",
+          "body_length": 0
+        },
+        {
+          "id": 5316999856,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-25T11:18:06Z",
+          "commit_id": "cafccd204cbdc4b6d614bea97b48a874e03a19a6",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5316999856",
+          "body_length": 0
+        },
+        {
+          "id": 5317006294,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-25T11:18:52Z",
+          "commit_id": "cafccd204cbdc4b6d614bea97b48a874e03a19a6",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5317006294",
+          "body_length": 623
+        },
+        {
+          "id": 5317056499,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-25T11:24:05Z",
+          "commit_id": "bd4126de400fe5f894643b4a2939c382bc760385",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5317056499",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 189,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5317117023,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-25T11:30:54Z",
+          "commit_id": "813741eb7793fad869bf7241ff776918a92e06ae",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/189#pullrequestreview-5317117023",
+          "body_length": 623
+        }
+      ]
+    },
+    {
+      "pr": 191,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5326523155,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-26T16:17:17Z",
+          "commit_id": "b121b867c948c4981912a3b79e57252514e88467",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/191#pullrequestreview-5326523155",
+          "body_length": 1049
+        }
+      ]
+    },
+    {
+      "pr": 193,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5327140909,
+          "state": "COMMENTED",
+          "submitted_at": "2026-09-26T19:36:25Z",
+          "commit_id": "0d8569f3dc94ae26a693b188e9d9ac1a3a866380",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/193#pullrequestreview-5327140909",
+          "body_length": 716
+        }
+      ]
+    },
+    {
+      "pr": 194,
+      "status": "COMPLETE",
+      "reviews": []
+    }
+  ]
+}
