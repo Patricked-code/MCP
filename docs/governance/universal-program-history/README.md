@@ -54,3 +54,11 @@ Lire `AGENTS.md`, `CLAUDE.md`, `SUIVI.md`, `docs/governance/README.md`, #349, le
 **Maintien dans le temps** : après chaque tranche, ajouter des liens aux pages appropriées et aux commentaires de #349/#355 ; conserver les anciennes ancres, ne jamais réécrire un checkpoint historique. Les preuves GitHub et autorités MCP existantes ont toujours priorité. La persistance OAuth [#346](https://github.com/Patricked-code/MCP/issues/346) reste un chantier distinct.
 
 **Provenance de création** : index construit depuis les données GitHub consultées le 29/10/2026 sur la branche #355 @ `4424cc3cf217f676c462bb39d4b93b79d3a20e1b` ; il indexe les commentaires et revues *retournés par le connecteur*, pas l'intégralité du contenu des commits, artefacts CI, journaux ni des événements GitHub. Les liens sources pointent vers les originaux à relire.
+
+## Archive historique approfondie — PR #356 (lien croisé sans duplication)
+
+Pour retrouver **l'histoire intégrale au-delà du seul GD-U** (origines juillet 2026, GitRegistry, Governed Deploy du MCP, provisioning PB-F, pilotes et lignée #349), consulter [l'archive historique de la PR #356](https://github.com/Patricked-code/MCP/blob/docs/governed-deploy-integral-history-20261029/docs/history/governed-deploy-integral/README.md) et sa [PR documentaire #356](https://github.com/Patricked-code/MCP/pull/356).
+
+**Répartition durable :** la présente arborescence sur PR #355 reste un **navigateur opérationnel GD-U-01/02**, pointant vers les preuves et la prochaine reprise, tandis que la PR #356 conserve **la recherche forensique, les chronologies anciennes et les registres de lacunes**. Ne pas copier ni réécrire son contenu ici. Les commentaires de l'[issue canonique #349](https://github.com/Patricked-code/MCP/issues/349) demeurent les événements originaux du programme ; les deux dossiers ne sont pas des autorités runtime.
+
+**Règle d'intégration :** les deux branches possèdent des fichiers Markdown différents mais modifient toutes deux `docs/governance/markdown-inventory.json`. Avant toute fusion de la seconde branche, reconstituer l'union de leurs entrées depuis les HEAD actualisés, sans supprimer un seul chemin ni réutiliser un inventaire ancien. La présence de ces liens ne fusionne pas les branches, n'attribue aucune permission et ne certifie aucun déploiement.
