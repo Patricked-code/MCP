@@ -90,9 +90,15 @@ export function buildUniversalDeploymentBlueprint(input: UniversalDeploymentBlue
   // A real existing-host subpath needs a dedicated adapter and governing PR.
   // The existing subdomain planner is never an alternative for /regulatory.
   if (input.mode === 'EXISTING_HOST_SUBPATH') bad.push('SUBPATH_ADAPTER_NOT_ATTESTED');
-  if (input.mode === 'SUBDOMAIN'
-      && input.existingAutonomy.target.mode !== 'SUBDOMAIN') {
-    bad.push('TARGET_STRATEGY_MISMATCH');
+  if (input.mode === 'SUBDOMAIN') {
+    const preflight=input.existingAutonomy.target;
+    // A preflight for a different server/parent is NOT evidence for
+    // this blueprint, even when the strategies and capability hints match.
+    if(preflight.mode!=='SUBDOMAIN'
+      ||preflight.input.serverId!==input.serverId
+      ||preflight.input.parentDomain!==input.domain){
+      bad.push('TARGET_STRATEGY_MISMATCH');
+    }
   }
   if (input.mode !== 'SUBDOMAIN'
       && input.existingAutonomy.target.mode !== 'NO_INFRA_CHANGE'
