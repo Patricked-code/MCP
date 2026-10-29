@@ -131,7 +131,7 @@ test('GD-U B3j: existing project context probe reads allowlisted Plesk subscript
       return{code:0,stdout:command==='id -u'?'0': 'Plesk subscription info',stderr:''};
     }
   });
-  assert.deepEqual(commands.filter(x=>x.includes('subscription --info')),[ 
+  assert.deepEqual(commands.filter(x=>x.includes('subscription --info')),[
     "s1:plesk bin subscription --info 'wealthtechinnovations.com'",
     "s2:plesk bin subscription --info 'chainsolutions.fr'"
   ]);
