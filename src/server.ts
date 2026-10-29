@@ -582,7 +582,7 @@ export async function startHttpServer(): Promise<void> {
     return Number.isSafeInteger(pr)&&pr>0
       &&/^[a-f0-9]{40}$/.test(head)?{pr,head}:null;
   };
-  const trustedPleskRelease=async()=>{
+  const trustedPleskRelease=async(expectedDeployedSha:string)=>{
     const configured=pleskReleaseConfiguration();
     if(!configured)return null;
     const {observeGithubReviewAndCiUsingExistingCredential}=await import(
@@ -592,6 +592,7 @@ export async function startHttpServer(): Promise<void> {
       repository:'Patricked-code/MCP',
       pullRequestNumber:configured.pr,
       expectedHeadSha:configured.head,
+      expectedDeployedSha,
       expectedWorkflow:'MCP CI'
     });
     return observed.attestation;
@@ -668,7 +669,7 @@ export async function startHttpServer(): Promise<void> {
         now:()=>Date.now(),
         verifyTicket:(purpose,ticket,binding,at)=>
           verifyWebConsentTicket(purpose,ticket,binding,at),
-        readTrustedReleaseAttestation:trustedPleskRelease
+        readTrustedReleaseAttestation:()=>trustedPleskRelease(e.sha)
       });
       return result.status==='E3_CONSUMED_PENDING_RUNTIME_GATE'
         &&result.reason==='RECEIPT_CONSUMED';
@@ -702,7 +703,7 @@ export async function startHttpServer(): Promise<void> {
           ||inspected.blockers[0]!=='E3_AND_CI_ATTESTATION_UNAVAILABLE'
           ||snapshot.source!=='EXISTING_GOVERNED_RUNTIME')return snapshot;
         const [review,user,plesk]=await Promise.all([
-          trustedPleskRelease(),
+          trustedPleskRelease(e.sha),
           runReadOnlyCommand(input.serverId,'id -u',5_000,128),
           runReadOnlyCommand(input.serverId,'plesk version',5_000,1_024)
         ]);
