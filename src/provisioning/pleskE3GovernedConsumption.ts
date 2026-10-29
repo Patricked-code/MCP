@@ -59,12 +59,17 @@ export async function consumeGovernedPleskE3ForExistingRoute(
   // exclusive-create receipt. This prevents burning a valid E3 ticket on a
   // stale or already-expired governed lock after a slow provider call.
   const releaseStillCurrent=async():Promise<boolean>=>{
+    // Fetch the provider before sampling the server clock. Otherwise a
+    // freshly issued attestation can look future-dated against the old time.
+    let attestation;
+    try{attestation=await ports.readTrustedReleaseAttestation();}
+    catch{return false;}
     const instant=ports.now();
     if(!Number.isSafeInteger(instant)||instant<0)return false;
     const observed=await assessPleskGovernedRelease({
       ...evidence,at:new Date(instant).toISOString()
     },{
-      readTrustedReleaseAttestation:ports.readTrustedReleaseAttestation
+      readTrustedReleaseAttestation:async()=>attestation
     });
     return observed.disposition==='HOLD'
       &&observed.blockers.length===1
