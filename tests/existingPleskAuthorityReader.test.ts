@@ -36,14 +36,15 @@ const task={
 };
 const session={
   governedSessionId:sessionId,status:'ACTIVE' as const,ownerPrincipalId:owner,
-  lastHeartbeatAt:at
+  lastHeartbeatAt:at,
+  bootstrapReceipt:{governedSessionId:sessionId,stateVersion:1150,expiresAt:'2026-10-28T05:38:00.000Z',status:'ACKNOWLEDGED'}
 };
 const lockRecord={
   scope:lock,status:'ACTIVE' as const,governedSessionId:sessionId,
   expiresAt:'2026-10-28T05:37:00.000Z'
 };
 const live={
-  freshness:'CURRENT' as const,alignment:{global:'FULLY_ALIGNED' as const},
+  freshness:'CURRENT' as const,stateVersion:1150,alignment:{global:'FULLY_ALIGNED' as const},
   github:{status:'CURRENT' as const,head:sha},
   s1:{status:'CURRENT' as const,head:sha},
   runtime:{status:'CURRENT' as const,revision:sha}
@@ -155,4 +156,29 @@ test('GD-U-02D: authority reader must not initialize/seeding Task Queue on its r
   assert.match(source,/getVisibleTask\(id\)/);
   assert.match(source,/listActiveLocks\(\)/);
   assert.match(source,/getVisibleSession\(id,auth\)/);
+});
+
+
+test('EXTERNAL_GOVERNED_RECOVERY: missing, expired, foreign and stale bootstrap receipts fail closed',async()=>{
+  for(const bootstrapReceipt of [
+    null,
+    {...session.bootstrapReceipt,expiresAt:'2026-10-28T05:34:00.000Z'},
+    {...session.bootstrapReceipt,governedSessionId:'22222222-2222-4222-8222-222222222222'},
+    {...session.bootstrapReceipt,stateVersion:1149}
+  ]){
+    const r=await inspectExistingPleskAuthority(request,identity,{
+      ...ports(),getSession:async()=>({...session,bootstrapReceipt})
+    });
+    assert.equal(r.snapshot.source,'UNVERIFIED');
+    assert.ok(r.blockers.includes('BOOTSTRAP_RECEIPT_NOT_CURRENT'));
+    assert.equal(r.operationExecuted,false);
+  }
+});
+
+test('EXTERNAL_GOVERNED_RECOVERY: live-state version drift invalidates bootstrap',async()=>{
+  const r=await inspectExistingPleskAuthority(request,identity,{
+    ...ports(),getLive:async()=>({...live,stateVersion:1151})
+  });
+  assert.equal(r.snapshot.source,'UNVERIFIED');
+  assert.ok(r.blockers.includes('BOOTSTRAP_RECEIPT_NOT_CURRENT'));
 });
