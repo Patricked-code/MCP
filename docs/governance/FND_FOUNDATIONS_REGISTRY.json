@@ -226,5 +226,26 @@
     "No new permissions, tokens, production writes, merge or deployment from this registry",
     "Map each foundation to capabilities, existing code, tests, permissions and evidence before admission"
   ],
-  "nextSlice": "Verify historical FND-001..FND-024 definitions and populate mappings individually with source evidence"
+  "nextSlice": "Verify historical FND-001..FND-024 definitions and populate mappings individually with source evidence",
+  "reconciliation": {
+    "checkedSources": [
+      {
+        "source": "GitHub MCP issue #349 comments",
+        "result": "No FND-001..FND-024 literal IDs found in retrieved comments"
+      },
+      {
+        "source": "GitHub default-branch code search FND-001 and FND-024",
+        "result": "No matches"
+      },
+      {
+        "source": "GitHub issue search FND-001 and FND-024",
+        "result": "No matches"
+      }
+    ],
+    "limitations": [
+      "Default branch code search does not index unmerged PR #355 files",
+      "Absence of a search match is not proof the historical definition never existed"
+    ],
+    "nextAction": "Find original 24-item historical inventory in PR/commit history or another canonical source before assigning per-ID labels"
+  }
 }
