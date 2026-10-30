@@ -1,0 +1,120 @@
+# Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression
+
+**Profil sélectionnable :** `EXTERNAL_GOVERNED_RECOVERY` (non activé par défaut).
+**Dépôt :** `Patricked-code/MCP`.
+**Autorité normative existante :** [`.mcp/github-first-operational-policy.json`](../../.mcp/github-first-operational-policy.json), [`AGENTS.md`](../../AGENTS.md), [`CLAUDE.md`](../../CLAUDE.md) et les contrôles runtime réellement observés.
+**Portée :** méthode opérationnelle réutilisable sur **l'ensemble du MCP**, indépendamment du programme GD-U. L'issue globale [#235](https://github.com/Patricked-code/MCP/issues/235) conserve son propre périmètre. Chaque intervention réutilise l'issue, la PR et l'autorité d'exécution de SON chantier ; [#349](https://github.com/Patricked-code/MCP/issues/349) et [#355](https://github.com/Patricked-code/MCP/pull/355) ne sont que le chantier qui intègre ce document.
+**Nature :** instruction de travail et de reprise, sans permission supplémentaire ni activation automatique de runtime.
+
+## Architecture officielle — une seule méthode commune, deux entrées
+
+Les deux entrées ne constituent **ni deux méthodologies de développement ni deux pipelines de déploiement**. Elles divergent **uniquement** pour entrer sur le dépôt et déterminer **qui choisit ou attribue les travaux**. Le nom historique du profil `EXTERNAL_GOVERNED_RECOVERY` ne le limite pas à une panne : l'entrée externe est disponible sur demande même lorsque le MCP interne fonctionne.
+
+| Dimension | Entrée 1 : initiale gouvernée | Entrée 2 : bifurcation externe gouvernée |
+| --- | --- | --- |
+| Démarrage | Circuit opérationnel interne MCP | Identité GitHub extérieure autorisée |
+| Provenance du travail | Tâches attribuées par le MCP | Travail demandé directement par le propriétaire, ou identifié par l'agent **dans le mandat déjà autorisé** |
+| Attribution préalable de Task Queue | Appliquée selon le parcours interne | **Non requise pour les opérations GitHub autorisées** |
+| Coordination | Ownership, preuves de session/lock selon l'opération | Ownership GitHub, branche/PR, preuves anti-collision ; pas de claim fictif |
+| Développement, tests, CI, revues | **Même cycle commun** | **Même cycle commun** |
+| Fusion, déploiement, attestation | **Mêmes règles et mêmes pipelines existants** | **Mêmes règles et mêmes pipelines existants** |
+
+**Le travail librement choisi n'est pas un travail sans limites.** Il reste dans le mandat du propriétaire, ses permissions GitHub observées, son issue/PR canonique et son périmètre sans collision. L'absence de tâche interne ne prouve pas l'absence d'autre agent. Il n'est pas nécessaire de créer une tâche MCP simplement pour modifier une branche GitHub autorisée. En revanche, une opération runtime exigeant réellement Task/Session/Claim/Lock/E3 conserve ces prérequis quel que soit le point d'entrée.
+
+### Parcours 2 — protocole déterministe de prise en charge
+
+1. **E2-00 — Sélection :** le propriétaire demande `EXTERNAL_GOVERNED_RECOVERY` pour une évolution/correction, sans exiger une panne du MCP. Un agent peut suggérer un travail, mais doit rester dans les autorisations effectivement données.
+2. **E2-01 — Périmètre :** trouver le chantier, l'issue et le Continuity ID existants ; identifier la PR/branche propriétaire et la dernière `NEXT_ACTION`. Pas de nouvelle tâche attribuée artificiellement.
+3. **E2-02 — Réconciliation :** lire l'HEAD exact de `main` et de la branche, le statut PR/CI/revues, les éventuels travaux concurrents. Si l'ownership est incertain, **arrêter l'écriture ciblée** ou choisir un sous-périmètre indépendant démontré.
+4. **E2-03 — Choix du travail :** utiliser la demande directe du propriétaire ou une correction/amélioration identifiée dans son mandat. Consigner la justification dans la continuité du chantier, sans la transformer en task/claim/lock runtime.
+5. **E2-04 — Entrée GitHub :** reprendre la PR existante si son périmètre le permet ; sinon utiliser une branche/PR isolée autorisée, avec preuve d'absence de collision. Les modifications restent dans les permissions GitHub constatées.
+6. **E2-05 — Convergence :** **à partir de ce point, appliquer le même cycle que l'entrée 1** : analyse, construction additive, compatibilité, RED/GREEN si pertinent, tests de sécurité et régression, CI sur SHA exact, revue et fusion gouvernées.
+7. **E2-06 — Exploitation gouvernée :** employer les workflows OIDC/Governed Deploy existants uniquement si l'opération et la révision `main` sont admises ; vérifier S1/S2, la santé et le rollback. Aucun droit serveur déduit de l'entrée GitHub.
+8. **E2-07 — Continuité :** checkpoint append-only avec demandes, décisions, SHA, CI/revues, résultat et unique `NEXT_ACTION`. Si le MCP interne redevient accessible, réconcilier les preuves sans créer rétroactivement une fausse tâche ou un faux claim.
+
+**Cycle commun de référence :** `périmètre et collisions → HEAD/branche/PR → développement additif → RED/GREEN et non-régression → CI exact-SHA → revue/fusion autorisée → Governed Deploy OIDC → attestation runtime → checkpoint`. Ce cycle n'est pas redéfini par le profil ; il réutilise les règles, agents, interfaces et workflows existants.
+
+**Statut d'implémentation :** procédure dans ce runbook et politique déclarative `entryArchitecture` ; `previewExternalGovernedRecovery` fournit un avis non autoritaire, et `get_project_context` expose le profil lorsque le MCP fonctionne. Ce n'est pas un scheduler, un nouvel exécuteur, ni une sélection automatique. La branche GitHub autorisée reste utilisable directement si le MCP est inaccessible. Aucune fusion ou attestation de production ne découle de cette seule déclaration.
+
+## Modèle d'autorité : trois objets différents (ne jamais les fusionner)
+
+| Objet | Référence | Rôle | Autorité créée ? |
+|---|---|---|---|
+| Procédure de reprise externe | **Bifurcation externe gouvernée**, ce runbook | Comment travailler depuis GitHub quand le chemin interne est indisponible ou sur demande expresse | Non |
+| Profil de sélection | `EXTERNAL_GOVERNED_RECOVERY` dans la politique GitHub-first | Permet de demander à un agent de suivre cette procédure ; **aucun moteur runtime de sélection n'a été ajouté** | Non |
+| Méthode de construction du chantier | `GD-U-METHOD-20261028-01`, [`workingMethodology`](../governance/universal-capabilities-bifurcation-20261028.json) | GitHub-first, non-régression, tranches indépendantes, RED/GREEN pour **le seul programme GD-U #349** | Non, et n'est pas une méthode MCP globale |
+
+Le profil **n'est pas** la méthode de construction : un agent peut sélectionner `EXTERNAL_GOVERNED_RECOVERY` pour OAuth #346 tout en gardant la méthodologie de ce chantier ; sur #349, il applique **simultanément**, sans les confondre, le chemin externe et `GD-U-METHOD-20261028-01`.
+
+### Statut de sélection vérifiable
+
+- **Implémenté :** une déclaration lisible par agent dans `.mcp/github-first-operational-policy.json`, une procédure, des consignes dans `AGENTS.md`/`CLAUDE.md` et des tests documentaires.
+- **Non implémenté :** aucun routeur/runtime qui reçoit automatiquement le nom du profil et change de mode ; aucun worker ou dispatch de Claude ; aucune autorisation de serveur ou admission E3/Task/Session/Lock dérivée du nom.
+- **Sélection effective actuellement :** le propriétaire exprime le profil ; l'agent lit les instructions, confirme le chantier canonique, consigne son choix dans la PR/issue déjà existante et utilise seulement des transports autorisés. L'inscription d'un commentaire n'équivaut pas au réveil de Claude.
+- **Si la sélection automatique doit être ajoutée ultérieurement :** audit et extension additive du routeur existant, tests des permissions et non-régression, aucun nouveau dispatcher ou mode privilégié ; ce travail n'est ni créé ni présumé par ce document.
+
+## Intégration MCP existante — surface de sélection read-only
+
+L'outil existant `get_project_context` expose le profil dans sa réponse en lecture seule. Le sélecteur pur `previewExternalGovernedRecovery` s'appuie sur `resolveGithubFirstOperationalBootstrap` pour produire un avis non autoritaire. Il ne crée aucun moteur de dispatch ni aucune autorité de travail. Les observations du propriétaire et des SHA/absence de collision produisent uniquement une **proposition de transport non autoritaire** ; les permissions GitHub réelles, les contraintes E3, les sessions et les locks restent vérifiés séparément.
+
+**Si le MCP ne répond pas**, la méthode externe fonctionne quand même en utilisant l'identité GitHub autorisée : branche/PR/CI et GitHub Actions/OIDC existants ne dépendent pas de l'attribution préalable d'une Task Queue MCP.
+
+**Admission de bout en bout :** branche contrôlée → tests et CI au SHA exact → revues/règles de fusion → `main` autorisé → CI `main` → `MCP Governed Deploy` → alignement S1/runtime et santé → checkpoint. Ne pas déclarer ce parcours complet si la PR reste ouverte ou si les attestations serveur manquent.
+
+## 1. Pourquoi et quand choisir ce profil
+
+En cas de demande explicite du propriétaire ou d'indisponibilité du chemin interne MCP (admission, connexion OAuth, bridge), l'agent peut poursuivre une **opération bornée** via GitHub et les workflows existants, tout en préservant les garde-fous. Le blocage de l'admission interne ne constitue **jamais** une permission d'écrire en production ou de réclamer une tâche. La sélection du profil ne crée ni task, ni session, ni claim, ni lock, ni nouvelle PR, ni dispatcher.
+
+Commande utilisateur : « Sur ce chantier, sélectionne `EXTERNAL_GOVERNED_RECOVERY` et réutilise la bifurcation GitHub-first/OIDC des PR #342 et #345, sans collision, sans régression et sans déploiement hors pipeline gouverné. »
+
+## 2. Précédent historique et limites de preuve
+
+- [PR #342](https://github.com/Patricked-code/MCP/pull/342) : diagnostic et instrumentation de provenance du consentement OAuth ; CI, revue, fusion, déploiement S1 observés historiquement.
+- [PR #345](https://github.com/Patricked-code/MCP/pull/345) : correction bornée du consentement `Origin: null` uniquement sous contrôles `same-origin`, ticket signé et session vérifiée ; [CI #39852393052](https://github.com/Patricked-code/MCP/actions/runs/39852393052), [déploiement S1 #39853020819](https://github.com/Patricked-code/MCP/actions/runs/39853020819) historiquement réussis.
+- Les numéros **#343 et #344 sont des issues de preuve**, pas des PR : ne jamais parler de « PR #342 à #345 » comme de quatre PR.
+- Ces preuves sont historiques : elles ne certifient pas l'HEAD présent, les droits runtime futurs, les autres applications ou la disponibilité actuelle de S1/S2.
+- Les cycles RED/GREEN ne sont réputés prouvés que si des tests et runs correspondants existent ; ne pas inventer une preuve RED.
+
+## 3. Choix des transports (ordre de moindre privilège)
+
+1. **`GITHUB_ONLY`** : lecture du dépôt, fichiers, branche dédiée, PR, revue, CI et checkpoint, lorsque l'identité GitHub dispose des droits constatés.
+2. **`GITHUB_ACTION_READONLY_EVIDENCE`** : [`mcp-readonly-evidence.yml`](../../.github/workflows/mcp-readonly-evidence.yml) ; `workflow_dispatch` avec cible/probe/request_id autorisés ou issue `MCP_READONLY_EVIDENCE_REQUEST`. Sondes allowlistées, identité contrôlée, sortie sans secrets, OIDC primaire ; fallback SSH protégé uniquement si autorisé par la politique.
+3. **`GITHUB_ACTION_BOUNDED_WRITE`** : uniquement un workflow déjà existant, prévu pour l'opération **exacte**, avec identité OIDC/autorité compatible, périmètre et SHA attendus. Le workflow de fast-forward Stablecoin n'est PAS une autorisation universelle de provisioning Plesk.
+4. **`RUNTIME_REQUIRED`** : pour Task/Session/Lock, permissions réelles, écriture serveur ou opérations non couvertes par un workflow approuvé ; appliquer les autorités runtime et E3/OAuth. Si indisponibles, `BLOCKED` pour cette étape, sans bloquer les travaux indépendants en lecture/branche.
+
+**Ordre contraignant** : GitHub d'abord ; ne pas exposer le bridge si GitHub ou un fallback approuvé suffit. Une sonde read-only n'accorde jamais d'écriture.
+
+## 4. Protocole opérationnel avant chaque mutation
+
+**INTAKE** : lire `AGENTS.md`, `CLAUDE.md`, `SUIVI.md`, `docs/governance/README.md`, les décisions et checkpoints du chantier. Relever `observedAt`, `mainSha`, `branchSha`, PR/issue canonique, CI/revues, propriétaire/collision domains, état de S1/S2 si nécessaire.
+
+**ANTI-COLLISION** : `RESUME_OWNED_FIRST` uniquement si ownership établi ; sinon périmètre indépendant prouvé. Si une autre session/agent possède la tâche/branche/fichier, ne pas supposer la propriété ; arrêter ou délimiter un fichier nouveau indépendant. Ne jamais forcer un ref mouvant. Utiliser un contrôle d'HEAD attendu/lease pour publier.
+
+**DIAGNOSTIC** : privilégier une preuve en lecture seule, hypothèse testable, tests qui distinguent panne et succès. Ne jamais manipuler les secrets dans les issues/CI/artefacts.
+
+**CODAGE** : branche isolée, changements additifs et ciblés ; ne pas remplacer l'architecture ni les permissions existantes ; construire des tests positifs, négatifs, concurrents et de non-régression selon le risque.
+
+**VALIDATION** : CI `mcp-ci.yml` au **SHA exact** de la PR ; typecheck/build, tests, sécurité, secrets, docs et vérification de diff. Relecture technique documentée ; satisfaire les règles de branche et approbations requises sans inventer de revue indépendante.
+
+**FUSION** : exclusivement si toutes les conditions effectivement requises sont satisfaites. Aucune écriture directe sur `main`, aucun auto-merge en guise d'approbation.
+
+**DEPLOIEMENT** : utiliser [`mcp-deploy.yml`](../../.github/workflows/mcp-deploy.yml) uniquement pour le SHA admissible de `main`. Le chemin automatique `push` requiert sa CI `main` validée sur le SHA même ; le chemin manuel ne supprime pas les contrôles serveur ni l'autorisation opérateur. Ne pas lancer un run manuel pour éluder l'absence de CI. Aucune écriture arbitraire sur S1/S2 ou vhost.
+
+**ATTESTATION** : relever résultat CI/deploy, `SHA GitHub main == SHA S1 == SHA runtime` si exigé et observable ; arbre propre, conteneur healthy, API/OAuth/MCP concerné, symptômes corrigés et tests de compatibilité. Une seule preuve manquante donne `UNKNOWN`/`BLOCKED`, pas `SUCCESS`.
+
+**CHECKPOINT** : inscrire en append-only dans l'issue/PR existante parent, SHA de référence, commit écrit, tests/run IDs, permissions observées, travail réellement exécuté, réserves, anti-collision et **unique** `NEXT_ACTION`. Une notification/commentaire n'est pas un bus d'exécution automatique.
+
+## 5. Invariants d'échec et de sortie
+
+- `HEAD_MOVED -> STOP_WRITE -> REOBSERVE -> RECONCILE -> VERIFY`. Ne jamais `force push` sur une branche active pour récupérer un conflit.
+- Si la CI échoue, si la revue exigée manque ou si l'E3/Task/Session/Lock n'est pas prouvé : **pas de fusion ni de production write**. Corriger dans la même continuité admissible et retester.
+- Pour S1/S2 : identifier un plan de rollback réel et les préconditions de reprise avant déploiement. Un rollback exécuté doit être explicitement attesté, pas supposé.
+- Retour au circuit interne lorsque disponible : rapprocher la source GitHub, l'issue/PR et les autorités runtime ; **ne jamais matérialiser rétroactivement un claim fictif**.
+- Pas de Codex/Copilot dans ce mandat ; pas de deuxième MCP, dispatcher Claude, queue, registre ou mémoire canonique.
+
+## 6. Exemple de sélection sur les deux chantiers
+
+- **Provisionnement S1/S2** : [issue #349](https://github.com/Patricked-code/MCP/issues/349), [PR #355](https://github.com/Patricked-code/MCP/pull/355). On peut préparer/tester du code et le plan via GitHub, mais **aucune création Plesk** sans permission et admission runtime réellement démontrées.
+- **Persistance OAuth** : [issue #346](https://github.com/Patricked-code/MCP/issues/346), projet indépendant. Avant toute technologie : observer le stockage réellement disponible sur S1 ; puis étudier codes transactionnels TTL/consommation atomique et refresh tokens à rotation/révocation/replay detection. Respecter l'ownership et ne pas glisser OAuth dans #355.
+
+**Critère terminal du profil** : checkpoint et preuves suffisantes pour reprendre à froid par un autre agent, sans perte, sans collision et sans surdéclaration de production.

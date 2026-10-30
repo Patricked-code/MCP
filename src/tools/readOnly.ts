@@ -18,6 +18,10 @@ import { registerGovernedContextTools } from './governedContext.js';
 import { registerCurrentStateTools } from './currentState.js';
 import { registerGithubControlPlaneReadTools } from './githubControlPlaneRead.js';
 import { registerGithubLifecycleReadTools } from './githubLifecycle.js';
+import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
+import { extendProjectContextWithUniversalCapabilities } from '../provisioning/universalCapabilityDiscovery.js';
+import { probeExistingAdminReadCapabilities } from '../provisioning/universalAdminLiveProbe.js';
+import { EXTERNAL_GOVERNED_RECOVERY_FULL_NAME } from '../governedContext/githubFirstOperationalContinuity.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -27,11 +31,41 @@ async function run(serverId: ServerId, command: string) {
 export function registerReadOnlyTools(server: McpServer): void {
   server.tool('ping', 'Vérifie que le MCP WealthTech SSH Bridge répond.', {}, async () => asText('wealthtech_ssh_bridge_ok'));
 
-  server.tool('get_project_context', 'Retourne le contexte projet, les serveurs et les domaines protégés.', {}, async () => asText(JSON.stringify({
-    name: 'wealthtech_ssh_bridge',
-    mode: 'read-only-first',
-    servers: managedServers
-  }, null, 2)));
+  server.tool('get_project_context', 'Retourne le contexte projet, les serveurs et les domaines protégés.', {}, async () => {
+    const registered = getCurrentToolCatalog().tools;
+    // Actual bounded GitHub API and SSH reads; no privileged commands, no tokens in responses.
+    // Failed providers are reported as BLOCKED without changing legacy project fields.
+    const liveEvidence = await probeExistingAdminReadCapabilities();
+    const project = extendProjectContextWithUniversalCapabilities({
+      name: 'wealthtech_ssh_bridge',
+      mode: 'read-only-first',
+      servers: managedServers
+    }, registered.map(tool => tool.name), registered, liveEvidence);
+    return asText(JSON.stringify({
+      ...project,
+      selectableMaintenanceMethod: {
+        id: 'EXTERNAL_GOVERNED_RECOVERY',
+        fullName: EXTERNAL_GOVERNED_RECOVERY_FULL_NAME,
+        scope: 'MCP_GLOBAL_ALL_WORKSTREAMS',
+        selectedByDefault: false,
+        agentSelectableViaGithub: true,
+        runtimeAutomaticExecution: false,
+        requiresInternalTaskClaimForGithubOnlyOperations: false,
+        entryModel: 'ONE_COMMON_ENGINEERING_LIFECYCLE_TWO_WORK_INTAKES',
+        thisEntry: 'EXTERNAL_GOVERNED_RECOVERY',
+        otherEntry: 'INITIAL_GOVERNED_ENTRY',
+        intakeRole: 'EXTERNAL_GITHUB_FIRST_WORK_INTAKE',
+        workSelectionSources: ['OWNER_DIRECTLY_REQUESTED_WORK', 'AGENT_IDENTIFIED_WORK_WITHIN_EXISTING_OWNER_MANDATE'],
+        sameEngineeringValidationAndDeployPipeline: true,
+        internalMcpAvailabilityNotRequiredForGithubWork: true,
+        noTaskQueueAssignmentCreatedBySelection: true,
+        requiresCurrentGithubPermissionAndCollisionEvidence: true,
+        requiresGovernedDeployAdmission: true,
+        runbook: 'docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md',
+        advisoryOnly: true
+      }
+    }, null, 2));
+  });
 
   server.tool('check_disk_s1', 'Affiche df -h sur S1.', {}, async () => run('s1', 'df -h'));
   server.tool('check_disk_s2', 'Affiche df -h sur S2.', {}, async () => run('s2', 'df -h'));

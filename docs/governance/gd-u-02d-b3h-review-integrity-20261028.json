@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "continuityId": "GD-U-02D-B3H-GITHUB-INDEPENDENT-REVIEW-20261028",
+  "parentIssue": 349,
+  "pullRequest": 355,
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "priorHead": "b990e594e0fdf9a372adc6910b62038116d3f1de",
+  "baselineMainSha": "48a529889517aa1c11974802d23acc3f35e0f187",
+  "stage": "GD-U-02D-B3h",
+  "status": "CODED_CI_GREEN_PENDING_DOCUMENTATION_HEAD_CI",
+  "file": "src/github/observeGithubReviewAndCi.ts",
+  "tests": "tests/observeGithubReviewAndCi.test.ts",
+  "problem": "An APPROVED review status alone is not evidence of an independently authorized reviewer, and HEAD may change during sequential GitHub reviews/CI reads.",
+  "changes": [
+    "Reject bot/non-User reviewers even if an account with plausible login returned APPROVED.",
+    "Require existing authenticated GitHub REST GET /repos/{owner}/{repo}/collaborators/{reviewer}/permission with permission write, maintain or admin. Unknown/read/triage/none, 403, malformed responses fail closed. Do not mint permissions.",
+    "Use the last review state per reviewer on exact HEAD, different login from PR author.",
+    "Re-read PR metadata after reviews/CI/permission checks and require same open, non-draft HEAD and author to mitigate a mid-observation PR change.",
+    "Do not alter current MCP server, Plesk route, OAuth, Plesk E3 issuer, Task Queue, Session/Lock, other agent scopes or universal cartography.",
+    "Still return runtimeWriteAuthorized=false and operationExecuted=false. A GitHub account distinct from author is not proof of independently performed security review by a distinct natural person."
+  ],
+  "evidence": {
+    "redCommit": "9992b4672910bbfc8e62943c99d12ec3a6e29a96",
+    "redActionsRun": 40648573652,
+    "redConclusion": "failure",
+    "implementationCommit": "3e48e51d4abeb7be42089b925c82a38e873950b0",
+    "greenCommit": "f946cf97593e676553442b7c4d2b3549d713c6dc",
+    "greenActionsRun": 40648679733,
+    "greenConclusion": "success",
+    "stepsCompleted": 24,
+    "documentationShaPending": true
+  },
+  "runtime": {
+    "mcpmainAndS1": "48a529889517aa1c11974802d23acc3f35e0f187",
+    "appCiReadyForHumanReview": true,
+    "independentReviewCurrentlyApproved": false,
+    "merged": false,
+    "deployed": false,
+    "productionWriteAuthorized": false,
+    "note": "Existing server deny-by-default guard and absence of authenticated HTTP web↔MCP transport binding are unchanged; no generic server write or Plesk subdomain call was made."
+  },
+  "safeContinuation": [
+    "Revalidate exact PR HEAD against main and current CI/reviews.",
+    "Perform authorized independent security/architecture review including web E3↔MCP transport ownership and one-time receipt semantics.",
+    "A blocked route edit must not be bypassed by alternate filesystem or API path; keep server Plesk write guard fail closed.",
+    "Only after successful independent review and verified write authority should governed merge/deploy and isolated Plesk test be considered."
+  ],
+  "method": [
+    "GITHUB_FIRST",
+    "NO_REGRESSION",
+    "INDEPENDENT_SLICES",
+    "RED_GREEN_REGRESSION",
+    "EXACT_HEAD",
+    "NO_CODEX_OR_COPILOT"
+  ]
+}

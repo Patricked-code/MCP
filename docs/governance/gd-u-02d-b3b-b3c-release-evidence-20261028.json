@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "continuityId": "MCP-GD-U-02D-B3B-B3C-20261028",
+  "parentIssue": 349,
+  "pr": 355,
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "baseMainSha": "48a529889517aa1c11974802d23acc3f35e0f187",
+  "workMethod": [
+    {
+      "id": "GITHUB_FIRST",
+      "rule": "No direct writes on main or S1/S2. Code through PR, exact-head CI, independent review, governed merge and deploy."
+    },
+    {
+      "id": "NO_REGRESSION",
+      "rule": "Only new files in B3b/B3c; preserve existing 138 tools, E3, OAuth, Task Queue, Sessions, claims, locks and GitRegistry V2."
+    },
+    {
+      "id": "INDEPENDENT_SLICES",
+      "rule": "Independent new files and tests; no changes to Regulatory PR #353, GWC PR #354, OAuth #207 or BUS #319."
+    },
+    {
+      "id": "RED_GREEN_REGRESSION",
+      "rule": "Write RED tests first, then GREEN real provider/typed gate, then complete CI on exact HEAD and checkpoint."
+    }
+  ],
+  "additions": [
+    {
+      "slice": "GD-U-02D-B3b",
+      "path": "src/provisioning/pleskGovernedReleaseGate.ts",
+      "tests": "tests/pleskGovernedReleaseGate.test.ts",
+      "status": "CODED_NOT_MERGED",
+      "effect": "Combine existing independently observed signed E3/OAuth, owned task/session/lock, authenticated transport binding and exact SHA/PR review, with HOLD if any proof missing",
+      "execution": false
+    },
+    {
+      "slice": "GD-U-02D-B3c",
+      "path": "src/github/observeGithubReviewAndCi.ts",
+      "tests": "tests/observeGithubReviewAndCi.test.ts",
+      "status": "CODED_NOT_MERGED",
+      "effect": "Perform authenticated read-only GitHub PR/reviews/workflow runs; verify exact PR HEAD, latest workflow conclusion and independent approval; reject draft, absence, stale approval or provider errors",
+      "execution": false
+    }
+  ],
+  "releaseGates": {
+    "mainAlignment": "Main currently matches PR base SHA; do not rebase when zero commits behind. Recheck before changing review or merging.",
+    "pending": [
+      "CI success on final HEAD",
+      "independent reviewer approval on exact PR HEAD",
+      "atomic E3 single-use consumption via existing session service",
+      "server-trusted web session to OAuth transport linkage",
+      "authoritative E3+Task+Session+Lock+CI runtime write admission",
+      "separate production deploy and postcondition attestation"
+    ],
+    "prohibited": [
+      "Auto-merge draft",
+      "Merge without independent review",
+      "Claim that 165 targets are all callable",
+      "Direct Plesk or SSH mutations",
+      "Duplicate E3/Task Queue/governance gateways"
+    ]
+  },
+  "note": "CI and review observations alone never grant Plesk rights. Even complete metadata remains HOLD until the existing E3 single-use/transport/session and runtime admission are genuinely bridged. The code contains no secret and does not register a new MCP write tool.",
+  "nextAction": "Verify latest exact PR HEAD CI. Independently review B3b/B3c and PR #355. Then implement single-use E3 consumption and trusted server-side binding in the existing web/SessionService, with RED-GREEN-REGRESSION, before considering merge and governed deploy."
+}

@@ -3,6 +3,7 @@ import type { Request, RequestHandler, Router } from 'express';
 import { z } from 'zod';
 import { planPleskSubdomain, type PleskSubdomainInput } from './pleskSite.js';
 import { observePleskSubdomain, createPleskSubdomainOnServer } from './pleskSshAdapter.js';
+import type { PleskCreationOutcome } from './pleskExecute.js';
 import type { PleskPolicy, PleskRemotePort } from './pleskSshAdapter.js';
 
 export type PleskWebDependencies = {
@@ -14,7 +15,24 @@ export type PleskWebDependencies = {
   policy: () => PleskPolicy;
   io: PleskRemotePort;
   writeEnabled: () => boolean;
-  authorizeRuntimeWrite: (input: PleskSubdomainInput) => Promise<boolean>;
+  /** Server-originated E3 request context; proof is untrusted until redeemed
+   * against the authenticated MCP transport using a server-owned broker. */
+  authorizeRuntimeWrite: (input: PleskSubdomainInput, context?: Readonly<{
+    req:Request;pairingProof:string;consentTicket:string;binding:string;
+  }>) => Promise<boolean>;
+  /** When installed by production, refuse web submissions without an MCP pairing proof. */
+  requireMcpPairing?:boolean;
+  /**
+   * Optional additive B3e single-use E3 consumption gate, evaluated AFTER
+   * existing signed E3 and live governed runtime authority checks, BEFORE SSH.
+   * The actual server must supply an authenticated request-bound verifier,
+   * never a boolean from the request body.
+   */
+  consumeGovernedConsent?: (req: Request, input: PleskSubdomainInput,
+    signed: Readonly<{ ticket: string; binding: string }>) => Promise<boolean>;
+  /** The existing governed executor, bound to server-authenticated Task/Session/Lock/E3/CI.
+   * Mandatory for every MCP-paired write. Never accept an untrusted SSH port. */
+  executeGovernedCreate?: (req: Request,input: PleskSubdomainInput) => Promise<PleskCreationOutcome>;
 };
 
 const PURPOSE = 'plesk-create-subdomain';
@@ -28,7 +46,8 @@ const Params = z.object({
 const ConsentForm = Params.extend({
   consent_ticket: z.string().min(1).max(500),
   confirm_fqdn: z.string().min(4).max(320),
-  consent_creation: z.literal('CREATE_SUBDOMAIN')
+  consent_creation: z.literal('CREATE_SUBDOMAIN'),
+  mcp_pair_proof: z.string().max(128).optional()
 }).strict();
 
 function escapeHtml(text: string): string {
@@ -72,6 +91,9 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
           +hidden
           +'<input type="hidden" name="consent_ticket" value="'+escapeHtml(ticket)+'" />'
           +'<input type="hidden" name="confirm_fqdn" value="'+escapeHtml(fqdn)+'" />'
+          +(deps.requireMcpPairing
+            ?'<label>Preuve de liaison MCP OAuth (émise par l’outil MCP)<input name="mcp_pair_proof" type="password" maxlength="128" autocomplete="off" required /></label>'
+            :'')
           +'<label><input type="checkbox" name="consent_creation" value="CREATE_SUBDOMAIN" required /> '
           +'Je confirme la création de '+escapeHtml(fqdn)+'</label>'
           +'<button type="submit">Créer le sous-domaine</button></form>';
@@ -87,7 +109,8 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
   router.post('/provisioning/plesk-subdomain', deps.requireLogin, async (req, res) => {
     const parsed = ConsentForm.safeParse(req.body);
     if (!parsed.success) { res.status(403).json({status:'BLOCKED',reason:'CONSENT_INVALID'}); return; }
-    const {consent_ticket,confirm_fqdn,consent_creation: _consentCreation,...p} = parsed.data;
+    const {consent_ticket,confirm_fqdn,consent_creation: _consentCreation,
+      mcp_pair_proof:pairingProof,...p} = parsed.data;
     const fqdn = p.label + '.' + p.parentDomain;
     if (!deps.sameOrigin(req)
       || !deps.verifyTicket(PURPOSE,consent_ticket,binding(req,p,deps))
@@ -98,11 +121,38 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
     try {
       // E3 web consent is necessary but never grants runtime authority by itself.
       // A fresh governed session/claim/lock check must explicitly authorize this target.
-      if (!await deps.authorizeRuntimeWrite(toInput(p))) {
+      if ((deps.requireMcpPairing===true && !pairingProof)
+        || !await deps.authorizeRuntimeWrite(toInput(p),{
+          req,pairingProof:pairingProof??'',consentTicket:consent_ticket,
+          binding:binding(req,p,deps)
+        })) {
         res.status(403).json({status:'BLOCKED',reason:'GOVERNED_RUNTIME_AUTHORITY_REQUIRED'});
         return;
       }
-      const outcome = await createPleskSubdomainOnServer(toInput(p),deps.policy(),true,deps.io);
+      // B3e: when the trusted server installs a durable one-use E3 consumer,
+      // reject replays before the existing Plesk executor sees any write.
+      // No consumer is installed in production yet; authorizeRuntimeWrite
+      // remains fail-closed there.
+      if (deps.requireMcpPairing === true && !deps.consumeGovernedConsent) {
+        res.status(403).json({status:'BLOCKED',reason:'E3_SINGLE_USE_CONSUMPTION_REQUIRED'});
+        return;
+      }
+      // A paired OAuth transport must NEVER fall through to the generic SSH
+      // adapter. Check the trusted executor before burning the single-use E3.
+      if (deps.requireMcpPairing === true && !deps.executeGovernedCreate) {
+        res.status(403).json({status:'BLOCKED',reason:'GOVERNED_EXECUTOR_NOT_BOUND'});
+        return;
+      }
+      if (deps.consumeGovernedConsent
+        && !await deps.consumeGovernedConsent(req,toInput(p),{
+          ticket:consent_ticket,binding:binding(req,p,deps)
+        })) {
+        res.status(403).json({status:'BLOCKED',reason:'E3_SINGLE_USE_CONSUMPTION_REQUIRED'});
+        return;
+      }
+      const outcome = deps.requireMcpPairing === true
+        ? await deps.executeGovernedCreate!(req,toInput(p))
+        : await createPleskSubdomainOnServer(toInput(p),deps.policy(),true,deps.io);
       const code = outcome.status === 'CREATED' ? 201 : outcome.status === 'NO_OP' ? 200
         : outcome.status === 'BLOCKED' ? 403 : 503;
       res.status(code).json({ fqdn, serverId:p.serverId,...outcome });

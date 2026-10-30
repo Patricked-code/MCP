@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "continuationId": "GD-U-02D-B3F-HTTP-MCP-ADMISSION-20261028",
+  "parent": {
+    "issue": 349,
+    "pr": 355,
+    "branch": "mcp/universal-github-plesk-server-capabilities-20261028"
+  },
+  "phase": "GD-U-02D-B3f",
+  "status": "READ_ONLY_RUNTIME_BRIDGE_CODED_AND_CI_VERIFIED_NOT_REGISTERED_OR_DEPLOYED",
+  "objective": "Use existing signed E3 and OAuth verification, one owned Task Queue candidate, the actual governed MCP transport-to-session binding and the existing Task/Session/Lock/LiveState reader, without inferring OAuth session ownership from the browser cookie or headers.",
+  "files": {
+    "implementation": "src/provisioning/pleskHttpToMcpAdmission.ts",
+    "tests": "tests/pleskHttpToMcpAdmission.test.ts",
+    "existingProductionRoute": "src/provisioning/pleskWebRoutes.ts",
+    "existingProductionComposition": "src/server.ts"
+  },
+  "proofs": {
+    "redCommit": "c813593c688ef98a6473833d1359694aac40717c",
+    "redCi": 40645666039,
+    "greenCommit": "9dd1440571aba79c94f091179bea32b02af143b8",
+    "greenCi": 40645743410,
+    "redGreenMethod": "RED test suite added first; full CI failure on missing module, GREEN full CI after read-only composition; validate exact final HEAD after documentation.",
+    "realProviderAdapters": [
+      "inspectPleskConsentUsingExistingServerVerifiers -> existing signed E3 + OAuth mcp:write",
+      "resolveOwnedPleskWebSessionFromRuntime -> existing Task Queue, Sessions, Locks and Live State",
+      "inspectPleskWebTransportLinkFromRuntime -> actual server MCP transport binding",
+      "readExistingPleskAuthorityFromRuntime -> exact Task/Session/Lock/SHA read with no seeding"
+    ]
+  },
+  "security": {
+    "browserWebSessionCanProveMcpTransport": false,
+    "authenticatedTransportServerOnly": true,
+    "browserSuppliedSessionIdsRejected": true,
+    "storesReadOnly": true,
+    "noNewAuthorityStore": true,
+    "runtimeWriteAuthorized": "ALWAYS_FALSE",
+    "operationExecuted": false,
+    "rootOrPleskPrivilegeGranted": false,
+    "productionWriteGateRemains": "src/server.ts authorizeRuntimeWrite: async () => false",
+    "noDirectMainOrS1Mutation": true,
+    "blockedToolChange": "Attempt to modify the web route's authorization boundary was blocked by tool security controls. It was not retried through other paths; an associated not-yet-implemented test was reverted from the PR.",
+    "guardrails": [
+      "GITHUB_FIRST",
+      "NO_REGRESSION",
+      "INDEPENDENT_SLICES",
+      "RED_GREEN_REGRESSION"
+    ]
+  },
+  "outstanding": [
+    "Authorized server-side binding between web operator consent and the actual OAuth MCP authenticated transport (not a request parameter)",
+    "Real GitHub independent code/security review on exact PR HEAD",
+    "Atomic E3 receipt directory provisioning and trusted wiring into the existing route (no duplicate E3 issuer)",
+    "Actual Plesk permission and subscription attestation for a scoped server and target",
+    "Governed merge and deploy of code after all required approvals",
+    "Dry-run, then explicit-consent isolated subdomain postcondition check and rollback"
+  ],
+  "nextAction": "Keep production fail-closed. Obtain governed authority and tool allowance to wire trusted HTTP->MCP transport in existing server route without bypassing review or original E3. Re-test RED->GREEN->REGRESSION at exact SHA, then obtain independent review. Do not merge until release gates pass."
+}
