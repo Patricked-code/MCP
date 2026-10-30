@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "kind": "DERIVED_DOCUMENTARY_CONTINUITY_RELATIONS",
+  "rootId": "GD-U-CONT-20261030-ROOT-01",
+  "canonicalIssue": 349,
+  "rootIssueComment": 6512613394,
+  "expandedRootComment": 6512677760,
+  "workScope": "ONLY_UNIVERSAL_GOVERNED_DEPLOY",
+  "exclusions": [
+    "issue235_GLOBAL_MCP",
+    "pr354_GWC_PRECODE",
+    "issue346_OAUTH_PERSISTENCE",
+    "unrelated_global_work"
+  ],
+  "identifiers": [
+    {
+      "id": "MCP-GD-UNIVERSAL-CAPABILITIES-BIFURCATION-20261028",
+      "type": "DOCUMENTARY_WORKSTREAM_REGISTRY",
+      "source": "docs/governance/universal-capabilities-bifurcation-20261028.json"
+    },
+    {
+      "id": "GD-U-METHOD-20261028-01",
+      "type": "WORK_METHOD_VERSION",
+      "source": "docs/governance/universal-capabilities-bifurcation-20261028.json#workingMethodology.version"
+    },
+    {
+      "id": "EXTERNAL_GOVERNED_RECOVERY",
+      "type": "SELECTABLE_OPERATING_PROFILE",
+      "source": ".mcp/github-first-operational-policy.json"
+    },
+    {
+      "id": "GD-U-355-P1-BOOTSTRAP-RECEIPT-ATTESTATION",
+      "type": "WORK_ACTION_NOT_RUNTIME_TASK",
+      "source": "issue349#6512084049"
+    },
+    {
+      "id": "GD-U-02D-CONT-20261029-B3I-ROOT-01",
+      "type": "CHILD_OPERATIONAL_CONTINUITY",
+      "source": "docs/governance/gd-u-02d-b3i-authenticated-mcp-web-pairing-20261029.json"
+    }
+  ],
+  "localCheckpoints": [
+    {
+      "id": "MCP-GD-U-02D-B3B-B3C-20261028",
+      "sourceField": "continuityId",
+      "kind": "LOCAL_CONTINUITY_ID",
+      "scope": "gd-u-02d-b3b-b3c-release-evidence-20261028.json",
+      "ownerPr": 355,
+      "parentDocumentaryRoot": "GD-U-CONT-20261030-ROOT-01",
+      "path": "docs/governance/gd-u-02d-b3b-b3c-release-evidence-20261028.json",
+      "sourceBlobSha": "746b5d9739a9558fd4fc340fb8f51544fd249271",
+      "originalStatus": null,
+      "originalNextAction": "Verify latest exact PR HEAD CI. Independently review B3b/B3c and PR #355. Then implement single-use E3 consumption and trusted server-side binding in the existing web/SessionService, with RED-GREEN-REGRESSION, before considering merge and governed deploy."
+    },
+    {
+      "id": "GD-U-02D-B3D-E3-SINGLE-USE-20261028",
+      "sourceField": "continuationId",
+      "kind": "LOCAL_CONTINUATION_ID",
+      "scope": "gd-u-02d-b3d-e3-single-use-20261028.json",
+      "ownerPr": 355,
+      "parentDocumentaryRoot": "GD-U-CONT-20261030-ROOT-01",
+      "path": "docs/governance/gd-u-02d-b3d-e3-single-use-20261028.json",
+      "sourceBlobSha": "136114c31854415a6fdb68b9b2b98165770d50bf",
+      "originalStatus": "CODED_PENDING_EXACT_HEAD_CI_AND_SECURITY_REVIEW",
+      "originalNextAction": "Verify latest CI HEAD and fix all tests; obtain independent security review. Then wire this bounded consumption to the existing Plesk web E3 path and governed runtime stores, without weakening fail-closed authorizeRuntimeWrite or adding a second orchestration engine."
+    },
+    {
+      "id": "GD-U-02D-B3F-HTTP-MCP-ADMISSION-20261028",
+      "sourceField": "continuationId",
+      "kind": "LOCAL_CONTINUATION_ID",
+      "scope": "gd-u-02d-b3f-http-mcp-admission-20261028.json",
+      "ownerPr": 355,
+      "parentDocumentaryRoot": "GD-U-CONT-20261030-ROOT-01",
+      "path": "docs/governance/gd-u-02d-b3f-http-mcp-admission-20261028.json",
+      "sourceBlobSha": "b548fb0fabfc3bff00d5a10a3be912f144d48edf",
+      "originalStatus": "READ_ONLY_RUNTIME_BRIDGE_CODED_AND_CI_VERIFIED_NOT_REGISTERED_OR_DEPLOYED",
+      "originalNextAction": "Keep production fail-closed. Obtain governed authority and tool allowance to wire trusted HTTP->MCP transport in existing server route without bypassing review or original E3. Re-test RED->GREEN->REGRESSION at exact SHA, then obtain independent review. Do not merge until release gates pass."
+    },
+    {
+      "id": "GD-U-02D-B3G-TRUSTED-CONSUMPTION-CLOCK-20261028",
+      "sourceField": "id",
+      "kind": "LOCAL_CHECKPOINT_ID",
+      "scope": "gd-u-02d-b3g-trusted-consumption-clock-20261028.json",
+      "ownerPr": 355,
+      "parentDocumentaryRoot": "GD-U-CONT-20261030-ROOT-01",
+      "path": "docs/governance/gd-u-02d-b3g-trusted-consumption-clock-20261028.json",
+      "sourceBlobSha": "b7f7b8763dbd2c52bb617cf500b3a5d4f3a7892d",
+      "originalStatus": "IMPLEMENTED_GREEN_EXACT_CODE_SHA_PENDING_FINAL_DOCUMENTATION_HEAD_CI",
+      "originalNextAction": "GD-U-02D-B3h: separately test and harden independent review/CI observation semantics and add a real trusted web↔MCP transport correlation design within existing session authority. Preserve production fail-closed, do not bypass blocked router editing or use Codex/Copilot. Reconcile doc drift, obtain independent review, only then consider governed merge/deploy."
+    },
+    {
+      "id": "GD-U-02D-B3H-GITHUB-INDEPENDENT-REVIEW-20261028",
+      "sourceField": "continuityId",
+      "kind": "LOCAL_CONTINUITY_ID",
+      "scope": "gd-u-02d-b3h-review-integrity-20261028.json",
+      "ownerPr": 355,
+      "parentDocumentaryRoot": "GD-U-CONT-20261030-ROOT-01",
+      "path": "docs/governance/gd-u-02d-b3h-review-integrity-20261028.json",
+      "sourceBlobSha": "58f3ecf3d5f225a29650dbf7c8e4d32553b2aeaf",
+      "originalStatus": "CODED_CI_GREEN_PENDING_DOCUMENTATION_HEAD_CI",
+      "originalNextAction": null
+    },
+    {
+      "id": "GD-U-02D-CONT-20261029-B3I-ROOT-01",
+      "sourceField": "continuityId",
+      "kind": "LOCAL_CONTINUITY_ID",
+      "scope": "gd-u-02d-b3i-authenticated-mcp-web-pairing-20261029.json",
+      "ownerPr": 355,
+      "parentDocumentaryRoot": "GD-U-CONT-20261030-ROOT-01",
+      "path": "docs/governance/gd-u-02d-b3i-authenticated-mcp-web-pairing-20261029.json",
+      "sourceBlobSha": "1655fd535896ae082f3504dfe7b04d1d9ec2e400",
+      "originalStatus": null,
+      "originalNextAction": [
+        "Verify final exact HEAD CI after this documentation commit, reconcile PR and comments.",
+        "Under authenticated MCP session, issue and redeem the pairing proof in a scoped real integration test, without attempting Plesk mutation until release gates available.",
+        "Install mandatory B3d E3 single-use admission and revalidate Task/Session/Lock and actual Plesk permission at time of operation.",
+        "Obtain verified repository branch/ruleset policy and an explicitly authorized release decision, without forging an independent reviewer.",
+        "Only then governed merge/deploy S1, post-deploy health check and isolated subdomain preflight/consent/rollback, retaining HOLD_WRITE when any proof is missing."
+      ]
+    },
+    {
+      "id": "GD-U-02D-B3i-GITHUB-REVIEW-TIMESTAMP-AMBIGUITY-20261028",
+      "sourceField": "id",
+      "kind": "LOCAL_CHECKPOINT_ID",
+      "scope": "gd-u-02d-b3i-review-timestamp-ambiguity-20261028.json",
+      "ownerPr": 355,
+      "parentDocumentaryRoot": "GD-U-CONT-20261030-ROOT-01",
+      "path": "docs/governance/gd-u-02d-b3i-review-timestamp-ambiguity-20261028.json",
+      "sourceBlobSha": "bcc4b1e4fa6bcaf08aaa7bda9634ccc43d94d17d",
+      "originalStatus": null,
+      "originalNextAction": "Check exact-head CI, review independence, Task Queue/Session/Claim/Lock through authorized live MCP connection. Continue server-owned web E3 to trusted MCP transport binding in an isolated approved scope; preserve fail-closed Plesk write guard. No merge/deploy before independent approval and runtime authority."
+    }
+  ],
+  "ownedPullRequests": [
+    {
+      "pr": 350,
+      "role": "MERGED_PLESK_FOUNDATION",
+      "rootComment": 6512630214
+    },
+    {
+      "pr": 351,
+      "role": "GRT_RUNTIME_ADMISSION_DRAFT",
+      "rootComment": 6512631839
+    },
+    {
+      "pr": 352,
+      "role": "REGULATORY_SUBPATH_PREFLIGHT_DRAFT",
+      "rootComment": 6512632687
+    },
+    {
+      "pr": 353,
+      "role": "REGULATORY_ADMISSION_DRAFT",
+      "rootComment": 6512637024,
+      "existingSessionId": "caa50d12-737c-47f9-9ee0-6cf8b763fdbe",
+      "taskId": "TASK-20261027-001"
+    },
+    {
+      "pr": 355,
+      "role": "UNIVERSAL_CAPABILITIES_EXECUTION_BRANCH",
+      "rootComment": 6512638033
+    },
+    {
+      "pr": 356,
+      "role": "FORENSIC_ARCHIVE_DRAFT",
+      "rootComment": 6512638973
+    }
+  ],
+  "historicalGovernedIdsNotContinuity": [
+    "caa50d12-737c-47f9-9ee0-6cf8b763fdbe",
+    "TASK-20261027-001"
+  ],
+  "timeline": [
+    "issue349#6353793573",
+    "PR350#merged",
+    "issue349#6459168274",
+    "issue349#6459201967",
+    "PR355#GD-U-01",
+    "PR355#GD-U-MAX",
+    "PR355#GD-U-02A",
+    "PR355#GD-U-02C",
+    "PR355#GD-U-02D",
+    "issue349#6506328959",
+    "issue349#6512084049",
+    "issue349#6512318604",
+    "issue349#6512322802",
+    "issue349#6512468496",
+    "issue349#6512613394",
+    "issue349#6512677760"
+  ],
+  "limitations": [
+    "NOT_ALL_PILOT_SESSION_CHECKPOINTS_INDIVIDUALLY_VERIFIED",
+    "NOT_ALL_GITHUB_PR_COMMITS_RUNS_REVIEWS_INDIVIDUALLY_CERTIFIED",
+    "DOCUMENTARY_ROOT_DOES_NOT_CREATE_RUNTIME_CLAIM",
+    "DO_NOT_DECLARE_AUTONOMOUS_EXECUTION_ATTACHED"
+  ],
+  "continuousWorkRule": "Read issue349 and exact current PRs; reobserve Live State/TaskQueue/claim/locks; pick owned collision-free scoped work only; RED/GREEN/CI/reviews/merge/deploy/attest/checkpoint/recompute in existing mechanisms."
+}
