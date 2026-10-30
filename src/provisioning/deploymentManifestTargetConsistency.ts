@@ -132,3 +132,20 @@ export async function assessGithubDeploymentManifestAtRevision(
    return assessDeploymentManifestTarget(target,raw);
  }catch{return block('SOURCE_MANIFEST_INVALID');}
 }
+
+/** Actual MCP server GitHub read transport; imports the existing protected
+ * credential port on demand. Never installs or grants a new credential.
+ * Kept separate from admission/executor: a matching manifest is NOT a release.
+ */
+export async function inspectDeploymentManifestThroughExistingGithubPort(
+  target:UniversalDeploymentTarget,
+  revision:string
+):Promise<ManifestTargetAssessment>{
+  try{
+    const {githubJsonRequestWithServerCredential}=await import('../github/connection.js');
+    return assessGithubDeploymentManifestAtRevision(target,revision,
+      endpoint=>githubJsonRequestWithServerCredential(endpoint,{
+        method:'GET',timeoutMs:2_500
+      }));
+  }catch{return block('SOURCE_MANIFEST_READ_UNAVAILABLE');}
+}
