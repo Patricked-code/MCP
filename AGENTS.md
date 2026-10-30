@@ -1,5 +1,9 @@
 # AGENTS.md — Registre synthétique des agents
 
+## Mode selectable de reprise externe (documentaire, non exécutoire)
+
+Sur demande explicite du propriétaire, l'agent peut sélectionner le profil `EXTERNAL_GOVERNED_RECOVERY` défini dans [la politique GitHub-first](.mcp/github-first-operational-policy.json). Lire alors le [runbook de bifurcation externe](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md) **après** l'INTAKE, le HEAD exact et la vérification des propriétaires/collision domains. Le profil ne crée **aucun** claim, session, lock, permission, droit de déploiement ou dispatcher ; la CI, les revues, les permissions E3/OAuth/OIDC et Governed Deploy demeurent obligatoires. Réutiliser la même issue/PR lorsque le périmètre le permet, sinon arrêter l'écriture et réconcilier. Ne jamais déclencher automatiquement ce mode du seul fait qu'une connexion MCP échoue.
+
 ## Fil d'Ariane audit obligatoire — mémoire historique sans perte
 
 À chaque arrivée, reprise, fin de lot et handoff, lire et maintenir par **liens de preuves** le [fil d'Ariane historique MCP](docs/governance/agent-historical-continuity-breadcrumbs-20261016.md). Ce document n'est pas une mémoire concurrente : il pointe la chronologie issue #65+, GWB-02/03/04, les quinze jalons PCM, les 94 blueprints du backlog et les checkpoints du bus documentaire existant #235. **Chaque intervenant laisse origine/parent, baseline datée et SHA, faits et états non prouvés, décisions/écarts, propriétaire réellement vérifié et collision domain, preuves exact-head, `NEXT_ACTION` et critère d'acceptation.** Conserver les anciens checkpoints comme historiques en les reliant à leurs successeurs. Ne jamais marquer `AUDIT_CONSOLIDATED` ou `GLOBAL_MCP_COMPLETE` sans couvertures et preuves requises ; ne pas déclarer exécuté ce qui est seulement planifié. Ne pas modifier les documents partagés dans une PR parallèle sur le même périmètre : réconcilier d'abord le HEAD et les domaines de collision.

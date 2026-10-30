@@ -1,5 +1,9 @@
 # CLAUDE.md — Porte d’entrée Claude Code
 
+## Sélection explicite de la bifurcation externe gouvernée
+
+Si la mission demande `EXTERNAL_GOVERNED_RECOVERY`, suivre [le runbook GitHub-first / OIDC](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md) et [la politique MCP existante](.mcp/github-first-operational-policy.json) ; appliquer d'abord l'INTAKE de `AGENTS.md`, la réobservation de GitHub et les contrôles anti-collision. Ce profil est une **procédure**, ni un mode privilégié ni un worker autonome ; il ne contourne jamais E3/OAuth, Task Queue, Sessions, Locks, CI, revues ou Governed Deploy. Aucun Codex/Copilot et aucune nouvelle PR ou autorité parallèle pour le même chantier.
+
 ## Coordination inter-agents et reprise à froid — directive du 16 octobre 2026
 
 Avant une nouvelle implémentation ou une reprise, suivre le **protocole commun du fichier [AGENTS.md](AGENTS.md)** et lire la [directive de coordination de l'issue maîtresse #235](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094). La PR #300 et son déploiement ont été validés, **pas** les tests fonctionnels GWB-04 ni l'ensemble du MCP. Point de reprise PCM-03/GWB-04 : `TB-W4-H-01` puis `TB-W4-K-01`, après relecture du HEAD et des preuves ; travaux indépendants admissibles possibles en parallèle. GitHub-first / Actions OIDC ; aucun claim/session/ownership fictif et aucune reprise automatique d'une conversation existante.

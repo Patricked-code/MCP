@@ -2,6 +2,50 @@
   "schemaVersion": 1,
   "policyId": "github-first-operational-continuity-v1",
   "mode": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
+  "selectableProfiles": {
+    "EXTERNAL_GOVERNED_RECOVERY": {
+        "id": "EXTERNAL_GOVERNED_RECOVERY",
+        "label": "Bifurcation externe gouvernée — GitHub-first / OIDC / Non-régression",
+        "kind": "SELECTABLE_NON_AUTHORITATIVE_OPERATING_PROCEDURE",
+        "enabledForExplicitSelection": true,
+        "selectedByDefault": false,
+        "executionEngineCreated": false,
+        "runtimeWritePermissionGranted": false,
+        "taskSessionOrLockCreated": false,
+        "policyAuthority": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
+        "runbook": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
+        "allowedSelectionReasons": [
+            "OWNER_EXPLICITLY_REQUESTS_EXTERNAL_GOVERNED_RECOVERY",
+            "NORMAL_MCP_ADMISSION_OR_OAUTH_PATH_UNAVAILABLE",
+            "BOUNDED_MCP_REPAIR_OR_EXTENSION_REQUIRES_GITHUB_FIRST_CONTINUITY"
+        ],
+        "transportOrder": [
+            "GITHUB_ONLY",
+            "GITHUB_ACTION_READONLY_EVIDENCE",
+            "GITHUB_ACTION_BOUNDED_WRITE",
+            "RUNTIME_REQUIRED"
+        ],
+        "mandatoryGates": [
+            "EXACT_HEAD_AND_BRANCH_REOBSERVED",
+            "CANONICAL_ISSUE_AND_EXISTING_PR_REUSED",
+            "OWNERSHIP_COLLISION_DEPENDENCY_CHECKED",
+            "NO_RUNTIME_AUTHORITY_INFERRED_FROM_GITHUB_ACCESS",
+            "NO_SERVER_MUTATION_FROM_READONLY_EVIDENCE",
+            "CI_AND_REQUIRED_REVIEWS_ON_EXACT_SHA",
+            "EXISTING_GOVERNED_DEPLOY_WITH_ATTESTATION_ONLY_IF_ADMITTED",
+            "CHECKPOINT_AND_RETURN_TO_NORMAL_GOVERNANCE"
+        ],
+        "forbidden": [
+            "BYPASS_E3_OAUTH_OIDC_TASK_SESSION_LOCK",
+            "GITHUB_DIRECT_MAIN_PUSH",
+            "SERVER_DIRECT_VERSIONED_SOURCE_EDIT",
+            "UNBOUNDED_SHELL_OR_PRIVILEGE_ESCALATION",
+            "FAKE_REVIEW_FAKE_CLAIM_OR_UNVERIFIED_DEPLOY",
+            "PARALLEL_DISPATCHER_OR_NEW_CANONICAL_AUTHORITY"
+        ],
+        "scope": "Selection of existing transport and governance controls only; no automatic branch, PR, production write, merge or deployment."
+    }
+  },
   "bootstrap": {
     "githubConnectionSufficient": true,
     "runtimeMcpIsBootstrapPrerequisite": false,
