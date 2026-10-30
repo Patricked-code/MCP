@@ -68,8 +68,9 @@ export async function inspectExistingPleskAuthority(
   transport:SessionRequest,
   ports:ExistingPleskAuthorityPorts
 ):Promise<ExistingPleskAuthorityInspection> {
-  const at=ports.now().toISOString();
-  const nowMs=Date.parse(at);
+  // Keep the starting clock for monotonicity, but validate all leases against
+  // a fresh server timestamp AFTER the asynchronous source reads.
+  const startedAtMs=ports.now().getTime();
   const key='plesk:'+request.target.serverId+':'+request.target.parentDomain;
   const normalized=normalizeLockScope({type:'resource',key});
   const blockers:string[]=[];
@@ -77,10 +78,6 @@ export async function inspectExistingPleskAuthority(
   if(!identity || identity.assurance!=='oauth_subject'
     || identity.principalId!==request.expectedPrincipalId
     || !request.expectedPrincipalId)blockers.push('PRINCIPAL_NOT_AUTHENTICATED');
-  if(!SHA.test(request.expectedHeadSha) || !within(request.now,nowMs,30_000)){
-    blockers.push('REQUEST_TIMESTAMP_OR_HEAD_INVALID');
-  }
-
   let task:TaskView|null=null;
   let session:SessionView|null=null;
   let locks:readonly LockView[]=[];
@@ -94,6 +91,16 @@ export async function inspectExistingPleskAuthority(
     ]);
   }catch {
     blockers.push('RUNTIME_SOURCE_UNAVAILABLE');
+  }
+  // An expired bootstrap receipt or lock must not inherit the earlier
+  // request timestamp when reading Task/Session/Live State was slow.
+  const at=ports.now().toISOString();
+  const nowMs=Date.parse(at);
+  if(!Number.isFinite(startedAtMs)||nowMs<startedAtMs){
+    blockers.push('AUTHORITY_CLOCK_INVALID');
+  }
+  if(!SHA.test(request.expectedHeadSha) || !within(request.now,nowMs,30_000)){
+    blockers.push('REQUEST_TIMESTAMP_OR_HEAD_INVALID');
   }
 
   if(!task || task.taskId!==request.expectedTaskId
