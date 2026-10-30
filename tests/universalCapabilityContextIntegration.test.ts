@@ -96,3 +96,14 @@ test('GD-U-02: genuine registered handlers are shown as registered but never as 
   assert.equal(branch?.executionReady,false);
   assert.equal(result.universalCapabilities.executableBindings.anyAdminRightGranted,false);
 });
+
+test('read-only project context exposes two work entries but only one engineering lifecycle',()=>{
+  const source = readFileSync('src/tools/readOnly.ts','utf8');
+  assert.match(source,/entryModel: 'ONE_COMMON_ENGINEERING_LIFECYCLE_TWO_WORK_INTAKES'/);
+  assert.match(source,/thisEntry: 'EXTERNAL_GOVERNED_RECOVERY'/);
+  assert.match(source,/otherEntry: 'INITIAL_GOVERNED_ENTRY'/);
+  assert.match(source,/sameEngineeringValidationAndDeployPipeline: true/);
+  assert.match(source,/noTaskQueueAssignmentCreatedBySelection: true/);
+  assert.match(source,/requiresInternalTaskClaimForGithubOnlyOperations: false/);
+  assert.doesNotMatch(source,/registerTool\('mcp_preview_external_governed_recovery'/);
+});
