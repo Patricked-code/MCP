@@ -1,4 +1,4 @@
-# Runbook — Bifurcation externe gouvernée GitHub-first / OIDC / Non-régression
+# Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression
 
 **Profil sélectionnable :** `EXTERNAL_GOVERNED_RECOVERY` (non activé par défaut).
 **Dépôt :** `Patricked-code/MCP`.

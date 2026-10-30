@@ -6,6 +6,7 @@
     "EXTERNAL_GOVERNED_RECOVERY": {
         "id": "EXTERNAL_GOVERNED_RECOVERY",
         "label": "Bifurcation externe gouvernée — GitHub-first / OIDC / Non-régression",
+        "fullName": "Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression",
         "kind": "SELECTABLE_NON_AUTHORITATIVE_OPERATING_PROCEDURE",
         "enabledForExplicitSelection": true,
         "selectedByDefault": false,
