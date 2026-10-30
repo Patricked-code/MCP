@@ -29,6 +29,12 @@ export type GovernedPleskAuthoritySnapshot=Readonly<{
   lockOwnerSessionId:string|null;
   lockScope:string;
   lockExpiresAt:string;
+  /** Observed only from the existing authenticated governed session and Live State. */
+  bootstrapReceiptId?:string|null;
+  bootstrapReceiptExpiresAt?:string|null;
+  bootstrapReceiptStateVersion?:number|null;
+  liveStateVersion?:number|null;
+  sessionRevision?:number|null;
   consent:'CREATE_SUBDOMAIN'|null;
   githubMainSha:string|null;
   serverCheckoutSha:string|null;
@@ -78,6 +84,7 @@ function admitted(req:GovernedPleskSubdomainRequest,a:GovernedPleskAuthoritySnap
   const age=ageMs(a.observedAt,serverNow);
   const heartbeat=ageMs(a.sessionLastHeartbeatAt,serverNow);
   const expiry=ageMs(a.lockExpiresAt,serverNow);
+  const bootstrapExpiry=ageMs(a.bootstrapReceiptExpiresAt??'',serverNow);
   return a.source==='EXISTING_GOVERNED_RUNTIME'
     && a.taskId===req.expectedTaskId
     && a.taskStatus==='IN_PROGRESS'
@@ -96,7 +103,15 @@ function admitted(req:GovernedPleskSubdomainRequest,a:GovernedPleskAuthoritySnap
     && a.runtimeRevisionSha===req.expectedHeadSha
     && age!==null && age>=0 && age<=30_000
     && heartbeat!==null && heartbeat>=0 && heartbeat<=300_000
-    && expiry!==null && expiry<0 && expiry>=-300_000;
+    && expiry!==null && expiry<0 && expiry>=-300_000
+    // Never rely only on an earlier read of the bootstrap: its original
+    // identity, runtime version and expiry must be present at the last gate.
+    && typeof a.bootstrapReceiptId==='string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(a.bootstrapReceiptId)
+    && Number.isSafeInteger(a.sessionRevision) && (a.sessionRevision??0)>0
+    && Number.isSafeInteger(a.bootstrapReceiptStateVersion)
+    && a.bootstrapReceiptStateVersion===a.liveStateVersion
+    && bootstrapExpiry!==null && bootstrapExpiry<0;
 }
 const blocked=(reason:string):GovernedPleskSubdomainOutcome=>({
   status:'BLOCKED',reason,
@@ -148,7 +163,9 @@ export async function executeGovernedPleskSubdomain(
         return {code:1,stdout:'',stderr:''};
       }
       const executionNow=trustedInstant(deps);
-      if(!latest||!executionNow||!admitted(req,latest,executionNow)){
+      if(!latest||!executionNow||!admitted(req,latest,executionNow)
+        ||latest.bootstrapReceiptId!==authority.bootstrapReceiptId
+        ||(latest.sessionRevision??0)<(authority.sessionRevision??0)){
         deniedBeforeWrite=true;
         return {code:1,stdout:'',stderr:''};
       }
