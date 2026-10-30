@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{pr}/reviews",
+  "positions": [
+    163,
+    180
+  ],
+  "items": [
+    {
+      "pr": 242,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 243,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 244,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 245,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 246,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 247,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 248,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5415355145,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-05T13:40:00Z",
+          "commit_id": "884414ff68b7e4b381f99252cab55f9cdaad7011",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/248#pullrequestreview-5415355145",
+          "body_length": 2968
+        }
+      ]
+    },
+    {
+      "pr": 249,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 250,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 251,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 252,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 253,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 254,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 255,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 256,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 257,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 258,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 259,
+      "status": "COMPLETE",
+      "reviews": []
+    }
+  ]
+}

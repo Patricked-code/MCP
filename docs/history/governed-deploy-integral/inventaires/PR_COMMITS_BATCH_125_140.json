@@ -1,0 +1,673 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    125,
+    140
+  ],
+  "items": [
+    {
+      "pr": 193,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b628dee962416d12ceaf9ad9bc412a3cfdfd710c",
+          "date": "2026-09-26T16:25:40Z",
+          "parents": [
+            "0eb55a511c821bb4082e147325cf211404a8e5f6"
+          ],
+          "subject": "docs(program): close attested repository SSH blueprint",
+          "url": "https://github.com/Patricked-code/MCP/commit/b628dee962416d12ceaf9ad9bc412a3cfdfd710c"
+        },
+        {
+          "sha": "8da9f36a47a55bf7d0ef70622c8b9205a4d99685",
+          "date": "2026-09-26T16:26:30Z",
+          "parents": [
+            "b628dee962416d12ceaf9ad9bc412a3cfdfd710c"
+          ],
+          "subject": "docs: checkpoint repository SSH terminal evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/8da9f36a47a55bf7d0ef70622c8b9205a4d99685"
+        },
+        {
+          "sha": "e70835748b7fd9d76ce6060989baaf97833b506a",
+          "date": "2026-09-26T16:26:33Z",
+          "parents": [
+            "8da9f36a47a55bf7d0ef70622c8b9205a4d99685"
+          ],
+          "subject": "docs(tasks): close repository SSH workstream",
+          "url": "https://github.com/Patricked-code/MCP/commit/e70835748b7fd9d76ce6060989baaf97833b506a"
+        },
+        {
+          "sha": "8db93daa5afc411a154ff67a7d342badcb2ae571",
+          "date": "2026-09-26T16:26:36Z",
+          "parents": [
+            "e70835748b7fd9d76ce6060989baaf97833b506a"
+          ],
+          "subject": "docs(todo): mark repository SSH E2E done",
+          "url": "https://github.com/Patricked-code/MCP/commit/8db93daa5afc411a154ff67a7d342badcb2ae571"
+        },
+        {
+          "sha": "cf5c05134daba79fdf78c410064f1b4a5af83c83",
+          "date": "2026-09-26T16:26:40Z",
+          "parents": [
+            "8db93daa5afc411a154ff67a7d342badcb2ae571"
+          ],
+          "subject": "docs(roadmap): record repository SSH completion",
+          "url": "https://github.com/Patricked-code/MCP/commit/cf5c05134daba79fdf78c410064f1b4a5af83c83"
+        },
+        {
+          "sha": "005d5f1c461f4e0ea7b5d403bf781601cd68e40d",
+          "date": "2026-09-26T16:26:43Z",
+          "parents": [
+            "cf5c05134daba79fdf78c410064f1b4a5af83c83"
+          ],
+          "subject": "docs(changelog): record repository SSH terminal attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/005d5f1c461f4e0ea7b5d403bf781601cd68e40d"
+        },
+        {
+          "sha": "0d8569f3dc94ae26a693b188e9d9ac1a3a866380",
+          "date": "2026-09-26T16:29:43Z",
+          "parents": [
+            "005d5f1c461f4e0ea7b5d403bf781601cd68e40d"
+          ],
+          "subject": "test(program): reconcile W3 ready set after SSH completion",
+          "url": "https://github.com/Patricked-code/MCP/commit/0d8569f3dc94ae26a693b188e9d9ac1a3a866380"
+        }
+      ]
+    },
+    {
+      "pr": 194,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "6b8b84c346eaeb73c9862a4efaf90f2a0ddeaa36",
+          "date": "2026-09-27T03:38:45Z",
+          "parents": [
+            "b3eb823429a4357b3a7abc49421bd8bd5cbf232a"
+          ],
+          "subject": "test(connection): RED A2.2.2 bounded client evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/6b8b84c346eaeb73c9862a4efaf90f2a0ddeaa36"
+        },
+        {
+          "sha": "69add8179ab6f3d6ea72d8251a83932c13e35953",
+          "date": "2026-09-27T03:41:38Z",
+          "parents": [
+            "6b8b84c346eaeb73c9862a4efaf90f2a0ddeaa36"
+          ],
+          "subject": "feat(connection): derive bounded client evidence from ConnectionContext",
+          "url": "https://github.com/Patricked-code/MCP/commit/69add8179ab6f3d6ea72d8251a83932c13e35953"
+        },
+        {
+          "sha": "a63198fa4525e5489d01142480bb300f42804e50",
+          "date": "2026-09-27T03:44:43Z",
+          "parents": [
+            "69add8179ab6f3d6ea72d8251a83932c13e35953"
+          ],
+          "subject": "docs: checkpoint A2.2.2 bounded client evidence candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/a63198fa4525e5489d01142480bb300f42804e50"
+        }
+      ]
+    },
+    {
+      "pr": 195,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "41d74ea12a0169e164065d6236160242828ece22",
+          "date": "2026-09-27T04:00:08Z",
+          "parents": [
+            "70ee280c89d5ca3747f762a89287923dde320add"
+          ],
+          "subject": "test(program): RED A2.2.2 terminal closure evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/41d74ea12a0169e164065d6236160242828ece22"
+        },
+        {
+          "sha": "d375a68d8687bc232a308d932a9648982f9dd5d2",
+          "date": "2026-09-27T04:02:20Z",
+          "parents": [
+            "41d74ea12a0169e164065d6236160242828ece22"
+          ],
+          "subject": "docs(program): close attested TB-W3-A22-02 and recompute readiness",
+          "url": "https://github.com/Patricked-code/MCP/commit/d375a68d8687bc232a308d932a9648982f9dd5d2"
+        }
+      ]
+    },
+    {
+      "pr": 196,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "be1200c15392af40f47e0d84d3cb509a461f4da5",
+          "date": "2026-09-28T17:25:50Z",
+          "parents": [
+            "eb1667d2a377a6fd2d15f715a6fcedd819386f0c"
+          ],
+          "subject": "test(connection): RED A3.1 OAuth correlation inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/be1200c15392af40f47e0d84d3cb509a461f4da5"
+        },
+        {
+          "sha": "b21f95846ff03e448102162860eb080708764834",
+          "date": "2026-09-28T17:27:58Z",
+          "parents": [
+            "be1200c15392af40f47e0d84d3cb509a461f4da5"
+          ],
+          "subject": "docs(governance): inventory A3.1 OAuth correlation surfaces",
+          "url": "https://github.com/Patricked-code/MCP/commit/b21f95846ff03e448102162860eb080708764834"
+        },
+        {
+          "sha": "0dfe8b36d6f1c1ee05a18ae2e54800fa0d156c6a",
+          "date": "2026-09-28T17:28:26Z",
+          "parents": [
+            "b21f95846ff03e448102162860eb080708764834"
+          ],
+          "subject": "docs(program): complete A3.1 inventory handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/0dfe8b36d6f1c1ee05a18ae2e54800fa0d156c6a"
+        },
+        {
+          "sha": "1104b88913dee4939da31ca3825489496077b796",
+          "date": "2026-09-28T17:33:19Z",
+          "parents": [
+            "0dfe8b36d6f1c1ee05a18ae2e54800fa0d156c6a"
+          ],
+          "subject": "docs(governance): checkpoint A3.1 OAuth correlation inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/1104b88913dee4939da31ca3825489496077b796"
+        },
+        {
+          "sha": "90d8116bdc112afc5374b411a461c84ef26ef680",
+          "date": "2026-09-28T17:34:00Z",
+          "parents": [
+            "1104b88913dee4939da31ca3825489496077b796"
+          ],
+          "subject": "test(program): preserve historical A2.2 handoff after downstream progress",
+          "url": "https://github.com/Patricked-code/MCP/commit/90d8116bdc112afc5374b411a461c84ef26ef680"
+        },
+        {
+          "sha": "54b400b48f0a053471550c07ee6d600b1f389da7",
+          "date": "2026-09-28T17:36:21Z",
+          "parents": [
+            "90d8116bdc112afc5374b411a461c84ef26ef680"
+          ],
+          "subject": "docs(governance): record A3.1 green evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/54b400b48f0a053471550c07ee6d600b1f389da7"
+        }
+      ]
+    },
+    {
+      "pr": 199,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "84296aee9fc8ed50552cc1f42dd0252ab003f8d1",
+          "date": "2026-09-28T17:44:32Z",
+          "parents": [
+            "c65a83f203932ee2c464eb2116c02b0204216fd0"
+          ],
+          "subject": "docs(governance): checkpoint A3 post-merge runtime gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/84296aee9fc8ed50552cc1f42dd0252ab003f8d1"
+        }
+      ]
+    },
+    {
+      "pr": 200,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "fe30066342dcb36abab2f29560f289ccd5d00bac",
+          "date": "2026-09-29T19:31:38Z",
+          "parents": [
+            "54f195973362da30d0e03c6623bbe6bb7e39f4ea"
+          ],
+          "subject": "test(governance): RED runtime authority read-only evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/fe30066342dcb36abab2f29560f289ccd5d00bac"
+        },
+        {
+          "sha": "d823fd1149ff566001e9f39e4cda69079370495b",
+          "date": "2026-09-29T19:37:03Z",
+          "parents": [
+            "fe30066342dcb36abab2f29560f289ccd5d00bac"
+          ],
+          "subject": "feat(operational-memory): add bounded collision projections",
+          "url": "https://github.com/Patricked-code/MCP/commit/d823fd1149ff566001e9f39e4cda69079370495b"
+        },
+        {
+          "sha": "c9d21473c9e07a6ab906d9cd1ad089812d36d5d1",
+          "date": "2026-09-29T19:37:50Z",
+          "parents": [
+            "d823fd1149ff566001e9f39e4cda69079370495b"
+          ],
+          "subject": "feat(evidence): expose governed authority probes through GitHub OIDC",
+          "url": "https://github.com/Patricked-code/MCP/commit/c9d21473c9e07a6ab906d9cd1ad089812d36d5d1"
+        },
+        {
+          "sha": "34e265430ba152f595f22b92ddbc11edd3f46468",
+          "date": "2026-09-29T19:38:26Z",
+          "parents": [
+            "c9d21473c9e07a6ab906d9cd1ad089812d36d5d1"
+          ],
+          "subject": "test(operational-memory): verify sanitized collision evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/34e265430ba152f595f22b92ddbc11edd3f46468"
+        }
+      ]
+    },
+    {
+      "pr": 202,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "36ba412bbec6fd9451cf0b93573aa8e3444afe30",
+          "date": "2026-09-29T19:52:09Z",
+          "parents": [
+            "d53b9de48617920eae7a0bba46f5a7387bc11ab8"
+          ],
+          "subject": "docs(governance): checkpoint A3.2 TLS deployment blocker",
+          "url": "https://github.com/Patricked-code/MCP/commit/36ba412bbec6fd9451cf0b93573aa8e3444afe30"
+        }
+      ]
+    },
+    {
+      "pr": 203,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ec3807695bccc926716b11a26369a603819c1555",
+          "date": "2026-09-29T20:13:25Z",
+          "parents": [
+            "7945d2e7bb1bd3fc7a2edd372c036cdb9cc26999"
+          ],
+          "subject": "test(governance): RED converge TLS intake 201",
+          "url": "https://github.com/Patricked-code/MCP/commit/ec3807695bccc926716b11a26369a603819c1555"
+        },
+        {
+          "sha": "696dff1b02c422bb9afaf333ee65e814f1cbbb3e",
+          "date": "2026-09-29T20:17:02Z",
+          "parents": [
+            "ec3807695bccc926716b11a26369a603819c1555"
+          ],
+          "subject": "docs(governance): converge TLS recovery intake 201",
+          "url": "https://github.com/Patricked-code/MCP/commit/696dff1b02c422bb9afaf333ee65e814f1cbbb3e"
+        }
+      ]
+    },
+    {
+      "pr": 207,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b94efc4d62cb3a112c3a48f56bb53d9aa1aafedb",
+          "date": "2026-09-29T23:26:13Z",
+          "parents": [
+            "9511d434f3a66a2b92e847eabfd26596200e5f5c"
+          ],
+          "subject": "test(oauth): add RED durable refresh authorization coverage",
+          "url": "https://github.com/Patricked-code/MCP/commit/b94efc4d62cb3a112c3a48f56bb53d9aa1aafedb"
+        },
+        {
+          "sha": "e61891feb67d9039c58f78d1474e95e943b90edc",
+          "date": "2026-09-29T23:27:54Z",
+          "parents": [
+            "b94efc4d62cb3a112c3a48f56bb53d9aa1aafedb"
+          ],
+          "subject": "feat(oauth): add persistent rotating refresh grant store",
+          "url": "https://github.com/Patricked-code/MCP/commit/e61891feb67d9039c58f78d1474e95e943b90edc"
+        },
+        {
+          "sha": "8777949c0b0e0d0b518ecb992b1b42af2148c488",
+          "date": "2026-09-29T23:28:20Z",
+          "parents": [
+            "e61891feb67d9039c58f78d1474e95e943b90edc"
+          ],
+          "subject": "feat(oauth): configure bounded refresh grant lifetimes",
+          "url": "https://github.com/Patricked-code/MCP/commit/8777949c0b0e0d0b518ecb992b1b42af2148c488"
+        },
+        {
+          "sha": "e8f0ce7e54e38e72a902532450bec1ea47f7cb15",
+          "date": "2026-09-29T23:28:25Z",
+          "parents": [
+            "8777949c0b0e0d0b518ecb992b1b42af2148c488"
+          ],
+          "subject": "docs(oauth): document refresh grant TTL configuration",
+          "url": "https://github.com/Patricked-code/MCP/commit/e8f0ce7e54e38e72a902532450bec1ea47f7cb15"
+        },
+        {
+          "sha": "306bda9c70bd23142ebd11ac0a1c0968fb563408",
+          "date": "2026-09-29T23:28:54Z",
+          "parents": [
+            "e8f0ce7e54e38e72a902532450bec1ea47f7cb15"
+          ],
+          "subject": "feat(oauth): add refresh grant and bounded auth correlation",
+          "url": "https://github.com/Patricked-code/MCP/commit/306bda9c70bd23142ebd11ac0a1c0968fb563408"
+        },
+        {
+          "sha": "3f213fabca82fd700d0d6fc2e721876bd44a901d",
+          "date": "2026-09-29T23:29:12Z",
+          "parents": [
+            "306bda9c70bd23142ebd11ac0a1c0968fb563408"
+          ],
+          "subject": "feat(oauth): propagate bounded grant references into AuthInfo",
+          "url": "https://github.com/Patricked-code/MCP/commit/3f213fabca82fd700d0d6fc2e721876bd44a901d"
+        },
+        {
+          "sha": "249ecb3c47441d36e4931c28beb4eac5cf2b0dc6",
+          "date": "2026-09-29T23:29:17Z",
+          "parents": [
+            "3f213fabca82fd700d0d6fc2e721876bd44a901d"
+          ],
+          "subject": "feat(oauth): extend request identity with bounded OAuth references",
+          "url": "https://github.com/Patricked-code/MCP/commit/249ecb3c47441d36e4931c28beb4eac5cf2b0dc6"
+        },
+        {
+          "sha": "3d277f7a205d234e59020cb8ec2cf4a1e210e039",
+          "date": "2026-09-29T23:29:22Z",
+          "parents": [
+            "249ecb3c47441d36e4931c28beb4eac5cf2b0dc6"
+          ],
+          "subject": "feat(oauth): carry OAuth correlation into governed session requests",
+          "url": "https://github.com/Patricked-code/MCP/commit/3d277f7a205d234e59020cb8ec2cf4a1e210e039"
+        },
+        {
+          "sha": "735270ea9953405630c1c7ee013bc8e8eb54a96c",
+          "date": "2026-09-29T23:29:27Z",
+          "parents": [
+            "3d277f7a205d234e59020cb8ec2cf4a1e210e039"
+          ],
+          "subject": "feat(oauth): bind durable grant references to ConnectionContext",
+          "url": "https://github.com/Patricked-code/MCP/commit/735270ea9953405630c1c7ee013bc8e8eb54a96c"
+        },
+        {
+          "sha": "2e6b94f9521f9452cc07f450d1aaae48683133ed",
+          "date": "2026-09-29T23:29:31Z",
+          "parents": [
+            "735270ea9953405630c1c7ee013bc8e8eb54a96c"
+          ],
+          "subject": "fix(oauth): redact refresh and code credentials from logs",
+          "url": "https://github.com/Patricked-code/MCP/commit/2e6b94f9521f9452cc07f450d1aaae48683133ed"
+        },
+        {
+          "sha": "9d44a619a459de694e9c503b096863ae0b952955",
+          "date": "2026-09-29T23:30:09Z",
+          "parents": [
+            "2e6b94f9521f9452cc07f450d1aaae48683133ed"
+          ],
+          "subject": "fix(oauth): preserve historical ConnectionContext shape",
+          "url": "https://github.com/Patricked-code/MCP/commit/9d44a619a459de694e9c503b096863ae0b952955"
+        },
+        {
+          "sha": "f53a0be6c14d7f900fa16e698c2cc122d85de215",
+          "date": "2026-09-29T23:33:48Z",
+          "parents": [
+            "9d44a619a459de694e9c503b096863ae0b952955"
+          ],
+          "subject": "test(oauth): assert refresh credential redaction",
+          "url": "https://github.com/Patricked-code/MCP/commit/f53a0be6c14d7f900fa16e698c2cc122d85de215"
+        },
+        {
+          "sha": "df086cc108b9d954deb71d2cecb2e48e9aeddf4e",
+          "date": "2026-09-29T23:34:28Z",
+          "parents": [
+            "f53a0be6c14d7f900fa16e698c2cc122d85de215"
+          ],
+          "subject": "docs(governance): converge durable OAuth refresh continuity",
+          "url": "https://github.com/Patricked-code/MCP/commit/df086cc108b9d954deb71d2cecb2e48e9aeddf4e"
+        },
+        {
+          "sha": "b889a31b3bdd328c54232c1889bd056740a786c7",
+          "date": "2026-09-29T23:35:30Z",
+          "parents": [
+            "df086cc108b9d954deb71d2cecb2e48e9aeddf4e"
+          ],
+          "subject": "docs(oauth): checkpoint durable OAuth continuity candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/b889a31b3bdd328c54232c1889bd056740a786c7"
+        },
+        {
+          "sha": "be1f66c3012e0f39627a4194d808f80a267bc5ac",
+          "date": "2026-09-29T23:35:37Z",
+          "parents": [
+            "b889a31b3bdd328c54232c1889bd056740a786c7"
+          ],
+          "subject": "docs(oauth): record durable OAuth candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/be1f66c3012e0f39627a4194d808f80a267bc5ac"
+        },
+        {
+          "sha": "def216f4d6f1b713832329fe01edf533e1a2ca1d",
+          "date": "2026-09-29T23:35:43Z",
+          "parents": [
+            "be1f66c3012e0f39627a4194d808f80a267bc5ac"
+          ],
+          "subject": "docs(oauth): record refresh-token governance decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/def216f4d6f1b713832329fe01edf533e1a2ca1d"
+        },
+        {
+          "sha": "c845f824119b01ee073c3ca9d74205823ca10d91",
+          "date": "2026-09-29T23:35:51Z",
+          "parents": [
+            "def216f4d6f1b713832329fe01edf533e1a2ca1d"
+          ],
+          "subject": "docs(oauth): document opt-in rotating refresh tokens",
+          "url": "https://github.com/Patricked-code/MCP/commit/c845f824119b01ee073c3ca9d74205823ca10d91"
+        },
+        {
+          "sha": "b7767f816df4f5c6fd5cc5819a60ca21a63e4a2c",
+          "date": "2026-09-29T23:39:00Z",
+          "parents": [
+            "c845f824119b01ee073c3ca9d74205823ca10d91"
+          ],
+          "subject": "fix(governance): preserve frozen post-UAC baseline SHA",
+          "url": "https://github.com/Patricked-code/MCP/commit/b7767f816df4f5c6fd5cc5819a60ca21a63e4a2c"
+        },
+        {
+          "sha": "6cab0be33c4dbbbbe203c59a786192ee79719350",
+          "date": "2026-09-29T23:39:10Z",
+          "parents": [
+            "b7767f816df4f5c6fd5cc5819a60ca21a63e4a2c"
+          ],
+          "subject": "test(governance): reconcile remediated TLS intake evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/6cab0be33c4dbbbbe203c59a786192ee79719350"
+        },
+        {
+          "sha": "37954b36c624f56cf7b3ead0bf26634ba431467f",
+          "date": "2026-09-29T23:39:17Z",
+          "parents": [
+            "6cab0be33c4dbbbbe203c59a786192ee79719350"
+          ],
+          "subject": "test(governance): pin A3.3 additive dependency",
+          "url": "https://github.com/Patricked-code/MCP/commit/37954b36c624f56cf7b3ead0bf26634ba431467f"
+        },
+        {
+          "sha": "8129c60e7587d9883cd0de2ef5871351074baee0",
+          "date": "2026-09-29T23:46:57Z",
+          "parents": [
+            "37954b36c624f56cf7b3ead0bf26634ba431467f"
+          ],
+          "subject": "docs(governance): record A3.2 runtime materialization",
+          "url": "https://github.com/Patricked-code/MCP/commit/8129c60e7587d9883cd0de2ef5871351074baee0"
+        },
+        {
+          "sha": "253d23c42423ab52a4ea0d042abec5dafa17d3fc",
+          "date": "2026-09-29T23:47:03Z",
+          "parents": [
+            "8129c60e7587d9883cd0de2ef5871351074baee0"
+          ],
+          "subject": "docs(a3): checkpoint governed task materialization",
+          "url": "https://github.com/Patricked-code/MCP/commit/253d23c42423ab52a4ea0d042abec5dafa17d3fc"
+        }
+      ]
+    },
+    {
+      "pr": 208,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "de1d079bf850f4401dd75d6bdab76442754c0aa5",
+          "date": "2026-10-01T18:14:16Z",
+          "parents": [
+            "9511d434f3a66a2b92e847eabfd26596200e5f5c"
+          ],
+          "subject": "test(oauth): RED explicit operator consent before code issuance",
+          "url": "https://github.com/Patricked-code/MCP/commit/de1d079bf850f4401dd75d6bdab76442754c0aa5"
+        },
+        {
+          "sha": "695e65a796d95a182992a76e2a06a5b61875da95",
+          "date": "2026-10-01T18:14:48Z",
+          "parents": [
+            "de1d079bf850f4401dd75d6bdab76442754c0aa5"
+          ],
+          "subject": "feat(oauth): require explicit operator consent before code issuance",
+          "url": "https://github.com/Patricked-code/MCP/commit/695e65a796d95a182992a76e2a06a5b61875da95"
+        },
+        {
+          "sha": "ee78ec1cecea5d21de9f2fbccfdfaa5a53140945",
+          "date": "2026-10-01T18:14:48Z",
+          "parents": [
+            "695e65a796d95a182992a76e2a06a5b61875da95"
+          ],
+          "subject": "docs(governance): converge OAuth consent lot and checkpoint candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/ee78ec1cecea5d21de9f2fbccfdfaa5a53140945"
+        }
+      ]
+    },
+    {
+      "pr": 209,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "7577ab66975a01d630bafe1dbea63a438f383b98",
+          "date": "2026-10-01T18:17:33Z",
+          "parents": [
+            "2febc46dda1ddfbe275658957ebfd8c5bdbc7128"
+          ],
+          "subject": "test(program): RED OAuth consent terminal closure evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/7577ab66975a01d630bafe1dbea63a438f383b98"
+        },
+        {
+          "sha": "cf83abc4a437e6c644fceef53013d44001dcc28b",
+          "date": "2026-10-01T18:21:08Z",
+          "parents": [
+            "7577ab66975a01d630bafe1dbea63a438f383b98"
+          ],
+          "subject": "docs(program): close attested TB-W3-OAUTH-CONSENT-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/cf83abc4a437e6c644fceef53013d44001dcc28b"
+        }
+      ]
+    },
+    {
+      "pr": 210,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "806e0e89ca8fd65e5d5fb71a9e64665bc2b907f7",
+          "date": "2026-10-01T18:27:54Z",
+          "parents": [
+            "661a0517aebb3bc6dafe4eec4afc3677820ed510"
+          ],
+          "subject": "test(governance): RED B3.1 multi-repository residual inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/806e0e89ca8fd65e5d5fb71a9e64665bc2b907f7"
+        },
+        {
+          "sha": "aae43b703865e8892fc2a84d8dc5e9b4f6359067",
+          "date": "2026-10-01T18:28:50Z",
+          "parents": [
+            "806e0e89ca8fd65e5d5fb71a9e64665bc2b907f7"
+          ],
+          "subject": "docs(governance): inventory B3.1 residual single-repository consumers",
+          "url": "https://github.com/Patricked-code/MCP/commit/aae43b703865e8892fc2a84d8dc5e9b4f6359067"
+        }
+      ]
+    },
+    {
+      "pr": 211,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b3a46af94f10af78f31156c8c266592aa94f4191",
+          "date": "2026-10-01T18:37:25Z",
+          "parents": [
+            "153ef45218285bbfe9586755854e2937a021d85e"
+          ],
+          "subject": "test(c1.1): RED registry readiness OIDC probe",
+          "url": "https://github.com/Patricked-code/MCP/commit/b3a46af94f10af78f31156c8c266592aa94f4191"
+        },
+        {
+          "sha": "fe4331f64674915f290bb0452e974625f999fc51",
+          "date": "2026-10-01T18:37:25Z",
+          "parents": [
+            "b3a46af94f10af78f31156c8c266592aa94f4191"
+          ],
+          "subject": "feat(c1.1): bounded GitRegistry V2 readiness OIDC read-only probe",
+          "url": "https://github.com/Patricked-code/MCP/commit/fe4331f64674915f290bb0452e974625f999fc51"
+        }
+      ]
+    },
+    {
+      "pr": 212,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "1704f48fba95ba76c925c4a1b298b22efd1eabff",
+          "date": "2026-10-01T18:44:18Z",
+          "parents": [
+            "e7143506ea30acc666805f67f3a186eea4d1060b"
+          ],
+          "subject": "test(c1.1): RED terminal evidence for TB-W3-C1-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/1704f48fba95ba76c925c4a1b298b22efd1eabff"
+        },
+        {
+          "sha": "a6c78212c7579f6bb08efe4aa2bf03c2b49f9f82",
+          "date": "2026-10-01T18:44:18Z",
+          "parents": [
+            "1704f48fba95ba76c925c4a1b298b22efd1eabff"
+          ],
+          "subject": "docs(c1.1): close TB-W3-C1-01 after deploy and registry attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/a6c78212c7579f6bb08efe4aa2bf03c2b49f9f82"
+        }
+      ]
+    },
+    {
+      "pr": 213,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "a8fad7ce0154ea7dd1ff2a10d2968200a596412b",
+          "date": "2026-10-01T18:49:46Z",
+          "parents": [
+            "1a2303722b4e30f02d056c455ff5088739bd57ac"
+          ],
+          "subject": "test(g1): RED real-client presence observation",
+          "url": "https://github.com/Patricked-code/MCP/commit/a8fad7ce0154ea7dd1ff2a10d2968200a596412b"
+        },
+        {
+          "sha": "4d8009bbb9ba15fc04902a7ee859e7b7fdcacb46",
+          "date": "2026-10-01T18:49:46Z",
+          "parents": [
+            "a8fad7ce0154ea7dd1ff2a10d2968200a596412b"
+          ],
+          "subject": "feat(g1): journal real-client presence separately from heartbeat and health",
+          "url": "https://github.com/Patricked-code/MCP/commit/4d8009bbb9ba15fc04902a7ee859e7b7fdcacb46"
+        }
+      ]
+    },
+    {
+      "pr": 214,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "708b79c748382674f88f262a09b99bae81d517f1",
+          "date": "2026-10-01T18:55:58Z",
+          "parents": [
+            "90df50b2497cdc17eb01a60c9223ca06fc715893"
+          ],
+          "subject": "test(g1): RED terminal evidence for TB-W4-G1-01",
+          "url": "https://github.com/Patricked-code/MCP/commit/708b79c748382674f88f262a09b99bae81d517f1"
+        },
+        {
+          "sha": "482ea05302a4b7b2b79ae16d9d0d3c6914b3e000",
+          "date": "2026-10-01T18:55:58Z",
+          "parents": [
+            "708b79c748382674f88f262a09b99bae81d517f1"
+          ],
+          "subject": "docs(g1): close TB-W4-G1-01 after deploy attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/482ea05302a4b7b2b79ae16d9d0d3c6914b3e000"
+        }
+      ]
+    }
+  ]
+}

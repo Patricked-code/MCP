@@ -1,0 +1,1099 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "batch": [
+    37,
+    48
+  ],
+  "items": [
+    {
+      "pr": 43,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "babfcd07c4699aa2cf7be4fce5da7682213fc3a9",
+          "date": "2026-08-13T01:48:41Z",
+          "parents": [
+            "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7"
+          ],
+          "subject": "docs: attest first automatic MCP deployment",
+          "url": "https://github.com/Patricked-code/MCP/commit/babfcd07c4699aa2cf7be4fce5da7682213fc3a9"
+        },
+        {
+          "sha": "2307292ef44ff50de36d851fe4f162272a3897cd",
+          "date": "2026-08-13T01:50:40Z",
+          "parents": [
+            "babfcd07c4699aa2cf7be4fce5da7682213fc3a9"
+          ],
+          "subject": "fix(docs): use governed terminal state labels",
+          "url": "https://github.com/Patricked-code/MCP/commit/2307292ef44ff50de36d851fe4f162272a3897cd"
+        }
+      ]
+    },
+    {
+      "pr": 44,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "30965d8e55b3255ce8630b5008f80621e4b0d257",
+          "date": "2026-08-13T04:38:43Z",
+          "parents": [
+            "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2"
+          ],
+          "subject": "docs: specify governed session continuity v1",
+          "url": "https://github.com/Patricked-code/MCP/commit/30965d8e55b3255ce8630b5008f80621e4b0d257"
+        },
+        {
+          "sha": "4ebd03185e6fa7324d635db03d135e4ef4e0f2fe",
+          "date": "2026-08-13T04:40:34Z",
+          "parents": [
+            "30965d8e55b3255ce8630b5008f80621e4b0d257"
+          ],
+          "subject": "docs: classify session continuity specification",
+          "url": "https://github.com/Patricked-code/MCP/commit/4ebd03185e6fa7324d635db03d135e4ef4e0f2fe"
+        },
+        {
+          "sha": "e80e420859653224dd4c03964cd87e2ae4ffb618",
+          "date": "2026-08-13T04:58:06Z",
+          "parents": [
+            "4ebd03185e6fa7324d635db03d135e4ef4e0f2fe"
+          ],
+          "subject": "docs: record approval of session continuity spec",
+          "url": "https://github.com/Patricked-code/MCP/commit/e80e420859653224dd4c03964cd87e2ae4ffb618"
+        },
+        {
+          "sha": "7a99f5c41679b64f44871b4f6c5321aa620a8b9b",
+          "date": "2026-08-13T05:10:56Z",
+          "parents": [
+            "e80e420859653224dd4c03964cd87e2ae4ffb618"
+          ],
+          "subject": "docs: add governed session TDD plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/7a99f5c41679b64f44871b4f6c5321aa620a8b9b"
+        },
+        {
+          "sha": "7e45ba2f3dd0df9500bc693f3190be4e6ed44933",
+          "date": "2026-08-13T05:12:58Z",
+          "parents": [
+            "7a99f5c41679b64f44871b4f6c5321aa620a8b9b"
+          ],
+          "subject": "docs: normalize TDD plan whitespace",
+          "url": "https://github.com/Patricked-code/MCP/commit/7e45ba2f3dd0df9500bc693f3190be4e6ed44933"
+        },
+        {
+          "sha": "eedc0f88cb396f4149921e28731f4c1d48147339",
+          "date": "2026-08-13T05:16:42Z",
+          "parents": [
+            "7e45ba2f3dd0df9500bc693f3190be4e6ed44933"
+          ],
+          "subject": "test(live-state): expose stale documentation sha",
+          "url": "https://github.com/Patricked-code/MCP/commit/eedc0f88cb396f4149921e28731f4c1d48147339"
+        },
+        {
+          "sha": "2ba63acb3652857551fb01bd7252b18b4cb79674",
+          "date": "2026-08-13T05:24:35Z",
+          "parents": [
+            "eedc0f88cb396f4149921e28731f4c1d48147339"
+          ],
+          "subject": "fix(live-state): reject stale documentation sha",
+          "url": "https://github.com/Patricked-code/MCP/commit/2ba63acb3652857551fb01bd7252b18b4cb79674"
+        },
+        {
+          "sha": "ddad61dde5e593beb764095b5694d7867c97c7f5",
+          "date": "2026-08-13T05:27:01Z",
+          "parents": [
+            "2ba63acb3652857551fb01bd7252b18b4cb79674"
+          ],
+          "subject": "test(operational-memory): define atomic store contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/ddad61dde5e593beb764095b5694d7867c97c7f5"
+        },
+        {
+          "sha": "d973ef3947d9c63ce0763b07ae3c1fc8593d5eca",
+          "date": "2026-08-13T05:30:59Z",
+          "parents": [
+            "ddad61dde5e593beb764095b5694d7867c97c7f5"
+          ],
+          "subject": "feat(operational-memory): add versioned atomic stores",
+          "url": "https://github.com/Patricked-code/MCP/commit/d973ef3947d9c63ce0763b07ae3c1fc8593d5eca"
+        },
+        {
+          "sha": "3f633f49642bd5ac5d260ffed5d912349e71b032",
+          "date": "2026-08-13T05:33:39Z",
+          "parents": [
+            "d973ef3947d9c63ce0763b07ae3c1fc8593d5eca"
+          ],
+          "subject": "test(operational-memory): define event journal contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/3f633f49642bd5ac5d260ffed5d912349e71b032"
+        },
+        {
+          "sha": "305079973745b034b938af50785f10458efee138",
+          "date": "2026-08-13T05:36:43Z",
+          "parents": [
+            "3f633f49642bd5ac5d260ffed5d912349e71b032"
+          ],
+          "subject": "feat(operational-memory): add sanitized event journal",
+          "url": "https://github.com/Patricked-code/MCP/commit/305079973745b034b938af50785f10458efee138"
+        },
+        {
+          "sha": "d5b653dfb598c6115a2c6d43e411a7751887af6b",
+          "date": "2026-08-13T05:39:17Z",
+          "parents": [
+            "305079973745b034b938af50785f10458efee138"
+          ],
+          "subject": "test(session): define durable resume policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/d5b653dfb598c6115a2c6d43e411a7751887af6b"
+        },
+        {
+          "sha": "c876ae67c0b76f77230f1d029aae0b2d0c87a2f1",
+          "date": "2026-08-13T05:43:18Z",
+          "parents": [
+            "d5b653dfb598c6115a2c6d43e411a7751887af6b"
+          ],
+          "subject": "feat(session): add governed session continuity",
+          "url": "https://github.com/Patricked-code/MCP/commit/c876ae67c0b76f77230f1d029aae0b2d0c87a2f1"
+        },
+        {
+          "sha": "650584516fb6186bf6fa146f8d61fd351797fefa",
+          "date": "2026-08-13T05:45:41Z",
+          "parents": [
+            "c876ae67c0b76f77230f1d029aae0b2d0c87a2f1"
+          ],
+          "subject": "test(session): define lifecycle and checkpoint contracts",
+          "url": "https://github.com/Patricked-code/MCP/commit/650584516fb6186bf6fa146f8d61fd351797fefa"
+        },
+        {
+          "sha": "2e7437608ed63a281c9c3b0b9888d7319cc598b0",
+          "date": "2026-08-13T05:48:50Z",
+          "parents": [
+            "650584516fb6186bf6fa146f8d61fd351797fefa"
+          ],
+          "subject": "feat(session): add lifecycle and checkpoints",
+          "url": "https://github.com/Patricked-code/MCP/commit/2e7437608ed63a281c9c3b0b9888d7319cc598b0"
+        },
+        {
+          "sha": "e7b510ae5cf7316fcfb93617ad4762ed18acdf26",
+          "date": "2026-08-13T05:51:40Z",
+          "parents": [
+            "2e7437608ed63a281c9c3b0b9888d7319cc598b0"
+          ],
+          "subject": "test(locks): define governed lock semantics",
+          "url": "https://github.com/Patricked-code/MCP/commit/e7b510ae5cf7316fcfb93617ad4762ed18acdf26"
+        },
+        {
+          "sha": "00080f6eb805dfba19fddd53955dd3e92ccf3c4f",
+          "date": "2026-08-13T05:57:41Z",
+          "parents": [
+            "e7b510ae5cf7316fcfb93617ad4762ed18acdf26"
+          ],
+          "subject": "feat(locks): add bounded session locks",
+          "url": "https://github.com/Patricked-code/MCP/commit/00080f6eb805dfba19fddd53955dd3e92ccf3c4f"
+        },
+        {
+          "sha": "022d8411f23ef54a038a19cdd5c5791b04cac480",
+          "date": "2026-08-13T06:02:10Z",
+          "parents": [
+            "00080f6eb805dfba19fddd53955dd3e92ccf3c4f"
+          ],
+          "subject": "test(mcp-session): define authenticated lifecycle tools",
+          "url": "https://github.com/Patricked-code/MCP/commit/022d8411f23ef54a038a19cdd5c5791b04cac480"
+        },
+        {
+          "sha": "388e07eb09e6a9469ec529e4e2aa9fc2dc3861e3",
+          "date": "2026-08-13T06:08:04Z",
+          "parents": [
+            "022d8411f23ef54a038a19cdd5c5791b04cac480"
+          ],
+          "subject": "feat(mcp-session): expose governed lifecycle tools",
+          "url": "https://github.com/Patricked-code/MCP/commit/388e07eb09e6a9469ec529e4e2aa9fc2dc3861e3"
+        },
+        {
+          "sha": "37da00ebd095e08a8f166e75b75d9f9a5dde35f8",
+          "date": "2026-08-13T06:12:55Z",
+          "parents": [
+            "388e07eb09e6a9469ec529e4e2aa9fc2dc3861e3"
+          ],
+          "subject": "test(governed-context): define composed operational view",
+          "url": "https://github.com/Patricked-code/MCP/commit/37da00ebd095e08a8f166e75b75d9f9a5dde35f8"
+        },
+        {
+          "sha": "e59d5b911798695c7eb3f1f8e5eacfa94d2aea81",
+          "date": "2026-08-13T06:21:09Z",
+          "parents": [
+            "37da00ebd095e08a8f166e75b75d9f9a5dde35f8"
+          ],
+          "subject": "feat(governed-context): compose bounded live context",
+          "url": "https://github.com/Patricked-code/MCP/commit/e59d5b911798695c7eb3f1f8e5eacfa94d2aea81"
+        },
+        {
+          "sha": "2f9141aeadc42a8541afe6eb31e5548afbffd415",
+          "date": "2026-08-13T06:24:36Z",
+          "parents": [
+            "e59d5b911798695c7eb3f1f8e5eacfa94d2aea81"
+          ],
+          "subject": "test(governed-context): define MCP context surfaces",
+          "url": "https://github.com/Patricked-code/MCP/commit/2f9141aeadc42a8541afe6eb31e5548afbffd415"
+        },
+        {
+          "sha": "5f73d19cf837febf34e32f85135e5e1ed6727dd9",
+          "date": "2026-08-13T06:29:14Z",
+          "parents": [
+            "2f9141aeadc42a8541afe6eb31e5548afbffd415"
+          ],
+          "subject": "feat(governed-context): expose resource and read tools",
+          "url": "https://github.com/Patricked-code/MCP/commit/5f73d19cf837febf34e32f85135e5e1ed6727dd9"
+        },
+        {
+          "sha": "0e593119199cc428ff861932252c319e9e92fe9d",
+          "date": "2026-08-13T06:33:14Z",
+          "parents": [
+            "5f73d19cf837febf34e32f85135e5e1ed6727dd9"
+          ],
+          "subject": "test(write-gate): define non-blocking shadow behavior",
+          "url": "https://github.com/Patricked-code/MCP/commit/0e593119199cc428ff861932252c319e9e92fe9d"
+        },
+        {
+          "sha": "40f3bb5f749c7c545e3bbec4cc0d686f55ce9006",
+          "date": "2026-08-13T06:38:23Z",
+          "parents": [
+            "0e593119199cc428ff861932252c319e9e92fe9d"
+          ],
+          "subject": "feat(write-gate): observe scoped writes in shadow",
+          "url": "https://github.com/Patricked-code/MCP/commit/40f3bb5f749c7c545e3bbec4cc0d686f55ce9006"
+        },
+        {
+          "sha": "0cd78bba25175a0b8d9fb1f56e3f3ad30cc6e826",
+          "date": "2026-08-13T06:43:58Z",
+          "parents": [
+            "40f3bb5f749c7c545e3bbec4cc0d686f55ce9006"
+          ],
+          "subject": "test(governed-dashboard): define additive operational view",
+          "url": "https://github.com/Patricked-code/MCP/commit/0cd78bba25175a0b8d9fb1f56e3f3ad30cc6e826"
+        },
+        {
+          "sha": "38e3ced7ff61119b1e8fd8d0228bf032972ecca9",
+          "date": "2026-08-13T06:47:41Z",
+          "parents": [
+            "0cd78bba25175a0b8d9fb1f56e3f3ad30cc6e826"
+          ],
+          "subject": "feat(governed-dashboard): expose bounded live context",
+          "url": "https://github.com/Patricked-code/MCP/commit/38e3ced7ff61119b1e8fd8d0228bf032972ecca9"
+        },
+        {
+          "sha": "923b1267906504fedf26bed1050818f88c2b2d61",
+          "date": "2026-08-13T06:52:33Z",
+          "parents": [
+            "38e3ced7ff61119b1e8fd8d0228bf032972ecca9"
+          ],
+          "subject": "docs: prepare governed session continuity review",
+          "url": "https://github.com/Patricked-code/MCP/commit/923b1267906504fedf26bed1050818f88c2b2d61"
+        },
+        {
+          "sha": "4822f40e66bf2821214d1e6bd83878424f88e918",
+          "date": "2026-08-13T07:12:56Z",
+          "parents": [
+            "923b1267906504fedf26bed1050818f88c2b2d61"
+          ],
+          "subject": "test(session): revoke superseded transport bindings",
+          "url": "https://github.com/Patricked-code/MCP/commit/4822f40e66bf2821214d1e6bd83878424f88e918"
+        },
+        {
+          "sha": "84bb3e5cdc7a5c805e3f75893fa04b37bdbea047",
+          "date": "2026-08-13T07:14:19Z",
+          "parents": [
+            "4822f40e66bf2821214d1e6bd83878424f88e918"
+          ],
+          "subject": "fix(session): replace transport binding on resume",
+          "url": "https://github.com/Patricked-code/MCP/commit/84bb3e5cdc7a5c805e3f75893fa04b37bdbea047"
+        },
+        {
+          "sha": "a571e08f7043e27617581a03de2006ad1d9dd1ee",
+          "date": "2026-08-13T07:15:21Z",
+          "parents": [
+            "84bb3e5cdc7a5c805e3f75893fa04b37bdbea047"
+          ],
+          "subject": "test(gate): require non-blocking shadow observation",
+          "url": "https://github.com/Patricked-code/MCP/commit/a571e08f7043e27617581a03de2006ad1d9dd1ee"
+        },
+        {
+          "sha": "55415f5be128ad6fca4459e55fc84a7752699c52",
+          "date": "2026-08-13T07:16:09Z",
+          "parents": [
+            "a571e08f7043e27617581a03de2006ad1d9dd1ee"
+          ],
+          "subject": "fix(gate): detach shadow observation from writes",
+          "url": "https://github.com/Patricked-code/MCP/commit/55415f5be128ad6fca4459e55fc84a7752699c52"
+        },
+        {
+          "sha": "4a1ea68485b2b87fee6cb9bb4c76a4236523d86d",
+          "date": "2026-08-13T07:18:57Z",
+          "parents": [
+            "55415f5be128ad6fca4459e55fc84a7752699c52"
+          ],
+          "subject": "test(audit): require session lifecycle events",
+          "url": "https://github.com/Patricked-code/MCP/commit/4a1ea68485b2b87fee6cb9bb4c76a4236523d86d"
+        },
+        {
+          "sha": "15f1218c316c3246a2c490823bd0478d52cf6da9",
+          "date": "2026-08-13T07:21:37Z",
+          "parents": [
+            "4a1ea68485b2b87fee6cb9bb4c76a4236523d86d"
+          ],
+          "subject": "feat(audit): record governed session lifecycle",
+          "url": "https://github.com/Patricked-code/MCP/commit/15f1218c316c3246a2c490823bd0478d52cf6da9"
+        },
+        {
+          "sha": "22431b2439759ab9d6f234125e4d217a4b68d1d6",
+          "date": "2026-08-13T07:22:35Z",
+          "parents": [
+            "15f1218c316c3246a2c490823bd0478d52cf6da9"
+          ],
+          "subject": "test(audit): require governed lock events",
+          "url": "https://github.com/Patricked-code/MCP/commit/22431b2439759ab9d6f234125e4d217a4b68d1d6"
+        },
+        {
+          "sha": "0dcc70663e3df9b0324e0f00ed5a24dc5ab892b7",
+          "date": "2026-08-13T07:24:06Z",
+          "parents": [
+            "22431b2439759ab9d6f234125e4d217a4b68d1d6"
+          ],
+          "subject": "feat(audit): record governed lock lifecycle",
+          "url": "https://github.com/Patricked-code/MCP/commit/0dcc70663e3df9b0324e0f00ed5a24dc5ab892b7"
+        },
+        {
+          "sha": "7aa7c9fa0b4a0f5f89a10c3e95ac2174178cd205",
+          "date": "2026-08-13T07:24:51Z",
+          "parents": [
+            "0dcc70663e3df9b0324e0f00ed5a24dc5ab892b7"
+          ],
+          "subject": "test(audit): require context reconciliation events",
+          "url": "https://github.com/Patricked-code/MCP/commit/7aa7c9fa0b4a0f5f89a10c3e95ac2174178cd205"
+        },
+        {
+          "sha": "9e3340422e0c970605d23dd62ea124bb7f109f88",
+          "date": "2026-08-13T07:25:44Z",
+          "parents": [
+            "7aa7c9fa0b4a0f5f89a10c3e95ac2174178cd205"
+          ],
+          "subject": "feat(audit): record governed context reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/9e3340422e0c970605d23dd62ea124bb7f109f88"
+        },
+        {
+          "sha": "1b84b4c88d06147156a8e45ab1a14b9e9e418874",
+          "date": "2026-08-13T07:27:19Z",
+          "parents": [
+            "9e3340422e0c970605d23dd62ea124bb7f109f88"
+          ],
+          "subject": "test(locks): require cross-store reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/1b84b4c88d06147156a8e45ab1a14b9e9e418874"
+        },
+        {
+          "sha": "94cd9c1159d2d4163db5aa4e4236f63fb2bdaad5",
+          "date": "2026-08-13T07:28:28Z",
+          "parents": [
+            "1b84b4c88d06147156a8e45ab1a14b9e9e418874"
+          ],
+          "subject": "fix(locks): reconcile denormalized session lock ids",
+          "url": "https://github.com/Patricked-code/MCP/commit/94cd9c1159d2d4163db5aa4e4236f63fb2bdaad5"
+        },
+        {
+          "sha": "3baf3cc472c3d75b9a69cc533ebeab38bc7d8171",
+          "date": "2026-08-13T07:29:41Z",
+          "parents": [
+            "94cd9c1159d2d4163db5aa4e4236f63fb2bdaad5"
+          ],
+          "subject": "test(github): require ruleset detail lookup",
+          "url": "https://github.com/Patricked-code/MCP/commit/3baf3cc472c3d75b9a69cc533ebeab38bc7d8171"
+        },
+        {
+          "sha": "5484e8878354b8befa1cdd4fd1899e5c8cc7c592",
+          "date": "2026-08-13T07:31:15Z",
+          "parents": [
+            "3baf3cc472c3d75b9a69cc533ebeab38bc7d8171"
+          ],
+          "subject": "fix(github): fetch selected ruleset details",
+          "url": "https://github.com/Patricked-code/MCP/commit/5484e8878354b8befa1cdd4fd1899e5c8cc7c592"
+        },
+        {
+          "sha": "e71d127f1bdb2119f2902a44d7c2e9962cf6af4d",
+          "date": "2026-08-13T07:32:50Z",
+          "parents": [
+            "5484e8878354b8befa1cdd4fd1899e5c8cc7c592"
+          ],
+          "subject": "test(config): require inert governed feature-off mode",
+          "url": "https://github.com/Patricked-code/MCP/commit/e71d127f1bdb2119f2902a44d7c2e9962cf6af4d"
+        },
+        {
+          "sha": "1345e8c2d498f9466c8f534410e406c16422de3a",
+          "date": "2026-08-13T07:35:12Z",
+          "parents": [
+            "e71d127f1bdb2119f2902a44d7c2e9962cf6af4d"
+          ],
+          "subject": "fix(config): keep governed feature-off mode inert",
+          "url": "https://github.com/Patricked-code/MCP/commit/1345e8c2d498f9466c8f534410e406c16422de3a"
+        },
+        {
+          "sha": "08e3681a94b6c6f2a9f1e4b8d076fe27da3ff8d2",
+          "date": "2026-08-13T07:36:42Z",
+          "parents": [
+            "1345e8c2d498f9466c8f534410e406c16422de3a"
+          ],
+          "subject": "test(maintenance): require counts and single-flight",
+          "url": "https://github.com/Patricked-code/MCP/commit/08e3681a94b6c6f2a9f1e4b8d076fe27da3ff8d2"
+        },
+        {
+          "sha": "6365e13c12c9d84f99717256ce92e915579c8b47",
+          "date": "2026-08-13T07:37:59Z",
+          "parents": [
+            "08e3681a94b6c6f2a9f1e4b8d076fe27da3ff8d2"
+          ],
+          "subject": "fix(maintenance): serialize cycles and count sessions",
+          "url": "https://github.com/Patricked-code/MCP/commit/6365e13c12c9d84f99717256ce92e915579c8b47"
+        },
+        {
+          "sha": "90e9ec6086ec2c02731d5c9a05224321228b802e",
+          "date": "2026-08-13T07:41:57Z",
+          "parents": [
+            "6365e13c12c9d84f99717256ce92e915579c8b47"
+          ],
+          "subject": "docs: record governed session review corrections",
+          "url": "https://github.com/Patricked-code/MCP/commit/90e9ec6086ec2c02731d5c9a05224321228b802e"
+        },
+        {
+          "sha": "14d491713f8addf1cf80dcb4b47afa7edc98dfd5",
+          "date": "2026-08-13T07:56:47Z",
+          "parents": [
+            "90e9ec6086ec2c02731d5c9a05224321228b802e"
+          ],
+          "subject": "test(session): preserve binding on failed resume",
+          "url": "https://github.com/Patricked-code/MCP/commit/14d491713f8addf1cf80dcb4b47afa7edc98dfd5"
+        },
+        {
+          "sha": "e0f047c50b472ed19d9f5c9706b711197e45ed61",
+          "date": "2026-08-13T07:57:58Z",
+          "parents": [
+            "14d491713f8addf1cf80dcb4b47afa7edc98dfd5"
+          ],
+          "subject": "fix(session): defer transport rebinding until persisted",
+          "url": "https://github.com/Patricked-code/MCP/commit/e0f047c50b472ed19d9f5c9706b711197e45ed61"
+        },
+        {
+          "sha": "00c44a65a189244c4ce47214b7af2b9b8c75c92a",
+          "date": "2026-08-13T07:59:06Z",
+          "parents": [
+            "e0f047c50b472ed19d9f5c9706b711197e45ed61"
+          ],
+          "subject": "test(github): reduce reviews to current reviewer state",
+          "url": "https://github.com/Patricked-code/MCP/commit/00c44a65a189244c4ce47214b7af2b9b8c75c92a"
+        },
+        {
+          "sha": "d49d0e5828f845fc91c91b76077d08b1f0bb2796",
+          "date": "2026-08-13T08:00:15Z",
+          "parents": [
+            "00c44a65a189244c4ce47214b7af2b9b8c75c92a"
+          ],
+          "subject": "fix(github): use current review state per reviewer",
+          "url": "https://github.com/Patricked-code/MCP/commit/d49d0e5828f845fc91c91b76077d08b1f0bb2796"
+        },
+        {
+          "sha": "8e653f9ee67a12546ca45c7235bf5bce599b5184",
+          "date": "2026-08-13T08:01:34Z",
+          "parents": [
+            "d49d0e5828f845fc91c91b76077d08b1f0bb2796"
+          ],
+          "subject": "test(audit): snapshot closed transport binding",
+          "url": "https://github.com/Patricked-code/MCP/commit/8e653f9ee67a12546ca45c7235bf5bce599b5184"
+        },
+        {
+          "sha": "82bed7444595ae593074a7fb4aeeaf6cf1fdae64",
+          "date": "2026-08-13T08:04:19Z",
+          "parents": [
+            "8e653f9ee67a12546ca45c7235bf5bce599b5184"
+          ],
+          "subject": "fix(audit): preserve unbound transport snapshot",
+          "url": "https://github.com/Patricked-code/MCP/commit/82bed7444595ae593074a7fb4aeeaf6cf1fdae64"
+        },
+        {
+          "sha": "ca8321b6ee08b0a8505b32ae1639db3ad350574b",
+          "date": "2026-08-13T08:05:24Z",
+          "parents": [
+            "82bed7444595ae593074a7fb4aeeaf6cf1fdae64"
+          ],
+          "subject": "test(dashboard): label global session count accurately",
+          "url": "https://github.com/Patricked-code/MCP/commit/ca8321b6ee08b0a8505b32ae1639db3ad350574b"
+        },
+        {
+          "sha": "061c0fb23a1ccef718618d63218749d45807cf2f",
+          "date": "2026-08-13T08:06:08Z",
+          "parents": [
+            "ca8321b6ee08b0a8505b32ae1639db3ad350574b"
+          ],
+          "subject": "fix(dashboard): identify global session count",
+          "url": "https://github.com/Patricked-code/MCP/commit/061c0fb23a1ccef718618d63218749d45807cf2f"
+        },
+        {
+          "sha": "04578038fbe9eac46412662eac93495e6fac6514",
+          "date": "2026-08-13T08:07:58Z",
+          "parents": [
+            "061c0fb23a1ccef718618d63218749d45807cf2f"
+          ],
+          "subject": "test(audit): redact credentials from metadata values",
+          "url": "https://github.com/Patricked-code/MCP/commit/04578038fbe9eac46412662eac93495e6fac6514"
+        },
+        {
+          "sha": "fd0b1d8e4f407bed0a17c2e51cbfe8c7189ecd76",
+          "date": "2026-08-13T08:08:57Z",
+          "parents": [
+            "04578038fbe9eac46412662eac93495e6fac6514"
+          ],
+          "subject": "fix(audit): redact credential-shaped metadata values",
+          "url": "https://github.com/Patricked-code/MCP/commit/fd0b1d8e4f407bed0a17c2e51cbfe8c7189ecd76"
+        },
+        {
+          "sha": "55de462e006d78ff614bc960ea1b3a938715b6ef",
+          "date": "2026-08-13T08:14:58Z",
+          "parents": [
+            "fd0b1d8e4f407bed0a17c2e51cbfe8c7189ecd76"
+          ],
+          "subject": "test(github): preserve decisive review across comments",
+          "url": "https://github.com/Patricked-code/MCP/commit/55de462e006d78ff614bc960ea1b3a938715b6ef"
+        },
+        {
+          "sha": "f5f4148edd67bb44393cc49dcde8492e584a41a2",
+          "date": "2026-08-13T08:15:47Z",
+          "parents": [
+            "55de462e006d78ff614bc960ea1b3a938715b6ef"
+          ],
+          "subject": "fix(github): retain decisive review across comments",
+          "url": "https://github.com/Patricked-code/MCP/commit/f5f4148edd67bb44393cc49dcde8492e584a41a2"
+        },
+        {
+          "sha": "5fb26cb24902d5bcff14007c4899f20699ec4329",
+          "date": "2026-08-13T08:16:51Z",
+          "parents": [
+            "f5f4148edd67bb44393cc49dcde8492e584a41a2"
+          ],
+          "subject": "test(audit): make free-form metadata fail closed",
+          "url": "https://github.com/Patricked-code/MCP/commit/5fb26cb24902d5bcff14007c4899f20699ec4329"
+        },
+        {
+          "sha": "de8a6dfcfa56a30b6096fdb4a538c3a33a259d24",
+          "date": "2026-08-13T08:18:01Z",
+          "parents": [
+            "5fb26cb24902d5bcff14007c4899f20699ec4329"
+          ],
+          "subject": "fix(audit): make free-form metadata opaque",
+          "url": "https://github.com/Patricked-code/MCP/commit/de8a6dfcfa56a30b6096fdb4a538c3a33a259d24"
+        },
+        {
+          "sha": "4eee32b8314ec5c287b6dd8308ceb02c50759884",
+          "date": "2026-08-13T08:20:36Z",
+          "parents": [
+            "de8a6dfcfa56a30b6096fdb4a538c3a33a259d24"
+          ],
+          "subject": "docs: record final governed session review",
+          "url": "https://github.com/Patricked-code/MCP/commit/4eee32b8314ec5c287b6dd8308ceb02c50759884"
+        },
+        {
+          "sha": "bba56ac802ac952bf8a6211dc982a6eced732f44",
+          "date": "2026-08-13T08:23:48Z",
+          "parents": [
+            "4eee32b8314ec5c287b6dd8308ceb02c50759884"
+          ],
+          "subject": "docs: close governed session review gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/bba56ac802ac952bf8a6211dc982a6eced732f44"
+        }
+      ]
+    },
+    {
+      "pr": 45,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "592b8506c14455e07852091282b918aa2b468730",
+          "date": "2026-08-15T20:29:45Z",
+          "parents": [
+            "3838c3918c3411a3317c6ea81047e77a7b627673"
+          ],
+          "subject": "test(operational-memory): reproduce post-merge retention findings",
+          "url": "https://github.com/Patricked-code/MCP/commit/592b8506c14455e07852091282b918aa2b468730"
+        },
+        {
+          "sha": "12e52030b5a6ddb4f1120057086b0e5643c6579b",
+          "date": "2026-08-15T20:32:28Z",
+          "parents": [
+            "592b8506c14455e07852091282b918aa2b468730"
+          ],
+          "subject": "fix(operational-memory): retain bounded history and release locks on close",
+          "url": "https://github.com/Patricked-code/MCP/commit/12e52030b5a6ddb4f1120057086b0e5643c6579b"
+        },
+        {
+          "sha": "7308d19c2153604dbe231236c6fbcaf46609a21d",
+          "date": "2026-08-15T20:36:28Z",
+          "parents": [
+            "12e52030b5a6ddb4f1120057086b0e5643c6579b"
+          ],
+          "subject": "test(governance): preserve locked terminals and permit docs-only reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/7308d19c2153604dbe231236c6fbcaf46609a21d"
+        },
+        {
+          "sha": "15244ff35e5e159d7f02f05930b62b16c64283b6",
+          "date": "2026-08-15T20:38:18Z",
+          "parents": [
+            "7308d19c2153604dbe231236c6fbcaf46609a21d"
+          ],
+          "subject": "fix(governance): preserve reconcilable sessions and allow docs-only descendants",
+          "url": "https://github.com/Patricked-code/MCP/commit/15244ff35e5e159d7f02f05930b62b16c64283b6"
+        },
+        {
+          "sha": "101d4c481caa42568f9c50302ddd891935e86917",
+          "date": "2026-08-15T20:40:52Z",
+          "parents": [
+            "15244ff35e5e159d7f02f05930b62b16c64283b6"
+          ],
+          "subject": "fix(live-state): build docs-only scope command without replacement expansion",
+          "url": "https://github.com/Patricked-code/MCP/commit/101d4c481caa42568f9c50302ddd891935e86917"
+        },
+        {
+          "sha": "cbeae815be711b362a2cf38466a587d5785d5a4f",
+          "date": "2026-08-15T20:45:19Z",
+          "parents": [
+            "101d4c481caa42568f9c50302ddd891935e86917"
+          ],
+          "subject": "docs: record post-PR44 hardening candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/cbeae815be711b362a2cf38466a587d5785d5a4f"
+        },
+        {
+          "sha": "e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d",
+          "date": "2026-08-15T20:48:14Z",
+          "parents": [
+            "cbeae815be711b362a2cf38466a587d5785d5a4f"
+          ],
+          "subject": "docs: satisfy whitespace gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d"
+        }
+      ]
+    },
+    {
+      "pr": 46,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "0f91e3dd678decc931dabc4c65ae8095be9ea1ac",
+          "date": "2026-08-15T20:59:07Z",
+          "parents": [
+            "bac8779320c8b9529d2a5215dbb1b1f31f828987"
+          ],
+          "subject": "docs: reconcile Operational Memory production state",
+          "url": "https://github.com/Patricked-code/MCP/commit/0f91e3dd678decc931dabc4c65ae8095be9ea1ac"
+        }
+      ]
+    },
+    {
+      "pr": 47,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "e18f553d7f8423f301fd3f226a14fe835dac8a74",
+          "date": "2026-08-15T21:06:29Z",
+          "parents": [
+            "389b8d967f5107bc7bcba07d5d68ccf492810a8c"
+          ],
+          "subject": "test: reproduce late retention review findings",
+          "url": "https://github.com/Patricked-code/MCP/commit/e18f553d7f8423f301fd3f226a14fe835dac8a74"
+        },
+        {
+          "sha": "fc27e7e342b2ebfdbde4adc830b151a4018f2b4e",
+          "date": "2026-08-15T21:09:41Z",
+          "parents": [
+            "e18f553d7f8423f301fd3f226a14fe835dac8a74"
+          ],
+          "subject": "fix: preserve resumable sessions and elapsed lock capacity",
+          "url": "https://github.com/Patricked-code/MCP/commit/fc27e7e342b2ebfdbde4adc830b151a4018f2b4e"
+        },
+        {
+          "sha": "1d4c392eb19b22848047b70ef78b299162ed14d5",
+          "date": "2026-08-15T21:16:33Z",
+          "parents": [
+            "fc27e7e342b2ebfdbde4adc830b151a4018f2b4e"
+          ],
+          "subject": "docs: record late retention corrections before deploy",
+          "url": "https://github.com/Patricked-code/MCP/commit/1d4c392eb19b22848047b70ef78b299162ed14d5"
+        },
+        {
+          "sha": "8dddc5656aa959f4c392d0f1816b5ee0e25709a0",
+          "date": "2026-08-15T21:22:24Z",
+          "parents": [
+            "1d4c392eb19b22848047b70ef78b299162ed14d5"
+          ],
+          "subject": "docs: synchronize late correction task state",
+          "url": "https://github.com/Patricked-code/MCP/commit/8dddc5656aa959f4c392d0f1816b5ee0e25709a0"
+        }
+      ]
+    },
+    {
+      "pr": 48,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "78e836ff167e460d6e10fb69194d5d0f202fa9cb",
+          "date": "2026-08-21T23:08:58Z",
+          "parents": [
+            "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc"
+          ],
+          "subject": "docs: reconcile late Operational Memory correction",
+          "url": "https://github.com/Patricked-code/MCP/commit/78e836ff167e460d6e10fb69194d5d0f202fa9cb"
+        }
+      ]
+    },
+    {
+      "pr": 49,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "b46b143abe45d3e78f6da747c972e7e792ecb855",
+          "date": "2026-08-22T08:39:33Z",
+          "parents": [
+            "78dade5e103c2ac73727f44c571f99384d6b8798"
+          ],
+          "subject": "docs: specify mandatory agent bootstrap v1",
+          "url": "https://github.com/Patricked-code/MCP/commit/b46b143abe45d3e78f6da747c972e7e792ecb855"
+        },
+        {
+          "sha": "73c7e0007719328a70afb38e6fb3635e9ecf8949",
+          "date": "2026-08-22T09:13:09Z",
+          "parents": [
+            "b46b143abe45d3e78f6da747c972e7e792ecb855"
+          ],
+          "subject": "docs: harden mandatory bootstrap execution plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/73c7e0007719328a70afb38e6fb3635e9ecf8949"
+        },
+        {
+          "sha": "44c636c201f0366ffe6afbe0255cd86cbcecf931",
+          "date": "2026-08-22T09:17:42Z",
+          "parents": [
+            "73c7e0007719328a70afb38e6fb3635e9ecf8949"
+          ],
+          "subject": "test(red): define current registration catalog contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/44c636c201f0366ffe6afbe0255cd86cbcecf931"
+        },
+        {
+          "sha": "863a9e22adeddebf1de8c2c5f66d363a7979b4e8",
+          "date": "2026-08-22T09:17:53Z",
+          "parents": [
+            "44c636c201f0366ffe6afbe0255cd86cbcecf931"
+          ],
+          "subject": "feat(current-state): derive catalog from MCP registrations",
+          "url": "https://github.com/Patricked-code/MCP/commit/863a9e22adeddebf1de8c2c5f66d363a7979b4e8"
+        },
+        {
+          "sha": "f792a573c1cd603ba049fdb1ed2bf3bedcab217e",
+          "date": "2026-08-22T09:21:45Z",
+          "parents": [
+            "863a9e22adeddebf1de8c2c5f66d363a7979b4e8"
+          ],
+          "subject": "test(red): define bounded current-state evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/f792a573c1cd603ba049fdb1ed2bf3bedcab217e"
+        },
+        {
+          "sha": "529512a4f68a0d59b92363f35d4339ce334a821b",
+          "date": "2026-08-22T09:21:58Z",
+          "parents": [
+            "f792a573c1cd603ba049fdb1ed2bf3bedcab217e"
+          ],
+          "subject": "feat(current-state): derive bounded repository evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/529512a4f68a0d59b92363f35d4339ce334a821b"
+        },
+        {
+          "sha": "9c2bf64b791cbf0ecc2ecb4b0619cceb5c9b2e13",
+          "date": "2026-08-22T09:26:41Z",
+          "parents": [
+            "529512a4f68a0d59b92363f35d4339ce334a821b"
+          ],
+          "subject": "test(red): define additive current-state live sections",
+          "url": "https://github.com/Patricked-code/MCP/commit/9c2bf64b791cbf0ecc2ecb4b0619cceb5c9b2e13"
+        },
+        {
+          "sha": "d0ffe387ac247c205aface258e20c373296dc4c8",
+          "date": "2026-08-22T09:26:53Z",
+          "parents": [
+            "9c2bf64b791cbf0ecc2ecb4b0619cceb5c9b2e13"
+          ],
+          "subject": "feat(live-state): add current-state evidence digests",
+          "url": "https://github.com/Patricked-code/MCP/commit/d0ffe387ac247c205aface258e20c373296dc4c8"
+        },
+        {
+          "sha": "58963e1611c36da4efd2eaa833fab1e5fc4d994f",
+          "date": "2026-08-22T09:31:33Z",
+          "parents": [
+            "d0ffe387ac247c205aface258e20c373296dc4c8"
+          ],
+          "subject": "test(red): define governed task queue behavior",
+          "url": "https://github.com/Patricked-code/MCP/commit/58963e1611c36da4efd2eaa833fab1e5fc4d994f"
+        },
+        {
+          "sha": "adb41fba028c3bfa7f3a763cb4a9258c0e5ac113",
+          "date": "2026-08-22T09:31:46Z",
+          "parents": [
+            "58963e1611c36da4efd2eaa833fab1e5fc4d994f"
+          ],
+          "subject": "feat(operational-memory): add governed task queue",
+          "url": "https://github.com/Patricked-code/MCP/commit/adb41fba028c3bfa7f3a763cb4a9258c0e5ac113"
+        },
+        {
+          "sha": "159bf1d7bb03b030046d9cb4f38df77e09d7d416",
+          "date": "2026-08-22T09:35:50Z",
+          "parents": [
+            "adb41fba028c3bfa7f3a763cb4a9258c0e5ac113"
+          ],
+          "subject": "test(red): define bootstrap receipt attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/159bf1d7bb03b030046d9cb4f38df77e09d7d416"
+        },
+        {
+          "sha": "177afd3553e07ac98bc61405127fb38701620f19",
+          "date": "2026-08-22T09:36:03Z",
+          "parents": [
+            "159bf1d7bb03b030046d9cb4f38df77e09d7d416"
+          ],
+          "subject": "feat(bootstrap): attest governed context acknowledgement",
+          "url": "https://github.com/Patricked-code/MCP/commit/177afd3553e07ac98bc61405127fb38701620f19"
+        },
+        {
+          "sha": "1c9297d663624e5c348fba687051b649ca3e2a22",
+          "date": "2026-08-22T09:47:42Z",
+          "parents": [
+            "177afd3553e07ac98bc61405127fb38701620f19"
+          ],
+          "subject": "feat(bootstrap): complete current-state work orchestration",
+          "url": "https://github.com/Patricked-code/MCP/commit/1c9297d663624e5c348fba687051b649ca3e2a22"
+        }
+      ]
+    },
+    {
+      "pr": 50,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "b46b143abe45d3e78f6da747c972e7e792ecb855",
+          "date": "2026-08-22T08:39:33Z",
+          "parents": [
+            "78dade5e103c2ac73727f44c571f99384d6b8798"
+          ],
+          "subject": "docs: specify mandatory agent bootstrap v1",
+          "url": "https://github.com/Patricked-code/MCP/commit/b46b143abe45d3e78f6da747c972e7e792ecb855"
+        },
+        {
+          "sha": "73c7e0007719328a70afb38e6fb3635e9ecf8949",
+          "date": "2026-08-22T09:13:09Z",
+          "parents": [
+            "b46b143abe45d3e78f6da747c972e7e792ecb855"
+          ],
+          "subject": "docs: harden mandatory bootstrap execution plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/73c7e0007719328a70afb38e6fb3635e9ecf8949"
+        },
+        {
+          "sha": "44c636c201f0366ffe6afbe0255cd86cbcecf931",
+          "date": "2026-08-22T09:17:42Z",
+          "parents": [
+            "73c7e0007719328a70afb38e6fb3635e9ecf8949"
+          ],
+          "subject": "test(red): define current registration catalog contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/44c636c201f0366ffe6afbe0255cd86cbcecf931"
+        },
+        {
+          "sha": "863a9e22adeddebf1de8c2c5f66d363a7979b4e8",
+          "date": "2026-08-22T09:17:53Z",
+          "parents": [
+            "44c636c201f0366ffe6afbe0255cd86cbcecf931"
+          ],
+          "subject": "feat(current-state): derive catalog from MCP registrations",
+          "url": "https://github.com/Patricked-code/MCP/commit/863a9e22adeddebf1de8c2c5f66d363a7979b4e8"
+        },
+        {
+          "sha": "f792a573c1cd603ba049fdb1ed2bf3bedcab217e",
+          "date": "2026-08-22T09:21:45Z",
+          "parents": [
+            "863a9e22adeddebf1de8c2c5f66d363a7979b4e8"
+          ],
+          "subject": "test(red): define bounded current-state evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/f792a573c1cd603ba049fdb1ed2bf3bedcab217e"
+        },
+        {
+          "sha": "529512a4f68a0d59b92363f35d4339ce334a821b",
+          "date": "2026-08-22T09:21:58Z",
+          "parents": [
+            "f792a573c1cd603ba049fdb1ed2bf3bedcab217e"
+          ],
+          "subject": "feat(current-state): derive bounded repository evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/529512a4f68a0d59b92363f35d4339ce334a821b"
+        },
+        {
+          "sha": "9c2bf64b791cbf0ecc2ecb4b0619cceb5c9b2e13",
+          "date": "2026-08-22T09:26:41Z",
+          "parents": [
+            "529512a4f68a0d59b92363f35d4339ce334a821b"
+          ],
+          "subject": "test(red): define additive current-state live sections",
+          "url": "https://github.com/Patricked-code/MCP/commit/9c2bf64b791cbf0ecc2ecb4b0619cceb5c9b2e13"
+        },
+        {
+          "sha": "d0ffe387ac247c205aface258e20c373296dc4c8",
+          "date": "2026-08-22T09:26:53Z",
+          "parents": [
+            "9c2bf64b791cbf0ecc2ecb4b0619cceb5c9b2e13"
+          ],
+          "subject": "feat(live-state): add current-state evidence digests",
+          "url": "https://github.com/Patricked-code/MCP/commit/d0ffe387ac247c205aface258e20c373296dc4c8"
+        },
+        {
+          "sha": "58963e1611c36da4efd2eaa833fab1e5fc4d994f",
+          "date": "2026-08-22T09:31:33Z",
+          "parents": [
+            "d0ffe387ac247c205aface258e20c373296dc4c8"
+          ],
+          "subject": "test(red): define governed task queue behavior",
+          "url": "https://github.com/Patricked-code/MCP/commit/58963e1611c36da4efd2eaa833fab1e5fc4d994f"
+        },
+        {
+          "sha": "adb41fba028c3bfa7f3a763cb4a9258c0e5ac113",
+          "date": "2026-08-22T09:31:46Z",
+          "parents": [
+            "58963e1611c36da4efd2eaa833fab1e5fc4d994f"
+          ],
+          "subject": "feat(operational-memory): add governed task queue",
+          "url": "https://github.com/Patricked-code/MCP/commit/adb41fba028c3bfa7f3a763cb4a9258c0e5ac113"
+        },
+        {
+          "sha": "159bf1d7bb03b030046d9cb4f38df77e09d7d416",
+          "date": "2026-08-22T09:35:50Z",
+          "parents": [
+            "adb41fba028c3bfa7f3a763cb4a9258c0e5ac113"
+          ],
+          "subject": "test(red): define bootstrap receipt attestation",
+          "url": "https://github.com/Patricked-code/MCP/commit/159bf1d7bb03b030046d9cb4f38df77e09d7d416"
+        },
+        {
+          "sha": "177afd3553e07ac98bc61405127fb38701620f19",
+          "date": "2026-08-22T09:36:03Z",
+          "parents": [
+            "159bf1d7bb03b030046d9cb4f38df77e09d7d416"
+          ],
+          "subject": "feat(bootstrap): attest governed context acknowledgement",
+          "url": "https://github.com/Patricked-code/MCP/commit/177afd3553e07ac98bc61405127fb38701620f19"
+        },
+        {
+          "sha": "1c9297d663624e5c348fba687051b649ca3e2a22",
+          "date": "2026-08-22T09:47:42Z",
+          "parents": [
+            "177afd3553e07ac98bc61405127fb38701620f19"
+          ],
+          "subject": "feat(bootstrap): complete current-state work orchestration",
+          "url": "https://github.com/Patricked-code/MCP/commit/1c9297d663624e5c348fba687051b649ca3e2a22"
+        }
+      ]
+    },
+    {
+      "pr": 51,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "87b6230718ecc8ac086053082a013c550b70f470",
+          "date": "2026-08-22T09:59:51Z",
+          "parents": [
+            "c944fd9e7c05aad503f9e1d5d21e0ead25747886"
+          ],
+          "subject": "docs: reconcile mandatory bootstrap production state",
+          "url": "https://github.com/Patricked-code/MCP/commit/87b6230718ecc8ac086053082a013c550b70f470"
+        }
+      ]
+    },
+    {
+      "pr": 52,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "e067af0aedc26ef7a351eea39d6ceb7740684734",
+          "date": "2026-08-28T21:12:44Z",
+          "parents": [
+            "4d17e972ea04624fc41f90fbb908dc0f70b34430"
+          ],
+          "subject": "fix(governance): harden governed task lifecycle",
+          "url": "https://github.com/Patricked-code/MCP/commit/e067af0aedc26ef7a351eea39d6ceb7740684734"
+        },
+        {
+          "sha": "0a67259195ad90d4e2e945201133de1047b6c553",
+          "date": "2026-08-28T21:31:48Z",
+          "parents": [
+            "e067af0aedc26ef7a351eea39d6ceb7740684734"
+          ],
+          "subject": "fix(governance): close task lifecycle review gaps",
+          "url": "https://github.com/Patricked-code/MCP/commit/0a67259195ad90d4e2e945201133de1047b6c553"
+        },
+        {
+          "sha": "33a3e424a5fe271cf82c1ee6db8c94785289e3ca",
+          "date": "2026-08-28T21:33:52Z",
+          "parents": [
+            "0a67259195ad90d4e2e945201133de1047b6c553"
+          ],
+          "subject": "docs(governance): record task lifecycle review fixes",
+          "url": "https://github.com/Patricked-code/MCP/commit/33a3e424a5fe271cf82c1ee6db8c94785289e3ca"
+        }
+      ]
+    },
+    {
+      "pr": 53,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "e067af0aedc26ef7a351eea39d6ceb7740684734",
+          "date": "2026-08-28T21:12:44Z",
+          "parents": [
+            "4d17e972ea04624fc41f90fbb908dc0f70b34430"
+          ],
+          "subject": "fix(governance): harden governed task lifecycle",
+          "url": "https://github.com/Patricked-code/MCP/commit/e067af0aedc26ef7a351eea39d6ceb7740684734"
+        },
+        {
+          "sha": "0a67259195ad90d4e2e945201133de1047b6c553",
+          "date": "2026-08-28T21:31:48Z",
+          "parents": [
+            "e067af0aedc26ef7a351eea39d6ceb7740684734"
+          ],
+          "subject": "fix(governance): close task lifecycle review gaps",
+          "url": "https://github.com/Patricked-code/MCP/commit/0a67259195ad90d4e2e945201133de1047b6c553"
+        },
+        {
+          "sha": "33a3e424a5fe271cf82c1ee6db8c94785289e3ca",
+          "date": "2026-08-28T21:33:52Z",
+          "parents": [
+            "0a67259195ad90d4e2e945201133de1047b6c553"
+          ],
+          "subject": "docs(governance): record task lifecycle review fixes",
+          "url": "https://github.com/Patricked-code/MCP/commit/33a3e424a5fe271cf82c1ee6db8c94785289e3ca"
+        },
+        {
+          "sha": "dedca6e6ffb928498e37dc09c467b835eae569df",
+          "date": "2026-08-28T22:07:05Z",
+          "parents": [
+            "33a3e424a5fe271cf82c1ee6db8c94785289e3ca"
+          ],
+          "subject": "docs(governance): reconcile PR 52 deployment state",
+          "url": "https://github.com/Patricked-code/MCP/commit/dedca6e6ffb928498e37dc09c467b835eae569df"
+        }
+      ]
+    },
+    {
+      "pr": 54,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "258a9f2643a6efe7149e424823589138a7b1f76b",
+          "date": "2026-08-29T00:08:33Z",
+          "parents": [
+            "fff44ff2db386942730a67f3884980c7824cae7f"
+          ],
+          "subject": "docs(governance): reconcile PR 52 deployment state",
+          "url": "https://github.com/Patricked-code/MCP/commit/258a9f2643a6efe7149e424823589138a7b1f76b"
+        }
+      ]
+    }
+  ]
+}

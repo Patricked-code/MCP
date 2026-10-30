@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{pr}/comments",
+  "positions": [
+    19,
+    36
+  ],
+  "items": [
+    {
+      "pr": 22,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 23,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 25,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 26,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 27,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 28,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 30,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 31,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 33,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 34,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 35,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 36,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 37,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 38,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 39,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 40,
+      "status": "COMPLETE",
+      "comments": []
+    },
+    {
+      "pr": 41,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3767942148,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-08-12T15:41:14Z",
+          "updated_at": "2026-08-12T15:41:14Z",
+          "commit_id": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+          "original_commit_id": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+          "path": "src/tools/mcpRuntimeDeploy.ts",
+          "line": 16,
+          "original_line": 16,
+          "side": "RIGHT",
+          "pull_request_review_id": 4918385566,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/41#discussion_r3767942148",
+          "body_length": 782
+        },
+        {
+          "id": 3771730004,
+          "author": "Patricked-code",
+          "created_at": "2026-08-13T01:43:29Z",
+          "updated_at": "2026-08-13T01:43:29Z",
+          "commit_id": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+          "original_commit_id": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+          "path": "src/tools/mcpRuntimeDeploy.ts",
+          "line": 16,
+          "original_line": 16,
+          "side": "RIGHT",
+          "pull_request_review_id": 4922676050,
+          "in_reply_to_id": 3767942148,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/41#discussion_r3771730004",
+          "body_length": 525
+        }
+      ]
+    },
+    {
+      "pr": 42,
+      "status": "COMPLETE",
+      "comments": [
+        {
+          "id": 3771723869,
+          "author": "chatgpt-codex-connector[bot]",
+          "created_at": "2026-08-13T01:41:44Z",
+          "updated_at": "2026-08-13T01:41:44Z",
+          "commit_id": "077485b457f01943bda88209a07076ba40461df3",
+          "original_commit_id": "077485b457f01943bda88209a07076ba40461df3",
+          "path": ".mcp/autodeploy-policy.json",
+          "line": 3,
+          "original_line": 3,
+          "side": "RIGHT",
+          "pull_request_review_id": 4922669265,
+          "in_reply_to_id": null,
+          "html_url": "https://github.com/Patricked-code/MCP/pull/42#discussion_r3771723869",
+          "body_length": 780
+        }
+      ]
+    }
+  ]
+}

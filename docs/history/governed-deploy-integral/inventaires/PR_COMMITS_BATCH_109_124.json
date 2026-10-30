@@ -1,0 +1,1773 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    109,
+    124
+  ],
+  "items": [
+    {
+      "pr": 146,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "0a6ee75d502b2186b777892e2ace18ead8b154d0",
+          "date": "2026-09-22T21:45:05Z",
+          "parents": [
+            "87deb6311e13a37f09f6570a78c2f502df12a240"
+          ],
+          "subject": "test(continuity): prove historical candidate handoff RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/0a6ee75d502b2186b777892e2ace18ead8b154d0"
+        },
+        {
+          "sha": "c1f7893bbfb801eefba523d97be9bef487f4cd20",
+          "date": "2026-09-22T21:47:22Z",
+          "parents": [
+            "0a6ee75d502b2186b777892e2ace18ead8b154d0"
+          ],
+          "subject": "fix(continuity): hand off merged historical candidates to main",
+          "url": "https://github.com/Patricked-code/MCP/commit/c1f7893bbfb801eefba523d97be9bef487f4cd20"
+        },
+        {
+          "sha": "ce21e3b0cdd8450988d7c7a3cd1310f17d56ae2f",
+          "date": "2026-09-22T21:47:57Z",
+          "parents": [
+            "c1f7893bbfb801eefba523d97be9bef487f4cd20"
+          ],
+          "subject": "test(continuity): bind historical handoff evidence to candidate head",
+          "url": "https://github.com/Patricked-code/MCP/commit/ce21e3b0cdd8450988d7c7a3cd1310f17d56ae2f"
+        },
+        {
+          "sha": "8ab1bb9d354e601ba59f76cc83d234ca15232624",
+          "date": "2026-09-22T21:49:31Z",
+          "parents": [
+            "ce21e3b0cdd8450988d7c7a3cd1310f17d56ae2f"
+          ],
+          "subject": "fix(continuity): bind historical handoff to observed candidate head",
+          "url": "https://github.com/Patricked-code/MCP/commit/8ab1bb9d354e601ba59f76cc83d234ca15232624"
+        }
+      ]
+    },
+    {
+      "pr": 149,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "1ba84589adbaa478babebd2c8aa1e63438820dcd",
+          "date": "2026-09-22T21:57:32Z",
+          "parents": [
+            "38f7ab60b4fa30db50536278d2b34ddbcfe2c204"
+          ],
+          "subject": "docs(state): record historical candidate handoff baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/1ba84589adbaa478babebd2c8aa1e63438820dcd"
+        }
+      ]
+    },
+    {
+      "pr": 154,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "41ab9e9d37a49ae0af571168fa145a14e08658c7",
+          "date": "2026-09-22T22:26:13Z",
+          "parents": [
+            "cda7610e1dcd5bc56511f0b42f372f68058ca2fb"
+          ],
+          "subject": "test(coordination): define universal heartbeat claim projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/41ab9e9d37a49ae0af571168fa145a14e08658c7"
+        },
+        {
+          "sha": "91b568617972def2d077892db7577a20024f7d61",
+          "date": "2026-09-22T22:26:35Z",
+          "parents": [
+            "41ab9e9d37a49ae0af571168fa145a14e08658c7"
+          ],
+          "subject": "feat(coordination): add read-only universal agent snapshot",
+          "url": "https://github.com/Patricked-code/MCP/commit/91b568617972def2d077892db7577a20024f7d61"
+        },
+        {
+          "sha": "fbf55941b092e443868beba950bf1c1528411acf",
+          "date": "2026-09-22T22:26:49Z",
+          "parents": [
+            "91b568617972def2d077892db7577a20024f7d61"
+          ],
+          "subject": "docs(coordination): record universal coordination checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/fbf55941b092e443868beba950bf1c1528411acf"
+        },
+        {
+          "sha": "e021577c38b43b8a8c48c8d912b83dbc6d7999be",
+          "date": "2026-09-22T22:31:46Z",
+          "parents": [
+            "fbf55941b092e443868beba950bf1c1528411acf"
+          ],
+          "subject": "docs(coordination): materialize supervised execution plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/e021577c38b43b8a8c48c8d912b83dbc6d7999be"
+        },
+        {
+          "sha": "a158b1dd269666e6565b32e31827d479f3d21b2f",
+          "date": "2026-09-22T22:31:54Z",
+          "parents": [
+            "e021577c38b43b8a8c48c8d912b83dbc6d7999be"
+          ],
+          "subject": "docs(coordination): bind supervision loop and task plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/a158b1dd269666e6565b32e31827d479f3d21b2f"
+        },
+        {
+          "sha": "c967a068a683033580b091405a5e8b7a837d4ecb",
+          "date": "2026-09-22T23:56:36Z",
+          "parents": [
+            "a158b1dd269666e6565b32e31827d479f3d21b2f",
+            "84bbe9b1684f5f6be73eaf2d6aa21063fb62697a"
+          ],
+          "subject": "chore(coordination): reconcile PR #154 with current main",
+          "url": "https://github.com/Patricked-code/MCP/commit/c967a068a683033580b091405a5e8b7a837d4ecb"
+        },
+        {
+          "sha": "c4ee64286f2a41e9bebda119d484520622155381",
+          "date": "2026-09-23T00:01:12Z",
+          "parents": [
+            "c967a068a683033580b091405a5e8b7a837d4ecb"
+          ],
+          "subject": "docs(coordination): complete UAC-01 authority inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/c4ee64286f2a41e9bebda119d484520622155381"
+        },
+        {
+          "sha": "9ec4b491b558dfc7bf71889e4ed76fe384c4a08b",
+          "date": "2026-09-23T00:03:07Z",
+          "parents": [
+            "c4ee64286f2a41e9bebda119d484520622155381"
+          ],
+          "subject": "chore(coordination): satisfy UAC whitespace gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/9ec4b491b558dfc7bf71889e4ed76fe384c4a08b"
+        },
+        {
+          "sha": "eb1a1ace0cbc716e568bf775533f525df1607578",
+          "date": "2026-09-23T00:05:09Z",
+          "parents": [
+            "9ec4b491b558dfc7bf71889e4ed76fe384c4a08b"
+          ],
+          "subject": "test(coordination): define UAC-03 governed session adapter RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/eb1a1ace0cbc716e568bf775533f525df1607578"
+        },
+        {
+          "sha": "6c0b83735a3ba0f6d6060055557e89ab6d4aa0ea",
+          "date": "2026-09-23T00:07:09Z",
+          "parents": [
+            "eb1a1ace0cbc716e568bf775533f525df1607578"
+          ],
+          "subject": "feat(coordination): project governed sessions read-only",
+          "url": "https://github.com/Patricked-code/MCP/commit/6c0b83735a3ba0f6d6060055557e89ab6d4aa0ea"
+        },
+        {
+          "sha": "6cb37ad36aa2f0e678c65714d7678549df6a770d",
+          "date": "2026-09-23T00:11:39Z",
+          "parents": [
+            "6c0b83735a3ba0f6d6060055557e89ab6d4aa0ea"
+          ],
+          "subject": "test(coordination): define UAC-04 governed task adapter RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/6cb37ad36aa2f0e678c65714d7678549df6a770d"
+        },
+        {
+          "sha": "7fafd622be9360becc9b69cc154fae07cbaed272",
+          "date": "2026-09-23T00:14:20Z",
+          "parents": [
+            "6cb37ad36aa2f0e678c65714d7678549df6a770d"
+          ],
+          "subject": "feat(coordination): project governed tasks read-only",
+          "url": "https://github.com/Patricked-code/MCP/commit/7fafd622be9360becc9b69cc154fae07cbaed272"
+        },
+        {
+          "sha": "5221545ac30dea68bc20a18479c6e5096a22fd66",
+          "date": "2026-09-23T00:16:38Z",
+          "parents": [
+            "7fafd622be9360becc9b69cc154fae07cbaed272"
+          ],
+          "subject": "test(coordination): define UAC-05 claim projection RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/5221545ac30dea68bc20a18479c6e5096a22fd66"
+        },
+        {
+          "sha": "f55346a1c16d1a90a218eb0b519f3c61945d516d",
+          "date": "2026-09-23T00:18:39Z",
+          "parents": [
+            "5221545ac30dea68bc20a18479c6e5096a22fd66"
+          ],
+          "subject": "feat(coordination): derive claim ownership from governed tasks",
+          "url": "https://github.com/Patricked-code/MCP/commit/f55346a1c16d1a90a218eb0b519f3c61945d516d"
+        },
+        {
+          "sha": "1f3a0c24e241e6c39fb6e8ceabca61ab05a280b1",
+          "date": "2026-09-23T00:20:55Z",
+          "parents": [
+            "f55346a1c16d1a90a218eb0b519f3c61945d516d"
+          ],
+          "subject": "test(coordination): define UAC-06 liveness adapter RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/1f3a0c24e241e6c39fb6e8ceabca61ab05a280b1"
+        },
+        {
+          "sha": "fb3ac57b2353aad8b14c68c8c995ee16d6687779",
+          "date": "2026-09-23T00:23:08Z",
+          "parents": [
+            "1f3a0c24e241e6c39fb6e8ceabca61ab05a280b1"
+          ],
+          "subject": "feat(coordination): generalize governed session liveness",
+          "url": "https://github.com/Patricked-code/MCP/commit/fb3ac57b2353aad8b14c68c8c995ee16d6687779"
+        },
+        {
+          "sha": "45bc17555aa36f4a476eca92e771ef25b9f2a79d",
+          "date": "2026-09-23T00:26:33Z",
+          "parents": [
+            "fb3ac57b2353aad8b14c68c8c995ee16d6687779"
+          ],
+          "subject": "test(coordination): define UAC-07 governed lock projection RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/45bc17555aa36f4a476eca92e771ef25b9f2a79d"
+        },
+        {
+          "sha": "8388b367306d7e8fcdb33e7849de3bcdb2c27100",
+          "date": "2026-09-23T00:28:41Z",
+          "parents": [
+            "45bc17555aa36f4a476eca92e771ef25b9f2a79d"
+          ],
+          "subject": "feat(coordination): project governed locks read-only",
+          "url": "https://github.com/Patricked-code/MCP/commit/8388b367306d7e8fcdb33e7849de3bcdb2c27100"
+        },
+        {
+          "sha": "b6f73998ec463bc90d1451724d3300545898ab63",
+          "date": "2026-09-23T00:30:46Z",
+          "parents": [
+            "8388b367306d7e8fcdb33e7849de3bcdb2c27100"
+          ],
+          "subject": "test(coordination): define UAC-08 GitHub binding RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/b6f73998ec463bc90d1451724d3300545898ab63"
+        },
+        {
+          "sha": "f26ff6d4cf9d3f4ee07f981fd1272329a2f6ee5b",
+          "date": "2026-09-23T00:32:58Z",
+          "parents": [
+            "b6f73998ec463bc90d1451724d3300545898ab63"
+          ],
+          "subject": "test(coordination): isolate UAC-08 GitHub binding RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/f26ff6d4cf9d3f4ee07f981fd1272329a2f6ee5b"
+        },
+        {
+          "sha": "220ca673e3cf88c227e837d3e42b678fdf4083ef",
+          "date": "2026-09-23T00:35:14Z",
+          "parents": [
+            "f26ff6d4cf9d3f4ee07f981fd1272329a2f6ee5b"
+          ],
+          "subject": "feat(coordination): bind GitHub execution evidence read-only",
+          "url": "https://github.com/Patricked-code/MCP/commit/220ca673e3cf88c227e837d3e42b678fdf4083ef"
+        },
+        {
+          "sha": "cea4c10dfe0cd3586ed09a771d1ccd9b2e2a937e",
+          "date": "2026-09-23T00:37:15Z",
+          "parents": [
+            "220ca673e3cf88c227e837d3e42b678fdf4083ef"
+          ],
+          "subject": "test(coordination): define UAC-09 checkpoint projection RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/cea4c10dfe0cd3586ed09a771d1ccd9b2e2a937e"
+        },
+        {
+          "sha": "645b7ad7dd55f6f9ea555a8ec58907d8a079a61e",
+          "date": "2026-09-23T00:39:12Z",
+          "parents": [
+            "cea4c10dfe0cd3586ed09a771d1ccd9b2e2a937e"
+          ],
+          "subject": "feat(coordination): project checkpoint and next actions read-only",
+          "url": "https://github.com/Patricked-code/MCP/commit/645b7ad7dd55f6f9ea555a8ec58907d8a079a61e"
+        },
+        {
+          "sha": "64953736ab260259adbdda392eba5108c5d26960",
+          "date": "2026-09-23T00:41:16Z",
+          "parents": [
+            "645b7ad7dd55f6f9ea555a8ec58907d8a079a61e"
+          ],
+          "subject": "docs(coordination): attest UAC-10 GitHub-first fallback reuse",
+          "url": "https://github.com/Patricked-code/MCP/commit/64953736ab260259adbdda392eba5108c5d26960"
+        },
+        {
+          "sha": "f1a83c5a49e677fc4b845701e188a6a613d86940",
+          "date": "2026-09-23T00:43:44Z",
+          "parents": [
+            "64953736ab260259adbdda392eba5108c5d26960"
+          ],
+          "subject": "test(coordination): define UAC-11 historical PRECODE adapter RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/f1a83c5a49e677fc4b845701e188a6a613d86940"
+        },
+        {
+          "sha": "df092e00011cc17174d86bb99a671c3f902c423e",
+          "date": "2026-09-24T16:07:50Z",
+          "parents": [
+            "f1a83c5a49e677fc4b845701e188a6a613d86940"
+          ],
+          "subject": "fix(coordination): implement historical candidate projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/df092e00011cc17174d86bb99a671c3f902c423e"
+        },
+        {
+          "sha": "3c6fc979055922fbb24ea48a86ecbf1516b96d3c",
+          "date": "2026-09-24T16:10:53Z",
+          "parents": [
+            "df092e00011cc17174d86bb99a671c3f902c423e",
+            "327379a782a7f13940f0edf302dced833b326dca"
+          ],
+          "subject": "merge(main): reconcile UAC branch with current main",
+          "url": "https://github.com/Patricked-code/MCP/commit/3c6fc979055922fbb24ea48a86ecbf1516b96d3c"
+        },
+        {
+          "sha": "1cd566120508f52caf048f9e89313fc3f624dbbb",
+          "date": "2026-09-24T16:13:15Z",
+          "parents": [
+            "3c6fc979055922fbb24ea48a86ecbf1516b96d3c"
+          ],
+          "subject": "docs(coordination): close UAC-11 and UAC-12 without regression",
+          "url": "https://github.com/Patricked-code/MCP/commit/1cd566120508f52caf048f9e89313fc3f624dbbb"
+        },
+        {
+          "sha": "a07c55badfd8f9b84a2e3ce5e59811c1775f7060",
+          "date": "2026-09-24T16:14:55Z",
+          "parents": [
+            "1cd566120508f52caf048f9e89313fc3f624dbbb"
+          ],
+          "subject": "test(coordination): prove stale heartbeat never releases ownership",
+          "url": "https://github.com/Patricked-code/MCP/commit/a07c55badfd8f9b84a2e3ce5e59811c1775f7060"
+        },
+        {
+          "sha": "3549f8e4d7399592f239b379996c72731a7d290a",
+          "date": "2026-09-24T16:17:41Z",
+          "parents": [
+            "a07c55badfd8f9b84a2e3ce5e59811c1775f7060"
+          ],
+          "subject": "test(coordination): prove unknown heartbeat preserves ownership",
+          "url": "https://github.com/Patricked-code/MCP/commit/3549f8e4d7399592f239b379996c72731a7d290a"
+        },
+        {
+          "sha": "bf6ff0a098234d13a6bdd19ba31a18eade07714a",
+          "date": "2026-09-24T16:19:54Z",
+          "parents": [
+            "3549f8e4d7399592f239b379996c72731a7d290a"
+          ],
+          "subject": "docs(coordination): close UAC-14 through UAC-18 existing-first",
+          "url": "https://github.com/Patricked-code/MCP/commit/bf6ff0a098234d13a6bdd19ba31a18eade07714a"
+        },
+        {
+          "sha": "6685e5a6f577e76b4bc66b345a4b00875b7c956c",
+          "date": "2026-09-24T16:22:16Z",
+          "parents": [
+            "bf6ff0a098234d13a6bdd19ba31a18eade07714a"
+          ],
+          "subject": "test(coordination): define UAC-19 supervision view RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/6685e5a6f577e76b4bc66b345a4b00875b7c956c"
+        },
+        {
+          "sha": "c747f9d6f58fcebe0f123fd32c2c4197c892b8b6",
+          "date": "2026-09-24T16:24:42Z",
+          "parents": [
+            "6685e5a6f577e76b4bc66b345a4b00875b7c956c"
+          ],
+          "subject": "feat(coordination): expose supervision through current-state inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/c747f9d6f58fcebe0f123fd32c2c4197c892b8b6"
+        },
+        {
+          "sha": "35476f46ad140069d9b8634d9d89318cd990da9a",
+          "date": "2026-09-24T16:26:48Z",
+          "parents": [
+            "c747f9d6f58fcebe0f123fd32c2c4197c892b8b6"
+          ],
+          "subject": "docs(coordination): reconcile UAC governance and cartography",
+          "url": "https://github.com/Patricked-code/MCP/commit/35476f46ad140069d9b8634d9d89318cd990da9a"
+        },
+        {
+          "sha": "2bc3a3c3e9aea1a70c2b9d15171a53c8a603a999",
+          "date": "2026-09-24T16:28:18Z",
+          "parents": [
+            "35476f46ad140069d9b8634d9d89318cd990da9a"
+          ],
+          "subject": "test(coordination): reproduce UAC-22 self-review findings",
+          "url": "https://github.com/Patricked-code/MCP/commit/2bc3a3c3e9aea1a70c2b9d15171a53c8a603a999"
+        },
+        {
+          "sha": "49f54683051a9969237cb8a22f5bc97209c69684",
+          "date": "2026-09-24T16:30:03Z",
+          "parents": [
+            "2bc3a3c3e9aea1a70c2b9d15171a53c8a603a999"
+          ],
+          "subject": "fix(coordination): align universal claim and collision projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/49f54683051a9969237cb8a22f5bc97209c69684"
+        },
+        {
+          "sha": "9100ab750472124d0a7b696f37b1f56e687f63ca",
+          "date": "2026-09-24T16:31:46Z",
+          "parents": [
+            "49f54683051a9969237cb8a22f5bc97209c69684"
+          ],
+          "subject": "docs(coordination): attest UAC-22 merge readiness",
+          "url": "https://github.com/Patricked-code/MCP/commit/9100ab750472124d0a7b696f37b1f56e687f63ca"
+        }
+      ]
+    },
+    {
+      "pr": 159,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "cd50a2a3da806efddbaa6d8be188516f81e92f36",
+          "date": "2026-09-22T23:31:44Z",
+          "parents": [
+            "cda7610e1dcd5bc56511f0b42f372f68058ca2fb"
+          ],
+          "subject": "test(backlog): require exhaustive program convergence RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/cd50a2a3da806efddbaa6d8be188516f81e92f36"
+        },
+        {
+          "sha": "0af87dcd858aa01d4445b6526eb3a82067722014",
+          "date": "2026-09-22T23:34:25Z",
+          "parents": [
+            "cd50a2a3da806efddbaa6d8be188516f81e92f36"
+          ],
+          "subject": "feat(backlog): add convergence validator",
+          "url": "https://github.com/Patricked-code/MCP/commit/0af87dcd858aa01d4445b6526eb3a82067722014"
+        },
+        {
+          "sha": "ee016024be0ac730faffd2d1b956ba2178e07c34",
+          "date": "2026-09-22T23:35:22Z",
+          "parents": [
+            "0af87dcd858aa01d4445b6526eb3a82067722014"
+          ],
+          "subject": "test(backlog): include task registry and executable roadmap lots",
+          "url": "https://github.com/Patricked-code/MCP/commit/ee016024be0ac730faffd2d1b956ba2178e07c34"
+        },
+        {
+          "sha": "946cb242271302fa6d4e571543ad3e8dcebe5203",
+          "date": "2026-09-22T23:35:32Z",
+          "parents": [
+            "ee016024be0ac730faffd2d1b956ba2178e07c34"
+          ],
+          "subject": "test(backlog): require task-registry convergence",
+          "url": "https://github.com/Patricked-code/MCP/commit/946cb242271302fa6d4e571543ad3e8dcebe5203"
+        },
+        {
+          "sha": "df6480b4cce7140dfae6a2e5f40c1d5602bf8bac",
+          "date": "2026-09-22T23:37:42Z",
+          "parents": [
+            "946cb242271302fa6d4e571543ad3e8dcebe5203"
+          ],
+          "subject": "docs(backlog): add exhaustive current-first convergence projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/df6480b4cce7140dfae6a2e5f40c1d5602bf8bac"
+        },
+        {
+          "sha": "2f36d3f844900bf8c08236dad447a304c76f1a34",
+          "date": "2026-09-22T23:38:38Z",
+          "parents": [
+            "df6480b4cce7140dfae6a2e5f40c1d5602bf8bac"
+          ],
+          "subject": "docs(backlog): add current-first workstream index",
+          "url": "https://github.com/Patricked-code/MCP/commit/2f36d3f844900bf8c08236dad447a304c76f1a34"
+        },
+        {
+          "sha": "f9263c698bb0ea401fb72c7f0f1966f674c3f68f",
+          "date": "2026-09-22T23:38:40Z",
+          "parents": [
+            "2f36d3f844900bf8c08236dad447a304c76f1a34"
+          ],
+          "subject": "docs(backlog): add execution waves and readiness contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/f9263c698bb0ea401fb72c7f0f1966f674c3f68f"
+        },
+        {
+          "sha": "51392757bdca716eb9d85686f66144c3fddb12d8",
+          "date": "2026-09-22T23:38:43Z",
+          "parents": [
+            "f9263c698bb0ea401fb72c7f0f1966f674c3f68f"
+          ],
+          "subject": "docs(backlog): define convergence as derived projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/51392757bdca716eb9d85686f66144c3fddb12d8"
+        },
+        {
+          "sha": "174082de5e9f6fe97b53854f61c7e4699b87be54",
+          "date": "2026-09-22T23:38:46Z",
+          "parents": [
+            "51392757bdca716eb9d85686f66144c3fddb12d8"
+          ],
+          "subject": "docs(backlog): record exhaustive convergence",
+          "url": "https://github.com/Patricked-code/MCP/commit/174082de5e9f6fe97b53854f61c7e4699b87be54"
+        },
+        {
+          "sha": "4dcc87650355a031c85a337ee3b54fb6af90970b",
+          "date": "2026-09-22T23:40:21Z",
+          "parents": [
+            "174082de5e9f6fe97b53854f61c7e4699b87be54"
+          ],
+          "subject": "fix(backlog): track executable roadmap lots only",
+          "url": "https://github.com/Patricked-code/MCP/commit/4dcc87650355a031c85a337ee3b54fb6af90970b"
+        },
+        {
+          "sha": "491ad840159c76d33a5f56630874e436d3e9c358",
+          "date": "2026-09-22T23:40:25Z",
+          "parents": [
+            "4dcc87650355a031c85a337ee3b54fb6af90970b"
+          ],
+          "subject": "fix(backlog): bind active UAC work to PR 154",
+          "url": "https://github.com/Patricked-code/MCP/commit/491ad840159c76d33a5f56630874e436d3e9c358"
+        },
+        {
+          "sha": "fc6053c3d3eb2ff18e8f2c7d5d3f241f405eac1d",
+          "date": "2026-09-22T23:41:29Z",
+          "parents": [
+            "491ad840159c76d33a5f56630874e436d3e9c358"
+          ],
+          "subject": "test(backlog): reject orphan workstreams and unknown dependencies",
+          "url": "https://github.com/Patricked-code/MCP/commit/fc6053c3d3eb2ff18e8f2c7d5d3f241f405eac1d"
+        },
+        {
+          "sha": "91f5313d6d8f5b6bb6d8a92fa58bbeba3158f677",
+          "date": "2026-09-22T23:41:33Z",
+          "parents": [
+            "fc6053c3d3eb2ff18e8f2c7d5d3f241f405eac1d"
+          ],
+          "subject": "test(backlog): require sourced workstreams and valid dependencies",
+          "url": "https://github.com/Patricked-code/MCP/commit/91f5313d6d8f5b6bb6d8a92fa58bbeba3158f677"
+        }
+      ]
+    },
+    {
+      "pr": 164,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "b4f1a2a66441dc453c58215fff3efe297ae78eae",
+          "date": "2026-09-23T00:39:38Z",
+          "parents": [
+            "84bbe9b1684f5f6be73eaf2d6aa21063fb62697a"
+          ],
+          "subject": "test(stablecoin): define safe backend inventory probe",
+          "url": "https://github.com/Patricked-code/MCP/commit/b4f1a2a66441dc453c58215fff3efe297ae78eae"
+        },
+        {
+          "sha": "a04a8de425d527d3ec3892710371a1989a0b5637",
+          "date": "2026-09-23T00:39:42Z",
+          "parents": [
+            "b4f1a2a66441dc453c58215fff3efe297ae78eae"
+          ],
+          "subject": "test(stablecoin): require backend inventory in evidence workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/a04a8de425d527d3ec3892710371a1989a0b5637"
+        },
+        {
+          "sha": "b994c3146d866ced0fa37562c6a5c99cbe706ca2",
+          "date": "2026-09-23T00:42:00Z",
+          "parents": [
+            "a04a8de425d527d3ec3892710371a1989a0b5637"
+          ],
+          "subject": "feat(stablecoin): add safe backend metadata inventory probe",
+          "url": "https://github.com/Patricked-code/MCP/commit/b994c3146d866ced0fa37562c6a5c99cbe706ca2"
+        },
+        {
+          "sha": "a362c1ea1f8e14a4b80a817c666467bedc0c1a50",
+          "date": "2026-09-23T00:42:36Z",
+          "parents": [
+            "b994c3146d866ced0fa37562c6a5c99cbe706ca2"
+          ],
+          "subject": "feat(stablecoin): expose backend inventory probe through OIDC workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/a362c1ea1f8e14a4b80a817c666467bedc0c1a50"
+        },
+        {
+          "sha": "6d9e0dc25bd0367a772376e0f0f253b5d4bfaacf",
+          "date": "2026-09-23T00:42:41Z",
+          "parents": [
+            "a362c1ea1f8e14a4b80a817c666467bedc0c1a50"
+          ],
+          "subject": "docs(stablecoin): govern safe backend inventory evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/6d9e0dc25bd0367a772376e0f0f253b5d4bfaacf"
+        },
+        {
+          "sha": "802056d3daa168e370a75a9ed1be38014ab3a314",
+          "date": "2026-09-23T00:42:46Z",
+          "parents": [
+            "6d9e0dc25bd0367a772376e0f0f253b5d4bfaacf"
+          ],
+          "subject": "test(stablecoin): validate backend inventory against runtime read-only policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/802056d3daa168e370a75a9ed1be38014ab3a314"
+        },
+        {
+          "sha": "30ea504e5a43e9ed6cd22d69daf7d9fd78fd16f2",
+          "date": "2026-09-23T00:44:38Z",
+          "parents": [
+            "802056d3daa168e370a75a9ed1be38014ab3a314"
+          ],
+          "subject": "test(stablecoin): assert generated inventory metadata contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/30ea504e5a43e9ed6cd22d69daf7d9fd78fd16f2"
+        }
+      ]
+    },
+    {
+      "pr": 168,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "65649a101cfed2eabe67a3779db76abc57cf7ebc",
+          "date": "2026-09-24T16:40:29Z",
+          "parents": [
+            "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4"
+          ],
+          "subject": "docs(coordination): reconcile terminal UAC deployment state",
+          "url": "https://github.com/Patricked-code/MCP/commit/65649a101cfed2eabe67a3779db76abc57cf7ebc"
+        },
+        {
+          "sha": "d576f1552708055701999b83f0a72b8635c7b146",
+          "date": "2026-09-24T16:41:30Z",
+          "parents": [
+            "65649a101cfed2eabe67a3779db76abc57cf7ebc"
+          ],
+          "subject": "docs(coordination): mark unobserved originMain evidence historical",
+          "url": "https://github.com/Patricked-code/MCP/commit/d576f1552708055701999b83f0a72b8635c7b146"
+        }
+      ]
+    },
+    {
+      "pr": 171,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "3ba4baff4130e1682d05a71d76e7c72bd294f7b7",
+          "date": "2026-09-24T17:00:02Z",
+          "parents": [
+            "ebc7443513627450643d46c8e676b795cc3aa03a"
+          ],
+          "subject": "test(governance): define Program Backlog V2 RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/3ba4baff4130e1682d05a71d76e7c72bd294f7b7"
+        },
+        {
+          "sha": "c82d4bb4828f05c74100a64b31bc720cd338e6d6",
+          "date": "2026-09-24T17:08:12Z",
+          "parents": [
+            "3ba4baff4130e1682d05a71d76e7c72bd294f7b7"
+          ],
+          "subject": "feat(governance): materialize Program Backlog V2 planning graph",
+          "url": "https://github.com/Patricked-code/MCP/commit/c82d4bb4828f05c74100a64b31bc720cd338e6d6"
+        },
+        {
+          "sha": "88218ae9332a10f174810513f3af281565ecff07",
+          "date": "2026-09-24T17:09:05Z",
+          "parents": [
+            "c82d4bb4828f05c74100a64b31bc720cd338e6d6"
+          ],
+          "subject": "docs(governance): fix Program Backlog V2 wave ordering",
+          "url": "https://github.com/Patricked-code/MCP/commit/88218ae9332a10f174810513f3af281565ecff07"
+        },
+        {
+          "sha": "930724163176d8d050e1ec73d2a45b8f77f48866",
+          "date": "2026-09-24T17:11:25Z",
+          "parents": [
+            "88218ae9332a10f174810513f3af281565ecff07"
+          ],
+          "subject": "fix(governance): refine provisioning dependency order",
+          "url": "https://github.com/Patricked-code/MCP/commit/930724163176d8d050e1ec73d2a45b8f77f48866"
+        }
+      ]
+    },
+    {
+      "pr": 174,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "2e92a7aa08a181b3451e8b311995363743a23d16",
+          "date": "2026-09-24T17:51:48Z",
+          "parents": [
+            "d30b06f4c8b72b4888f32397be207798a56b8bb8"
+          ],
+          "subject": "test(governance): define W1 baseline freeze and agent entrypoint RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/2e92a7aa08a181b3451e8b311995363743a23d16"
+        },
+        {
+          "sha": "37e7521cfd46455808399845823c156d9e972aa4",
+          "date": "2026-09-24T17:54:20Z",
+          "parents": [
+            "2e92a7aa08a181b3451e8b311995363743a23d16"
+          ],
+          "subject": "feat(governance): freeze W1 post-UAC reconciliation baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/37e7521cfd46455808399845823c156d9e972aa4"
+        },
+        {
+          "sha": "4309473f8e5b0235756b36b964cf40b426ff1a56",
+          "date": "2026-09-24T18:44:42Z",
+          "parents": [
+            "37e7521cfd46455808399845823c156d9e972aa4"
+          ],
+          "subject": "test(governance): define W1 GWC and task-registry reconciliation RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/4309473f8e5b0235756b36b964cf40b426ff1a56"
+        },
+        {
+          "sha": "8934eb0864d2ea322ed86eb5211181dd4de930b6",
+          "date": "2026-09-24T18:48:20Z",
+          "parents": [
+            "4309473f8e5b0235756b36b964cf40b426ff1a56"
+          ],
+          "subject": "feat(governance): reconcile integrated GWC and static task seed",
+          "url": "https://github.com/Patricked-code/MCP/commit/8934eb0864d2ea322ed86eb5211181dd4de930b6"
+        },
+        {
+          "sha": "8d3a5863ffeea372b0df5e7ca7a57f5e6952fb87",
+          "date": "2026-09-24T18:49:25Z",
+          "parents": [
+            "8934eb0864d2ea322ed86eb5211181dd4de930b6"
+          ],
+          "subject": "chore(governance): refresh reconciled GWC registry digest",
+          "url": "https://github.com/Patricked-code/MCP/commit/8d3a5863ffeea372b0df5e7ca7a57f5e6952fb87"
+        },
+        {
+          "sha": "fbedeffd7ce544ab484546be525e3853b1a06ce2",
+          "date": "2026-09-24T18:54:43Z",
+          "parents": [
+            "8d3a5863ffeea372b0df5e7ca7a57f5e6952fb87"
+          ],
+          "subject": "test(governance): reconcile W1 baseline expectation after dependent completion",
+          "url": "https://github.com/Patricked-code/MCP/commit/fbedeffd7ce544ab484546be525e3853b1a06ce2"
+        },
+        {
+          "sha": "2d4129904c9bcf08724ad09a28dd0845d409f0bc",
+          "date": "2026-09-24T18:56:50Z",
+          "parents": [
+            "fbedeffd7ce544ab484546be525e3853b1a06ce2"
+          ],
+          "subject": "test(governance): define AF and OD post-integration reconciliation RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/2d4129904c9bcf08724ad09a28dd0845d409f0bc"
+        },
+        {
+          "sha": "6573b5e9114544e21638ff6af99666f36b712b20",
+          "date": "2026-09-24T19:00:41Z",
+          "parents": [
+            "2d4129904c9bcf08724ad09a28dd0845d409f0bc"
+          ],
+          "subject": "feat(governance): reconcile AF findings and OD decisions current-first",
+          "url": "https://github.com/Patricked-code/MCP/commit/6573b5e9114544e21638ff6af99666f36b712b20"
+        },
+        {
+          "sha": "5d082af2cc08e4069112980e4ed87e1bec3c6924",
+          "date": "2026-09-24T19:02:42Z",
+          "parents": [
+            "6573b5e9114544e21638ff6af99666f36b712b20"
+          ],
+          "subject": "test(governance): advance W1 milestone expectations after AF OD reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/5d082af2cc08e4069112980e4ed87e1bec3c6924"
+        },
+        {
+          "sha": "0e831debd7c5b4226c20deedc6de93700db615a9",
+          "date": "2026-09-24T19:05:03Z",
+          "parents": [
+            "5d082af2cc08e4069112980e4ed87e1bec3c6924"
+          ],
+          "subject": "test(governance): define W1 planning coherence gate RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/0e831debd7c5b4226c20deedc6de93700db615a9"
+        },
+        {
+          "sha": "6b9ba7bc978de436811f63cbdbefdafff3f92af9",
+          "date": "2026-09-24T19:08:31Z",
+          "parents": [
+            "0e831debd7c5b4226c20deedc6de93700db615a9"
+          ],
+          "subject": "docs(governance): reconcile W1 current planning surfaces",
+          "url": "https://github.com/Patricked-code/MCP/commit/6b9ba7bc978de436811f63cbdbefdafff3f92af9"
+        },
+        {
+          "sha": "f0d3c6d14e866b0868320e2d68245ec955a9763b",
+          "date": "2026-09-24T19:09:59Z",
+          "parents": [
+            "6b9ba7bc978de436811f63cbdbefdafff3f92af9"
+          ],
+          "subject": "chore(governance): refresh W1 reconciled GWC digest",
+          "url": "https://github.com/Patricked-code/MCP/commit/f0d3c6d14e866b0868320e2d68245ec955a9763b"
+        },
+        {
+          "sha": "0ca92d34ca5ba9f8e5656205d4c340614ac5736b",
+          "date": "2026-09-24T19:11:55Z",
+          "parents": [
+            "f0d3c6d14e866b0868320e2d68245ec955a9763b"
+          ],
+          "subject": "test(governance): advance W1 milestone expectations after coherence gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/0ca92d34ca5ba9f8e5656205d4c340614ac5736b"
+        },
+        {
+          "sha": "7af6f9551db29f9d1d2823787d021c7a74f8abd7",
+          "date": "2026-09-24T19:13:50Z",
+          "parents": [
+            "0ca92d34ca5ba9f8e5656205d4c340614ac5736b"
+          ],
+          "subject": "test(governance): define W1 readiness handoff RED",
+          "url": "https://github.com/Patricked-code/MCP/commit/7af6f9551db29f9d1d2823787d021c7a74f8abd7"
+        },
+        {
+          "sha": "87bb8fa47c6551db398307a7d8f49d2759ba74c3",
+          "date": "2026-09-24T19:16:37Z",
+          "parents": [
+            "7af6f9551db29f9d1d2823787d021c7a74f8abd7"
+          ],
+          "subject": "feat(governance): publish W1 readiness handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/87bb8fa47c6551db398307a7d8f49d2759ba74c3"
+        },
+        {
+          "sha": "d185cea94df77b1c6e80f28456931264eecfc878",
+          "date": "2026-09-24T19:50:13Z",
+          "parents": [
+            "87bb8fa47c6551db398307a7d8f49d2759ba74c3"
+          ],
+          "subject": "test(governance): align W1-06 with readiness handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/d185cea94df77b1c6e80f28456931264eecfc878"
+        },
+        {
+          "sha": "95dd18b60280b3cddaaf15e42fbede47eda70f47",
+          "date": "2026-09-24T19:51:49Z",
+          "parents": [
+            "d185cea94df77b1c6e80f28456931264eecfc878"
+          ],
+          "subject": "test(governance): tolerate task markdown emphasis",
+          "url": "https://github.com/Patricked-code/MCP/commit/95dd18b60280b3cddaaf15e42fbede47eda70f47"
+        }
+      ]
+    },
+    {
+      "pr": 176,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "10808c9316577c1750870fbb88bac0866d0efd6b",
+          "date": "2026-09-24T19:59:49Z",
+          "parents": [
+            "3d5dd39f4342290fd6ddb9f2fbc4cbadd13b870e"
+          ],
+          "subject": "test(github): RED W2 read capability split",
+          "url": "https://github.com/Patricked-code/MCP/commit/10808c9316577c1750870fbb88bac0866d0efd6b"
+        },
+        {
+          "sha": "6dc54eb63a2142876bc546bae949c213e3697095",
+          "date": "2026-09-24T20:00:31Z",
+          "parents": [
+            "10808c9316577c1750870fbb88bac0866d0efd6b"
+          ],
+          "subject": "test(github): RED W2 bounded read complements",
+          "url": "https://github.com/Patricked-code/MCP/commit/6dc54eb63a2142876bc546bae949c213e3697095"
+        },
+        {
+          "sha": "691946cb647fdf0efdff6691ca2001ab99d6a855",
+          "date": "2026-09-24T20:02:46Z",
+          "parents": [
+            "6dc54eb63a2142876bc546bae949c213e3697095"
+          ],
+          "subject": "refactor(github): generalize required-check projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/691946cb647fdf0efdff6691ca2001ab99d6a855"
+        },
+        {
+          "sha": "78908123cdf5fa3f916d51484fd3e24cd51dd304",
+          "date": "2026-09-24T20:03:39Z",
+          "parents": [
+            "691946cb647fdf0efdff6691ca2001ab99d6a855"
+          ],
+          "subject": "feat(github): add bounded W2 read complements",
+          "url": "https://github.com/Patricked-code/MCP/commit/78908123cdf5fa3f916d51484fd3e24cd51dd304"
+        },
+        {
+          "sha": "3904d22d033671b3b7fd13ebf428dbcad018faad",
+          "date": "2026-09-24T20:06:47Z",
+          "parents": [
+            "78908123cdf5fa3f916d51484fd3e24cd51dd304"
+          ],
+          "subject": "docs(governance): refresh W2 function cartography",
+          "url": "https://github.com/Patricked-code/MCP/commit/3904d22d033671b3b7fd13ebf428dbcad018faad"
+        },
+        {
+          "sha": "6a53f70163c0155425d5277312dd5163dc56a293",
+          "date": "2026-09-24T20:08:26Z",
+          "parents": [
+            "3904d22d033671b3b7fd13ebf428dbcad018faad"
+          ],
+          "subject": "test(governance): RED W2 completion handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/6a53f70163c0155425d5277312dd5163dc56a293"
+        },
+        {
+          "sha": "f4b469134f27611c9afee8220c542e74b0242b77",
+          "date": "2026-09-24T20:12:58Z",
+          "parents": [
+            "6a53f70163c0155425d5277312dd5163dc56a293"
+          ],
+          "subject": "docs(governance): GREEN W2 completion handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/f4b469134f27611c9afee8220c542e74b0242b77"
+        },
+        {
+          "sha": "ed3428148d9199240f04818ed6307129ff27d965",
+          "date": "2026-09-25T04:31:01Z",
+          "parents": [
+            "f4b469134f27611c9afee8220c542e74b0242b77"
+          ],
+          "subject": "test(governance): fix W1 handoff task assertion",
+          "url": "https://github.com/Patricked-code/MCP/commit/ed3428148d9199240f04818ed6307129ff27d965"
+        }
+      ]
+    },
+    {
+      "pr": 178,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "7f9826fb69f6924b6aea849c51108e00c22f6659",
+          "date": "2026-09-25T05:14:11Z",
+          "parents": [
+            "c104e24259232dced2a24a7397640747c052d140"
+          ],
+          "subject": "test(governance): RED converge intake 177 into Program Backlog V2",
+          "url": "https://github.com/Patricked-code/MCP/commit/7f9826fb69f6924b6aea849c51108e00c22f6659"
+        },
+        {
+          "sha": "2c70feb3b7180131174b4d6d0e548632a8af4bea",
+          "date": "2026-09-25T05:20:52Z",
+          "parents": [
+            "7f9826fb69f6924b6aea849c51108e00c22f6659"
+          ],
+          "subject": "feat(governance): converge intake 177 into Program Backlog V2",
+          "url": "https://github.com/Patricked-code/MCP/commit/2c70feb3b7180131174b4d6d0e548632a8af4bea"
+        },
+        {
+          "sha": "b3f3176eb87c8789ca27975f159673502bed67a1",
+          "date": "2026-09-25T05:22:10Z",
+          "parents": [
+            "2c70feb3b7180131174b4d6d0e548632a8af4bea"
+          ],
+          "subject": "docs(governance): align W2 disposition after intake convergence",
+          "url": "https://github.com/Patricked-code/MCP/commit/b3f3176eb87c8789ca27975f159673502bed67a1"
+        }
+      ]
+    },
+    {
+      "pr": 181,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "8db1b8058e00adcf90278307a71381c1fcaecc37",
+          "date": "2026-09-25T05:43:29Z",
+          "parents": [
+            "574dccb1eefd4562e72788ea075456261058cd9a"
+          ],
+          "subject": "test(governance): RED automate Program Backlog continuation",
+          "url": "https://github.com/Patricked-code/MCP/commit/8db1b8058e00adcf90278307a71381c1fcaecc37"
+        },
+        {
+          "sha": "458b195d484f555ed1edde9c10ca66472c8a21e8",
+          "date": "2026-09-25T05:47:16Z",
+          "parents": [
+            "8db1b8058e00adcf90278307a71381c1fcaecc37"
+          ],
+          "subject": "feat(governance): automate Program Backlog continuation",
+          "url": "https://github.com/Patricked-code/MCP/commit/458b195d484f555ed1edde9c10ca66472c8a21e8"
+        },
+        {
+          "sha": "0f8e75c63f5defb4d7a6b82c396fe744fef7acc1",
+          "date": "2026-09-25T05:48:26Z",
+          "parents": [
+            "458b195d484f555ed1edde9c10ca66472c8a21e8"
+          ],
+          "subject": "fix(governance): report readiness changes before rewrite",
+          "url": "https://github.com/Patricked-code/MCP/commit/0f8e75c63f5defb4d7a6b82c396fe744fef7acc1"
+        },
+        {
+          "sha": "eb2aff8ef30ed349cc8d477cb23e7e364ae088df",
+          "date": "2026-09-25T05:49:43Z",
+          "parents": [
+            "0f8e75c63f5defb4d7a6b82c396fe744fef7acc1"
+          ],
+          "subject": "test(governance): keep readiness tests evolution-safe",
+          "url": "https://github.com/Patricked-code/MCP/commit/eb2aff8ef30ed349cc8d477cb23e7e364ae088df"
+        }
+      ]
+    },
+    {
+      "pr": 184,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "8eba9d4edf2cef52061697e5daf97619e9193738",
+          "date": "2026-09-25T05:55:37Z",
+          "parents": [
+            "df34fd24e6dd7863b54e2f17b5a295b09997471b"
+          ],
+          "subject": "docs(governance): close Program Backlog auto-continuation handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/8eba9d4edf2cef52061697e5daf97619e9193738"
+        }
+      ]
+    },
+    {
+      "pr": 187,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "25bef169b1c74f8a856da5440323ed6c2a6bcc10",
+          "date": "2026-09-25T06:34:12Z",
+          "parents": [
+            "001ed65dc84d9f70694d2b2ceea84b3b1fc82523"
+          ],
+          "subject": "test(governance): require bounded client evidence inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/25bef169b1c74f8a856da5440323ed6c2a6bcc10"
+        },
+        {
+          "sha": "cca049267db8a070c9dcd2de685e6116126a4d9d",
+          "date": "2026-09-25T06:39:10Z",
+          "parents": [
+            "25bef169b1c74f8a856da5440323ed6c2a6bcc10"
+          ],
+          "subject": "docs(governance): inventory bounded client evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/cca049267db8a070c9dcd2de685e6116126a4d9d"
+        },
+        {
+          "sha": "fad1659a76d157c850ca7a6f13b6afc36d84b413",
+          "date": "2026-09-25T06:39:13Z",
+          "parents": [
+            "cca049267db8a070c9dcd2de685e6116126a4d9d"
+          ],
+          "subject": "docs(governance): complete A2.2.1 inventory handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/fad1659a76d157c850ca7a6f13b6afc36d84b413"
+        },
+        {
+          "sha": "93c8f89ba51d11f38823a89561d86d898965dc90",
+          "date": "2026-09-25T06:39:17Z",
+          "parents": [
+            "fad1659a76d157c850ca7a6f13b6afc36d84b413"
+          ],
+          "subject": "docs(governance): checkpoint A2.2.1 inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/93c8f89ba51d11f38823a89561d86d898965dc90"
+        },
+        {
+          "sha": "8c81c238a8f98b8ad3b8a90869e19ab4a396876c",
+          "date": "2026-09-25T06:39:20Z",
+          "parents": [
+            "93c8f89ba51d11f38823a89561d86d898965dc90"
+          ],
+          "subject": "docs(governance): changelog A2.2.1 inventory",
+          "url": "https://github.com/Patricked-code/MCP/commit/8c81c238a8f98b8ad3b8a90869e19ab4a396876c"
+        },
+        {
+          "sha": "1ec8225e6eabd4fee4ebc9cce666589ef2997ae7",
+          "date": "2026-09-25T06:39:23Z",
+          "parents": [
+            "8c81c238a8f98b8ad3b8a90869e19ab4a396876c"
+          ],
+          "subject": "docs(governance): decide A2.2 evidence boundary",
+          "url": "https://github.com/Patricked-code/MCP/commit/1ec8225e6eabd4fee4ebc9cce666589ef2997ae7"
+        },
+        {
+          "sha": "f633c8037f30525f460b82159d70163a97667ba4",
+          "date": "2026-09-25T06:39:26Z",
+          "parents": [
+            "1ec8225e6eabd4fee4ebc9cce666589ef2997ae7"
+          ],
+          "subject": "docs(governance): refresh W3 task projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/f633c8037f30525f460b82159d70163a97667ba4"
+        },
+        {
+          "sha": "a0be86c435efceca76989a4d5f55cfa699339317",
+          "date": "2026-09-25T06:39:29Z",
+          "parents": [
+            "f633c8037f30525f460b82159d70163a97667ba4"
+          ],
+          "subject": "docs(governance): refresh W3 roadmap readiness",
+          "url": "https://github.com/Patricked-code/MCP/commit/a0be86c435efceca76989a4d5f55cfa699339317"
+        },
+        {
+          "sha": "572e2ca335e5e7eef2a750f869ce4f685a7ad9ff",
+          "date": "2026-09-25T06:39:32Z",
+          "parents": [
+            "a0be86c435efceca76989a4d5f55cfa699339317"
+          ],
+          "subject": "docs(governance): refresh W3 todo projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/572e2ca335e5e7eef2a750f869ce4f685a7ad9ff"
+        },
+        {
+          "sha": "d976a4e2b13159e28135452a25415550c123d7c9",
+          "date": "2026-09-25T06:42:39Z",
+          "parents": [
+            "572e2ca335e5e7eef2a750f869ce4f685a7ad9ff"
+          ],
+          "subject": "test(governance): preserve W2 handoff after W3 progress",
+          "url": "https://github.com/Patricked-code/MCP/commit/d976a4e2b13159e28135452a25415550c123d7c9"
+        },
+        {
+          "sha": "c53aefbc28dc2b2cdc36fa687c07b98629884615",
+          "date": "2026-09-25T06:44:13Z",
+          "parents": [
+            "d976a4e2b13159e28135452a25415550c123d7c9"
+          ],
+          "subject": "docs(governance): attest A2.2.1 green handoff",
+          "url": "https://github.com/Patricked-code/MCP/commit/c53aefbc28dc2b2cdc36fa687c07b98629884615"
+        },
+        {
+          "sha": "1cc660ae5f54ccb660d199c1043501fd69a6e1f2",
+          "date": "2026-09-25T06:44:16Z",
+          "parents": [
+            "c53aefbc28dc2b2cdc36fa687c07b98629884615"
+          ],
+          "subject": "docs(governance): record A2.2.1 green evidence",
+          "url": "https://github.com/Patricked-code/MCP/commit/1cc660ae5f54ccb660d199c1043501fd69a6e1f2"
+        }
+      ]
+    },
+    {
+      "pr": 188,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "18bff6c0c48981e89a680bf3af465d56a4f8d005",
+          "date": "2026-09-25T10:18:59Z",
+          "parents": [
+            "5c08e865eef7877f5450262db726b17fe2110a2e"
+          ],
+          "subject": "test(ssh): establish RED for governed repository SSH provisioning",
+          "url": "https://github.com/Patricked-code/MCP/commit/18bff6c0c48981e89a680bf3af465d56a4f8d005"
+        },
+        {
+          "sha": "a4b1a6dddec416176eabf7686f4ff0b0de2d2bdc",
+          "date": "2026-09-25T10:19:34Z",
+          "parents": [
+            "18bff6c0c48981e89a680bf3af465d56a4f8d005"
+          ],
+          "subject": "feat(ssh): add governed repository SSH access primitives",
+          "url": "https://github.com/Patricked-code/MCP/commit/a4b1a6dddec416176eabf7686f4ff0b0de2d2bdc"
+        },
+        {
+          "sha": "34753fa2246262602b0f05c224bc7d192cdd7d44",
+          "date": "2026-09-25T10:19:37Z",
+          "parents": [
+            "a4b1a6dddec416176eabf7686f4ff0b0de2d2bdc"
+          ],
+          "subject": "feat(ssh): add governed repository SSH access primitives",
+          "url": "https://github.com/Patricked-code/MCP/commit/34753fa2246262602b0f05c224bc7d192cdd7d44"
+        },
+        {
+          "sha": "acd00aff1ea464ad275475ee730d8907e0d8b47a",
+          "date": "2026-09-25T10:19:39Z",
+          "parents": [
+            "34753fa2246262602b0f05c224bc7d192cdd7d44"
+          ],
+          "subject": "feat(ssh): add governed repository SSH access primitives",
+          "url": "https://github.com/Patricked-code/MCP/commit/acd00aff1ea464ad275475ee730d8907e0d8b47a"
+        },
+        {
+          "sha": "920d812b86c21be357724ee5a8ae2be648817c67",
+          "date": "2026-09-25T10:19:41Z",
+          "parents": [
+            "acd00aff1ea464ad275475ee730d8907e0d8b47a"
+          ],
+          "subject": "feat(ssh): add governed repository SSH access primitives",
+          "url": "https://github.com/Patricked-code/MCP/commit/920d812b86c21be357724ee5a8ae2be648817c67"
+        },
+        {
+          "sha": "20b855f37c661f96c4886e8512c3babdbf253ec4",
+          "date": "2026-09-25T10:20:33Z",
+          "parents": [
+            "920d812b86c21be357724ee5a8ae2be648817c67"
+          ],
+          "subject": "feat(ssh): add OIDC repository SSH certificate broker",
+          "url": "https://github.com/Patricked-code/MCP/commit/20b855f37c661f96c4886e8512c3babdbf253ec4"
+        },
+        {
+          "sha": "a431560731a7021fffbfee4d2fc44737f4861e6f",
+          "date": "2026-09-25T10:20:36Z",
+          "parents": [
+            "20b855f37c661f96c4886e8512c3babdbf253ec4"
+          ],
+          "subject": "feat(ssh): add OIDC repository SSH certificate broker",
+          "url": "https://github.com/Patricked-code/MCP/commit/a431560731a7021fffbfee4d2fc44737f4861e6f"
+        },
+        {
+          "sha": "b84fa642a4b2104abaef65112ca05285d3b12e8b",
+          "date": "2026-09-25T10:22:56Z",
+          "parents": [
+            "a431560731a7021fffbfee4d2fc44737f4861e6f"
+          ],
+          "subject": "feat(ssh): add repo-bound GitHub OIDC SSH policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/b84fa642a4b2104abaef65112ca05285d3b12e8b"
+        },
+        {
+          "sha": "5588a68210967d66993d44994ae645dd7ef45b37",
+          "date": "2026-09-25T10:23:04Z",
+          "parents": [
+            "b84fa642a4b2104abaef65112ca05285d3b12e8b"
+          ],
+          "subject": "feat(ssh): add fail-closed repository SSH broker gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/5588a68210967d66993d44994ae645dd7ef45b37"
+        },
+        {
+          "sha": "37fc3ca69ad72cf10df96f89b0a841fdef6c537b",
+          "date": "2026-09-25T10:23:41Z",
+          "parents": [
+            "5588a68210967d66993d44994ae645dd7ef45b37"
+          ],
+          "subject": "fix(ssh): separate host bootstrap and runtime key paths",
+          "url": "https://github.com/Patricked-code/MCP/commit/37fc3ca69ad72cf10df96f89b0a841fdef6c537b"
+        },
+        {
+          "sha": "7f9dbf08fd8379aaff56d2adbe21e7f6a8aa27b1",
+          "date": "2026-09-25T10:24:11Z",
+          "parents": [
+            "37fc3ca69ad72cf10df96f89b0a841fdef6c537b"
+          ],
+          "subject": "feat(ssh): return pinned S1 host key with ephemeral certificate",
+          "url": "https://github.com/Patricked-code/MCP/commit/7f9dbf08fd8379aaff56d2adbe21e7f6a8aa27b1"
+        },
+        {
+          "sha": "de55f65c71967a4756fc168e73f3089e821f3e1d",
+          "date": "2026-09-25T10:24:23Z",
+          "parents": [
+            "7f9dbf08fd8379aaff56d2adbe21e7f6a8aa27b1"
+          ],
+          "subject": "feat(ssh): register governed repository certificate broker",
+          "url": "https://github.com/Patricked-code/MCP/commit/de55f65c71967a4756fc168e73f3089e821f3e1d"
+        },
+        {
+          "sha": "cb66d9c9302337572db27fd028032ca75b6c5517",
+          "date": "2026-09-25T10:25:23Z",
+          "parents": [
+            "de55f65c71967a4756fc168e73f3089e821f3e1d"
+          ],
+          "subject": "fix(ssh): make governed OIDC owner extraction exact",
+          "url": "https://github.com/Patricked-code/MCP/commit/cb66d9c9302337572db27fd028032ca75b6c5517"
+        },
+        {
+          "sha": "133824689406d05378596e63245d3eb338c6ef5c",
+          "date": "2026-09-25T10:25:51Z",
+          "parents": [
+            "cb66d9c9302337572db27fd028032ca75b6c5517"
+          ],
+          "subject": "feat(ssh): add exact workflow OIDC policy for CA bootstrap",
+          "url": "https://github.com/Patricked-code/MCP/commit/133824689406d05378596e63245d3eb338c6ef5c"
+        },
+        {
+          "sha": "a31f89f4cbe232cb75503ef06ce2775355d0beb1",
+          "date": "2026-09-25T10:26:08Z",
+          "parents": [
+            "133824689406d05378596e63245d3eb338c6ef5c"
+          ],
+          "subject": "feat(ssh): add OIDC-gated SSH CA bootstrap route",
+          "url": "https://github.com/Patricked-code/MCP/commit/a31f89f4cbe232cb75503ef06ce2775355d0beb1"
+        },
+        {
+          "sha": "6efff2bf9058da0f43d291356c44a0dcb3c0e3b9",
+          "date": "2026-09-25T10:26:22Z",
+          "parents": [
+            "a31f89f4cbe232cb75503ef06ce2775355d0beb1"
+          ],
+          "subject": "refactor(ssh): use CA presence as certificate activation gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/6efff2bf9058da0f43d291356c44a0dcb3c0e3b9"
+        },
+        {
+          "sha": "721966711912cd56840451a330616fa7c9f912fa",
+          "date": "2026-09-25T10:26:30Z",
+          "parents": [
+            "6efff2bf9058da0f43d291356c44a0dcb3c0e3b9"
+          ],
+          "subject": "refactor(ssh): activate broker by CA presence instead of env flag",
+          "url": "https://github.com/Patricked-code/MCP/commit/721966711912cd56840451a330616fa7c9f912fa"
+        },
+        {
+          "sha": "d70259b3dd96d19777be9f409440dd111d8176a8",
+          "date": "2026-09-25T10:26:41Z",
+          "parents": [
+            "721966711912cd56840451a330616fa7c9f912fa"
+          ],
+          "subject": "feat(ssh): wire CA bootstrap and certificate routes",
+          "url": "https://github.com/Patricked-code/MCP/commit/d70259b3dd96d19777be9f409440dd111d8176a8"
+        },
+        {
+          "sha": "acb62c6e39fa5945305ccfb9ed84509a753b641a",
+          "date": "2026-09-25T10:27:09Z",
+          "parents": [
+            "d70259b3dd96d19777be9f409440dd111d8176a8"
+          ],
+          "subject": "feat(ssh): add OIDC-only CA bootstrap workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/acb62c6e39fa5945305ccfb9ed84509a753b641a"
+        },
+        {
+          "sha": "2642212ba91b2dc0a1e3fcb21e772e311f71cdfc",
+          "date": "2026-09-25T10:27:20Z",
+          "parents": [
+            "acb62c6e39fa5945305ccfb9ed84509a753b641a"
+          ],
+          "subject": "test(ssh): cover OIDC-only CA bootstrap workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/2642212ba91b2dc0a1e3fcb21e772e311f71cdfc"
+        },
+        {
+          "sha": "8ebbd99ccfa6ebce0d81ffd7a71995c1ffa070a7",
+          "date": "2026-09-25T10:28:03Z",
+          "parents": [
+            "2642212ba91b2dc0a1e3fcb21e772e311f71cdfc"
+          ],
+          "subject": "fix(ssh): tighten repository identity and CA contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/8ebbd99ccfa6ebce0d81ffd7a71995c1ffa070a7"
+        },
+        {
+          "sha": "cbef4a07e17a9757a8025500e875899ad82548bf",
+          "date": "2026-09-25T10:29:14Z",
+          "parents": [
+            "8ebbd99ccfa6ebce0d81ffd7a71995c1ffa070a7"
+          ],
+          "subject": "docs(governance): integrate repository SSH provisioning into W3",
+          "url": "https://github.com/Patricked-code/MCP/commit/cbef4a07e17a9757a8025500e875899ad82548bf"
+        },
+        {
+          "sha": "197b8f8dd0e9528350c5b071cd43ba74bfd2bffb",
+          "date": "2026-09-25T10:29:40Z",
+          "parents": [
+            "cbef4a07e17a9757a8025500e875899ad82548bf"
+          ],
+          "subject": "test(ssh): normalize CA bootstrap command contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/197b8f8dd0e9528350c5b071cd43ba74bfd2bffb"
+        },
+        {
+          "sha": "be10b13394d07f937beb77a943e703a3ec181df9",
+          "date": "2026-09-25T10:30:56Z",
+          "parents": [
+            "197b8f8dd0e9528350c5b071cd43ba74bfd2bffb"
+          ],
+          "subject": "docs: record governed repository SSH certificate capability",
+          "url": "https://github.com/Patricked-code/MCP/commit/be10b13394d07f937beb77a943e703a3ec181df9"
+        },
+        {
+          "sha": "135ad4750cac16d12938529563effae9f0edabad",
+          "date": "2026-09-25T10:31:00Z",
+          "parents": [
+            "be10b13394d07f937beb77a943e703a3ec181df9"
+          ],
+          "subject": "docs: decide ephemeral OIDC SSH certificates for governed repos",
+          "url": "https://github.com/Patricked-code/MCP/commit/135ad4750cac16d12938529563effae9f0edabad"
+        },
+        {
+          "sha": "1c13651884dc09f292887dc4d278b97ab0035414",
+          "date": "2026-09-25T10:31:03Z",
+          "parents": [
+            "135ad4750cac16d12938529563effae9f0edabad"
+          ],
+          "subject": "docs: define governed repository SSH security model",
+          "url": "https://github.com/Patricked-code/MCP/commit/1c13651884dc09f292887dc4d278b97ab0035414"
+        },
+        {
+          "sha": "f09ceb5276ab6cf58dfcd635285601786c654ba7",
+          "date": "2026-09-25T10:31:06Z",
+          "parents": [
+            "1c13651884dc09f292887dc4d278b97ab0035414"
+          ],
+          "subject": "docs: document governed repository SSH certificate flow",
+          "url": "https://github.com/Patricked-code/MCP/commit/f09ceb5276ab6cf58dfcd635285601786c654ba7"
+        },
+        {
+          "sha": "c734f3e3bdadb6465e0e22ad3e4d85cb3270746b",
+          "date": "2026-09-25T10:31:48Z",
+          "parents": [
+            "f09ceb5276ab6cf58dfcd635285601786c654ba7"
+          ],
+          "subject": "docs(governance): synchronize SSH blueprint readiness projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/c734f3e3bdadb6465e0e22ad3e4d85cb3270746b"
+        },
+        {
+          "sha": "0da89be613cb2649cab698ff981e58f9d64441ac",
+          "date": "2026-09-25T10:32:16Z",
+          "parents": [
+            "c734f3e3bdadb6465e0e22ad3e4d85cb3270746b"
+          ],
+          "subject": "docs: checkpoint governed repository SSH provisioning candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/0da89be613cb2649cab698ff981e58f9d64441ac"
+        },
+        {
+          "sha": "5eb216e3be51fdc2c9b9c53d86ee54f26e10e2be",
+          "date": "2026-09-25T10:34:09Z",
+          "parents": [
+            "0da89be613cb2649cab698ff981e58f9d64441ac"
+          ],
+          "subject": "docs(governance): complete SSH intake source coverage",
+          "url": "https://github.com/Patricked-code/MCP/commit/5eb216e3be51fdc2c9b9c53d86ee54f26e10e2be"
+        },
+        {
+          "sha": "ce8bc23af4b322bda46a48740a50173350c35f30",
+          "date": "2026-09-25T10:34:23Z",
+          "parents": [
+            "5eb216e3be51fdc2c9b9c53d86ee54f26e10e2be"
+          ],
+          "subject": "test(governance): preserve additive SSH W3 candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/ce8bc23af4b322bda46a48740a50173350c35f30"
+        },
+        {
+          "sha": "80f132ed26d5ad50d5b985ea76188f589a4bb11a",
+          "date": "2026-09-25T11:12:03Z",
+          "parents": [
+            "ce8bc23af4b322bda46a48740a50173350c35f30"
+          ],
+          "subject": "fix(ssh): execute repository gateway in canonical MCP container",
+          "url": "https://github.com/Patricked-code/MCP/commit/80f132ed26d5ad50d5b985ea76188f589a4bb11a"
+        },
+        {
+          "sha": "82c480af1bc183e22b32f9e9e0a407de779c583c",
+          "date": "2026-09-25T11:12:09Z",
+          "parents": [
+            "80f132ed26d5ad50d5b985ea76188f589a4bb11a"
+          ],
+          "subject": "test(ssh): require canonical container gateway execution",
+          "url": "https://github.com/Patricked-code/MCP/commit/82c480af1bc183e22b32f9e9e0a407de779c583c"
+        },
+        {
+          "sha": "cca4fd7afa010c0722b048860014ec8ff0bc9415",
+          "date": "2026-09-25T11:14:21Z",
+          "parents": [
+            "82c480af1bc183e22b32f9e9e0a407de779c583c"
+          ],
+          "subject": "fix(ssh): invoke compiled gateway at dist/src path",
+          "url": "https://github.com/Patricked-code/MCP/commit/cca4fd7afa010c0722b048860014ec8ff0bc9415"
+        },
+        {
+          "sha": "40bdfd8ed032b7c11e8701b175c15279034cc835",
+          "date": "2026-09-25T11:14:26Z",
+          "parents": [
+            "cca4fd7afa010c0722b048860014ec8ff0bc9415"
+          ],
+          "subject": "fix(ssh): install OpenSSH client in MCP runtime",
+          "url": "https://github.com/Patricked-code/MCP/commit/40bdfd8ed032b7c11e8701b175c15279034cc835"
+        },
+        {
+          "sha": "cafccd204cbdc4b6d614bea97b48a874e03a19a6",
+          "date": "2026-09-25T11:14:30Z",
+          "parents": [
+            "40bdfd8ed032b7c11e8701b175c15279034cc835"
+          ],
+          "subject": "test(ssh): cover compiled gateway path and ssh-keygen runtime",
+          "url": "https://github.com/Patricked-code/MCP/commit/cafccd204cbdc4b6d614bea97b48a874e03a19a6"
+        },
+        {
+          "sha": "d1d66d5d1d4476136abf66fe18b9dec1782a0d58",
+          "date": "2026-09-25T11:20:04Z",
+          "parents": [
+            "cafccd204cbdc4b6d614bea97b48a874e03a19a6"
+          ],
+          "subject": "fix(ssh): pin governed repository owners to immutable GitHub IDs",
+          "url": "https://github.com/Patricked-code/MCP/commit/d1d66d5d1d4476136abf66fe18b9dec1782a0d58"
+        },
+        {
+          "sha": "bd4126de400fe5f894643b4a2939c382bc760385",
+          "date": "2026-09-25T11:20:12Z",
+          "parents": [
+            "d1d66d5d1d4476136abf66fe18b9dec1782a0d58"
+          ],
+          "subject": "test(ssh): require immutable owner IDs in OIDC policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/bd4126de400fe5f894643b4a2939c382bc760385"
+        }
+      ]
+    },
+    {
+      "pr": 189,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "574d9cf85c44f24bddc1f9ad4a9230afb47734c1",
+          "date": "2026-09-25T11:26:30Z",
+          "parents": [
+            "9c222136019d77af39a36c43a54259f1df489ab8"
+          ],
+          "subject": "feat(ssh): allow governed issue trigger for CA bootstrap",
+          "url": "https://github.com/Patricked-code/MCP/commit/574d9cf85c44f24bddc1f9ad4a9230afb47734c1"
+        },
+        {
+          "sha": "29a64fc50ba37a7167d52435e7708ff59644b166",
+          "date": "2026-09-25T11:26:36Z",
+          "parents": [
+            "574d9cf85c44f24bddc1f9ad4a9230afb47734c1"
+          ],
+          "subject": "feat(ssh): add governed issue bootstrap trigger",
+          "url": "https://github.com/Patricked-code/MCP/commit/29a64fc50ba37a7167d52435e7708ff59644b166"
+        },
+        {
+          "sha": "813741eb7793fad869bf7241ff776918a92e06ae",
+          "date": "2026-09-25T11:26:57Z",
+          "parents": [
+            "29a64fc50ba37a7167d52435e7708ff59644b166"
+          ],
+          "subject": "test(ssh): lock governed issue CA bootstrap trigger",
+          "url": "https://github.com/Patricked-code/MCP/commit/813741eb7793fad869bf7241ff776918a92e06ae"
+        },
+        {
+          "sha": "749908f1f017ba6540087b1231a710208f5db873",
+          "date": "2026-09-25T11:32:01Z",
+          "parents": [
+            "813741eb7793fad869bf7241ff776918a92e06ae"
+          ],
+          "subject": "fix(ssh): require repository write permission for CA issue trigger",
+          "url": "https://github.com/Patricked-code/MCP/commit/749908f1f017ba6540087b1231a710208f5db873"
+        },
+        {
+          "sha": "5b34bc440612a9799e756494b2f8f4a3197e9a54",
+          "date": "2026-09-25T11:32:44Z",
+          "parents": [
+            "749908f1f017ba6540087b1231a710208f5db873"
+          ],
+          "subject": "docs: record governed issue authorization for SSH CA bootstrap",
+          "url": "https://github.com/Patricked-code/MCP/commit/5b34bc440612a9799e756494b2f8f4a3197e9a54"
+        },
+        {
+          "sha": "1a637fcc8c1c0fa1369fd0e8afd107da088e4244",
+          "date": "2026-09-25T11:32:52Z",
+          "parents": [
+            "5b34bc440612a9799e756494b2f8f4a3197e9a54"
+          ],
+          "subject": "docs: update SSH CA bootstrap changelog",
+          "url": "https://github.com/Patricked-code/MCP/commit/1a637fcc8c1c0fa1369fd0e8afd107da088e4244"
+        },
+        {
+          "sha": "8f23d08c0faff78573bcfb9f74c34fbfb1c17342",
+          "date": "2026-09-25T11:33:01Z",
+          "parents": [
+            "1a637fcc8c1c0fa1369fd0e8afd107da088e4244"
+          ],
+          "subject": "docs: record SSH CA issue-trigger authorization decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/8f23d08c0faff78573bcfb9f74c34fbfb1c17342"
+        },
+        {
+          "sha": "f4a029aa32f3297d9a712ed5c50ddea6d796b928",
+          "date": "2026-09-25T11:33:08Z",
+          "parents": [
+            "8f23d08c0faff78573bcfb9f74c34fbfb1c17342"
+          ],
+          "subject": "docs: document authorized issue path for SSH CA bootstrap",
+          "url": "https://github.com/Patricked-code/MCP/commit/f4a029aa32f3297d9a712ed5c50ddea6d796b928"
+        },
+        {
+          "sha": "b97b0d807ff12794108d10cd6806d888ecc8dfea",
+          "date": "2026-09-25T11:33:39Z",
+          "parents": [
+            "f4a029aa32f3297d9a712ed5c50ddea6d796b928"
+          ],
+          "subject": "test(ssh): require write-authorized issue actor for CA bootstrap",
+          "url": "https://github.com/Patricked-code/MCP/commit/b97b0d807ff12794108d10cd6806d888ecc8dfea"
+        }
+      ]
+    },
+    {
+      "pr": 191,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "e0a0e5e42610df4b1432eeb36234c8571d3e47a6",
+          "date": "2026-09-26T11:53:26Z",
+          "parents": [
+            "31f47325f92b9652d0564ebc66131d7bd3cca397"
+          ],
+          "subject": "test(oidc): require repository dispatch and direct discovery policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/e0a0e5e42610df4b1432eeb36234c8571d3e47a6"
+        },
+        {
+          "sha": "637700ec25679a0ca771164a47767e9349a5e9a5",
+          "date": "2026-09-26T11:53:29Z",
+          "parents": [
+            "e0a0e5e42610df4b1432eeb36234c8571d3e47a6"
+          ],
+          "subject": "test(oidc): add RED repository direct discovery contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/637700ec25679a0ca771164a47767e9349a5e9a5"
+        },
+        {
+          "sha": "d5266466eb6b82218dfb4fae0c6ec950ec117af6",
+          "date": "2026-09-26T11:55:45Z",
+          "parents": [
+            "637700ec25679a0ca771164a47767e9349a5e9a5"
+          ],
+          "subject": "feat(oidc): generalize repository read-only discovery gateway",
+          "url": "https://github.com/Patricked-code/MCP/commit/d5266466eb6b82218dfb4fae0c6ec950ec117af6"
+        },
+        {
+          "sha": "a0764291fae41775a1e9b38904b9ef6382062ddf",
+          "date": "2026-09-26T11:56:10Z",
+          "parents": [
+            "d5266466eb6b82218dfb4fae0c6ec950ec117af6"
+          ],
+          "subject": "feat(oidc): add governed repository direct discovery policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/a0764291fae41775a1e9b38904b9ef6382062ddf"
+        },
+        {
+          "sha": "71e2e06235261f7c544de299afad6e878d31f795",
+          "date": "2026-09-26T11:56:37Z",
+          "parents": [
+            "a0764291fae41775a1e9b38904b9ef6382062ddf"
+          ],
+          "subject": "feat(oidc): add secretless repository direct discovery route",
+          "url": "https://github.com/Patricked-code/MCP/commit/71e2e06235261f7c544de299afad6e878d31f795"
+        },
+        {
+          "sha": "93633d5c33b5be9fd6a5f6b04356fd7eaf5ba820",
+          "date": "2026-09-26T11:57:06Z",
+          "parents": [
+            "71e2e06235261f7c544de299afad6e878d31f795"
+          ],
+          "subject": "feat(oidc): register repository direct discovery route",
+          "url": "https://github.com/Patricked-code/MCP/commit/93633d5c33b5be9fd6a5f6b04356fd7eaf5ba820"
+        },
+        {
+          "sha": "63c19447100ca03461e52f8c0f447a3adbb14c1d",
+          "date": "2026-09-26T16:11:11Z",
+          "parents": [
+            "93633d5c33b5be9fd6a5f6b04356fd7eaf5ba820"
+          ],
+          "subject": "refactor(ssh): narrow PR 191 to existing repository SSH workstream",
+          "url": "https://github.com/Patricked-code/MCP/commit/63c19447100ca03461e52f8c0f447a3adbb14c1d"
+        },
+        {
+          "sha": "420f00cebaa6b7e85f7596da108cb742a2be4ee8",
+          "date": "2026-09-26T16:11:17Z",
+          "parents": [
+            "63c19447100ca03461e52f8c0f447a3adbb14c1d"
+          ],
+          "subject": "refactor(ssh): narrow PR 191 to existing repository SSH workstream",
+          "url": "https://github.com/Patricked-code/MCP/commit/420f00cebaa6b7e85f7596da108cb742a2be4ee8"
+        },
+        {
+          "sha": "9e8b95062e0805491ebc7589727a803816a5b8df",
+          "date": "2026-09-26T16:11:24Z",
+          "parents": [
+            "420f00cebaa6b7e85f7596da108cb742a2be4ee8"
+          ],
+          "subject": "refactor(ssh): narrow PR 191 to existing repository SSH workstream",
+          "url": "https://github.com/Patricked-code/MCP/commit/9e8b95062e0805491ebc7589727a803816a5b8df"
+        },
+        {
+          "sha": "d5e7db74cf8850fcd45e564d58481c163ee544f0",
+          "date": "2026-09-26T16:11:27Z",
+          "parents": [
+            "9e8b95062e0805491ebc7589727a803816a5b8df"
+          ],
+          "subject": "refactor(ssh): narrow PR 191 to existing repository SSH workstream",
+          "url": "https://github.com/Patricked-code/MCP/commit/d5e7db74cf8850fcd45e564d58481c163ee544f0"
+        },
+        {
+          "sha": "175f8d72302b0753a0ee7a7d971627fa09caa21c",
+          "date": "2026-09-26T16:11:29Z",
+          "parents": [
+            "d5e7db74cf8850fcd45e564d58481c163ee544f0"
+          ],
+          "subject": "refactor(ssh): defer unprogrammed direct repository discovery",
+          "url": "https://github.com/Patricked-code/MCP/commit/175f8d72302b0753a0ee7a7d971627fa09caa21c"
+        },
+        {
+          "sha": "8a3078129fe441977da6fbf36085a4422a3d7e03",
+          "date": "2026-09-26T16:11:31Z",
+          "parents": [
+            "175f8d72302b0753a0ee7a7d971627fa09caa21c"
+          ],
+          "subject": "refactor(ssh): defer unprogrammed direct repository discovery",
+          "url": "https://github.com/Patricked-code/MCP/commit/8a3078129fe441977da6fbf36085a4422a3d7e03"
+        },
+        {
+          "sha": "e5c450a1bd69ccc2c3c340fbd49f1995330b6a5a",
+          "date": "2026-09-26T16:12:02Z",
+          "parents": [
+            "8a3078129fe441977da6fbf36085a4422a3d7e03"
+          ],
+          "subject": "test(ssh): RED cover repository-dispatch OIDC intake 192",
+          "url": "https://github.com/Patricked-code/MCP/commit/e5c450a1bd69ccc2c3c340fbd49f1995330b6a5a"
+        },
+        {
+          "sha": "a34cca5878a6396ee94a6332937e52ce7ee7e653",
+          "date": "2026-09-26T16:12:04Z",
+          "parents": [
+            "e5c450a1bd69ccc2c3c340fbd49f1995330b6a5a"
+          ],
+          "subject": "test(program): RED require intake 192 convergence",
+          "url": "https://github.com/Patricked-code/MCP/commit/a34cca5878a6396ee94a6332937e52ce7ee7e653"
+        },
+        {
+          "sha": "0263c764d7f77aa8e93cc9e8f8c2296e4de26868",
+          "date": "2026-09-26T16:12:50Z",
+          "parents": [
+            "a34cca5878a6396ee94a6332937e52ce7ee7e653"
+          ],
+          "subject": "fix(ssh): allow governed repository_dispatch OIDC event",
+          "url": "https://github.com/Patricked-code/MCP/commit/0263c764d7f77aa8e93cc9e8f8c2296e4de26868"
+        },
+        {
+          "sha": "d02692f71b61947807f0cc4550fe30a99d786b5c",
+          "date": "2026-09-26T16:12:52Z",
+          "parents": [
+            "0263c764d7f77aa8e93cc9e8f8c2296e4de26868"
+          ],
+          "subject": "fix(ssh): classify repository OIDC refusals without leaking claims",
+          "url": "https://github.com/Patricked-code/MCP/commit/d02692f71b61947807f0cc4550fe30a99d786b5c"
+        },
+        {
+          "sha": "5772dfbb5ace243e3614ecd0c88d5bf73c432bb4",
+          "date": "2026-09-26T16:13:35Z",
+          "parents": [
+            "d02692f71b61947807f0cc4550fe30a99d786b5c"
+          ],
+          "subject": "docs(program): converge intake 192 into repository SSH blueprint",
+          "url": "https://github.com/Patricked-code/MCP/commit/5772dfbb5ace243e3614ecd0c88d5bf73c432bb4"
+        },
+        {
+          "sha": "d046a39f077141535ff4b859b3d92166056dbe4b",
+          "date": "2026-09-26T16:14:24Z",
+          "parents": [
+            "5772dfbb5ace243e3614ecd0c88d5bf73c432bb4"
+          ],
+          "subject": "docs: record intake 192 SSH reconciliation checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/d046a39f077141535ff4b859b3d92166056dbe4b"
+        },
+        {
+          "sha": "74ec7bc0db394fdf26b052f4b7869f39cae7ad6a",
+          "date": "2026-09-26T16:14:27Z",
+          "parents": [
+            "d046a39f077141535ff4b859b3d92166056dbe4b"
+          ],
+          "subject": "docs(tasks): include SSH intake 192 in W3 ready projection",
+          "url": "https://github.com/Patricked-code/MCP/commit/74ec7bc0db394fdf26b052f4b7869f39cae7ad6a"
+        },
+        {
+          "sha": "4938f37a738e25df011751ecd9c26d695573474d",
+          "date": "2026-09-26T16:14:30Z",
+          "parents": [
+            "74ec7bc0db394fdf26b052f4b7869f39cae7ad6a"
+          ],
+          "subject": "docs(todo): reconcile SSH workstream and intake 192",
+          "url": "https://github.com/Patricked-code/MCP/commit/4938f37a738e25df011751ecd9c26d695573474d"
+        },
+        {
+          "sha": "5eccbe88bbab295628aad432502d77e21d19209a",
+          "date": "2026-09-26T16:14:32Z",
+          "parents": [
+            "4938f37a738e25df011751ecd9c26d695573474d"
+          ],
+          "subject": "docs(roadmap): expose current SSH intake 192 lane",
+          "url": "https://github.com/Patricked-code/MCP/commit/5eccbe88bbab295628aad432502d77e21d19209a"
+        },
+        {
+          "sha": "7b5517c6c89aad485b371798c0bca192464bbcf2",
+          "date": "2026-09-26T16:14:36Z",
+          "parents": [
+            "5eccbe88bbab295628aad432502d77e21d19209a"
+          ],
+          "subject": "docs(decisions): record intake 192 SSH claim contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/7b5517c6c89aad485b371798c0bca192464bbcf2"
+        },
+        {
+          "sha": "1cf145b5b7237dd4002d687a4e6066571a3d78d5",
+          "date": "2026-09-26T16:14:38Z",
+          "parents": [
+            "7b5517c6c89aad485b371798c0bca192464bbcf2"
+          ],
+          "subject": "docs(changelog): record bounded SSH claim reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/1cf145b5b7237dd4002d687a4e6066571a3d78d5"
+        },
+        {
+          "sha": "6485b925035f2a24fa9cd0c33a778a2a291381be",
+          "date": "2026-09-26T16:15:43Z",
+          "parents": [
+            "1cf145b5b7237dd4002d687a4e6066571a3d78d5"
+          ],
+          "subject": "fix(ssh): classify missing OIDC run id as claim mismatch",
+          "url": "https://github.com/Patricked-code/MCP/commit/6485b925035f2a24fa9cd0c33a778a2a291381be"
+        },
+        {
+          "sha": "b121b867c948c4981912a3b79e57252514e88467",
+          "date": "2026-09-26T16:15:45Z",
+          "parents": [
+            "6485b925035f2a24fa9cd0c33a778a2a291381be"
+          ],
+          "subject": "test(ssh): cover run-id refusal classification",
+          "url": "https://github.com/Patricked-code/MCP/commit/b121b867c948c4981912a3b79e57252514e88467"
+        }
+      ]
+    }
+  ]
+}

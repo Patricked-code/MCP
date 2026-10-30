@@ -1,0 +1,1383 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{pr}/commits",
+  "batch": [
+    1,
+    12
+  ],
+  "count": 12,
+  "notes": "REST PR commit endpoint is capped at 250; entries requiring more pages explicitly marked; unobserved commit pages are not certified",
+  "items": [
+    {
+      "pr": 1,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 32,
+      "commits": [
+        {
+          "sha": "6828374de85ab058e12b632f325b16c3b85ea03a",
+          "date": "2026-07-04T11:09:37Z",
+          "parents": [
+            "bd8fe086b338d0dbef9515ae8dd0b8161af7ae2e"
+          ],
+          "subject": "docs: prepare chainsolutions wealthtech org bootstrap",
+          "url": "https://github.com/Patricked-code/MCP/commit/6828374de85ab058e12b632f325b16c3b85ea03a"
+        },
+        {
+          "sha": "423a02992508aa09ae099cddbaef8bfb1a81a4ba",
+          "date": "2026-07-04T11:09:57Z",
+          "parents": [
+            "6828374de85ab058e12b632f325b16c3b85ea03a"
+          ],
+          "subject": "docs: add first integration index for target organization",
+          "url": "https://github.com/Patricked-code/MCP/commit/423a02992508aa09ae099cddbaef8bfb1a81a4ba"
+        },
+        {
+          "sha": "f07019de0bc0592f8c2f269a934389650e40fc22",
+          "date": "2026-07-04T11:14:06Z",
+          "parents": [
+            "423a02992508aa09ae099cddbaef8bfb1a81a4ba"
+          ],
+          "subject": "docs: reference chainsolutions org profile artifact",
+          "url": "https://github.com/Patricked-code/MCP/commit/f07019de0bc0592f8c2f269a934389650e40fc22"
+        },
+        {
+          "sha": "695ff301f9d24c4077e8184631ccd562dac69d3e",
+          "date": "2026-07-04T11:14:19Z",
+          "parents": [
+            "f07019de0bc0592f8c2f269a934389650e40fc22"
+          ],
+          "subject": "docs: add chainsolutions org profile artifact",
+          "url": "https://github.com/Patricked-code/MCP/commit/695ff301f9d24c4077e8184631ccd562dac69d3e"
+        },
+        {
+          "sha": "ec7bbe7aecb3a92b509bfe1a9c2ce22683efbac3",
+          "date": "2026-07-04T11:21:12Z",
+          "parents": [
+            "695ff301f9d24c4077e8184631ccd562dac69d3e"
+          ],
+          "subject": "docs: reference chainsolutions org activation runbook",
+          "url": "https://github.com/Patricked-code/MCP/commit/ec7bbe7aecb3a92b509bfe1a9c2ce22683efbac3"
+        },
+        {
+          "sha": "b0c6436f10810aaec4730728875554cd59bd5ade",
+          "date": "2026-07-04T11:21:32Z",
+          "parents": [
+            "ec7bbe7aecb3a92b509bfe1a9c2ce22683efbac3"
+          ],
+          "subject": "docs: link chainsolutions org activation runbook",
+          "url": "https://github.com/Patricked-code/MCP/commit/b0c6436f10810aaec4730728875554cd59bd5ade"
+        },
+        {
+          "sha": "1d4320cedbc20107a231df86035eee4091aefe8b",
+          "date": "2026-07-04T11:22:02Z",
+          "parents": [
+            "b0c6436f10810aaec4730728875554cd59bd5ade"
+          ],
+          "subject": "docs: add chainsolutions org activation runbook",
+          "url": "https://github.com/Patricked-code/MCP/commit/1d4320cedbc20107a231df86035eee4091aefe8b"
+        },
+        {
+          "sha": "18cc3defe5b93b8d1431bea614d878de99fa4c2b",
+          "date": "2026-07-04T11:48:25Z",
+          "parents": [
+            "1d4320cedbc20107a231df86035eee4091aefe8b"
+          ],
+          "subject": "feat: add MCP onboarding governance engine",
+          "url": "https://github.com/Patricked-code/MCP/commit/18cc3defe5b93b8d1431bea614d878de99fa4c2b"
+        },
+        {
+          "sha": "aba1d32619321dea3a69b8ff8934612137bb3195",
+          "date": "2026-07-05T07:48:14Z",
+          "parents": [
+            "18cc3defe5b93b8d1431bea614d878de99fa4c2b"
+          ],
+          "subject": "test: cover MCP onboarding safeguards",
+          "url": "https://github.com/Patricked-code/MCP/commit/aba1d32619321dea3a69b8ff8934612137bb3195"
+        },
+        {
+          "sha": "618718438341a0bbcc7bee4affa6f29b62f2eab8",
+          "date": "2026-07-05T08:00:16Z",
+          "parents": [
+            "aba1d32619321dea3a69b8ff8934612137bb3195"
+          ],
+          "subject": "feat: add organization bootstrap package",
+          "url": "https://github.com/Patricked-code/MCP/commit/618718438341a0bbcc7bee4affa6f29b62f2eab8"
+        },
+        {
+          "sha": "70bfab914cbbcac5aad0ac8fd15e0b05cc353154",
+          "date": "2026-07-05T08:06:30Z",
+          "parents": [
+            "618718438341a0bbcc7bee4affa6f29b62f2eab8"
+          ],
+          "subject": "docs: add MCP repository governance files",
+          "url": "https://github.com/Patricked-code/MCP/commit/70bfab914cbbcac5aad0ac8fd15e0b05cc353154"
+        },
+        {
+          "sha": "1007292f1abf0353adb6646fa7ad5e7c6dac6ee9",
+          "date": "2026-07-05T08:11:22Z",
+          "parents": [
+            "70bfab914cbbcac5aad0ac8fd15e0b05cc353154"
+          ],
+          "subject": "feat: expose organization bootstrap routes",
+          "url": "https://github.com/Patricked-code/MCP/commit/1007292f1abf0353adb6646fa7ad5e7c6dac6ee9"
+        },
+        {
+          "sha": "57e342ea37a7f6134cdde601c41af26c7ce37a93",
+          "date": "2026-07-05T08:19:19Z",
+          "parents": [
+            "1007292f1abf0353adb6646fa7ad5e7c6dac6ee9"
+          ],
+          "subject": "feat: audit bootstrap preparation flows",
+          "url": "https://github.com/Patricked-code/MCP/commit/57e342ea37a7f6134cdde601c41af26c7ce37a93"
+        },
+        {
+          "sha": "dbe87e3c926d941cee906fd9d4ee47133cccdbd4",
+          "date": "2026-07-05T08:36:15Z",
+          "parents": [
+            "57e342ea37a7f6134cdde601c41af26c7ce37a93"
+          ],
+          "subject": "feat: document organization 2fa policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/dbe87e3c926d941cee906fd9d4ee47133cccdbd4"
+        },
+        {
+          "sha": "b248bcc5ee89e6176aa159ae47f16b6eedb8544c",
+          "date": "2026-07-05T08:41:36Z",
+          "parents": [
+            "dbe87e3c926d941cee906fd9d4ee47133cccdbd4"
+          ],
+          "subject": "feat: audit organization security verification",
+          "url": "https://github.com/Patricked-code/MCP/commit/b248bcc5ee89e6176aa159ae47f16b6eedb8544c"
+        },
+        {
+          "sha": "19782d63009e985fcb09907297cd75da17725a98",
+          "date": "2026-07-05T14:29:32Z",
+          "parents": [
+            "b248bcc5ee89e6176aa159ae47f16b6eedb8544c"
+          ],
+          "subject": "docs: record direct organization configuration",
+          "url": "https://github.com/Patricked-code/MCP/commit/19782d63009e985fcb09907297cd75da17725a98"
+        },
+        {
+          "sha": "c0cf7070806cbd0b76d19e87d9306bf79dd76854",
+          "date": "2026-07-05T15:06:55Z",
+          "parents": [
+            "19782d63009e985fcb09907297cd75da17725a98"
+          ],
+          "subject": "feat: expose migration source registry",
+          "url": "https://github.com/Patricked-code/MCP/commit/c0cf7070806cbd0b76d19e87d9306bf79dd76854"
+        },
+        {
+          "sha": "f7ab2e1a0e1428bb00e8bfed66fa8d4a168a82e4",
+          "date": "2026-07-05T15:16:44Z",
+          "parents": [
+            "c0cf7070806cbd0b76d19e87d9306bf79dd76854"
+          ],
+          "subject": "feat: audit PDF source extraction",
+          "url": "https://github.com/Patricked-code/MCP/commit/f7ab2e1a0e1428bb00e8bfed66fa8d4a168a82e4"
+        },
+        {
+          "sha": "1d06f07e200d7109de3d6e61574737892a9a2855",
+          "date": "2026-07-05T15:25:14Z",
+          "parents": [
+            "f7ab2e1a0e1428bb00e8bfed66fa8d4a168a82e4"
+          ],
+          "subject": "feat: add objective traceability matrix",
+          "url": "https://github.com/Patricked-code/MCP/commit/1d06f07e200d7109de3d6e61574737892a9a2855"
+        },
+        {
+          "sha": "902d6759301b670fb2ac7507dd879e130705ddfb",
+          "date": "2026-07-05T15:33:05Z",
+          "parents": [
+            "1d06f07e200d7109de3d6e61574737892a9a2855"
+          ],
+          "subject": "feat: add executable MCP task plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/902d6759301b670fb2ac7507dd879e130705ddfb"
+        },
+        {
+          "sha": "0152f2fcfbc190e92e570ba245917335a1e73c17",
+          "date": "2026-07-05T19:31:39Z",
+          "parents": [
+            "902d6759301b670fb2ac7507dd879e130705ddfb"
+          ],
+          "subject": "feat: add server inventory task cards",
+          "url": "https://github.com/Patricked-code/MCP/commit/0152f2fcfbc190e92e570ba245917335a1e73c17"
+        },
+        {
+          "sha": "42a6c2d474e2a06071e1f817a6a3d00206f0763d",
+          "date": "2026-07-05T19:40:15Z",
+          "parents": [
+            "0152f2fcfbc190e92e570ba245917335a1e73c17"
+          ],
+          "subject": "feat: add blocker resolution runbook",
+          "url": "https://github.com/Patricked-code/MCP/commit/42a6c2d474e2a06071e1f817a6a3d00206f0763d"
+        },
+        {
+          "sha": "c3091965ccba503a5e6867badb04a78eada67585",
+          "date": "2026-07-05T19:55:09Z",
+          "parents": [
+            "42a6c2d474e2a06071e1f817a6a3d00206f0763d"
+          ],
+          "subject": "feat: audit archive text entries",
+          "url": "https://github.com/Patricked-code/MCP/commit/c3091965ccba503a5e6867badb04a78eada67585"
+        },
+        {
+          "sha": "646d5be7b76f00f5d03a43180c3b809fb026c025",
+          "date": "2026-07-05T20:03:51Z",
+          "parents": [
+            "c3091965ccba503a5e6867badb04a78eada67585"
+          ],
+          "subject": "feat: add objective completion audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/646d5be7b76f00f5d03a43180c3b809fb026c025"
+        },
+        {
+          "sha": "5508a96b81a1164af5f9af79391f473586436f18",
+          "date": "2026-07-05T20:12:32Z",
+          "parents": [
+            "646d5be7b76f00f5d03a43180c3b809fb026c025"
+          ],
+          "subject": "feat: add operator action pack",
+          "url": "https://github.com/Patricked-code/MCP/commit/5508a96b81a1164af5f9af79391f473586436f18"
+        },
+        {
+          "sha": "7e320cdbb7eeefc6f245a8f6d17f23bf49dfc04c",
+          "date": "2026-07-06T17:11:04Z",
+          "parents": [
+            "5508a96b81a1164af5f9af79391f473586436f18"
+          ],
+          "subject": "feat: link operator action issues",
+          "url": "https://github.com/Patricked-code/MCP/commit/7e320cdbb7eeefc6f245a8f6d17f23bf49dfc04c"
+        },
+        {
+          "sha": "27dd92e731578bd2808062b16ae99bcc663d2ec5",
+          "date": "2026-07-06T17:14:54Z",
+          "parents": [
+            "7e320cdbb7eeefc6f245a8f6d17f23bf49dfc04c"
+          ],
+          "subject": "feat: sync operator issue state",
+          "url": "https://github.com/Patricked-code/MCP/commit/27dd92e731578bd2808062b16ae99bcc663d2ec5"
+        },
+        {
+          "sha": "6af33447dcb9062ff07650194df6a7b61734963f",
+          "date": "2026-07-06T17:22:32Z",
+          "parents": [
+            "27dd92e731578bd2808062b16ae99bcc663d2ec5"
+          ],
+          "subject": "feat: add migration resume gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/6af33447dcb9062ff07650194df6a7b61734963f"
+        },
+        {
+          "sha": "b00e33950f74f7207e8b6914616bb5cce9c68226",
+          "date": "2026-07-06T17:30:11Z",
+          "parents": [
+            "6af33447dcb9062ff07650194df6a7b61734963f"
+          ],
+          "subject": "feat: add migration execution runway",
+          "url": "https://github.com/Patricked-code/MCP/commit/b00e33950f74f7207e8b6914616bb5cce9c68226"
+        },
+        {
+          "sha": "f8621cba6f7cc4eb0812e58c27b98a0a82a31897",
+          "date": "2026-07-06T17:40:05Z",
+          "parents": [
+            "b00e33950f74f7207e8b6914616bb5cce9c68226"
+          ],
+          "subject": "feat: add blocker evidence gate",
+          "url": "https://github.com/Patricked-code/MCP/commit/f8621cba6f7cc4eb0812e58c27b98a0a82a31897"
+        },
+        {
+          "sha": "f84c78fcbbaa81584a4fde6cadf1c0f78a74f68e",
+          "date": "2026-07-06T17:46:24Z",
+          "parents": [
+            "f8621cba6f7cc4eb0812e58c27b98a0a82a31897"
+          ],
+          "subject": "feat: add public-safe evidence template",
+          "url": "https://github.com/Patricked-code/MCP/commit/f84c78fcbbaa81584a4fde6cadf1c0f78a74f68e"
+        },
+        {
+          "sha": "61ae926f0216a718f8c238fec840d54fe7acd249",
+          "date": "2026-07-09T22:20:50Z",
+          "parents": [
+            "f84c78fcbbaa81584a4fde6cadf1c0f78a74f68e"
+          ],
+          "subject": "feat: add migration governance runner",
+          "url": "https://github.com/Patricked-code/MCP/commit/61ae926f0216a718f8c238fec840d54fe7acd249"
+        }
+      ]
+    },
+    {
+      "pr": 4,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 15,
+      "commits": [
+        {
+          "sha": "dc7de7f37591326c9a3c949f61440a25d2062eca",
+          "date": "2026-07-08T00:41:42Z",
+          "parents": [
+            "f84c78fcbbaa81584a4fde6cadf1c0f78a74f68e"
+          ],
+          "subject": "Add controlled GitHub MCP tool helpers",
+          "url": "https://github.com/Patricked-code/MCP/commit/dc7de7f37591326c9a3c949f61440a25d2062eca"
+        },
+        {
+          "sha": "e479a48e2ead128214a3c4bfa470a254fae34aa6",
+          "date": "2026-07-08T00:42:02Z",
+          "parents": [
+            "dc7de7f37591326c9a3c949f61440a25d2062eca"
+          ],
+          "subject": "Register read-only GitHub MCP tools",
+          "url": "https://github.com/Patricked-code/MCP/commit/e479a48e2ead128214a3c4bfa470a254fae34aa6"
+        },
+        {
+          "sha": "1aacf30f631a1e1634636a57544c946a91b00185",
+          "date": "2026-07-08T00:42:39Z",
+          "parents": [
+            "e479a48e2ead128214a3c4bfa470a254fae34aa6"
+          ],
+          "subject": "Register scoped-write GitHub MCP tools",
+          "url": "https://github.com/Patricked-code/MCP/commit/1aacf30f631a1e1634636a57544c946a91b00185"
+        },
+        {
+          "sha": "121c089e1b35c4a5a0b0f202982fcb29e4abac4f",
+          "date": "2026-07-08T00:43:28Z",
+          "parents": [
+            "1aacf30f631a1e1634636a57544c946a91b00185"
+          ],
+          "subject": "Add GitHub MCP tool safety tests",
+          "url": "https://github.com/Patricked-code/MCP/commit/121c089e1b35c4a5a0b0f202982fcb29e4abac4f"
+        },
+        {
+          "sha": "dc1c4593bc770fd5e5e350cc8d81fdb10cba9a27",
+          "date": "2026-07-08T00:43:42Z",
+          "parents": [
+            "121c089e1b35c4a5a0b0f202982fcb29e4abac4f"
+          ],
+          "subject": "Document controlled GitHub MCP tools",
+          "url": "https://github.com/Patricked-code/MCP/commit/dc1c4593bc770fd5e5e350cc8d81fdb10cba9a27"
+        },
+        {
+          "sha": "df0c5f84b46de77038e5b010790024a9f45b4a77",
+          "date": "2026-07-08T01:41:14Z",
+          "parents": [
+            "dc1c4593bc770fd5e5e350cc8d81fdb10cba9a27"
+          ],
+          "subject": "docs: add PR4 static review checkpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/df0c5f84b46de77038e5b010790024a9f45b4a77"
+        },
+        {
+          "sha": "6c2af50ec2282cd753e2fda257af30aa8cf556d2",
+          "date": "2026-07-08T01:48:18Z",
+          "parents": [
+            "df0c5f84b46de77038e5b010790024a9f45b4a77"
+          ],
+          "subject": "feat: add GitHub MCP secret safety helpers",
+          "url": "https://github.com/Patricked-code/MCP/commit/6c2af50ec2282cd753e2fda257af30aa8cf556d2"
+        },
+        {
+          "sha": "d4c192b5769da2e8d5d9d06caceae21017bac1da",
+          "date": "2026-07-08T01:48:39Z",
+          "parents": [
+            "6c2af50ec2282cd753e2fda257af30aa8cf556d2"
+          ],
+          "subject": "test: cover GitHub MCP secret safety helpers",
+          "url": "https://github.com/Patricked-code/MCP/commit/d4c192b5769da2e8d5d9d06caceae21017bac1da"
+        },
+        {
+          "sha": "8248f11da71f74c418f32f59ccc27aa01f565d1f",
+          "date": "2026-07-08T01:48:59Z",
+          "parents": [
+            "d4c192b5769da2e8d5d9d06caceae21017bac1da"
+          ],
+          "subject": "docs: document GitHub MCP secret safety hardening",
+          "url": "https://github.com/Patricked-code/MCP/commit/8248f11da71f74c418f32f59ccc27aa01f565d1f"
+        },
+        {
+          "sha": "69584cc90b1f318ddd2f9891e54685750cbf59f1",
+          "date": "2026-07-08T01:53:29Z",
+          "parents": [
+            "8248f11da71f74c418f32f59ccc27aa01f565d1f"
+          ],
+          "subject": "refactor: isolate GitHub MCP tool errors",
+          "url": "https://github.com/Patricked-code/MCP/commit/69584cc90b1f318ddd2f9891e54685750cbf59f1"
+        },
+        {
+          "sha": "ff6f74403af24687767ef0d550695c7f66557795",
+          "date": "2026-07-08T01:53:47Z",
+          "parents": [
+            "69584cc90b1f318ddd2f9891e54685750cbf59f1"
+          ],
+          "subject": "refactor: remove circular GitHub MCP safety import",
+          "url": "https://github.com/Patricked-code/MCP/commit/ff6f74403af24687767ef0d550695c7f66557795"
+        },
+        {
+          "sha": "d36b6662230567081cab28f3dbd55fd73d5fb6be",
+          "date": "2026-07-08T01:54:47Z",
+          "parents": [
+            "ff6f74403af24687767ef0d550695c7f66557795"
+          ],
+          "subject": "feat: enforce secret safety in GitHub MCP writes",
+          "url": "https://github.com/Patricked-code/MCP/commit/d36b6662230567081cab28f3dbd55fd73d5fb6be"
+        },
+        {
+          "sha": "d5b5b58abb0ca69f54863b6bc437502587692a2d",
+          "date": "2026-07-08T01:55:11Z",
+          "parents": [
+            "d36b6662230567081cab28f3dbd55fd73d5fb6be"
+          ],
+          "subject": "test: make secret detection assertions type-safe",
+          "url": "https://github.com/Patricked-code/MCP/commit/d5b5b58abb0ca69f54863b6bc437502587692a2d"
+        },
+        {
+          "sha": "96032a9858ee5f97a8550f2a968cfa7d59bf7421",
+          "date": "2026-07-08T01:55:29Z",
+          "parents": [
+            "d5b5b58abb0ca69f54863b6bc437502587692a2d"
+          ],
+          "subject": "docs: mark GitHub MCP secret safety integration",
+          "url": "https://github.com/Patricked-code/MCP/commit/96032a9858ee5f97a8550f2a968cfa7d59bf7421"
+        },
+        {
+          "sha": "f375a25654d314d7dc18a285c23bf23e5652ca03",
+          "date": "2026-07-08T01:58:10Z",
+          "parents": [
+            "96032a9858ee5f97a8550f2a968cfa7d59bf7421"
+          ],
+          "subject": "docs: add PR4 secret safety progress note",
+          "url": "https://github.com/Patricked-code/MCP/commit/f375a25654d314d7dc18a285c23bf23e5652ca03"
+        }
+      ]
+    },
+    {
+      "pr": 5,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 18,
+      "commits": [
+        {
+          "sha": "1e9348689dd796f03aec63533aefb4a74b4dd472",
+          "date": "2026-07-08T04:44:47Z",
+          "parents": [
+            "181a7e8f3b80f4d63ed2d915279a79698551a0f5"
+          ],
+          "subject": "docs: add MCP onboarding engine spec",
+          "url": "https://github.com/Patricked-code/MCP/commit/1e9348689dd796f03aec63533aefb4a74b4dd472"
+        },
+        {
+          "sha": "6b02d4783a11aceb7ddf8a5a6144f13126e47bbc",
+          "date": "2026-07-08T04:45:00Z",
+          "parents": [
+            "1e9348689dd796f03aec63533aefb4a74b4dd472"
+          ],
+          "subject": "docs: add MCP security model",
+          "url": "https://github.com/Patricked-code/MCP/commit/6b02d4783a11aceb7ddf8a5a6144f13126e47bbc"
+        },
+        {
+          "sha": "4ce9b62c0659b7cc8b9ddf9e331fe5c1c0bfb464",
+          "date": "2026-07-08T04:45:15Z",
+          "parents": [
+            "6b02d4783a11aceb7ddf8a5a6144f13126e47bbc"
+          ],
+          "subject": "docs: add MCP agent roles",
+          "url": "https://github.com/Patricked-code/MCP/commit/4ce9b62c0659b7cc8b9ddf9e331fe5c1c0bfb464"
+        },
+        {
+          "sha": "8e86a71e002da3f8322da1abe97a92712b1c071d",
+          "date": "2026-07-08T04:45:28Z",
+          "parents": [
+            "4ce9b62c0659b7cc8b9ddf9e331fe5c1c0bfb464"
+          ],
+          "subject": "docs: add MCP repo footprint spec",
+          "url": "https://github.com/Patricked-code/MCP/commit/8e86a71e002da3f8322da1abe97a92712b1c071d"
+        },
+        {
+          "sha": "ea5b89babe3237de71762024e2741b08b9aecafc",
+          "date": "2026-07-08T04:45:38Z",
+          "parents": [
+            "8e86a71e002da3f8322da1abe97a92712b1c071d"
+          ],
+          "subject": "docs: add MCP server mapping spec",
+          "url": "https://github.com/Patricked-code/MCP/commit/ea5b89babe3237de71762024e2741b08b9aecafc"
+        },
+        {
+          "sha": "ef571fe68e8c320c82d5d100a8eb244089f324a7",
+          "date": "2026-07-08T04:45:50Z",
+          "parents": [
+            "ea5b89babe3237de71762024e2741b08b9aecafc"
+          ],
+          "subject": "docs: add MCP audit logs spec",
+          "url": "https://github.com/Patricked-code/MCP/commit/ef571fe68e8c320c82d5d100a8eb244089f324a7"
+        },
+        {
+          "sha": "9040f19a7a32444221efa5645e8bc1b476dcf190",
+          "date": "2026-07-08T04:46:02Z",
+          "parents": [
+            "ef571fe68e8c320c82d5d100a8eb244089f324a7"
+          ],
+          "subject": "docs: add Codex prompt for MCP onboarding engine",
+          "url": "https://github.com/Patricked-code/MCP/commit/9040f19a7a32444221efa5645e8bc1b476dcf190"
+        },
+        {
+          "sha": "79aa4dfec6e6590b5ba3fb74e2bb66587c0e534e",
+          "date": "2026-07-08T04:54:10Z",
+          "parents": [
+            "9040f19a7a32444221efa5645e8bc1b476dcf190"
+          ],
+          "subject": "feat: add onboarding shared types",
+          "url": "https://github.com/Patricked-code/MCP/commit/79aa4dfec6e6590b5ba3fb74e2bb66587c0e534e"
+        },
+        {
+          "sha": "ce6634ae48e5cbd86af5f714bd77df9081cc5af8",
+          "date": "2026-07-08T04:54:24Z",
+          "parents": [
+            "79aa4dfec6e6590b5ba3fb74e2bb66587c0e534e"
+          ],
+          "subject": "feat: add onboarding question catalog",
+          "url": "https://github.com/Patricked-code/MCP/commit/ce6634ae48e5cbd86af5f714bd77df9081cc5af8"
+        },
+        {
+          "sha": "1d66bd16d97bb459d5108ca90a9c1fc9d2e67be4",
+          "date": "2026-07-08T04:54:38Z",
+          "parents": [
+            "ce6634ae48e5cbd86af5f714bd77df9081cc5af8"
+          ],
+          "subject": "feat: add default MCP agent profiles",
+          "url": "https://github.com/Patricked-code/MCP/commit/1d66bd16d97bb459d5108ca90a9c1fc9d2e67be4"
+        },
+        {
+          "sha": "bf7b70350bc14bd366b842f354bd684637a36abd",
+          "date": "2026-07-08T04:54:50Z",
+          "parents": [
+            "1d66bd16d97bb459d5108ca90a9c1fc9d2e67be4"
+          ],
+          "subject": "feat: add onboarding actor identity detection",
+          "url": "https://github.com/Patricked-code/MCP/commit/bf7b70350bc14bd366b842f354bd684637a36abd"
+        },
+        {
+          "sha": "75462fa2ffd307b0da8c6739d216f4110b6fc8db",
+          "date": "2026-07-08T04:54:57Z",
+          "parents": [
+            "bf7b70350bc14bd366b842f354bd684637a36abd"
+          ],
+          "subject": "feat: add onboarding rights summary",
+          "url": "https://github.com/Patricked-code/MCP/commit/75462fa2ffd307b0da8c6739d216f4110b6fc8db"
+        },
+        {
+          "sha": "cab2b7f1cb67d8e196c9952a2fb1f4e62eca0830",
+          "date": "2026-07-08T04:55:09Z",
+          "parents": [
+            "75462fa2ffd307b0da8c6739d216f4110b6fc8db"
+          ],
+          "subject": "feat: add repo footprint helpers",
+          "url": "https://github.com/Patricked-code/MCP/commit/cab2b7f1cb67d8e196c9952a2fb1f4e62eca0830"
+        },
+        {
+          "sha": "92069dbb825913a1a8bf7e75ab8c791249c7955a",
+          "date": "2026-07-08T04:55:15Z",
+          "parents": [
+            "cab2b7f1cb67d8e196c9952a2fb1f4e62eca0830"
+          ],
+          "subject": "feat: add server mapping helpers",
+          "url": "https://github.com/Patricked-code/MCP/commit/92069dbb825913a1a8bf7e75ab8c791249c7955a"
+        },
+        {
+          "sha": "66dad71c5ce7157d6bc2ea84c160339572c20cbe",
+          "date": "2026-07-08T04:55:23Z",
+          "parents": [
+            "92069dbb825913a1a8bf7e75ab8c791249c7955a"
+          ],
+          "subject": "feat: add onboarding audit helpers",
+          "url": "https://github.com/Patricked-code/MCP/commit/66dad71c5ce7157d6bc2ea84c160339572c20cbe"
+        },
+        {
+          "sha": "55466d3af69f7e3cb07ad45a4e85b13e62a40466",
+          "date": "2026-07-08T04:55:30Z",
+          "parents": [
+            "66dad71c5ce7157d6bc2ea84c160339572c20cbe"
+          ],
+          "subject": "feat: export onboarding module",
+          "url": "https://github.com/Patricked-code/MCP/commit/55466d3af69f7e3cb07ad45a4e85b13e62a40466"
+        },
+        {
+          "sha": "0ffae1de1ad0a7884c1e73618ef95760315c5a7e",
+          "date": "2026-07-08T04:55:58Z",
+          "parents": [
+            "55466d3af69f7e3cb07ad45a4e85b13e62a40466"
+          ],
+          "subject": "feat: add onboarding HTTP routes",
+          "url": "https://github.com/Patricked-code/MCP/commit/0ffae1de1ad0a7884c1e73618ef95760315c5a7e"
+        },
+        {
+          "sha": "c4baaddf8da02bee2e8c5a8f4a58334b11658df3",
+          "date": "2026-07-08T05:00:00Z",
+          "parents": [
+            "0ffae1de1ad0a7884c1e73618ef95760315c5a7e"
+          ],
+          "subject": "feat: wire onboarding routes into server",
+          "url": "https://github.com/Patricked-code/MCP/commit/c4baaddf8da02bee2e8c5a8f4a58334b11658df3"
+        }
+      ]
+    },
+    {
+      "pr": 6,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 1,
+      "commits": [
+        {
+          "sha": "ff854bfef9f23b67b40747a49d254bbaf92e9430",
+          "date": "2026-07-09T20:08:21Z",
+          "parents": [
+            "a647c46ab9759bf98b9de3f4b972ca0c944a378f"
+          ],
+          "subject": "docs: add MCP anti-dispersion manual and function cartography",
+          "url": "https://github.com/Patricked-code/MCP/commit/ff854bfef9f23b67b40747a49d254bbaf92e9430"
+        }
+      ]
+    },
+    {
+      "pr": 7,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 1,
+      "commits": [
+        {
+          "sha": "d38c7f1bbb1db2ae83f0e7a2132467fd3da451b3",
+          "date": "2026-07-09T21:08:01Z",
+          "parents": [
+            "4ae11249a6ec129cbf7289e361416bc248311bca"
+          ],
+          "subject": "docs: audit open MCP PRs without merging",
+          "url": "https://github.com/Patricked-code/MCP/commit/d38c7f1bbb1db2ae83f0e7a2132467fd3da451b3"
+        }
+      ]
+    },
+    {
+      "pr": 8,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 1,
+      "commits": [
+        {
+          "sha": "be6f16a908cd7a216a3042b9ba21418fb8fcb950",
+          "date": "2026-07-09T21:48:06Z",
+          "parents": [
+            "4ae11249a6ec129cbf7289e361416bc248311bca"
+          ],
+          "subject": "docs: summarize open MCP PR audit without raw merge trees",
+          "url": "https://github.com/Patricked-code/MCP/commit/be6f16a908cd7a216a3042b9ba21418fb8fcb950"
+        }
+      ]
+    },
+    {
+      "pr": 9,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 58,
+      "commits": [
+        {
+          "sha": "a1d32a2dac292471c7210497863c1219f854b991",
+          "date": "2026-07-09T22:02:54Z",
+          "parents": [
+            "4ae11249a6ec129cbf7289e361416bc248311bca"
+          ],
+          "subject": "docs: add issue 2 blocker audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/a1d32a2dac292471c7210497863c1219f854b991"
+        },
+        {
+          "sha": "b609d46def1f9071d7fbcde2548e38d1a8866145",
+          "date": "2026-07-09T22:03:18Z",
+          "parents": [
+            "a1d32a2dac292471c7210497863c1219f854b991"
+          ],
+          "subject": "docs: add issue 3 blocker audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/b609d46def1f9071d7fbcde2548e38d1a8866145"
+        },
+        {
+          "sha": "ed874e745d713bb5c1f83260c612f1f40dd85095",
+          "date": "2026-07-09T22:03:34Z",
+          "parents": [
+            "b609d46def1f9071d7fbcde2548e38d1a8866145"
+          ],
+          "subject": "docs: summarize issue 2 and 3 blockers",
+          "url": "https://github.com/Patricked-code/MCP/commit/ed874e745d713bb5c1f83260c612f1f40dd85095"
+        },
+        {
+          "sha": "3b8f1fb677fc9ccee2e1a0ed0446f84aa7721e89",
+          "date": "2026-07-09T22:03:52Z",
+          "parents": [
+            "ed874e745d713bb5c1f83260c612f1f40dd85095"
+          ],
+          "subject": "docs: add unification strategy with issue blockers",
+          "url": "https://github.com/Patricked-code/MCP/commit/3b8f1fb677fc9ccee2e1a0ed0446f84aa7721e89"
+        },
+        {
+          "sha": "c6d4cd25f697d0ce2216aa4b9a8ecbc73c14f3fd",
+          "date": "2026-07-09T22:04:06Z",
+          "parents": [
+            "3b8f1fb677fc9ccee2e1a0ed0446f84aa7721e89"
+          ],
+          "subject": "docs: add next integration plan with blockers",
+          "url": "https://github.com/Patricked-code/MCP/commit/c6d4cd25f697d0ce2216aa4b9a8ecbc73c14f3fd"
+        },
+        {
+          "sha": "86b12ab9daf4ea3cdfae45dc8bd325c22bddf296",
+          "date": "2026-07-09T22:04:33Z",
+          "parents": [
+            "c6d4cd25f697d0ce2216aa4b9a8ecbc73c14f3fd"
+          ],
+          "subject": "docs: update suivi for issue blockers audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/86b12ab9daf4ea3cdfae45dc8bd325c22bddf296"
+        },
+        {
+          "sha": "7e6318ad6defb7be747d12db57f8f49e5f3111a6",
+          "date": "2026-07-09T22:04:46Z",
+          "parents": [
+            "86b12ab9daf4ea3cdfae45dc8bd325c22bddf296"
+          ],
+          "subject": "docs: update tasks for issue blockers audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/7e6318ad6defb7be747d12db57f8f49e5f3111a6"
+        },
+        {
+          "sha": "babe0b1708810a2d78020ca3b9c848a7262f5490",
+          "date": "2026-07-09T22:05:00Z",
+          "parents": [
+            "7e6318ad6defb7be747d12db57f8f49e5f3111a6"
+          ],
+          "subject": "docs: update changelog for issue blockers audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/babe0b1708810a2d78020ca3b9c848a7262f5490"
+        },
+        {
+          "sha": "e6930bd0d4dc3b993e4b0f737b28a6f13a89096a",
+          "date": "2026-07-09T22:05:13Z",
+          "parents": [
+            "babe0b1708810a2d78020ca3b9c848a7262f5490"
+          ],
+          "subject": "docs: record issue blockers integration decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/e6930bd0d4dc3b993e4b0f737b28a6f13a89096a"
+        },
+        {
+          "sha": "27d888942debb6c06c215f9492da6aa96baf5b1e",
+          "date": "2026-07-09T22:05:34Z",
+          "parents": [
+            "e6930bd0d4dc3b993e4b0f737b28a6f13a89096a"
+          ],
+          "subject": "docs: add issue blockers audit readme",
+          "url": "https://github.com/Patricked-code/MCP/commit/27d888942debb6c06c215f9492da6aa96baf5b1e"
+        },
+        {
+          "sha": "6789868ea70609e5841d5ffa372b52ca7d49eec8",
+          "date": "2026-07-09T22:05:45Z",
+          "parents": [
+            "27d888942debb6c06c215f9492da6aa96baf5b1e"
+          ],
+          "subject": "docs: add issue-aware PR1 audit bridge",
+          "url": "https://github.com/Patricked-code/MCP/commit/6789868ea70609e5841d5ffa372b52ca7d49eec8"
+        },
+        {
+          "sha": "8c903f4242ea26113d7090e2a8bd7752da2153cb",
+          "date": "2026-07-09T22:05:53Z",
+          "parents": [
+            "6789868ea70609e5841d5ffa372b52ca7d49eec8"
+          ],
+          "subject": "docs: add issue-aware PR4 audit bridge",
+          "url": "https://github.com/Patricked-code/MCP/commit/8c903f4242ea26113d7090e2a8bd7752da2153cb"
+        },
+        {
+          "sha": "701c14c9376074cc9191f0a8eba2961652f9ec80",
+          "date": "2026-07-09T22:06:06Z",
+          "parents": [
+            "8c903f4242ea26113d7090e2a8bd7752da2153cb"
+          ],
+          "subject": "docs: add issue-aware PR5 audit bridge",
+          "url": "https://github.com/Patricked-code/MCP/commit/701c14c9376074cc9191f0a8eba2961652f9ec80"
+        },
+        {
+          "sha": "721da9e27232f1b2283064a6cacf68736308b89c",
+          "date": "2026-07-09T22:06:26Z",
+          "parents": [
+            "701c14c9376074cc9191f0a8eba2961652f9ec80"
+          ],
+          "subject": "docs: document issue audit scope",
+          "url": "https://github.com/Patricked-code/MCP/commit/721da9e27232f1b2283064a6cacf68736308b89c"
+        },
+        {
+          "sha": "ce0dcffdf9ddc482f8cfc2a88f2a529723483f4e",
+          "date": "2026-07-09T22:06:33Z",
+          "parents": [
+            "721da9e27232f1b2283064a6cacf68736308b89c"
+          ],
+          "subject": "docs: add blockers validation checklist",
+          "url": "https://github.com/Patricked-code/MCP/commit/ce0dcffdf9ddc482f8cfc2a88f2a529723483f4e"
+        },
+        {
+          "sha": "397d0cf5d4e923f7558355e779047036b8a2eb62",
+          "date": "2026-07-09T22:06:41Z",
+          "parents": [
+            "ce0dcffdf9ddc482f8cfc2a88f2a529723483f4e"
+          ],
+          "subject": "docs: add issue audit navigation note",
+          "url": "https://github.com/Patricked-code/MCP/commit/397d0cf5d4e923f7558355e779047036b8a2eb62"
+        },
+        {
+          "sha": "ea85d182c6e7bbd3feff6528a55b2a5b18469a5c",
+          "date": "2026-07-09T22:07:01Z",
+          "parents": [
+            "397d0cf5d4e923f7558355e779047036b8a2eb62"
+          ],
+          "subject": "docs: add no merge notice for blockers audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/ea85d182c6e7bbd3feff6528a55b2a5b18469a5c"
+        },
+        {
+          "sha": "b4611d9c9eda298f1cfe25a1b2a90c8216d191f3",
+          "date": "2026-07-09T22:07:09Z",
+          "parents": [
+            "ea85d182c6e7bbd3feff6528a55b2a5b18469a5c"
+          ],
+          "subject": "docs: add blockers security note",
+          "url": "https://github.com/Patricked-code/MCP/commit/b4611d9c9eda298f1cfe25a1b2a90c8216d191f3"
+        },
+        {
+          "sha": "2fcdfce84f0ff10096e4410ff9b3c3cff1fa8772",
+          "date": "2026-07-09T22:07:22Z",
+          "parents": [
+            "b4611d9c9eda298f1cfe25a1b2a90c8216d191f3"
+          ],
+          "subject": "docs: add branch decision for blockers audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/2fcdfce84f0ff10096e4410ff9b3c3cff1fa8772"
+        },
+        {
+          "sha": "e8ecde1541f468d963f8b081cfae0ef46934cc55",
+          "date": "2026-07-09T22:07:37Z",
+          "parents": [
+            "2fcdfce84f0ff10096e4410ff9b3c3cff1fa8772"
+          ],
+          "subject": "docs: add issue dependency map",
+          "url": "https://github.com/Patricked-code/MCP/commit/e8ecde1541f468d963f8b081cfae0ef46934cc55"
+        },
+        {
+          "sha": "806c7548c1e90080220305ab1da593ad193b0e6b",
+          "date": "2026-07-09T22:07:44Z",
+          "parents": [
+            "e8ecde1541f468d963f8b081cfae0ef46934cc55"
+          ],
+          "subject": "docs: add operator action note",
+          "url": "https://github.com/Patricked-code/MCP/commit/806c7548c1e90080220305ab1da593ad193b0e6b"
+        },
+        {
+          "sha": "8b4947dc47816c091b2a288563f1750850f5153c",
+          "date": "2026-07-09T22:07:52Z",
+          "parents": [
+            "806c7548c1e90080220305ab1da593ad193b0e6b"
+          ],
+          "subject": "docs: add runtime validation note",
+          "url": "https://github.com/Patricked-code/MCP/commit/8b4947dc47816c091b2a288563f1750850f5153c"
+        },
+        {
+          "sha": "e7738e8d911d29ac9cf970e933779606c659748f",
+          "date": "2026-07-09T22:07:59Z",
+          "parents": [
+            "8b4947dc47816c091b2a288563f1750850f5153c"
+          ],
+          "subject": "docs: add public safe note",
+          "url": "https://github.com/Patricked-code/MCP/commit/e7738e8d911d29ac9cf970e933779606c659748f"
+        },
+        {
+          "sha": "d68c0e1df44c92fa6d8c06c5ac525b3f2dec425f",
+          "date": "2026-07-09T22:08:13Z",
+          "parents": [
+            "e7738e8d911d29ac9cf970e933779606c659748f"
+          ],
+          "subject": "docs: add next branch note",
+          "url": "https://github.com/Patricked-code/MCP/commit/d68c0e1df44c92fa6d8c06c5ac525b3f2dec425f"
+        },
+        {
+          "sha": "d35169a7f39f321f222a4c79ad82b97c080ea209",
+          "date": "2026-07-09T22:08:18Z",
+          "parents": [
+            "d68c0e1df44c92fa6d8c06c5ac525b3f2dec425f"
+          ],
+          "subject": "docs: add blockers readme note",
+          "url": "https://github.com/Patricked-code/MCP/commit/d35169a7f39f321f222a4c79ad82b97c080ea209"
+        },
+        {
+          "sha": "a3992acbdebe2cce1aeeaa288c084367408393e8",
+          "date": "2026-07-09T22:08:26Z",
+          "parents": [
+            "d35169a7f39f321f222a4c79ad82b97c080ea209"
+          ],
+          "subject": "docs: add audit boundary note",
+          "url": "https://github.com/Patricked-code/MCP/commit/a3992acbdebe2cce1aeeaa288c084367408393e8"
+        },
+        {
+          "sha": "0b079975f687ffda9c270d8e4acc306c787cd495",
+          "date": "2026-07-09T22:08:32Z",
+          "parents": [
+            "a3992acbdebe2cce1aeeaa288c084367408393e8"
+          ],
+          "subject": "docs: add human validation note",
+          "url": "https://github.com/Patricked-code/MCP/commit/0b079975f687ffda9c270d8e4acc306c787cd495"
+        },
+        {
+          "sha": "38b3ad37a430343251f6f830131231e424a7d904",
+          "date": "2026-07-09T22:08:39Z",
+          "parents": [
+            "0b079975f687ffda9c270d8e4acc306c787cd495"
+          ],
+          "subject": "docs: add do not close issues note",
+          "url": "https://github.com/Patricked-code/MCP/commit/38b3ad37a430343251f6f830131231e424a7d904"
+        },
+        {
+          "sha": "1cadcce1f8dc4c937957ea3a2ed5e5557e563cf3",
+          "date": "2026-07-09T22:08:46Z",
+          "parents": [
+            "38b3ad37a430343251f6f830131231e424a7d904"
+          ],
+          "subject": "docs: add issue 2 3 summary note",
+          "url": "https://github.com/Patricked-code/MCP/commit/1cadcce1f8dc4c937957ea3a2ed5e5557e563cf3"
+        },
+        {
+          "sha": "2db39d1d8af8b2f2baac685d0ecee5e67633090f",
+          "date": "2026-07-09T22:08:52Z",
+          "parents": [
+            "1cadcce1f8dc4c937957ea3a2ed5e5557e563cf3"
+          ],
+          "subject": "docs: add final decision for issue blockers",
+          "url": "https://github.com/Patricked-code/MCP/commit/2db39d1d8af8b2f2baac685d0ecee5e67633090f"
+        },
+        {
+          "sha": "586d573bf0ed1e2e7027dcf36db1b1c3b2510302",
+          "date": "2026-07-09T22:08:58Z",
+          "parents": [
+            "2db39d1d8af8b2f2baac685d0ecee5e67633090f"
+          ],
+          "subject": "docs: add review order for blockers audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/586d573bf0ed1e2e7027dcf36db1b1c3b2510302"
+        },
+        {
+          "sha": "6ffcd65e67fa8cb8ca8ec1ce9f80717f16e240df",
+          "date": "2026-07-09T22:09:05Z",
+          "parents": [
+            "586d573bf0ed1e2e7027dcf36db1b1c3b2510302"
+          ],
+          "subject": "docs: add safe integration sequence",
+          "url": "https://github.com/Patricked-code/MCP/commit/6ffcd65e67fa8cb8ca8ec1ce9f80717f16e240df"
+        },
+        {
+          "sha": "755bc9387e7db38f25735e46dc38ffe4d29bb2c0",
+          "date": "2026-07-09T22:09:13Z",
+          "parents": [
+            "6ffcd65e67fa8cb8ca8ec1ce9f80717f16e240df"
+          ],
+          "subject": "docs: add github only action log",
+          "url": "https://github.com/Patricked-code/MCP/commit/755bc9387e7db38f25735e46dc38ffe4d29bb2c0"
+        },
+        {
+          "sha": "5d2a82df7076dcebcf2cc1e235555fa0a558a0df",
+          "date": "2026-07-09T22:09:21Z",
+          "parents": [
+            "755bc9387e7db38f25735e46dc38ffe4d29bb2c0"
+          ],
+          "subject": "docs: add no production action note",
+          "url": "https://github.com/Patricked-code/MCP/commit/5d2a82df7076dcebcf2cc1e235555fa0a558a0df"
+        },
+        {
+          "sha": "aff4edfbf4d59bb704abe6a288c43daf2ae58de7",
+          "date": "2026-07-09T22:09:28Z",
+          "parents": [
+            "5d2a82df7076dcebcf2cc1e235555fa0a558a0df"
+          ],
+          "subject": "docs: add chain of decision note",
+          "url": "https://github.com/Patricked-code/MCP/commit/aff4edfbf4d59bb704abe6a288c43daf2ae58de7"
+        },
+        {
+          "sha": "5e00a7fff4f0c60982753299b7d53a79b70291fe",
+          "date": "2026-07-09T22:09:43Z",
+          "parents": [
+            "aff4edfbf4d59bb704abe6a288c43daf2ae58de7"
+          ],
+          "subject": "docs: add PR content note",
+          "url": "https://github.com/Patricked-code/MCP/commit/5e00a7fff4f0c60982753299b7d53a79b70291fe"
+        },
+        {
+          "sha": "f4e0c513ccae05e852fdadc7f3b5c0f7e7cebb51",
+          "date": "2026-07-09T22:09:53Z",
+          "parents": [
+            "5e00a7fff4f0c60982753299b7d53a79b70291fe"
+          ],
+          "subject": "docs: add draft pr note",
+          "url": "https://github.com/Patricked-code/MCP/commit/f4e0c513ccae05e852fdadc7f3b5c0f7e7cebb51"
+        },
+        {
+          "sha": "ab17bd820ac2e799e461727d7ae5956467cf7bac",
+          "date": "2026-07-09T22:09:59Z",
+          "parents": [
+            "f4e0c513ccae05e852fdadc7f3b5c0f7e7cebb51"
+          ],
+          "subject": "docs: add stop conditions for issue audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/ab17bd820ac2e799e461727d7ae5956467cf7bac"
+        },
+        {
+          "sha": "c1ebc2164744681624661901830f09480f5b33f8",
+          "date": "2026-07-09T22:10:06Z",
+          "parents": [
+            "ab17bd820ac2e799e461727d7ae5956467cf7bac"
+          ],
+          "subject": "docs: add do not merge now note",
+          "url": "https://github.com/Patricked-code/MCP/commit/c1ebc2164744681624661901830f09480f5b33f8"
+        },
+        {
+          "sha": "927e6efc77008092a7ac130f3301fe1cc73ff638",
+          "date": "2026-07-09T22:10:12Z",
+          "parents": [
+            "c1ebc2164744681624661901830f09480f5b33f8"
+          ],
+          "subject": "docs: add no branch deletion note",
+          "url": "https://github.com/Patricked-code/MCP/commit/927e6efc77008092a7ac130f3301fe1cc73ff638"
+        },
+        {
+          "sha": "9e894e3528479ce444678fd9b219e977adcbb581",
+          "date": "2026-07-09T22:10:18Z",
+          "parents": [
+            "927e6efc77008092a7ac130f3301fe1cc73ff638"
+          ],
+          "subject": "docs: add issue links note",
+          "url": "https://github.com/Patricked-code/MCP/commit/9e894e3528479ce444678fd9b219e977adcbb581"
+        },
+        {
+          "sha": "0e3c51c550557f03a3f76346661331c0435d11f8",
+          "date": "2026-07-09T22:10:24Z",
+          "parents": [
+            "9e894e3528479ce444678fd9b219e977adcbb581"
+          ],
+          "subject": "docs: add issue blocker state note",
+          "url": "https://github.com/Patricked-code/MCP/commit/0e3c51c550557f03a3f76346661331c0435d11f8"
+        },
+        {
+          "sha": "e5655d1a517101b5910c9880f7966a39b3381f30",
+          "date": "2026-07-09T22:10:30Z",
+          "parents": [
+            "0e3c51c550557f03a3f76346661331c0435d11f8"
+          ],
+          "subject": "docs: add PR8 complement note for issues",
+          "url": "https://github.com/Patricked-code/MCP/commit/e5655d1a517101b5910c9880f7966a39b3381f30"
+        },
+        {
+          "sha": "387202966cc0108843dcd64d87b0c4fab914e1f5",
+          "date": "2026-07-09T22:10:42Z",
+          "parents": [
+            "e5655d1a517101b5910c9880f7966a39b3381f30"
+          ],
+          "subject": "docs: add no main push note",
+          "url": "https://github.com/Patricked-code/MCP/commit/387202966cc0108843dcd64d87b0c4fab914e1f5"
+        },
+        {
+          "sha": "84f7cbe639fd0472646952048c07b6fb524f9782",
+          "date": "2026-07-09T22:10:49Z",
+          "parents": [
+            "387202966cc0108843dcd64d87b0c4fab914e1f5"
+          ],
+          "subject": "docs: add final scope note",
+          "url": "https://github.com/Patricked-code/MCP/commit/84f7cbe639fd0472646952048c07b6fb524f9782"
+        },
+        {
+          "sha": "f63a4830c873dc44e21a9884c358c044fdc924bf",
+          "date": "2026-07-09T22:10:59Z",
+          "parents": [
+            "84f7cbe639fd0472646952048c07b6fb524f9782"
+          ],
+          "subject": "docs: add proof requirements note",
+          "url": "https://github.com/Patricked-code/MCP/commit/f63a4830c873dc44e21a9884c358c044fdc924bf"
+        },
+        {
+          "sha": "fcc6b1b1bbeb9767545657e9289fdcd6f1db89e9",
+          "date": "2026-07-09T22:11:05Z",
+          "parents": [
+            "f63a4830c873dc44e21a9884c358c044fdc924bf"
+          ],
+          "subject": "docs: add PR draft intent note",
+          "url": "https://github.com/Patricked-code/MCP/commit/fcc6b1b1bbeb9767545657e9289fdcd6f1db89e9"
+        },
+        {
+          "sha": "86dca9f81d8049db38cce0e86e711dea74dfdd3a",
+          "date": "2026-07-09T22:11:11Z",
+          "parents": [
+            "fcc6b1b1bbeb9767545657e9289fdcd6f1db89e9"
+          ],
+          "subject": "docs: add issue safety check note",
+          "url": "https://github.com/Patricked-code/MCP/commit/86dca9f81d8049db38cce0e86e711dea74dfdd3a"
+        },
+        {
+          "sha": "92fbbcf8373a8d3ec4e88b7ca865fdd59911d69a",
+          "date": "2026-07-09T22:11:22Z",
+          "parents": [
+            "86dca9f81d8049db38cce0e86e711dea74dfdd3a"
+          ],
+          "subject": "docs: add issue closure rule note",
+          "url": "https://github.com/Patricked-code/MCP/commit/92fbbcf8373a8d3ec4e88b7ca865fdd59911d69a"
+        },
+        {
+          "sha": "9f46e55f886a8486d944e2b7e305f0c4a17b9308",
+          "date": "2026-07-09T22:11:33Z",
+          "parents": [
+            "92fbbcf8373a8d3ec4e88b7ca865fdd59911d69a"
+          ],
+          "subject": "docs: add audit complete note",
+          "url": "https://github.com/Patricked-code/MCP/commit/9f46e55f886a8486d944e2b7e305f0c4a17b9308"
+        },
+        {
+          "sha": "80ee39d3539886a0934824e2598d547c94a24142",
+          "date": "2026-07-09T22:11:44Z",
+          "parents": [
+            "9f46e55f886a8486d944e2b7e305f0c4a17b9308"
+          ],
+          "subject": "docs: add pre PR check note",
+          "url": "https://github.com/Patricked-code/MCP/commit/80ee39d3539886a0934824e2598d547c94a24142"
+        },
+        {
+          "sha": "b0e5e10b8d6d73c9680950e06f2445a57a2317a3",
+          "date": "2026-07-09T22:11:51Z",
+          "parents": [
+            "80ee39d3539886a0934824e2598d547c94a24142"
+          ],
+          "subject": "docs: add pre PR no merge note",
+          "url": "https://github.com/Patricked-code/MCP/commit/b0e5e10b8d6d73c9680950e06f2445a57a2317a3"
+        },
+        {
+          "sha": "08271b705fc2cbf3fee66900abccd95a2e0d1c2f",
+          "date": "2026-07-09T22:12:02Z",
+          "parents": [
+            "b0e5e10b8d6d73c9680950e06f2445a57a2317a3"
+          ],
+          "subject": "docs: add PR opening readiness note",
+          "url": "https://github.com/Patricked-code/MCP/commit/08271b705fc2cbf3fee66900abccd95a2e0d1c2f"
+        },
+        {
+          "sha": "48c4d13a80347e690249c1fa42556852a804ddf1",
+          "date": "2026-07-09T22:12:09Z",
+          "parents": [
+            "08271b705fc2cbf3fee66900abccd95a2e0d1c2f"
+          ],
+          "subject": "docs: add open PR draft only note",
+          "url": "https://github.com/Patricked-code/MCP/commit/48c4d13a80347e690249c1fa42556852a804ddf1"
+        },
+        {
+          "sha": "7cf9aac41f817c13c4b81ac6c28d10bc5f515a91",
+          "date": "2026-07-09T22:12:14Z",
+          "parents": [
+            "48c4d13a80347e690249c1fa42556852a804ddf1"
+          ],
+          "subject": "docs: add no force merge note",
+          "url": "https://github.com/Patricked-code/MCP/commit/7cf9aac41f817c13c4b81ac6c28d10bc5f515a91"
+        },
+        {
+          "sha": "b33a1e9ba35f3666919953b439d753130bec2df6",
+          "date": "2026-07-09T22:12:26Z",
+          "parents": [
+            "7cf9aac41f817c13c4b81ac6c28d10bc5f515a91"
+          ],
+          "subject": "docs: add no auto merge note",
+          "url": "https://github.com/Patricked-code/MCP/commit/b33a1e9ba35f3666919953b439d753130bec2df6"
+        },
+        {
+          "sha": "911a54081fb47f0a84912450fef4dd1e43ea6918",
+          "date": "2026-07-09T22:12:33Z",
+          "parents": [
+            "b33a1e9ba35f3666919953b439d753130bec2df6"
+          ],
+          "subject": "docs: add ready for draft PR note",
+          "url": "https://github.com/Patricked-code/MCP/commit/911a54081fb47f0a84912450fef4dd1e43ea6918"
+        },
+        {
+          "sha": "6bbce6e53bc7494c8c8cdf93f1e8cb4814e7fa0b",
+          "date": "2026-07-09T22:12:41Z",
+          "parents": [
+            "911a54081fb47f0a84912450fef4dd1e43ea6918"
+          ],
+          "subject": "docs: add no issue closure note",
+          "url": "https://github.com/Patricked-code/MCP/commit/6bbce6e53bc7494c8c8cdf93f1e8cb4814e7fa0b"
+        }
+      ]
+    },
+    {
+      "pr": 10,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 2,
+      "commits": [
+        {
+          "sha": "f1e7909e87a337933e0d83765b1b13c7e6b1b29d",
+          "date": "2026-07-09T22:36:05Z",
+          "parents": [
+            "4ae11249a6ec129cbf7289e361416bc248311bca"
+          ],
+          "subject": "feat: add controlled github mcp tools",
+          "url": "https://github.com/Patricked-code/MCP/commit/f1e7909e87a337933e0d83765b1b13c7e6b1b29d"
+        },
+        {
+          "sha": "8fb7f578e706ee1f3995b4e1a4e5f4e11dc754c0",
+          "date": "2026-07-09T22:41:37Z",
+          "parents": [
+            "f1e7909e87a337933e0d83765b1b13c7e6b1b29d"
+          ],
+          "subject": "test: cover github mcp tool registration",
+          "url": "https://github.com/Patricked-code/MCP/commit/8fb7f578e706ee1f3995b4e1a4e5f4e11dc754c0"
+        }
+      ]
+    },
+    {
+      "pr": 11,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 2,
+      "commits": [
+        {
+          "sha": "d816b974b9df7bd701b738b25884fdb928da1e2f",
+          "date": "2026-07-11T05:39:52Z",
+          "parents": [
+            "f92f621fa495d5728df5fb5befcc3265ff3a1302"
+          ],
+          "subject": "chore: harden MCP read-only safety, CI, and state docs",
+          "url": "https://github.com/Patricked-code/MCP/commit/d816b974b9df7bd701b738b25884fdb928da1e2f"
+        },
+        {
+          "sha": "55ca32a25ea02e1763f30455e7c773194848030a",
+          "date": "2026-07-12T21:37:19Z",
+          "parents": [
+            "d816b974b9df7bd701b738b25884fdb928da1e2f"
+          ],
+          "subject": "fix(mcp): address PR 11 safety and state review findings",
+          "url": "https://github.com/Patricked-code/MCP/commit/55ca32a25ea02e1763f30455e7c773194848030a"
+        }
+      ]
+    },
+    {
+      "pr": 12,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 10,
+      "commits": [
+        {
+          "sha": "e05d4add3cd73cb5f866e0b65e46fba5c9836786",
+          "date": "2026-07-12T22:44:57Z",
+          "parents": [
+            "f92f621fa495d5728df5fb5befcc3265ff3a1302"
+          ],
+          "subject": "docs: create central MCP documentation hub",
+          "url": "https://github.com/Patricked-code/MCP/commit/e05d4add3cd73cb5f866e0b65e46fba5c9836786"
+        },
+        {
+          "sha": "73146755089345fb65bb716725990610f4fe2936",
+          "date": "2026-07-12T22:44:59Z",
+          "parents": [
+            "e05d4add3cd73cb5f866e0b65e46fba5c9836786"
+          ],
+          "subject": "docs: index MCP conversations and memory corpus",
+          "url": "https://github.com/Patricked-code/MCP/commit/73146755089345fb65bb716725990610f4fe2936"
+        },
+        {
+          "sha": "e7a4ab4e0d45b4563918394e914427c81058bf36",
+          "date": "2026-07-12T22:44:59Z",
+          "parents": [
+            "73146755089345fb65bb716725990610f4fe2936"
+          ],
+          "subject": "docs: add current Codex MCP connection guide",
+          "url": "https://github.com/Patricked-code/MCP/commit/e7a4ab4e0d45b4563918394e914427c81058bf36"
+        },
+        {
+          "sha": "8a9b3031bb104e7efa47bd2797d520a1622c4c16",
+          "date": "2026-07-12T22:45:00Z",
+          "parents": [
+            "e7a4ab4e0d45b4563918394e914427c81058bf36"
+          ],
+          "subject": "docs: add MCP server inventory and cartography",
+          "url": "https://github.com/Patricked-code/MCP/commit/8a9b3031bb104e7efa47bd2797d520a1622c4c16"
+        },
+        {
+          "sha": "417b2257677870e37f713f88e94b1690811358f5",
+          "date": "2026-07-12T22:45:01Z",
+          "parents": [
+            "8a9b3031bb104e7efa47bd2797d520a1622c4c16"
+          ],
+          "subject": "docs: define safe conversation import workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/417b2257677870e37f713f88e94b1690811358f5"
+        },
+        {
+          "sha": "e737598be8bd2b64a6ae6b62d028c29940a9a38f",
+          "date": "2026-07-12T22:45:58Z",
+          "parents": [
+            "417b2257677870e37f713f88e94b1690811358f5"
+          ],
+          "subject": "docs: record hub draft PR in current state",
+          "url": "https://github.com/Patricked-code/MCP/commit/e737598be8bd2b64a6ae6b62d028c29940a9a38f"
+        },
+        {
+          "sha": "06ce03d5e91db9058cd95e5f5c4b6a1992e7db7f",
+          "date": "2026-07-12T22:45:59Z",
+          "parents": [
+            "e737598be8bd2b64a6ae6b62d028c29940a9a38f"
+          ],
+          "subject": "docs: distinguish pre-existing PRs from hub PR",
+          "url": "https://github.com/Patricked-code/MCP/commit/06ce03d5e91db9058cd95e5f5c4b6a1992e7db7f"
+        },
+        {
+          "sha": "777a360162dad2c3f687f5978f9f9d1a1ef9a08d",
+          "date": "2026-07-12T23:00:58Z",
+          "parents": [
+            "06ce03d5e91db9058cd95e5f5c4b6a1992e7db7f"
+          ],
+          "subject": "docs: route conversation imports to canonical memory",
+          "url": "https://github.com/Patricked-code/MCP/commit/777a360162dad2c3f687f5978f9f9d1a1ef9a08d"
+        },
+        {
+          "sha": "f9ab0a8028876a42b2df08084e4f5c4008a75c35",
+          "date": "2026-07-12T23:00:59Z",
+          "parents": [
+            "777a360162dad2c3f687f5978f9f9d1a1ef9a08d"
+          ],
+          "subject": "docs: align conversation index with memory corpus",
+          "url": "https://github.com/Patricked-code/MCP/commit/f9ab0a8028876a42b2df08084e4f5c4008a75c35"
+        },
+        {
+          "sha": "8c7f0be63de853703446acb4f27bcb9ac0846c73",
+          "date": "2026-07-12T23:01:01Z",
+          "parents": [
+            "f9ab0a8028876a42b2df08084e4f5c4008a75c35"
+          ],
+          "subject": "docs: correct canonical conversation import destination",
+          "url": "https://github.com/Patricked-code/MCP/commit/8c7f0be63de853703446acb4f27bcb9ac0846c73"
+        }
+      ]
+    },
+    {
+      "pr": 13,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 2,
+      "commits": [
+        {
+          "sha": "64409f0183a4e58d2788b69c17b9a2c200eb1f4e",
+          "date": "2026-07-13T00:04:56Z",
+          "parents": [
+            "f92f621fa495d5728df5fb5befcc3265ff3a1302"
+          ],
+          "subject": "docs: bootstrap MCP operational documentation memory",
+          "url": "https://github.com/Patricked-code/MCP/commit/64409f0183a4e58d2788b69c17b9a2c200eb1f4e"
+        },
+        {
+          "sha": "750d010733191363abb275d8d31a1c0a8aee6ec9",
+          "date": "2026-07-13T00:06:03Z",
+          "parents": [
+            "64409f0183a4e58d2788b69c17b9a2c200eb1f4e"
+          ],
+          "subject": "docs: record bootstrap pull request",
+          "url": "https://github.com/Patricked-code/MCP/commit/750d010733191363abb275d8d31a1c0a8aee6ec9"
+        }
+      ]
+    },
+    {
+      "pr": 14,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "fetched": 1,
+      "commits": [
+        {
+          "sha": "feef2ea8ca2d895a4629d1eb856ebd11255bb316",
+          "date": "2026-07-13T02:09:50Z",
+          "parents": [
+            "38c999087b0e93adc2beeba04733af182c92be9c"
+          ],
+          "subject": "feat(mcp): add controlled S1 Git sync tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/feef2ea8ca2d895a4629d1eb856ebd11255bb316"
+        }
+      ]
+    }
+  ]
+}

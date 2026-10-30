@@ -1,0 +1,776 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "positions": [
+    97,
+    108
+  ],
+  "items": [
+    {
+      "pr": 108,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "79fe6e15e1d027a3be2ec470698b8c72d7a55e46",
+          "date": "2026-09-20T19:34:42Z",
+          "parents": [
+            "7cdce197febaa9f868160145bcedcc8a4cd6e6ec"
+          ],
+          "subject": "fix(stablecoin): make read-only reconciliation probes fail-soft",
+          "url": "https://github.com/Patricked-code/MCP/commit/79fe6e15e1d027a3be2ec470698b8c72d7a55e46"
+        },
+        {
+          "sha": "313562c971b527c686fccdf897d3cddf007d5cab",
+          "date": "2026-09-20T19:34:54Z",
+          "parents": [
+            "79fe6e15e1d027a3be2ec470698b8c72d7a55e46"
+          ],
+          "subject": "test(stablecoin): validate probes against runtime safety policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/313562c971b527c686fccdf897d3cddf007d5cab"
+        },
+        {
+          "sha": "ba0dba033c93f6a75f2b354c84592f4b69008755",
+          "date": "2026-09-20T19:35:19Z",
+          "parents": [
+            "313562c971b527c686fccdf897d3cddf007d5cab"
+          ],
+          "subject": "fix(stablecoin): align SSH fallback probes with fail-soft reads",
+          "url": "https://github.com/Patricked-code/MCP/commit/ba0dba033c93f6a75f2b354c84592f4b69008755"
+        }
+      ]
+    },
+    {
+      "pr": 111,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "ecd46c5294853f1c8b7a15a58a2ac6340ca38624",
+          "date": "2026-09-20T19:41:09Z",
+          "parents": [
+            "32a6cea0284b1ae8244709f9bd1288da6ccff556"
+          ],
+          "subject": "fix(github-first): expose bounded read-only failure reason",
+          "url": "https://github.com/Patricked-code/MCP/commit/ecd46c5294853f1c8b7a15a58a2ac6340ca38624"
+        },
+        {
+          "sha": "ce1a3a58d2ca20d1f43627b8eba411ea3bf751f7",
+          "date": "2026-09-20T19:41:21Z",
+          "parents": [
+            "ecd46c5294853f1c8b7a15a58a2ac6340ca38624"
+          ],
+          "subject": "test(github-first): bound evidence failure diagnostics",
+          "url": "https://github.com/Patricked-code/MCP/commit/ce1a3a58d2ca20d1f43627b8eba411ea3bf751f7"
+        }
+      ]
+    },
+    {
+      "pr": 117,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "fb3d7c0aee9d96f3abc877a8d0bf400a3a0db100",
+          "date": "2026-09-21T06:30:30Z",
+          "parents": [
+            "bb81baf7f8424bcb32c3e87b22018335461b1189"
+          ],
+          "subject": "test(stablecoin): define GitHub-first fast-forward contract",
+          "url": "https://github.com/Patricked-code/MCP/commit/fb3d7c0aee9d96f3abc877a8d0bf400a3a0db100"
+        },
+        {
+          "sha": "c23bcb61dc58f974881c669b3e740680f4cb34f7",
+          "date": "2026-09-21T06:30:32Z",
+          "parents": [
+            "fb3d7c0aee9d96f3abc877a8d0bf400a3a0db100"
+          ],
+          "subject": "test(stablecoin): define dedicated write OIDC policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/c23bcb61dc58f974881c669b3e740680f4cb34f7"
+        },
+        {
+          "sha": "b6cd6cae41b2e0bf160de4f0a7ca63204a95e66c",
+          "date": "2026-09-21T06:30:35Z",
+          "parents": [
+            "c23bcb61dc58f974881c669b3e740680f4cb34f7"
+          ],
+          "subject": "test(stablecoin): define bounded GitHub write workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/b6cd6cae41b2e0bf160de4f0a7ca63204a95e66c"
+        },
+        {
+          "sha": "365470dccb173751762f040dcb1c44a0a9a8ca16",
+          "date": "2026-09-21T06:34:50Z",
+          "parents": [
+            "b6cd6cae41b2e0bf160de4f0a7ca63204a95e66c"
+          ],
+          "subject": "feat(stablecoin): add bounded exact-SHA fast-forward route",
+          "url": "https://github.com/Patricked-code/MCP/commit/365470dccb173751762f040dcb1c44a0a9a8ca16"
+        },
+        {
+          "sha": "eb1acecc0da17a276c4ab01ee030186480d80751",
+          "date": "2026-09-21T06:35:09Z",
+          "parents": [
+            "365470dccb173751762f040dcb1c44a0a9a8ca16"
+          ],
+          "subject": "feat(stablecoin): add dedicated GitHub write OIDC policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/eb1acecc0da17a276c4ab01ee030186480d80751"
+        },
+        {
+          "sha": "3ffac630cf1dc23918a38431534c606e77cf90ea",
+          "date": "2026-09-21T06:35:54Z",
+          "parents": [
+            "eb1acecc0da17a276c4ab01ee030186480d80751"
+          ],
+          "subject": "feat(stablecoin): add GitHub OIDC bounded fast-forward workflow",
+          "url": "https://github.com/Patricked-code/MCP/commit/3ffac630cf1dc23918a38431534c606e77cf90ea"
+        },
+        {
+          "sha": "ca711024fe9dee184fe27f9fd5d6d7934e2c3fbd",
+          "date": "2026-09-21T06:36:11Z",
+          "parents": [
+            "3ffac630cf1dc23918a38431534c606e77cf90ea"
+          ],
+          "subject": "feat(stablecoin): mount bounded S2 fast-forward endpoint",
+          "url": "https://github.com/Patricked-code/MCP/commit/ca711024fe9dee184fe27f9fd5d6d7934e2c3fbd"
+        },
+        {
+          "sha": "5ae1d3b39e08a1e083eccf2bfe04557ca1620fc9",
+          "date": "2026-09-21T06:36:25Z",
+          "parents": [
+            "ca711024fe9dee184fe27f9fd5d6d7934e2c3fbd"
+          ],
+          "subject": "docs(governance): define bounded GitHub Stablecoin write mode",
+          "url": "https://github.com/Patricked-code/MCP/commit/5ae1d3b39e08a1e083eccf2bfe04557ca1620fc9"
+        },
+        {
+          "sha": "474b5e9c02b6b1f409b87a88037cc37afdda28ca",
+          "date": "2026-09-21T06:38:30Z",
+          "parents": [
+            "5ae1d3b39e08a1e083eccf2bfe04557ca1620fc9"
+          ],
+          "subject": "docs(state): checkpoint Stablecoin bounded write candidate",
+          "url": "https://github.com/Patricked-code/MCP/commit/474b5e9c02b6b1f409b87a88037cc37afdda28ca"
+        },
+        {
+          "sha": "fff358ecfb91aca57fe657df503965684c38e3c0",
+          "date": "2026-09-21T06:38:34Z",
+          "parents": [
+            "474b5e9c02b6b1f409b87a88037cc37afdda28ca"
+          ],
+          "subject": "docs(backlog): sequence Stablecoin bounded write activation",
+          "url": "https://github.com/Patricked-code/MCP/commit/fff358ecfb91aca57fe657df503965684c38e3c0"
+        },
+        {
+          "sha": "57d6933a815fd67c29ebceb1ec5092b8e579bf7a",
+          "date": "2026-09-21T06:38:38Z",
+          "parents": [
+            "fff358ecfb91aca57fe657df503965684c38e3c0"
+          ],
+          "subject": "docs(changelog): record Stablecoin GitHub bounded write",
+          "url": "https://github.com/Patricked-code/MCP/commit/57d6933a815fd67c29ebceb1ec5092b8e579bf7a"
+        }
+      ]
+    },
+    {
+      "pr": 124,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "443d7883ba043535290abb2b406efe6993070c8a",
+          "date": "2026-09-21T18:07:31Z",
+          "parents": [
+            "ab9b1aa902aab3efed42ba527847ab48df3c8eaa"
+          ],
+          "subject": "docs(policy): preserve GitHub client surface before bridge escalation",
+          "url": "https://github.com/Patricked-code/MCP/commit/443d7883ba043535290abb2b406efe6993070c8a"
+        },
+        {
+          "sha": "9b93a4a5937464ce295da2027ba6e8995c44dd00",
+          "date": "2026-09-21T18:07:38Z",
+          "parents": [
+            "443d7883ba043535290abb2b406efe6993070c8a"
+          ],
+          "subject": "docs(governance): make GitHub surface preservation permanent",
+          "url": "https://github.com/Patricked-code/MCP/commit/9b93a4a5937464ce295da2027ba6e8995c44dd00"
+        },
+        {
+          "sha": "d1b4267e1f088bb839339e00bc2efc580e7cebb9",
+          "date": "2026-09-21T18:07:43Z",
+          "parents": [
+            "9b93a4a5937464ce295da2027ba6e8995c44dd00"
+          ],
+          "subject": "docs(design): specify client surface preservation",
+          "url": "https://github.com/Patricked-code/MCP/commit/d1b4267e1f088bb839339e00bc2efc580e7cebb9"
+        },
+        {
+          "sha": "e747be52427d186ee468049318ba8d40f3c84864",
+          "date": "2026-09-21T18:07:48Z",
+          "parents": [
+            "d1b4267e1f088bb839339e00bc2efc580e7cebb9"
+          ],
+          "subject": "docs(suivi): record GitHub surface preservation rule",
+          "url": "https://github.com/Patricked-code/MCP/commit/e747be52427d186ee468049318ba8d40f3c84864"
+        },
+        {
+          "sha": "d8ad8c43af9ecf557e100e76eb5c79cd440b9b9e",
+          "date": "2026-09-21T18:07:51Z",
+          "parents": [
+            "e747be52427d186ee468049318ba8d40f3c84864"
+          ],
+          "subject": "docs(changelog): record GitHub surface preservation",
+          "url": "https://github.com/Patricked-code/MCP/commit/d8ad8c43af9ecf557e100e76eb5c79cd440b9b9e"
+        },
+        {
+          "sha": "d3dceaa92e338bb1ffd5e9452303f607b54db531",
+          "date": "2026-09-21T18:07:56Z",
+          "parents": [
+            "d8ad8c43af9ecf557e100e76eb5c79cd440b9b9e"
+          ],
+          "subject": "docs(decision): bridge is last resort when GitHub fallback exists",
+          "url": "https://github.com/Patricked-code/MCP/commit/d3dceaa92e338bb1ffd5e9452303f607b54db531"
+        },
+        {
+          "sha": "da57f520948272b409abc1d89f564577abd94f2c",
+          "date": "2026-09-21T18:09:12Z",
+          "parents": [
+            "d3dceaa92e338bb1ffd5e9452303f607b54db531"
+          ],
+          "subject": "test(github-first): enforce client surface preservation policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/da57f520948272b409abc1d89f564577abd94f2c"
+        }
+      ]
+    },
+    {
+      "pr": 126,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "f0d1492b5e835e692deaf730cbb9a86bd4f0864f",
+          "date": "2026-09-21T18:24:21Z",
+          "parents": [
+            "3a49044ff8f1981cfb0a64e14adb2ea17f529c3a"
+          ],
+          "subject": "test(live-state): reproduce AF-09 free-text SHA drift",
+          "url": "https://github.com/Patricked-code/MCP/commit/f0d1492b5e835e692deaf730cbb9a86bd4f0864f"
+        },
+        {
+          "sha": "98f38559443f82a2019f574941b799166b447181",
+          "date": "2026-09-21T18:26:41Z",
+          "parents": [
+            "f0d1492b5e835e692deaf730cbb9a86bd4f0864f"
+          ],
+          "subject": "fix(live-state): source documentation SHAs from production state",
+          "url": "https://github.com/Patricked-code/MCP/commit/98f38559443f82a2019f574941b799166b447181"
+        },
+        {
+          "sha": "04a6cd9e0f7d2f4d24e0e68d78d993f3f24e512e",
+          "date": "2026-09-21T18:28:35Z",
+          "parents": [
+            "98f38559443f82a2019f574941b799166b447181"
+          ],
+          "subject": "test(live-state): retire legacy SUIVI SHA expectation",
+          "url": "https://github.com/Patricked-code/MCP/commit/04a6cd9e0f7d2f4d24e0e68d78d993f3f24e512e"
+        },
+        {
+          "sha": "eefbb9fd87901496486238e94cd08465910350da",
+          "date": "2026-09-21T18:30:41Z",
+          "parents": [
+            "04a6cd9e0f7d2f4d24e0e68d78d993f3f24e512e"
+          ],
+          "subject": "docs(suivi): record AF-09 structured documentation state",
+          "url": "https://github.com/Patricked-code/MCP/commit/eefbb9fd87901496486238e94cd08465910350da"
+        },
+        {
+          "sha": "b87927d21ca4d206e63dfe39d450376541254435",
+          "date": "2026-09-21T18:30:43Z",
+          "parents": [
+            "eefbb9fd87901496486238e94cd08465910350da"
+          ],
+          "subject": "docs(changelog): record AF-09 live-state fix",
+          "url": "https://github.com/Patricked-code/MCP/commit/b87927d21ca4d206e63dfe39d450376541254435"
+        },
+        {
+          "sha": "0a51b09b13febdda9fbcdd4324de61ab22140363",
+          "date": "2026-09-21T18:30:46Z",
+          "parents": [
+            "b87927d21ca4d206e63dfe39d450376541254435"
+          ],
+          "subject": "docs(decision): make production state authoritative for SHAs",
+          "url": "https://github.com/Patricked-code/MCP/commit/0a51b09b13febdda9fbcdd4324de61ab22140363"
+        }
+      ]
+    },
+    {
+      "pr": 127,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "d9510dfdec17c1d1b6a1691480e1eb390cdc6589",
+          "date": "2026-09-22T16:38:57Z",
+          "parents": [
+            "65e633381e8ae811bb5d4060826d0d679f0c7e80"
+          ],
+          "subject": "docs(state): reconcile AF-09 structured production baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/d9510dfdec17c1d1b6a1691480e1eb390cdc6589"
+        },
+        {
+          "sha": "bb646ef2ececaeb50dac5a85abeb59c9c6e62eed",
+          "date": "2026-09-22T16:39:00Z",
+          "parents": [
+            "d9510dfdec17c1d1b6a1691480e1eb390cdc6589"
+          ],
+          "subject": "docs(suivi): reconcile AF-09 post-merge baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/bb646ef2ececaeb50dac5a85abeb59c9c6e62eed"
+        },
+        {
+          "sha": "2f19d78f2b3fa5d1ba3472cad3128ea3cc3e54ad",
+          "date": "2026-09-22T16:39:03Z",
+          "parents": [
+            "bb646ef2ececaeb50dac5a85abeb59c9c6e62eed"
+          ],
+          "subject": "docs(changelog): record AF-09 post-deploy baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/2f19d78f2b3fa5d1ba3472cad3128ea3cc3e54ad"
+        },
+        {
+          "sha": "e8eafc3282e022d5c1a9fe0817899fbd6debc615",
+          "date": "2026-09-22T16:39:07Z",
+          "parents": [
+            "2f19d78f2b3fa5d1ba3472cad3128ea3cc3e54ad"
+          ],
+          "subject": "docs(decision): use AF-09 functional baseline plus docs-only descendant",
+          "url": "https://github.com/Patricked-code/MCP/commit/e8eafc3282e022d5c1a9fe0817899fbd6debc615"
+        }
+      ]
+    },
+    {
+      "pr": 130,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "5ead794eca2ae239a5a8f739a5c9400e9526882e",
+          "date": "2026-09-22T16:50:59Z",
+          "parents": [
+            "161db894eb5a864eebb5b79e01e76446d6ef7af1"
+          ],
+          "subject": "test(governance): reproduce AF-10 first-blocker loss",
+          "url": "https://github.com/Patricked-code/MCP/commit/5ead794eca2ae239a5a8f739a5c9400e9526882e"
+        },
+        {
+          "sha": "d863b353f1d98ce3bc6fbd41ed694f1e288a4e0d",
+          "date": "2026-09-22T16:51:04Z",
+          "parents": [
+            "5ead794eca2ae239a5a8f739a5c9400e9526882e"
+          ],
+          "subject": "test(current-state): reproduce AF-18 executable tie-break drift",
+          "url": "https://github.com/Patricked-code/MCP/commit/d863b353f1d98ce3bc6fbd41ed694f1e288a4e0d"
+        },
+        {
+          "sha": "fe3609a1493e9406c5dbac7b3ac84454aa83272e",
+          "date": "2026-09-22T16:51:12Z",
+          "parents": [
+            "d863b353f1d98ce3bc6fbd41ed694f1e288a4e0d"
+          ],
+          "subject": "test(task-queue): reproduce AF-24 and AF-27 lifecycle gaps",
+          "url": "https://github.com/Patricked-code/MCP/commit/fe3609a1493e9406c5dbac7b3ac84454aa83272e"
+        },
+        {
+          "sha": "f5924c38c1af05bf9be1fd945fc89f3483adaa64",
+          "date": "2026-09-22T16:53:11Z",
+          "parents": [
+            "fe3609a1493e9406c5dbac7b3ac84454aa83272e"
+          ],
+          "subject": "fix(governance): aggregate all precondition blockers",
+          "url": "https://github.com/Patricked-code/MCP/commit/f5924c38c1af05bf9be1fd945fc89f3483adaa64"
+        },
+        {
+          "sha": "aa053fb0eecfc788f23839451c31fc02812b684d",
+          "date": "2026-09-22T16:53:15Z",
+          "parents": [
+            "f5924c38c1af05bf9be1fd945fc89f3483adaa64"
+          ],
+          "subject": "fix(current-state): align executable task tie-break with queue",
+          "url": "https://github.com/Patricked-code/MCP/commit/aa053fb0eecfc788f23839451c31fc02812b684d"
+        },
+        {
+          "sha": "984f77c3f8ddff30d289ce6757699622d65e3825",
+          "date": "2026-09-22T16:53:31Z",
+          "parents": [
+            "aa053fb0eecfc788f23839451c31fc02812b684d"
+          ],
+          "subject": "fix(task-queue): restore review and supersede lifecycle transitions",
+          "url": "https://github.com/Patricked-code/MCP/commit/984f77c3f8ddff30d289ce6757699622d65e3825"
+        },
+        {
+          "sha": "c0a716e34061a1a327bcacb13c17250473d4c062",
+          "date": "2026-09-22T16:55:16Z",
+          "parents": [
+            "984f77c3f8ddff30d289ce6757699622d65e3825"
+          ],
+          "subject": "docs(suivi): record AF governance consistency fixes",
+          "url": "https://github.com/Patricked-code/MCP/commit/c0a716e34061a1a327bcacb13c17250473d4c062"
+        },
+        {
+          "sha": "803d3a18053458c2fd0db492c5f3ee6da3f2956b",
+          "date": "2026-09-22T16:55:20Z",
+          "parents": [
+            "c0a716e34061a1a327bcacb13c17250473d4c062"
+          ],
+          "subject": "docs(changelog): record AF-10 AF-18 AF-24 AF-27 fixes",
+          "url": "https://github.com/Patricked-code/MCP/commit/803d3a18053458c2fd0db492c5f3ee6da3f2956b"
+        },
+        {
+          "sha": "e378cca954c7760dd62ac994c79c9a2e3b56840e",
+          "date": "2026-09-22T16:55:24Z",
+          "parents": [
+            "803d3a18053458c2fd0db492c5f3ee6da3f2956b"
+          ],
+          "subject": "docs(decision): record task governance consistency rules",
+          "url": "https://github.com/Patricked-code/MCP/commit/e378cca954c7760dd62ac994c79c9a2e3b56840e"
+        }
+      ]
+    },
+    {
+      "pr": 133,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "430014be934251408a49a383daa207e9b2989299",
+          "date": "2026-09-22T17:04:41Z",
+          "parents": [
+            "9b190a940d700f9b070bf5a9a8c0c8400337e53c"
+          ],
+          "subject": "docs(state): reconcile governance consistency production baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/430014be934251408a49a383daa207e9b2989299"
+        },
+        {
+          "sha": "7466d647938448b50b02e03b6d786621c9093683",
+          "date": "2026-09-22T17:04:49Z",
+          "parents": [
+            "430014be934251408a49a383daa207e9b2989299"
+          ],
+          "subject": "docs(suivi): attest governance consistency deployment",
+          "url": "https://github.com/Patricked-code/MCP/commit/7466d647938448b50b02e03b6d786621c9093683"
+        },
+        {
+          "sha": "54a5ee25012c6ef822a3ffd582b0f77dd5d188f1",
+          "date": "2026-09-22T17:05:09Z",
+          "parents": [
+            "7466d647938448b50b02e03b6d786621c9093683"
+          ],
+          "subject": "docs(changelog): record governance consistency baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/54a5ee25012c6ef822a3ffd582b0f77dd5d188f1"
+        },
+        {
+          "sha": "cf77ebe30de0c4dd961a89faefe282a70de5367d",
+          "date": "2026-09-22T17:05:15Z",
+          "parents": [
+            "54a5ee25012c6ef822a3ffd582b0f77dd5d188f1"
+          ],
+          "subject": "docs(decision): use governance baseline plus docs-only descendant",
+          "url": "https://github.com/Patricked-code/MCP/commit/cf77ebe30de0c4dd961a89faefe282a70de5367d"
+        }
+      ]
+    },
+    {
+      "pr": 136,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "e219dbb3a7ee70849cdd9cd7b285e7255bf74484",
+          "date": "2026-09-22T19:37:18Z",
+          "parents": [
+            "b5d3b2a2c99643c9c6a853570b9f7b417fb1d7b2"
+          ],
+          "subject": "test(session): reproduce AF-23 empty checkpoint event links",
+          "url": "https://github.com/Patricked-code/MCP/commit/e219dbb3a7ee70849cdd9cd7b285e7255bf74484"
+        },
+        {
+          "sha": "8256c804900dec3a94850c345c41031c4226bbbf",
+          "date": "2026-09-22T19:39:52Z",
+          "parents": [
+            "e219dbb3a7ee70849cdd9cd7b285e7255bf74484"
+          ],
+          "subject": "fix(audit): retain bounded checkpoint event links",
+          "url": "https://github.com/Patricked-code/MCP/commit/8256c804900dec3a94850c345c41031c4226bbbf"
+        },
+        {
+          "sha": "1455391e7c485e7ac297a1e39e51fa6b3e41d171",
+          "date": "2026-09-22T19:39:56Z",
+          "parents": [
+            "8256c804900dec3a94850c345c41031c4226bbbf"
+          ],
+          "subject": "fix(session): populate checkpoint eventIds from audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/1455391e7c485e7ac297a1e39e51fa6b3e41d171"
+        },
+        {
+          "sha": "83275ed13864513d98f2efa2af163f08fcc1ded8",
+          "date": "2026-09-22T19:40:20Z",
+          "parents": [
+            "1455391e7c485e7ac297a1e39e51fa6b3e41d171"
+          ],
+          "subject": "test(audit): verify AF-23 checkpoint event window",
+          "url": "https://github.com/Patricked-code/MCP/commit/83275ed13864513d98f2efa2af163f08fcc1ded8"
+        },
+        {
+          "sha": "4b1d607a399e280a0162b9d822938fa08abd847e",
+          "date": "2026-09-22T19:42:35Z",
+          "parents": [
+            "83275ed13864513d98f2efa2af163f08fcc1ded8"
+          ],
+          "subject": "docs(suivi): record AF-23 checkpoint event links",
+          "url": "https://github.com/Patricked-code/MCP/commit/4b1d607a399e280a0162b9d822938fa08abd847e"
+        },
+        {
+          "sha": "bc9a6cfa651ea98fe16774e7b1ae90ef8bb63de8",
+          "date": "2026-09-22T19:42:39Z",
+          "parents": [
+            "4b1d607a399e280a0162b9d822938fa08abd847e"
+          ],
+          "subject": "docs(changelog): record AF-23 event linkage",
+          "url": "https://github.com/Patricked-code/MCP/commit/bc9a6cfa651ea98fe16774e7b1ae90ef8bb63de8"
+        },
+        {
+          "sha": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+          "date": "2026-09-22T19:42:43Z",
+          "parents": [
+            "bc9a6cfa651ea98fe16774e7b1ae90ef8bb63de8"
+          ],
+          "subject": "docs(decision): link checkpoints through operational audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/68f2305f11e312fc67c71bc68ccc917d958b5d5a"
+        }
+      ]
+    },
+    {
+      "pr": 139,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "a7319dca5b4f2ce9f16ffc4d7fdb0f2152c5c9ef",
+          "date": "2026-09-22T19:56:25Z",
+          "parents": [
+            "21cb4860e9ab16ff7d98b294a0398fdcec409879"
+          ],
+          "subject": "chore(gwc): mark proven findings corrected",
+          "url": "https://github.com/Patricked-code/MCP/commit/a7319dca5b4f2ce9f16ffc4d7fdb0f2152c5c9ef"
+        },
+        {
+          "sha": "ed4979cb2e14e38e360aeaf5695c8c7b57d6feb6",
+          "date": "2026-09-22T19:56:31Z",
+          "parents": [
+            "a7319dca5b4f2ce9f16ffc4d7fdb0f2152c5c9ef"
+          ],
+          "subject": "docs(state): reconcile AF-23 production baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/ed4979cb2e14e38e360aeaf5695c8c7b57d6feb6"
+        },
+        {
+          "sha": "0257835f5b78f0ea1f95668dbc784b8d024c34a8",
+          "date": "2026-09-22T19:56:36Z",
+          "parents": [
+            "ed4979cb2e14e38e360aeaf5695c8c7b57d6feb6"
+          ],
+          "subject": "docs(suivi): reconcile corrected finding registry",
+          "url": "https://github.com/Patricked-code/MCP/commit/0257835f5b78f0ea1f95668dbc784b8d024c34a8"
+        },
+        {
+          "sha": "2e84fbf4adecec7af777b52c620e0443a36b3664",
+          "date": "2026-09-22T19:56:40Z",
+          "parents": [
+            "0257835f5b78f0ea1f95668dbc784b8d024c34a8"
+          ],
+          "subject": "docs(changelog): record corrected finding reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/2e84fbf4adecec7af777b52c620e0443a36b3664"
+        },
+        {
+          "sha": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+          "date": "2026-09-22T19:56:45Z",
+          "parents": [
+            "2e84fbf4adecec7af777b52c620e0443a36b3664"
+          ],
+          "subject": "docs(decision): prevent duplicate finding reimplementation",
+          "url": "https://github.com/Patricked-code/MCP/commit/d614b4833704f030c23668d16d8cefbcf6452a0b"
+        }
+      ]
+    },
+    {
+      "pr": 142,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "f95018c705f916420e5fb6d9b95f93819c0b7618",
+          "date": "2026-09-22T20:15:56Z",
+          "parents": [
+            "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf"
+          ],
+          "subject": "docs(state): close corrected findings baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/f95018c705f916420e5fb6d9b95f93819c0b7618"
+        },
+        {
+          "sha": "79729829cfb6a84748f23d771651378d6f65ed07",
+          "date": "2026-09-22T20:16:04Z",
+          "parents": [
+            "f95018c705f916420e5fb6d9b95f93819c0b7618"
+          ],
+          "subject": "docs(suivi): close corrected findings reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/79729829cfb6a84748f23d771651378d6f65ed07"
+        },
+        {
+          "sha": "2b25ca882aa2cff2b5df9062b5cdc1367fcc5dd6",
+          "date": "2026-09-22T20:16:10Z",
+          "parents": [
+            "79729829cfb6a84748f23d771651378d6f65ed07"
+          ],
+          "subject": "docs(changelog): record corrected findings baseline",
+          "url": "https://github.com/Patricked-code/MCP/commit/2b25ca882aa2cff2b5df9062b5cdc1367fcc5dd6"
+        },
+        {
+          "sha": "c7f7a026b2a140971988313dabf3e0407e6d422c",
+          "date": "2026-09-22T20:16:15Z",
+          "parents": [
+            "2b25ca882aa2cff2b5df9062b5cdc1367fcc5dd6"
+          ],
+          "subject": "docs(decision): prevent corrected finding reimplementation",
+          "url": "https://github.com/Patricked-code/MCP/commit/c7f7a026b2a140971988313dabf3e0407e6d422c"
+        }
+      ]
+    },
+    {
+      "pr": 145,
+      "status": "COMPLETE",
+      "commits": [
+        {
+          "sha": "8ae6aed90bd178bc53128d5bbddc8a758ab7530f",
+          "date": "2026-09-22T21:06:03Z",
+          "parents": [
+            "87deb6311e13a37f09f6570a78c2f502df12a240"
+          ],
+          "subject": "docs(audit): reconcile legacy open PR intents",
+          "url": "https://github.com/Patricked-code/MCP/commit/8ae6aed90bd178bc53128d5bbddc8a758ab7530f"
+        },
+        {
+          "sha": "bff937f756626e2baa37f8dc105f2251374f54a8",
+          "date": "2026-09-22T21:06:07Z",
+          "parents": [
+            "8ae6aed90bd178bc53128d5bbddc8a758ab7530f"
+          ],
+          "subject": "docs(suivi): record legacy PR intent reconciliation",
+          "url": "https://github.com/Patricked-code/MCP/commit/bff937f756626e2baa37f8dc105f2251374f54a8"
+        },
+        {
+          "sha": "1ce880fae985a449ca861f8e00b7f86266c6335e",
+          "date": "2026-09-22T21:06:11Z",
+          "parents": [
+            "bff937f756626e2baa37f8dc105f2251374f54a8"
+          ],
+          "subject": "docs(todo): surface only unresolved legacy PR deltas",
+          "url": "https://github.com/Patricked-code/MCP/commit/1ce880fae985a449ca861f8e00b7f86266c6335e"
+        },
+        {
+          "sha": "0d412ad486ba21da6f43c23df93441ff355b64f2",
+          "date": "2026-09-22T21:06:15Z",
+          "parents": [
+            "1ce880fae985a449ca861f8e00b7f86266c6335e"
+          ],
+          "subject": "docs(roadmap): reconcile legacy GitHub control-plane intents",
+          "url": "https://github.com/Patricked-code/MCP/commit/0d412ad486ba21da6f43c23df93441ff355b64f2"
+        },
+        {
+          "sha": "ab57bea697b69e65a40c5a833ea0e937af4ab01b",
+          "date": "2026-09-22T21:06:19Z",
+          "parents": [
+            "0d412ad486ba21da6f43c23df93441ff355b64f2"
+          ],
+          "subject": "docs(decision): define stale PR intent recovery rule",
+          "url": "https://github.com/Patricked-code/MCP/commit/ab57bea697b69e65a40c5a833ea0e937af4ab01b"
+        },
+        {
+          "sha": "e473317493f2bc807a09790900b84345e9c17869",
+          "date": "2026-09-22T21:06:23Z",
+          "parents": [
+            "ab57bea697b69e65a40c5a833ea0e937af4ab01b"
+          ],
+          "subject": "docs(changelog): record legacy PR intent audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/e473317493f2bc807a09790900b84345e9c17869"
+        },
+        {
+          "sha": "61b0d1c05ef93bdde7dc4a6ebdb65c4fcd1c3a73",
+          "date": "2026-09-22T21:08:58Z",
+          "parents": [
+            "e473317493f2bc807a09790900b84345e9c17869"
+          ],
+          "subject": "docs(audit): classify deferred GitHub capability overlap",
+          "url": "https://github.com/Patricked-code/MCP/commit/61b0d1c05ef93bdde7dc4a6ebdb65c4fcd1c3a73"
+        },
+        {
+          "sha": "043f00d0c3ed1ad60ea5ff8e673afe320bfc41d8",
+          "date": "2026-09-22T21:09:01Z",
+          "parents": [
+            "61b0d1c05ef93bdde7dc4a6ebdb65c4fcd1c3a73"
+          ],
+          "subject": "docs(todo): refine deferred GitHub capability backlog",
+          "url": "https://github.com/Patricked-code/MCP/commit/043f00d0c3ed1ad60ea5ff8e673afe320bfc41d8"
+        },
+        {
+          "sha": "212f53bee82e85706361f554c0bbcc519dec0824",
+          "date": "2026-09-22T21:09:05Z",
+          "parents": [
+            "043f00d0c3ed1ad60ea5ff8e673afe320bfc41d8"
+          ],
+          "subject": "docs(suivi): record deferred capability overlap verdict",
+          "url": "https://github.com/Patricked-code/MCP/commit/212f53bee82e85706361f554c0bbcc519dec0824"
+        },
+        {
+          "sha": "557409d19b68db8f2410f3adb37d0c82e0bcfa97",
+          "date": "2026-09-22T21:09:09Z",
+          "parents": [
+            "212f53bee82e85706361f554c0bbcc519dec0824"
+          ],
+          "subject": "docs(changelog): record deferred capability overlap audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/557409d19b68db8f2410f3adb37d0c82e0bcfa97"
+        },
+        {
+          "sha": "210c6b0ea2ba2eec17a5c9399c7e682142e27ce5",
+          "date": "2026-09-22T21:10:25Z",
+          "parents": [
+            "557409d19b68db8f2410f3adb37d0c82e0bcfa97"
+          ],
+          "subject": "docs(todo): fix list formatting and close delivered Stablecoin step",
+          "url": "https://github.com/Patricked-code/MCP/commit/210c6b0ea2ba2eec17a5c9399c7e682142e27ce5"
+        },
+        {
+          "sha": "3f4118aab929c86deb349a142adb203c3ebfe801",
+          "date": "2026-09-22T21:12:28Z",
+          "parents": [
+            "210c6b0ea2ba2eec17a5c9399c7e682142e27ce5"
+          ],
+          "subject": "docs(governance): register legacy PR audit markdown",
+          "url": "https://github.com/Patricked-code/MCP/commit/3f4118aab929c86deb349a142adb203c3ebfe801"
+        },
+        {
+          "sha": "01766f3d780071c7b53127fa9c2f6d7b98ec056f",
+          "date": "2026-09-22T21:12:59Z",
+          "parents": [
+            "3f4118aab929c86deb349a142adb203c3ebfe801"
+          ],
+          "subject": "docs(governance): preserve canonical markdown inventory ordering",
+          "url": "https://github.com/Patricked-code/MCP/commit/01766f3d780071c7b53127fa9c2f6d7b98ec056f"
+        },
+        {
+          "sha": "ef9ccbfd6d42a30f26b3b2355401559a7f9c6cd8",
+          "date": "2026-09-22T22:04:28Z",
+          "parents": [
+            "01766f3d780071c7b53127fa9c2f6d7b98ec056f",
+            "3933852cdb40b05b59b06460faa9116715d597a9"
+          ],
+          "subject": "merge(main): reconcile legacy-intent docs with current main",
+          "url": "https://github.com/Patricked-code/MCP/commit/ef9ccbfd6d42a30f26b3b2355401559a7f9c6cd8"
+        },
+        {
+          "sha": "217443b16920b09a792b3bdf44883bcc6868115f",
+          "date": "2026-09-22T22:06:28Z",
+          "parents": [
+            "ef9ccbfd6d42a30f26b3b2355401559a7f9c6cd8"
+          ],
+          "subject": "docs(continuity): record historical candidate handoff closure",
+          "url": "https://github.com/Patricked-code/MCP/commit/217443b16920b09a792b3bdf44883bcc6868115f"
+        }
+      ]
+    }
+  ]
+}

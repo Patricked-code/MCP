@@ -1,0 +1,1112 @@
+{
+  "schemaVersion": 1,
+  "kind": "NON_AUTHORITATIVE_MARKDOWN_INVENTORY_MERGE_CANDIDATE",
+  "programAuthority": "https://github.com/Patricked-code/MCP/issues/349",
+  "scope": "reconciliation of distinct markdown histories for PR #355 and #356, no merge performed",
+  "snapshotDate": "2026-10-29",
+  "sources": [
+    {
+      "pullRequest": 355,
+      "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+      "headSha": "8b047af5361b7d0c14d1fbbf58d23071934f14c4",
+      "inventoryBlobSha": "820d195f0e4c23271bee0e363190dc7f8dccf1d7",
+      "trackedCount": 229
+    },
+    {
+      "pullRequest": 356,
+      "branch": "docs/governed-deploy-integral-history-20261029",
+      "headSha": "4fb14fcd47876b934a3f686fd78ebcc566fca310",
+      "inventoryBlobSha": "9aea0e116f15bd42587c729401bd504b81867768",
+      "trackedCount": 246
+    }
+  ],
+  "verification": {
+    "sourceCountsMatch": true,
+    "duplicatePathsWithinSource": false,
+    "conflictingPathCategories": [],
+    "uniqueToPR355Count": 6,
+    "uniqueToPR356Count": 23,
+    "combinedTrackedCount": 252,
+    "sourceEntryPreservation": {
+      "pr355": "23 additions required after common merge",
+      "pr356": "6 additions required after common merge"
+    },
+    "sharedBaselinePreserved": true,
+    "note": "This is a calculated merge-ready projection. The official docs/governance/markdown-inventory.json MUST NOT be replaced on either separate branch while the other branch's Markdown files are absent. Recompute and verify on the actual integration HEAD; current CI does not certify joint integration."
+  },
+  "delta": {
+    "onlyInPR355": [
+      "docs/governance/universal-program-history/00-fondations-issue349-pr350.md",
+      "docs/governance/universal-program-history/01-gd-u-01-compositions.md",
+      "docs/governance/universal-program-history/02-gd-u-02-branches.md",
+      "docs/governance/universal-program-history/03-pr-associees.md",
+      "docs/governance/universal-program-history/04-sources-et-regles.md",
+      "docs/governance/universal-program-history/README.md"
+    ],
+    "onlyInPR356": [
+      "docs/history/governed-deploy-integral/00_ARBRE_HIERARCHIQUE.md",
+      "docs/history/governed-deploy-integral/01_PROVENANCE_ET_REGLES.md",
+      "docs/history/governed-deploy-integral/02_202607_ANTECEDENTS_ORIGINES.md",
+      "docs/history/governed-deploy-integral/02_202608_FONDATIONS.md",
+      "docs/history/governed-deploy-integral/03_202608_RECONCILIATION_FORENSIQUE_ET_DEPLOIEMENTS.md",
+      "docs/history/governed-deploy-integral/03_202609_GOUVERNANCE_GITHUB.md",
+      "docs/history/governed-deploy-integral/04_202609_FIL_INTERDEPENDANCES_ET_DEPLOIEMENTS.md",
+      "docs/history/governed-deploy-integral/04_202610_TB_W3_F.md",
+      "docs/history/governed-deploy-integral/05_202610_ISSUE349_PLESK.md",
+      "docs/history/governed-deploy-integral/06_PILOTES_GRT_REGULATORY.md",
+      "docs/history/governed-deploy-integral/07_GD_U_B3I.md",
+      "docs/history/governed-deploy-integral/08_REGISTRE_PREUVES.md",
+      "docs/history/governed-deploy-integral/09_PROCEDURE_EXHAUSTIVITE.md",
+      "docs/history/governed-deploy-integral/10_REGISTRE_EXHAUSTIF_COMMENTAIRES_349.md",
+      "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_1.md",
+      "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_2.md",
+      "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_3.md",
+      "docs/history/governed-deploy-integral/12_20261028_JALONS_GD_U_ET_MANDATS.md",
+      "docs/history/governed-deploy-integral/13_20261029_EXECUTION_B3I_CONTINUITE.md",
+      "docs/history/governed-deploy-integral/14_COUVERTURE_ET_LACUNES_CERTIFICATION.md",
+      "docs/history/governed-deploy-integral/15_NAVIGATION_COMPLEMENTAIRE.md",
+      "docs/history/governed-deploy-integral/16_202608_ORIGINE_AUTODEPLOY_ET_MEMORY.md",
+      "docs/history/governed-deploy-integral/README.md"
+    ]
+  },
+  "proposedCombinedBaseline": {
+    "schemaVersion": 1,
+    "generatedBy": "git ls-files '*.md' (CANDIDATE; RECOMPUTE ON INTEGRATION HEAD)",
+    "trackedCount": 252,
+    "categories": {
+      "root-documentation": 50,
+      "canonical": 7,
+      "documentation": 78,
+      "history": 24,
+      "engineering-plan": 8,
+      "engineering-spec": 10,
+      "memory": 61,
+      "migration-history": 7,
+      "runtime-mirror-tracked": 7
+    },
+    "entries": [
+      {
+        "path": "ACCESS_MATRIX.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "ACTIVITY_LOG.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "AGENTS_ARCHITECTURE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "AGENTS.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "AI_OPERATING_MODE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "AI_SKILLS.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "ARCHITECTURE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "BACKUP_RESTORE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "CHANGELOG.md",
+        "category": "canonical"
+      },
+      {
+        "path": "CLAUDE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "CODE_REVIEW.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "CODESPACES.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "CODEX.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "CRON.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "DATABASE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "DECISIONS_LOG.md",
+        "category": "canonical"
+      },
+      {
+        "path": "DEPLOYMENT_PRODUCTION.md",
+        "category": "canonical"
+      },
+      {
+        "path": "DOCKER.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "docs/ACCESS_MCP_CLIENTS_GITHUB.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/AGENTS_ARCHITECTURE.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/AI_SKILLS.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/ARCHITECTURE.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/ALIGNMENT_EXECUTION_STATUS_PRE_RECOVERY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_CONNECTION_CONTINUITY_POLICY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_FOUNDATIONS_FINAL_STATE.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_GIT_REGISTRY_V1_TO_V2_MIGRATION_PLAN.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_GIT_REGISTRY_V2_FOUNDATION.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_GIT_REGISTRY_V2_SPEC.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_NON_DESTRUCTIVE_EXECUTION_PLAN.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_OAUTH_LOG_REDACTION_P1.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_PRE29_RECOVERY_AUDIT.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_READ_WRITE_FOUNDATION.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_REGISTRY_UPDATE_SUMMARY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_REGISTRY_UPDATE_WORKFLOW.corrupted-original.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_REGISTRY_UPDATE_WORKFLOW.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_RUNTIME_IMAGE_ATTESTATION_READONLY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_RUNTIME_MODULE_SELECTION.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_RUNTIME_RECOVERY_ATTESTATION.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/MCP_RUNTIME_TOOL_CATALOG_20260805.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-08-05/README.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-09-22-deferred-github-capability-overlap.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/audits/2026-09-22-legacy-open-pr-intent-reconciliation.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/BACKUP_RESTORE.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/CHANGELOG.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/CODE_REVIEW.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/DATABASE.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/DEPLOYMENT_PRODUCTION.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/DOCKER.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/GITHUB_AUTO_DISCOVERY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/F04_DISPATCH_PARALLEL_RESUME_20261009.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/MASTER_RESUME_MEMORY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/README.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/universal-agent-coordination-plan.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/universal-program-history/00-fondations-issue349-pr350.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/universal-program-history/01-gd-u-01-compositions.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/universal-program-history/02-gd-u-02-branches.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/universal-program-history/03-pr-associees.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/universal-program-history/04-sources-et-regles.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/governance/universal-program-history/README.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/GPT.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/BLUEPRINTS.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/canonical-memory/pr95-ded/sources/ded-checkpoint.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/canonical-memory/pr95-ded/sources/historical-baseline.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/canonical-memory/pr95-ded/sources/mission-directive.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/DEPRECATED_CLAIMS.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/PRECODE_MULTI_AGENT_COORDINATION.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/README.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/gwc/REVISION_HISTORY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/00_ARBRE_HIERARCHIQUE.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/01_PROVENANCE_ET_REGLES.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/02_202607_ANTECEDENTS_ORIGINES.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/02_202608_FONDATIONS.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/03_202608_RECONCILIATION_FORENSIQUE_ET_DEPLOIEMENTS.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/03_202609_GOUVERNANCE_GITHUB.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/04_202609_FIL_INTERDEPENDANCES_ET_DEPLOIEMENTS.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/04_202610_TB_W3_F.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/05_202610_ISSUE349_PLESK.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/06_PILOTES_GRT_REGULATORY.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/07_GD_U_B3I.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/08_REGISTRE_PREUVES.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/09_PROCEDURE_EXHAUSTIVITE.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/10_REGISTRE_EXHAUSTIF_COMMENTAIRES_349.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_1.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_2.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/11_REF_TECHNIQUES_ISSUE349_TRANCHE_3.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/12_20261028_JALONS_GD_U_ET_MANDATS.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/13_20261029_EXECUTION_B3I_CONTINUITE.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/14_COUVERTURE_ET_LACUNES_CERTIFICATION.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/15_NAVIGATION_COMPLEMENTAIRE.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/16_202608_ORIGINE_AUTODEPLOY_ET_MEMORY.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/governed-deploy-integral/README.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/history/SUIVI_PRE_FOUNDATIONS_20260805.md",
+        "category": "history"
+      },
+      {
+        "path": "docs/KUBERNETES_FUTURE.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/MCP_GITHUB_GUARDIAN.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/MCP_TOOLS.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/MCP_WRITE_TOOLS.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/migration-wealthtech-2026-07-04/README.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/MIGRATION.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/MONITORING.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/OAUTH_CHATGPT_CLAUDE_GITHUB.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/README_DEV.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/reports/MCP_CODE_INVENTORY_20260708_175029.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/reports/MCP_CODE_INVENTORY_SAFE_20260708_175627.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/reports/MCP_CORE_SOURCE_SAFE_20260708_175917.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/reports/MCP_GITHUB_ALIGNMENT_CHECK_20260708_180532.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/ROADMAP.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/runbooks/GITHUB_PR_AUTHORIZATION_DIAGNOSTIC.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/runbooks/S1_GITHUB_READ_ONLY_DEPLOY_IDENTITY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/SECURITY.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/SUIVI_MEMOIRE_CONVERSATION_2026-07-01.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/SUIVI.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-08-09-governed-autodeploy-v1.md",
+        "category": "engineering-plan"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-08-09-live-state-v1.md",
+        "category": "engineering-plan"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-08-13-mcp-governed-session-continuity-v1.md",
+        "category": "engineering-plan"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-08-22-mandatory-agent-bootstrap-work-orchestration-v1.md",
+        "category": "engineering-plan"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-09-01-governed-connection-context-minimal.md",
+        "category": "engineering-plan"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-09-07-b1-github-identity-resolution.md",
+        "category": "engineering-plan"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-09-09-b2-repository-resolution.md",
+        "category": "engineering-plan"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-09-12-africafunds-project-aware-s2-mapping.md",
+        "category": "engineering-plan"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-08-09-governed-autodeploy-v1-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-08-09-live-state-v1-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-08-13-mcp-governed-session-continuity-v1-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-08-22-mandatory-agent-bootstrap-work-orchestration-v1-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-09-01-governed-connection-context-minimal-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-09-07-b1-github-identity-resolution-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-09-09-b2-repository-resolution-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-09-12-africafunds-project-aware-s2-mapping-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-09-15-governed-workflow-contract-v1-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/superpowers/specs/2026-09-20-github-first-operational-continuity-v1-design.md",
+        "category": "engineering-spec"
+      },
+      {
+        "path": "docs/TASKS.md",
+        "category": "documentation"
+      },
+      {
+        "path": "docs/TODO.md",
+        "category": "documentation"
+      },
+      {
+        "path": "GPT_SKILL_BLOCK.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "GPT.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "KUBERNETES_FUTURE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "LOOP_ENGINEERING.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_AGENT_ROLES.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_AGENT_RULES.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_ANTI_DISPERSION_GOVERNANCE.md",
+        "category": "canonical"
+      },
+      {
+        "path": "MCP_AUDIT_LOG_POLICY.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_CONNECTION_IDENTITY_MODEL.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_DURABLE_ACCOUNT_MANAGEMENT.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_FUNCTIONAL_CARTOGRAPHY.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_FUNCTIONS_AND_TOOLS_MANUAL.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_GITHUB_GOVERNANCE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_INTELLIGENT_USAGE_MODE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_ONBOARDING_ENGINE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_PERMISSIONS_MODEL.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_PROJECT.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_REPO_BOOTSTRAP.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_REPO_INVENTORY.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_SECURITY_MODEL.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_SERVER_MAPPING.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_SERVER_REGISTRY.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_TOOLS.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "MCP_WRITE_TEST.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "memory/2026-05-05-stablecoin-ewari-conversation-memory.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/ACTION_REQUISE_CLOTURE_OBJECTIF_LOOP_ENGINEERING_20260703.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/AUDIT_COMPLETUDE_OBJECTIF_LOOP_ENGINEERING_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/AUDIT_FINAL_COMPLETUDE_ET_READY_COMMIT_MCP_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/AUDIT_FINAL_OBJECTIF_ACTIF_LOOP_ENGINEERING_20260703.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/AUDIT_GLOBAL_S1_S2_MCP_PROMPT.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/AUDIT_OBJECTIF_ACTIF_LOOP_ENGINEERING_PREUVE_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CHAINSOLUTIONS_WEALTHTECH_CODESPACES_CONFIGURED_20260708_052531.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CHAINSOLUTIONS_WEALTHTECH_GITHUB_ORG_CONFIGURED_20260708_050957.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CHAINSOLUTIONS_WEALTHTECH_TARGET_ORG_20260708_044836.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CLOTURE_DOCUMENTS_SAFE_NON_LUS_20260703.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CODEX_AUTO_ANALYSIS_REQUEST.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CODEX_AUTO_ANALYSIS_RESPONSE_20260701.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CODEX_HANDOFF_STABLECOIN_EWARI.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CONVERSATION_20260701_LOOP_ENGINEERING.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CONVERSATION_COMPILED_INDEX_2026-07-01.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CONVERSATION_COMPILED_WEALTHTECH_EWARI_MCP.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CONVERSATION_PART_01_MCP_SERVERS_MIGRATION_2026-07-01.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CONVERSATION_PART_02_ECOSYSTEM_LOOP_ENGINEERING_2026-07-01.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CONVERSATION_PART_03_EWARI_KOREE_STABLECOIN_2026-07-01.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/CONVERSATIONS_POUSSEES_20260701.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/GPT.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/GUIDE_IMPORT_CONVERSATION_CHATGPT_EXTERNE_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INDEX_MEMOIRE_WEALTHTECH_20260701.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INSTALL_MCP_WEALTHTECH_MEMORY.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INSTALL_ON_WEALTHTECH_SERVER.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INSTALLATION_MCP_MEMORY.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INSTALLATION_MCP_WEALTHTECH.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_CODEX_WORKSPACE_RECHERCHE_ELARGIE_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_CORPUS_LOCAL_DOCUMENTS_DOWNLOADS_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_DOCS_AGENTS_LOOP_ENGINEERING_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_MEMOIRE_ROOT_ONLY_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_OAUTH_CHATGPT_CLAUDE_GITHUB_MCP_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_RAPPORTS_LEGACY_ET_LOCAUX_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_SOURCES_LOCALES_SITE_CHAINSOLUTIONS_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_SOURCES_MCP_SERVEUR_SYNCHRONISATION_20260703.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INTEGRATION_WORKSPACE_LOCAL_WEALTHTECH_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/INVENTAIRE_FICHIERS_CREES_20260701.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/LECTURE_CONSOLIDEE_SOURCES_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/LOOP_ENGINEERING_WEALTHTECH_20260701.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/LOOP_ENGINEERING_WEALTHTECH_MASTER_PLAN_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/LOOPBACK_WEALTHTECH_CURRENT.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/MATRICE_TRACABILITE_SOURCES_EXIGENCES_TRACKS_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/MCP_INSTALLATION_AND_SERVER_SYNC_2026-07-01.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/MEMO_MCP_GITHUB_SERVER_ACCESS.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/MEMO_PROJECT_STABLECOIN_EWARI.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/PLAN_EXECUTION_COMPLET_WEALTHTECH_ACTUALISE_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/PREPARATION_COMMIT_PUSH_MCP_MEMOIRE_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/PROMPT_AUDIT_6BI_B.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/PROMPT_AUDIT_OPCVM_SANS_REGRESSION.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/PROMPT_AUDIT_WEALTHTECH_MCP.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/README.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/REGISTRE_COMPLET_CORPUS_LOCAL_DOCUMENTS_DOWNLOADS_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/RUNBOOK_GLOBAL_REVIEW_S1_S2_2026-07-01.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/SUIVI_MEMORY.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/SUIVI.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/VERIFICATION_TRANSCRIPT_CHATGPT_EXTERNE_20260702.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/WEALTHTECH_CONVERSATION_COMPILED.md",
+        "category": "memory"
+      },
+      {
+        "path": "memory/WEALTHTECH_PROJECT_MEMORY.md",
+        "category": "memory"
+      },
+      {
+        "path": "MIGRATION.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "Migration/01_CONTEXTE_CONVERSATIONS.md",
+        "category": "migration-history"
+      },
+      {
+        "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
+        "category": "migration-history"
+      },
+      {
+        "path": "Migration/03_MANIFESTE_SOURCES.md",
+        "category": "migration-history"
+      },
+      {
+        "path": "Migration/04_GITHUB_PUBLICATION_LOG.md",
+        "category": "migration-history"
+      },
+      {
+        "path": "Migration/PDF/README.md",
+        "category": "migration-history"
+      },
+      {
+        "path": "Migration/PDF/UPLOAD_STATUS_2026-07-04.md",
+        "category": "migration-history"
+      },
+      {
+        "path": "Migration/README.md",
+        "category": "migration-history"
+      },
+      {
+        "path": "MONITORING.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "NO_REGRESSION_POLICY.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "PROJECT_BRIEF.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "PROJECT_RULES.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "PROJECT_SCOPE.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "README_DEV.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "README.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "ROADMAP.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "SECURITY.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "SOURCE_OF_TRUTH.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "SUIVI.md",
+        "category": "canonical"
+      },
+      {
+        "path": "TASKS.md",
+        "category": "canonical"
+      },
+      {
+        "path": "TESTS.md",
+        "category": "root-documentation"
+      },
+      {
+        "path": "tests/fixtures/current-state-evidence-repo/docs/audits/baseline.md",
+        "category": "documentation"
+      },
+      {
+        "path": "tests/fixtures/current-state-evidence-repo/docs/history/change.md",
+        "category": "documentation"
+      },
+      {
+        "path": "tests/fixtures/current-state-evidence-repo/README.md",
+        "category": "documentation"
+      },
+      {
+        "path": "TODO.md",
+        "category": "canonical"
+      },
+      {
+        "path": "wealthtech_project_memory/memory/CONVERSATION_COMPILED_WEALTHTECH_EWARI_MCP.md",
+        "category": "runtime-mirror-tracked"
+      },
+      {
+        "path": "wealthtech_project_memory/memory/INSTALLATION_MCP_MEMORY.md",
+        "category": "runtime-mirror-tracked"
+      },
+      {
+        "path": "wealthtech_project_memory/memory/MEMO_MCP_GITHUB_SERVER_ACCESS.md",
+        "category": "runtime-mirror-tracked"
+      },
+      {
+        "path": "wealthtech_project_memory/memory/MEMO_PROJECT_STABLECOIN_EWARI.md",
+        "category": "runtime-mirror-tracked"
+      },
+      {
+        "path": "wealthtech_project_memory/memory/PROMPT_AUDIT_WEALTHTECH_MCP.md",
+        "category": "runtime-mirror-tracked"
+      },
+      {
+        "path": "wealthtech_project_memory/memory/README.md",
+        "category": "runtime-mirror-tracked"
+      },
+      {
+        "path": "wealthtech_project_memory/memory/SUIVI_MEMORY.md",
+        "category": "runtime-mirror-tracked"
+      }
+    ]
+  },
+  "acceptanceProcedure": [
+    "Reobserve both PR HEADs, inventory blob SHAs and current main, then rebuild the union and check category conflicts.",
+    "Integrate Markdown files of both PRs without deletion or accidental replacement, maintaining PR ownership and branch rules.",
+    "Set the official docs/governance/markdown-inventory.json only in an authorized integration commit whose git ls-files includes all expected Markdown paths.",
+    "Run npm run docs:check, npm run test:governance and the full MCP CI on the exact integrated SHA.",
+    "Publish provenance and CI proofs in issue #349; keep this candidate historical and re-evaluate when either source branch moves."
+  ],
+  "doesNotAuthorize": {
+    "sourceCodeMutation": true,
+    "merge": true,
+    "productionDeployment": true,
+    "pleskWrite": true,
+    "taskOrClaimCreation": true
+  }
+}

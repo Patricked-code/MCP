@@ -1,0 +1,353 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{pr}/reviews",
+  "positions": [
+    217,
+    223
+  ],
+  "items": [
+    {
+      "pr": 350,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5622707593,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T00:56:38Z",
+          "commit_id": "098afae18a54a32527a924ea6be2df23bee35c26",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622707593",
+          "body_length": 657
+        },
+        {
+          "id": 5622729472,
+          "state": "APPROVED",
+          "submitted_at": "2026-10-23T01:00:26Z",
+          "commit_id": "098afae18a54a32527a924ea6be2df23bee35c26",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622729472",
+          "body_length": 0
+        },
+        {
+          "id": 5622774941,
+          "state": "APPROVED",
+          "submitted_at": "2026-10-23T01:08:20Z",
+          "commit_id": "3d076d0d492a9a2b5fb0abc50b8653e5a3b67e68",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622774941",
+          "body_length": 0
+        },
+        {
+          "id": 5622782191,
+          "state": "APPROVED",
+          "submitted_at": "2026-10-23T01:09:38Z",
+          "commit_id": "17d06a9644530aa10fafe1b56627bb351198e6b9",
+          "user": "Wealthtechinnovations",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622782191",
+          "body_length": 0
+        },
+        {
+          "id": 5622816645,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:15:45Z",
+          "commit_id": "3533ce2e4475aa08092411f8e349baf7e7959112",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622816645",
+          "body_length": 0
+        },
+        {
+          "id": 5622816910,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:15:48Z",
+          "commit_id": "3533ce2e4475aa08092411f8e349baf7e7959112",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622816910",
+          "body_length": 0
+        },
+        {
+          "id": 5622817171,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:15:51Z",
+          "commit_id": "3533ce2e4475aa08092411f8e349baf7e7959112",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622817171",
+          "body_length": 0
+        },
+        {
+          "id": 5622817462,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:15:54Z",
+          "commit_id": "3533ce2e4475aa08092411f8e349baf7e7959112",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622817462",
+          "body_length": 0
+        },
+        {
+          "id": 5622817803,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:15:57Z",
+          "commit_id": "3533ce2e4475aa08092411f8e349baf7e7959112",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622817803",
+          "body_length": 0
+        },
+        {
+          "id": 5622818152,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:16:00Z",
+          "commit_id": "3533ce2e4475aa08092411f8e349baf7e7959112",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622818152",
+          "body_length": 0
+        },
+        {
+          "id": 5622839528,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:19:52Z",
+          "commit_id": "3533ce2e4475aa08092411f8e349baf7e7959112",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622839528",
+          "body_length": 657
+        },
+        {
+          "id": 5622869811,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:25:12Z",
+          "commit_id": "dc25a2b1e525ec7e2db8c61388dd9237bb87f41e",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622869811",
+          "body_length": 0
+        },
+        {
+          "id": 5622870183,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:25:16Z",
+          "commit_id": "dc25a2b1e525ec7e2db8c61388dd9237bb87f41e",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622870183",
+          "body_length": 0
+        },
+        {
+          "id": 5622902836,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:31:06Z",
+          "commit_id": "3637e49ebaa4c0f2f1a69810a949058ee6a691d5",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622902836",
+          "body_length": 0
+        },
+        {
+          "id": 5622914387,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-23T01:33:07Z",
+          "commit_id": "5e8e48d5d3d1886c6bb8996577446413589103cd",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622914387",
+          "body_length": 0
+        }
+      ]
+    },
+    {
+      "pr": 351,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 352,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 353,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 354,
+      "status": "COMPLETE",
+      "reviews": []
+    },
+    {
+      "pr": 355,
+      "status": "COMPLETE",
+      "reviews": [
+        {
+          "id": 5678575305,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-28T06:17:03Z",
+          "commit_id": "fe431147351d92c9b1f1126fb9a39c8ccca4fd3f",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5678575305",
+          "body_length": 657
+        },
+        {
+          "id": 5678675604,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-28T06:29:18Z",
+          "commit_id": "4eede105bfe34fff2e97dd884cd6cc588cc61bd2",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5678675604",
+          "body_length": 657
+        },
+        {
+          "id": 5678772770,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-28T06:42:47Z",
+          "commit_id": "f95fdbeadac6ac0856725a7407639b143eaf75f2",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5678772770",
+          "body_length": 657
+        },
+        {
+          "id": 5678966443,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-28T07:04:14Z",
+          "commit_id": "b990e594e0fdf9a372adc6910b62038116d3f1de",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5678966443",
+          "body_length": 657
+        },
+        {
+          "id": 5679516335,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-28T08:03:35Z",
+          "commit_id": "f797e5b363ed949860358e45315a90f74aae3108",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5679516335",
+          "body_length": 657
+        },
+        {
+          "id": 5703518598,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:09:29Z",
+          "commit_id": "ecaf8d7acb511043b99766ff7487f80a43f0b850",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703518598",
+          "body_length": 657
+        },
+        {
+          "id": 5703614067,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:16:19Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703614067",
+          "body_length": 0
+        },
+        {
+          "id": 5703615323,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:16:23Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703615323",
+          "body_length": 0
+        },
+        {
+          "id": 5703616773,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:16:29Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703616773",
+          "body_length": 0
+        },
+        {
+          "id": 5703618178,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:16:34Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703618178",
+          "body_length": 0
+        },
+        {
+          "id": 5703619475,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:16:39Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703619475",
+          "body_length": 0
+        },
+        {
+          "id": 5703620851,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:16:44Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703620851",
+          "body_length": 0
+        },
+        {
+          "id": 5703622028,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:16:49Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703622028",
+          "body_length": 0
+        },
+        {
+          "id": 5703636365,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:17:49Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703636365",
+          "body_length": 0
+        },
+        {
+          "id": 5703637577,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:17:53Z",
+          "commit_id": "7b427c3c25a57289d94d3a8a64aa9e30a9573146",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703637577",
+          "body_length": 0
+        },
+        {
+          "id": 5703802966,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:31:00Z",
+          "commit_id": "8248fc86679a2e4cacb4a81168513d7f349b11c5",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703802966",
+          "body_length": 657
+        },
+        {
+          "id": 5704056922,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T19:52:01Z",
+          "commit_id": "0b2d7315bfcf4c05f55cde4fde8e3cfe2fee71cd",
+          "user": "chatgpt-codex-connector[bot]",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5704056922",
+          "body_length": 622
+        },
+        {
+          "id": 5704924184,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T21:02:54Z",
+          "commit_id": "01b8ef55b328df1d111f81bf3b1ee02a8cb012ba",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5704924184",
+          "body_length": 0
+        },
+        {
+          "id": 5704924783,
+          "state": "COMMENTED",
+          "submitted_at": "2026-10-29T21:02:57Z",
+          "commit_id": "01b8ef55b328df1d111f81bf3b1ee02a8cb012ba",
+          "user": "Patricked-code",
+          "html_url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5704924783",
+          "body_length": 0
+        }
+      ]
+    },
+    {
+      "pr": 356,
+      "status": "COMPLETE",
+      "reviews": []
+    }
+  ]
+}

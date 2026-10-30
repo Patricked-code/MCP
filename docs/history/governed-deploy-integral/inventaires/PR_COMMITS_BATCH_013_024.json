@@ -1,0 +1,730 @@
+{
+  "schemaVersion": 1,
+  "source": "https://api.github.com/repos/Patricked-code/MCP/pulls/{n}/commits",
+  "batch": [
+    13,
+    24
+  ],
+  "items": [
+    {
+      "pr": 15,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "02060ad1d8e5058d2f6157332d56403274fc26ac",
+          "date": "2026-08-05T01:59:30Z",
+          "parents": [
+            "097dac93715c0af83fcfad82cd598bacec956125"
+          ],
+          "subject": "docs: add MCP recovery audit index",
+          "url": "https://github.com/Patricked-code/MCP/commit/02060ad1d8e5058d2f6157332d56403274fc26ac"
+        },
+        {
+          "sha": "14748d0314e29295c78098e3bc106ea101171c6f",
+          "date": "2026-08-05T01:59:48Z",
+          "parents": [
+            "02060ad1d8e5058d2f6157332d56403274fc26ac"
+          ],
+          "subject": "docs: record pre-29 MCP recovery audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/14748d0314e29295c78098e3bc106ea101171c6f"
+        },
+        {
+          "sha": "faec2328621974cbb9f5da13eb8ad29c7005f2f0",
+          "date": "2026-08-05T02:00:03Z",
+          "parents": [
+            "14748d0314e29295c78098e3bc106ea101171c6f"
+          ],
+          "subject": "docs: specify GitRegistry v2 governance",
+          "url": "https://github.com/Patricked-code/MCP/commit/faec2328621974cbb9f5da13eb8ad29c7005f2f0"
+        },
+        {
+          "sha": "8766598fb99bc09a1033087d840ef8e15a836520",
+          "date": "2026-08-05T02:00:23Z",
+          "parents": [
+            "faec2328621974cbb9f5da13eb8ad29c7005f2f0"
+          ],
+          "subject": "docs: add GitRegistry v1 to v2 migration plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/8766598fb99bc09a1033087d840ef8e15a836520"
+        },
+        {
+          "sha": "197367dbabc0b55dba19731acf70d952655f5bfa",
+          "date": "2026-08-05T02:00:34Z",
+          "parents": [
+            "8766598fb99bc09a1033087d840ef8e15a836520"
+          ],
+          "subject": "docs: add non-destructive MCP execution plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/197367dbabc0b55dba19731acf70d952655f5bfa"
+        },
+        {
+          "sha": "7587653b1561b1c0fdfbdcc85f49d491a10bb05f",
+          "date": "2026-08-05T02:00:45Z",
+          "parents": [
+            "197367dbabc0b55dba19731acf70d952655f5bfa"
+          ],
+          "subject": "docs: add MCP connection continuity policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/7587653b1561b1c0fdfbdcc85f49d491a10bb05f"
+        },
+        {
+          "sha": "feb9d61729453f7e956f6d063c38495242d2e2d3",
+          "date": "2026-08-05T02:02:58Z",
+          "parents": [
+            "7587653b1561b1c0fdfbdcc85f49d491a10bb05f"
+          ],
+          "subject": "docs: add MCP registry update summary",
+          "url": "https://github.com/Patricked-code/MCP/commit/feb9d61729453f7e956f6d063c38495242d2e2d3"
+        }
+      ]
+    },
+    {
+      "pr": 16,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "68088ef2b4330db1eaf14bbb6ede6ef99ee25323",
+          "date": "2026-08-05T02:40:15Z",
+          "parents": [
+            "097dac93715c0af83fcfad82cd598bacec956125"
+          ],
+          "subject": "docs: record MCP alignment execution status",
+          "url": "https://github.com/Patricked-code/MCP/commit/68088ef2b4330db1eaf14bbb6ede6ef99ee25323"
+        }
+      ]
+    },
+    {
+      "pr": 18,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "a558ccb49d64cb51e12a0680da19a43d48203ad3",
+          "date": "2026-08-05T04:06:15Z",
+          "parents": [
+            "097dac93715c0af83fcfad82cd598bacec956125"
+          ],
+          "subject": "docs: attest runtime recovery and alignment plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/a558ccb49d64cb51e12a0680da19a43d48203ad3"
+        },
+        {
+          "sha": "a41b478ad6e448e5766fd081c8ea82bcf78456ee",
+          "date": "2026-08-05T06:22:37Z",
+          "parents": [
+            "a558ccb49d64cb51e12a0680da19a43d48203ad3"
+          ],
+          "subject": "docs: consolidate MCP connection continuity policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/a41b478ad6e448e5766fd081c8ea82bcf78456ee"
+        },
+        {
+          "sha": "6fb795268a7993d23d98cbc73737a6e59c9fae55",
+          "date": "2026-08-05T06:22:52Z",
+          "parents": [
+            "a41b478ad6e448e5766fd081c8ea82bcf78456ee"
+          ],
+          "subject": "docs: consolidate GitRegistry migration plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/6fb795268a7993d23d98cbc73737a6e59c9fae55"
+        },
+        {
+          "sha": "88392f420fc0161462d5432ac475954ffe748d62",
+          "date": "2026-08-05T06:23:06Z",
+          "parents": [
+            "6fb795268a7993d23d98cbc73737a6e59c9fae55"
+          ],
+          "subject": "docs: consolidate non-destructive execution plan",
+          "url": "https://github.com/Patricked-code/MCP/commit/88392f420fc0161462d5432ac475954ffe748d62"
+        },
+        {
+          "sha": "8c015e43a2d29564a570d6703fa3ee33673e9407",
+          "date": "2026-08-05T06:23:27Z",
+          "parents": [
+            "88392f420fc0161462d5432ac475954ffe748d62"
+          ],
+          "subject": "docs: add canonical recovery audit index",
+          "url": "https://github.com/Patricked-code/MCP/commit/8c015e43a2d29564a570d6703fa3ee33673e9407"
+        },
+        {
+          "sha": "377654d30d771a9e82520f021d6448bf21eb62e3",
+          "date": "2026-08-05T06:23:43Z",
+          "parents": [
+            "8c015e43a2d29564a570d6703fa3ee33673e9407"
+          ],
+          "subject": "docs: preserve pre-recovery alignment status as history",
+          "url": "https://github.com/Patricked-code/MCP/commit/377654d30d771a9e82520f021d6448bf21eb62e3"
+        },
+        {
+          "sha": "05dfaf5ba9ccceb41bb883fb5a40c6e9d69d6e01",
+          "date": "2026-08-05T06:36:22Z",
+          "parents": [
+            "377654d30d771a9e82520f021d6448bf21eb62e3"
+          ],
+          "subject": "docs: classify recovered runtime modules",
+          "url": "https://github.com/Patricked-code/MCP/commit/05dfaf5ba9ccceb41bb883fb5a40c6e9d69d6e01"
+        },
+        {
+          "sha": "444a11128f14ab48f8dbc8a8bb2652f3abbc8032",
+          "date": "2026-08-05T06:36:52Z",
+          "parents": [
+            "05dfaf5ba9ccceb41bb883fb5a40c6e9d69d6e01"
+          ],
+          "subject": "docs: index runtime module selection",
+          "url": "https://github.com/Patricked-code/MCP/commit/444a11128f14ab48f8dbc8a8bb2652f3abbc8032"
+        },
+        {
+          "sha": "916ae0397703b30184142cc80553d7452336338b",
+          "date": "2026-08-05T06:46:21Z",
+          "parents": [
+            "444a11128f14ab48f8dbc8a8bb2652f3abbc8032"
+          ],
+          "subject": "style: remove trailing whitespace from module selection",
+          "url": "https://github.com/Patricked-code/MCP/commit/916ae0397703b30184142cc80553d7452336338b"
+        }
+      ]
+    },
+    {
+      "pr": 19,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "7c8d9f782ae3195197345257f38fbc400504a848",
+          "date": "2026-08-05T03:48:11Z",
+          "parents": [
+            "097dac93715c0af83fcfad82cd598bacec956125"
+          ],
+          "subject": "forensic: recover S1 runtime drift for audit",
+          "url": "https://github.com/Patricked-code/MCP/commit/7c8d9f782ae3195197345257f38fbc400504a848"
+        }
+      ]
+    },
+    {
+      "pr": 20,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "41e276ec61442571d4b936e2a31244a4d0be3470",
+          "date": "2026-08-05T05:08:53Z",
+          "parents": [
+            "7c8d9f782ae3195197345257f38fbc400504a848"
+          ],
+          "subject": "security: separate MCP read and write tool registration",
+          "url": "https://github.com/Patricked-code/MCP/commit/41e276ec61442571d4b936e2a31244a4d0be3470"
+        }
+      ]
+    },
+    {
+      "pr": 21,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "b8e2f99c7e0a454b3676bbbd8a2023fc53f5061b",
+          "date": "2026-08-05T05:42:13Z",
+          "parents": [
+            "097dac93715c0af83fcfad82cd598bacec956125"
+          ],
+          "subject": "feat(github): add read-only PR authorization diagnostics",
+          "url": "https://github.com/Patricked-code/MCP/commit/b8e2f99c7e0a454b3676bbbd8a2023fc53f5061b"
+        },
+        {
+          "sha": "4fbd4eb62426b37f71cddbcacaf69c331c695d18",
+          "date": "2026-08-05T05:42:24Z",
+          "parents": [
+            "b8e2f99c7e0a454b3676bbbd8a2023fc53f5061b"
+          ],
+          "subject": "feat(github): expose PR authorization diagnostic tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/4fbd4eb62426b37f71cddbcacaf69c331c695d18"
+        },
+        {
+          "sha": "dc46499ff08cbc4679dab7e5b5b3d70a0b1b0cc7",
+          "date": "2026-08-05T05:42:49Z",
+          "parents": [
+            "4fbd4eb62426b37f71cddbcacaf69c331c695d18"
+          ],
+          "subject": "feat(github): register authorization diagnostics as read-only",
+          "url": "https://github.com/Patricked-code/MCP/commit/dc46499ff08cbc4679dab7e5b5b3d70a0b1b0cc7"
+        },
+        {
+          "sha": "7c868f8dc7e262063054a966a808bc6e62cc0475",
+          "date": "2026-08-05T05:43:06Z",
+          "parents": [
+            "dc46499ff08cbc4679dab7e5b5b3d70a0b1b0cc7"
+          ],
+          "subject": "test(github): cover PR authorization failure classification",
+          "url": "https://github.com/Patricked-code/MCP/commit/7c868f8dc7e262063054a966a808bc6e62cc0475"
+        },
+        {
+          "sha": "5ab7c23ba6cb2a021886bbb3f99d45fd980b0306",
+          "date": "2026-08-05T05:43:15Z",
+          "parents": [
+            "7c868f8dc7e262063054a966a808bc6e62cc0475"
+          ],
+          "subject": "test(github): include authorization diagnostics in safety suite",
+          "url": "https://github.com/Patricked-code/MCP/commit/5ab7c23ba6cb2a021886bbb3f99d45fd980b0306"
+        },
+        {
+          "sha": "6938837b9351107ff32e523825698adc2f5aa04a",
+          "date": "2026-08-05T05:43:53Z",
+          "parents": [
+            "5ab7c23ba6cb2a021886bbb3f99d45fd980b0306"
+          ],
+          "subject": "docs(github): add PR authorization diagnostic runbook",
+          "url": "https://github.com/Patricked-code/MCP/commit/6938837b9351107ff32e523825698adc2f5aa04a"
+        },
+        {
+          "sha": "148b9c41b68b5266f21c07becf6988b3edcf978e",
+          "date": "2026-08-05T05:44:12Z",
+          "parents": [
+            "6938837b9351107ff32e523825698adc2f5aa04a"
+          ],
+          "subject": "docs(github): document PR authorization diagnostic tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/148b9c41b68b5266f21c07becf6988b3edcf978e"
+        },
+        {
+          "sha": "ac2cde2b793a068d2cf9441a92d1c08252f63168",
+          "date": "2026-08-05T05:44:56Z",
+          "parents": [
+            "148b9c41b68b5266f21c07becf6988b3edcf978e"
+          ],
+          "subject": "docs(github): record PR authorization diagnostics",
+          "url": "https://github.com/Patricked-code/MCP/commit/ac2cde2b793a068d2cf9441a92d1c08252f63168"
+        },
+        {
+          "sha": "5b4d6919b1424770f51fe56d22d31ddbe9b69f41",
+          "date": "2026-08-05T05:45:22Z",
+          "parents": [
+            "ac2cde2b793a068d2cf9441a92d1c08252f63168"
+          ],
+          "subject": "docs(github): record authorization diagnostic decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/5b4d6919b1424770f51fe56d22d31ddbe9b69f41"
+        },
+        {
+          "sha": "3c7b07ebfa204872ce2a1ef21ca07f41a69ffed5",
+          "date": "2026-08-05T05:46:09Z",
+          "parents": [
+            "5b4d6919b1424770f51fe56d22d31ddbe9b69f41"
+          ],
+          "subject": "docs(github): update operational follow-up for authorization diagnostics",
+          "url": "https://github.com/Patricked-code/MCP/commit/3c7b07ebfa204872ce2a1ef21ca07f41a69ffed5"
+        },
+        {
+          "sha": "f9c216d5511864f4717882b636413adb714a55af",
+          "date": "2026-08-05T05:48:31Z",
+          "parents": [
+            "3c7b07ebfa204872ce2a1ef21ca07f41a69ffed5"
+          ],
+          "subject": "test(github): initialize safe env before diagnostics import",
+          "url": "https://github.com/Patricked-code/MCP/commit/f9c216d5511864f4717882b636413adb714a55af"
+        },
+        {
+          "sha": "83195f670bd60893cbee2e5576ded0cecc52d62f",
+          "date": "2026-08-05T05:50:09Z",
+          "parents": [
+            "f9c216d5511864f4717882b636413adb714a55af"
+          ],
+          "subject": "docs: fix non-regression wording in SUIVI",
+          "url": "https://github.com/Patricked-code/MCP/commit/83195f670bd60893cbee2e5576ded0cecc52d62f"
+        },
+        {
+          "sha": "2a5cbd2944139f18fffeedada308feffe8cde231",
+          "date": "2026-08-05T06:28:05Z",
+          "parents": [
+            "83195f670bd60893cbee2e5576ded0cecc52d62f"
+          ],
+          "subject": "security(github): validate API host and request timeout",
+          "url": "https://github.com/Patricked-code/MCP/commit/2a5cbd2944139f18fffeedada308feffe8cde231"
+        },
+        {
+          "sha": "b49da8d596dc16bdb6260d3b65aae58eb4e10646",
+          "date": "2026-08-05T06:29:14Z",
+          "parents": [
+            "2a5cbd2944139f18fffeedada308feffe8cde231"
+          ],
+          "subject": "fix(github): harden PR authorization diagnostics",
+          "url": "https://github.com/Patricked-code/MCP/commit/b49da8d596dc16bdb6260d3b65aae58eb4e10646"
+        },
+        {
+          "sha": "3585f9431b913f5bd228774dddf3e126dfd4bd06",
+          "date": "2026-08-05T06:31:54Z",
+          "parents": [
+            "b49da8d596dc16bdb6260d3b65aae58eb4e10646"
+          ],
+          "subject": "docs(github): document API host allowlist and timeout",
+          "url": "https://github.com/Patricked-code/MCP/commit/3585f9431b913f5bd228774dddf3e126dfd4bd06"
+        },
+        {
+          "sha": "a648fdf8094fa5285b66af773aab5be16bf75bef",
+          "date": "2026-08-05T06:32:22Z",
+          "parents": [
+            "3585f9431b913f5bd228774dddf3e126dfd4bd06"
+          ],
+          "subject": "test(github): cover timeout host allowlist and PR 404",
+          "url": "https://github.com/Patricked-code/MCP/commit/a648fdf8094fa5285b66af773aab5be16bf75bef"
+        }
+      ]
+    },
+    {
+      "pr": 22,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "d9c594f3b97f96f6a6fa0dc6ca24c47fca0a2b50",
+          "date": "2026-08-05T06:39:53Z",
+          "parents": [
+            "097dac93715c0af83fcfad82cd598bacec956125"
+          ],
+          "subject": "security: define clean read and write tool catalogs",
+          "url": "https://github.com/Patricked-code/MCP/commit/d9c594f3b97f96f6a6fa0dc6ca24c47fca0a2b50"
+        },
+        {
+          "sha": "57290fb0f1885274177eedb17fe91fbdad7d49a4",
+          "date": "2026-08-05T06:41:00Z",
+          "parents": [
+            "d9c594f3b97f96f6a6fa0dc6ca24c47fca0a2b50"
+          ],
+          "subject": "security: split scoped read and write registrations",
+          "url": "https://github.com/Patricked-code/MCP/commit/57290fb0f1885274177eedb17fe91fbdad7d49a4"
+        },
+        {
+          "sha": "76d00bad8dfb2c647ebc6d7f905a243b84f8206f",
+          "date": "2026-08-05T06:41:38Z",
+          "parents": [
+            "57290fb0f1885274177eedb17fe91fbdad7d49a4"
+          ],
+          "subject": "security: expose scoped reads in read-only mode",
+          "url": "https://github.com/Patricked-code/MCP/commit/76d00bad8dfb2c647ebc6d7f905a243b84f8206f"
+        },
+        {
+          "sha": "a2a377d0e8e60cd01b6e03b9b785fee9a7f54cf9",
+          "date": "2026-08-05T06:42:10Z",
+          "parents": [
+            "76d00bad8dfb2c647ebc6d7f905a243b84f8206f"
+          ],
+          "subject": "test: enforce clean read and write tool catalogs",
+          "url": "https://github.com/Patricked-code/MCP/commit/a2a377d0e8e60cd01b6e03b9b785fee9a7f54cf9"
+        },
+        {
+          "sha": "206c0ac750626f697d8b77049465494b3976b63f",
+          "date": "2026-08-05T06:42:33Z",
+          "parents": [
+            "a2a377d0e8e60cd01b6e03b9b785fee9a7f54cf9"
+          ],
+          "subject": "test: include scoped tool classification checks",
+          "url": "https://github.com/Patricked-code/MCP/commit/206c0ac750626f697d8b77049465494b3976b63f"
+        },
+        {
+          "sha": "66a66e2fadbeff2814df21a5764c35f1121e134e",
+          "date": "2026-08-05T06:43:29Z",
+          "parents": [
+            "206c0ac750626f697d8b77049465494b3976b63f"
+          ],
+          "subject": "docs: describe clean read write foundation",
+          "url": "https://github.com/Patricked-code/MCP/commit/66a66e2fadbeff2814df21a5764c35f1121e134e"
+        },
+        {
+          "sha": "7fa892d5ca7bf02cd509dd7c5a9341e007470902",
+          "date": "2026-08-05T06:45:40Z",
+          "parents": [
+            "66a66e2fadbeff2814df21a5764c35f1121e134e"
+          ],
+          "subject": "style: remove trailing whitespace from foundation doc",
+          "url": "https://github.com/Patricked-code/MCP/commit/7fa892d5ca7bf02cd509dd7c5a9341e007470902"
+        }
+      ]
+    },
+    {
+      "pr": 23,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "61aa274e5f166926011a24581726964cf7b0405b",
+          "date": "2026-08-05T06:51:21Z",
+          "parents": [
+            "097dac93715c0af83fcfad82cd598bacec956125"
+          ],
+          "subject": "feat(registry): add deterministic GitRegistry v2 schema and dry-run migration",
+          "url": "https://github.com/Patricked-code/MCP/commit/61aa274e5f166926011a24581726964cf7b0405b"
+        },
+        {
+          "sha": "0f0719caab3cfee96b7f825ad8e8f73063779bd9",
+          "date": "2026-08-05T06:51:48Z",
+          "parents": [
+            "61aa274e5f166926011a24581726964cf7b0405b"
+          ],
+          "subject": "feat(registry): expose read-only GitRegistry v2 dry run",
+          "url": "https://github.com/Patricked-code/MCP/commit/0f0719caab3cfee96b7f825ad8e8f73063779bd9"
+        },
+        {
+          "sha": "29682989447578fe6cd9e105e1ba887128717216",
+          "date": "2026-08-05T06:52:35Z",
+          "parents": [
+            "0f0719caab3cfee96b7f825ad8e8f73063779bd9"
+          ],
+          "subject": "feat(registry): register v2 dry-run tool as read-only",
+          "url": "https://github.com/Patricked-code/MCP/commit/29682989447578fe6cd9e105e1ba887128717216"
+        },
+        {
+          "sha": "f82e3d124d94b14392f10fb1d4e4440fb93dc4c4",
+          "date": "2026-08-05T06:53:14Z",
+          "parents": [
+            "29682989447578fe6cd9e105e1ba887128717216"
+          ],
+          "subject": "test(registry): validate v1 to v2 dry-run migration",
+          "url": "https://github.com/Patricked-code/MCP/commit/f82e3d124d94b14392f10fb1d4e4440fb93dc4c4"
+        },
+        {
+          "sha": "52644b52f1cb6ae4c1f7d3f4901b3e9523b9d33e",
+          "date": "2026-08-05T06:54:34Z",
+          "parents": [
+            "f82e3d124d94b14392f10fb1d4e4440fb93dc4c4"
+          ],
+          "subject": "test(registry): include GitRegistry v2 migration tests",
+          "url": "https://github.com/Patricked-code/MCP/commit/52644b52f1cb6ae4c1f7d3f4901b3e9523b9d33e"
+        },
+        {
+          "sha": "6a4c8c053c4b1bfce678287f31a83fd0bee275d1",
+          "date": "2026-08-05T06:55:02Z",
+          "parents": [
+            "52644b52f1cb6ae4c1f7d3f4901b3e9523b9d33e"
+          ],
+          "subject": "docs(registry): document GitRegistry v2 dry-run tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/6a4c8c053c4b1bfce678287f31a83fd0bee275d1"
+        },
+        {
+          "sha": "9a99c943bf07483836b5c39405abbe3b6f480bcd",
+          "date": "2026-08-05T06:55:37Z",
+          "parents": [
+            "6a4c8c053c4b1bfce678287f31a83fd0bee275d1"
+          ],
+          "subject": "docs(registry): describe v2 dry-run foundation",
+          "url": "https://github.com/Patricked-code/MCP/commit/9a99c943bf07483836b5c39405abbe3b6f480bcd"
+        }
+      ]
+    },
+    {
+      "pr": 25,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "1b365a1dc631309f0004948df393cd066b196774",
+          "date": "2026-08-05T08:07:03Z",
+          "parents": [
+            "3f79184eb6a647b39596ff408baa50c4a0c23c01"
+          ],
+          "subject": "feat(github): rebuild read-only PR authorization diagnostics on current main",
+          "url": "https://github.com/Patricked-code/MCP/commit/1b365a1dc631309f0004948df393cd066b196774"
+        },
+        {
+          "sha": "2647d206e5837e54983d613c735b4017e520a110",
+          "date": "2026-08-05T08:08:04Z",
+          "parents": [
+            "1b365a1dc631309f0004948df393cd066b196774"
+          ],
+          "subject": "docs: record rebuilt GitHub authorization diagnostics",
+          "url": "https://github.com/Patricked-code/MCP/commit/2647d206e5837e54983d613c735b4017e520a110"
+        },
+        {
+          "sha": "85ccaabc635279048382c398ae87d6c0466c278b",
+          "date": "2026-08-05T08:08:43Z",
+          "parents": [
+            "2647d206e5837e54983d613c735b4017e520a110"
+          ],
+          "subject": "docs: record GitHub authorization diagnostic decision",
+          "url": "https://github.com/Patricked-code/MCP/commit/85ccaabc635279048382c398ae87d6c0466c278b"
+        },
+        {
+          "sha": "7d4102ff1edd654305be6842ab13356099f8fa07",
+          "date": "2026-08-05T08:09:12Z",
+          "parents": [
+            "85ccaabc635279048382c398ae87d6c0466c278b"
+          ],
+          "subject": "docs: document GitHub PR authorization diagnostic",
+          "url": "https://github.com/Patricked-code/MCP/commit/7d4102ff1edd654305be6842ab13356099f8fa07"
+        },
+        {
+          "sha": "9ebdb59506975a9b16a137052d2d24d679123bc2",
+          "date": "2026-08-05T08:10:27Z",
+          "parents": [
+            "7d4102ff1edd654305be6842ab13356099f8fa07"
+          ],
+          "subject": "docs: update checkpoint for rebuilt GitHub diagnostics",
+          "url": "https://github.com/Patricked-code/MCP/commit/9ebdb59506975a9b16a137052d2d24d679123bc2"
+        }
+      ]
+    },
+    {
+      "pr": 26,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "d31c54aa4125e06a55bb29e9243f9640bb5e5913",
+          "date": "2026-08-05T08:17:43Z",
+          "parents": [
+            "26af37dee3abd0ba36d61b60e2674d78cf1bedbf"
+          ],
+          "subject": "security: add scoped tool registration policy",
+          "url": "https://github.com/Patricked-code/MCP/commit/d31c54aa4125e06a55bb29e9243f9640bb5e5913"
+        },
+        {
+          "sha": "6496b957e7a7c5d2a2339988f82e7543ee958b82",
+          "date": "2026-08-05T08:18:07Z",
+          "parents": [
+            "d31c54aa4125e06a55bb29e9243f9640bb5e5913"
+          ],
+          "subject": "test: verify scoped read and write catalog separation",
+          "url": "https://github.com/Patricked-code/MCP/commit/6496b957e7a7c5d2a2339988f82e7543ee958b82"
+        },
+        {
+          "sha": "75c106c49d8fc305732c685576022971b0a4db5c",
+          "date": "2026-08-05T08:18:31Z",
+          "parents": [
+            "6496b957e7a7c5d2a2339988f82e7543ee958b82"
+          ],
+          "subject": "docs: record rebased read-write foundation",
+          "url": "https://github.com/Patricked-code/MCP/commit/75c106c49d8fc305732c685576022971b0a4db5c"
+        },
+        {
+          "sha": "722e7ea566be8a8455fc08c3361a09081f632b05",
+          "date": "2026-08-05T08:18:53Z",
+          "parents": [
+            "75c106c49d8fc305732c685576022971b0a4db5c"
+          ],
+          "subject": "test: include scoped tool classification suite",
+          "url": "https://github.com/Patricked-code/MCP/commit/722e7ea566be8a8455fc08c3361a09081f632b05"
+        },
+        {
+          "sha": "64625a30574229e5d1297f6bf76b6050c39c47dc",
+          "date": "2026-08-05T08:19:49Z",
+          "parents": [
+            "722e7ea566be8a8455fc08c3361a09081f632b05"
+          ],
+          "subject": "security: expose scoped diagnostics in read-only mode",
+          "url": "https://github.com/Patricked-code/MCP/commit/64625a30574229e5d1297f6bf76b6050c39c47dc"
+        },
+        {
+          "sha": "839e811816b7155806d1d89a8daca228eafc3895",
+          "date": "2026-08-05T08:20:46Z",
+          "parents": [
+            "64625a30574229e5d1297f6bf76b6050c39c47dc"
+          ],
+          "subject": "security: separate scoped read and write registries",
+          "url": "https://github.com/Patricked-code/MCP/commit/839e811816b7155806d1d89a8daca228eafc3895"
+        }
+      ]
+    },
+    {
+      "pr": 27,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "cfbafa9d56e4d0b88c5230c56846906c234e53f3",
+          "date": "2026-08-05T08:24:14Z",
+          "parents": [
+            "c4958d97ff67dbf4352b8a1f9c2716fe9cf25d7b"
+          ],
+          "subject": "feat(registry): add GitRegistry v2 dry-run foundation",
+          "url": "https://github.com/Patricked-code/MCP/commit/cfbafa9d56e4d0b88c5230c56846906c234e53f3"
+        },
+        {
+          "sha": "1a37e8dc41631eb66ca791e201a55e02a97dd850",
+          "date": "2026-08-05T08:25:25Z",
+          "parents": [
+            "cfbafa9d56e4d0b88c5230c56846906c234e53f3"
+          ],
+          "subject": "feat(registry): register GitRegistry v2 dry-run tool",
+          "url": "https://github.com/Patricked-code/MCP/commit/1a37e8dc41631eb66ca791e201a55e02a97dd850"
+        },
+        {
+          "sha": "624cfbed552ef0583a32f3bcc1da9afa810700c1",
+          "date": "2026-08-05T08:25:42Z",
+          "parents": [
+            "1a37e8dc41631eb66ca791e201a55e02a97dd850"
+          ],
+          "subject": "test(registry): include GitRegistry v2 suite",
+          "url": "https://github.com/Patricked-code/MCP/commit/624cfbed552ef0583a32f3bcc1da9afa810700c1"
+        },
+        {
+          "sha": "4df758c508376727153c738de6fe324a8e81014e",
+          "date": "2026-08-05T08:26:14Z",
+          "parents": [
+            "624cfbed552ef0583a32f3bcc1da9afa810700c1"
+          ],
+          "subject": "docs(registry): document GitRegistry v2 dry-run",
+          "url": "https://github.com/Patricked-code/MCP/commit/4df758c508376727153c738de6fe324a8e81014e"
+        },
+        {
+          "sha": "0d2098183afa4d32e3b3cc873be08ca42e1b242d",
+          "date": "2026-08-05T08:26:47Z",
+          "parents": [
+            "4df758c508376727153c738de6fe324a8e81014e"
+          ],
+          "subject": "docs(registry): attest rebased GitRegistry v2 foundation",
+          "url": "https://github.com/Patricked-code/MCP/commit/0d2098183afa4d32e3b3cc873be08ca42e1b242d"
+        }
+      ]
+    },
+    {
+      "pr": 28,
+      "status": "LISTED_TO_SHORT_PAGE",
+      "commits": [
+        {
+          "sha": "59239bb53b2652d384b9f9858e48e657ce836639",
+          "date": "2026-08-05T08:32:36Z",
+          "parents": [
+            "618f4020ac69801dd53f624e5cd188fc6d76cc24"
+          ],
+          "subject": "docs: record final MCP foundation state",
+          "url": "https://github.com/Patricked-code/MCP/commit/59239bb53b2652d384b9f9858e48e657ce836639"
+        },
+        {
+          "sha": "3d9ff74192129c0d83873ee98dd54ebd545f7ab4",
+          "date": "2026-08-05T08:33:10Z",
+          "parents": [
+            "59239bb53b2652d384b9f9858e48e657ce836639"
+          ],
+          "subject": "docs: update production state after GitHub foundations",
+          "url": "https://github.com/Patricked-code/MCP/commit/3d9ff74192129c0d83873ee98dd54ebd545f7ab4"
+        },
+        {
+          "sha": "f452176c522dc17d76684064076d4bc813867866",
+          "date": "2026-08-05T08:33:46Z",
+          "parents": [
+            "3d9ff74192129c0d83873ee98dd54ebd545f7ab4"
+          ],
+          "subject": "docs: update MCP completion checklist",
+          "url": "https://github.com/Patricked-code/MCP/commit/f452176c522dc17d76684064076d4bc813867866"
+        },
+        {
+          "sha": "4a3dfb5aee507fb4c6b79cf08430ac37a402e825",
+          "date": "2026-08-05T08:34:24Z",
+          "parents": [
+            "f452176c522dc17d76684064076d4bc813867866"
+          ],
+          "subject": "docs: update executable MCP tasks",
+          "url": "https://github.com/Patricked-code/MCP/commit/4a3dfb5aee507fb4c6b79cf08430ac37a402e825"
+        },
+        {
+          "sha": "b5e0857304de8d0a1e8176124e7d334200765be9",
+          "date": "2026-08-05T08:36:26Z",
+          "parents": [
+            "4a3dfb5aee507fb4c6b79cf08430ac37a402e825"
+          ],
+          "subject": "docs: record completed MCP foundations",
+          "url": "https://github.com/Patricked-code/MCP/commit/b5e0857304de8d0a1e8176124e7d334200765be9"
+        },
+        {
+          "sha": "0c2f9106cae58eca6b336a4feb968566b2627ff9",
+          "date": "2026-08-05T08:37:22Z",
+          "parents": [
+            "b5e0857304de8d0a1e8176124e7d334200765be9"
+          ],
+          "subject": "docs: record final foundation decisions",
+          "url": "https://github.com/Patricked-code/MCP/commit/0c2f9106cae58eca6b336a4feb968566b2627ff9"
+        },
+        {
+          "sha": "c6c732bbfa58e2171e214198929ed4eb5a5dbe4f",
+          "date": "2026-08-05T08:38:38Z",
+          "parents": [
+            "0c2f9106cae58eca6b336a4feb968566b2627ff9"
+          ],
+          "subject": "docs: refresh canonical MCP resume point",
+          "url": "https://github.com/Patricked-code/MCP/commit/c6c732bbfa58e2171e214198929ed4eb5a5dbe4f"
+        }
+      ]
+    }
+  ]
+}
