@@ -1,5 +1,9 @@
 # AGENTS.md — Registre synthétique des agents
 
+## Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression
+
+Le nouvel outil en lecture seule `mcp_preview_external_governed_recovery` aide un agent MCP connecté à prévisualiser la sélection, mais reste facultatif : la voie GitHub directe continue même si le MCP est inaccessible. Le profil ne donne aucun droit d'exécution ; seuls GitHub et les autorités existantes déterminent les opérations admissibles.
+
 ## Procédure MCP globale de reprise externe (documentaire, non exécutoire)
 
 Sur demande explicite du propriétaire, pour **n'importe quel chantier MCP**, l'agent peut sélectionner le profil `EXTERNAL_GOVERNED_RECOVERY` défini dans [la politique GitHub-first](.mcp/github-first-operational-policy.json). Lire alors le [runbook de bifurcation externe](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md) **après** l'INTAKE, le HEAD exact et la vérification des propriétaires/collision domains. Documenter le choix dans l'issue/PR canonique du chantier. **Le profil choisit un chemin de travail, pas une méthode de construction :** pour GD-U #349, conserver séparément `GD-U-METHOD-20261028-01` ; pour les autres chantiers, leurs propres méthodes et autorités. Ce profil est actuellement lu par les agents, **non automatiquement activé par un moteur runtime**. Il ne crée aucun claim, session, lock, permission, droit de déploiement, tâche ni dispatcher ; CI, revues, contrôles E3/OAuth/OIDC et Governed Deploy restent obligatoires. Ne jamais déclencher automatiquement ce mode du seul fait qu'une connexion MCP échoue.

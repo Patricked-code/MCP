@@ -68,7 +68,7 @@ test('agents discover the same recovery procedure; no parallel profile authority
 
 test('recovery selection applies MCP-wide without a new runtime engine or GD-U global authority', () => {
   assert.equal(policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY.repositoryScope, 'MCP_GLOBAL_ALL_WORKSTREAMS');
-  assert.equal(policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY.implementationStatus, 'AGENT_READABLE_CONFIG_AND_RUNBOOK_ONLY_NOT_AUTOMATIC_RUNTIME_SELECTION');
+  assert.equal(policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY.implementationStatus, 'AGENT_RUNBOOK_AND_RUNTIME_READONLY_SELECTION_PREVIEW_NO_AUTOMATIC_EXECUTION');
   const selection = policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY.selectionContract;
   assert.equal(selection.automaticallyProcessedByRuntime, false);
   assert.equal(selection.noNewTaskQueueOrWorker, true);
@@ -93,4 +93,11 @@ test('GD-U construction methodology stays independent of optional recovery trans
   assert.deepEqual(gd.workingMethodology.principles.map((x: { id: string }) => x.id), [
     'GITHUB_FIRST', 'NO_REGRESSION', 'INDEPENDENT_SLICES', 'RED_GREEN_REGRESSION'
   ]);
+});
+
+test('official full name and read-only preview stay linked to the same non-authoritative profile', () => {
+  assert.match(profile.fullName, /développement.*correction.*maintenance.*reprise.*déploiement/);
+  assert.equal(profile.selectionContract.readonlySelectionPreviewTool, 'mcp_preview_external_governed_recovery');
+  assert.equal(profile.selectionContract.automaticallyProcessedByRuntime, false);
+  assert.match(readFileSync(profile.runbook, 'utf8'), /mcp_preview_external_governed_recovery/);
 });

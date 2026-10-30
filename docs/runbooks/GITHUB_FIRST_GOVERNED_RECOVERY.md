@@ -23,6 +23,14 @@ Le profil **n'est pas** la méthode de construction : un agent peut sélectionne
 - **Sélection effective actuellement :** le propriétaire exprime le profil ; l'agent lit les instructions, confirme le chantier canonique, consigne son choix dans la PR/issue déjà existante et utilise seulement des transports autorisés. L'inscription d'un commentaire n'équivaut pas au réveil de Claude.
 - **Si la sélection automatique doit être ajoutée ultérieurement :** audit et extension additive du routeur existant, tests des permissions et non-régression, aucun nouveau dispatcher ou mode privilégié ; ce travail n'est ni créé ni présumé par ce document.
 
+## Intégration MCP existante — surface de sélection read-only
+
+L'outil `mcp_preview_external_governed_recovery` est enregistré dans la surface MCP de **lecture seule** et appelle le sélecteur existant `resolveGithubFirstOperationalBootstrap`. Il ne crée aucun moteur de dispatch ni aucune autorité de travail. Les observations du propriétaire et des SHA/absence de collision produisent uniquement une **proposition de transport non autoritaire** ; les permissions GitHub réelles, les contraintes E3, les sessions et les locks restent vérifiés séparément.
+
+**Si le MCP ne répond pas**, la méthode externe fonctionne quand même en utilisant l'identité GitHub autorisée : branche/PR/CI et GitHub Actions/OIDC existants ne dépendent pas de l'attribution préalable d'une Task Queue MCP.
+
+**Admission de bout en bout :** branche contrôlée → tests et CI au SHA exact → revues/règles de fusion → `main` autorisé → CI `main` → `MCP Governed Deploy` → alignement S1/runtime et santé → checkpoint. Ne pas déclarer ce parcours complet si la PR reste ouverte ou si les attestations serveur manquent.
+
 ## 1. Pourquoi et quand choisir ce profil
 
 En cas de demande explicite du propriétaire ou d'indisponibilité du chemin interne MCP (admission, connexion OAuth, bridge), l'agent peut poursuivre une **opération bornée** via GitHub et les workflows existants, tout en préservant les garde-fous. Le blocage de l'admission interne ne constitue **jamais** une permission d'écrire en production ou de réclamer une tâche. La sélection du profil ne crée ni task, ni session, ni claim, ni lock, ni nouvelle PR, ni dispatcher.

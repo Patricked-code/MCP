@@ -45,13 +45,14 @@
             "PARALLEL_DISPATCHER_OR_NEW_CANONICAL_AUTHORITY"
         ],
         "repositoryScope": "MCP_GLOBAL_ALL_WORKSTREAMS",
-        "implementationStatus": "AGENT_READABLE_CONFIG_AND_RUNBOOK_ONLY_NOT_AUTOMATIC_RUNTIME_SELECTION",
+        "implementationStatus": "AGENT_RUNBOOK_AND_RUNTIME_READONLY_SELECTION_PREVIEW_NO_AUTOMATIC_EXECUTION",
         "selectionContract": {
           "requestedInOwnerMandate": true,
           "procedureLoadedByAgent": true,
           "selectedProfileRecordedInExistingIssueOrPrCheckpoint": true,
           "actualTransportDecidedPerOperationFromExistingPermissions": true,
           "automaticallyProcessedByRuntime": false,
+          "readonlySelectionPreviewTool": "mcp_preview_external_governed_recovery",
           "noNewTaskQueueOrWorker": true,
           "noRuntimeAccessIfRequiredAuthorityUnavailable": true
         },
