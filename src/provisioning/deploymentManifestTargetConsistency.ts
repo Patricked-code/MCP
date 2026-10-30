@@ -13,6 +13,8 @@ export type UniversalDeploymentTarget = Readonly<{
   host:string;
   urlPath:string;
   applicationBasePath:string;
+  /** Declarative request only; never evidence of a runtime grant. Default false. */
+  allowDeclaredAutomation?:boolean;
 }>;
 export type ManifestTargetAssessment = Readonly<{
   status:'TARGET_MATCHED_NOT_ADMITTED'|'BLOCKED';
@@ -21,7 +23,7 @@ export type ManifestTargetAssessment = Readonly<{
     'SOURCE_BRANCH_MISMATCH'|'SERVER_MISMATCH'|'HOST_MISMATCH'|
     'URL_PATH_MISMATCH'|'APPLICATION_BASEPATH_MISMATCH'|
     'DEPLOYMENT_MODE_MISMATCH'|'AUTO_PROVISIONING_NOT_DISABLED'|
-    'DECLARED_SECURITY_GATES_INCOMPLETE'|
+    'DECLARED_SECURITY_GATES_INCOMPLETE'|'DECLARED_AUTOMATION_NOT_ENABLED'|
     'DESTINATION_URL_MISMATCH'|'SOURCE_MANIFEST_READ_UNAVAILABLE'|
     'SOURCE_MANIFEST_INVALID';
   runtimeWriteAuthorized:false;
@@ -43,6 +45,8 @@ function validTarget(t:UniversalDeploymentTarget):boolean{
   if(!t||typeof t.repository!=='string'||typeof t.branch!=='string'
     ||typeof t.host!=='string'||typeof t.urlPath!=='string'
     ||typeof t.applicationBasePath!=='string')return false;
+  if(t.allowDeclaredAutomation!==undefined
+    &&typeof t.allowDeclaredAutomation!=='boolean')return false;
   const p=t.repository.split('/');
   return p.length===2&&ACCOUNT.test(p[0]!)&&REPONAME.test(p[1]!)
     &&p[1]!=='.'&&p[1]!=='..'
@@ -73,8 +77,14 @@ export function assessDeploymentManifestTarget(
   if(target.urlPath!=='/'&&(OBJ(destination.subdomain)!==null
     ||app.basePathMode==='root-on-dedicated-subdomain'))
     return block('DEPLOYMENT_MODE_MISMATCH');
-  if(safety.allowAutomaticProvisioning!==false)
+  // The manifest can request guarded automation only if the target explicitly
+  // expects it. This remains a consistency check, never an E3/permission grant.
+  if(target.allowDeclaredAutomation===true){
+    if(safety.allowAutomaticProvisioning!==true)
+      return block('DECLARED_AUTOMATION_NOT_ENABLED');
+  }else if(safety.allowAutomaticProvisioning!==false){
     return block('AUTO_PROVISIONING_NOT_DISABLED');
+  }
   const requiredSafety=['requireServerSideAllowlist','requireFreshPreflight',
     'requireGovernedClaimAndLock','requireExactCommitSha','requireHealthAndRollback',
     'forbidSecretsInRepository','forbidOtherVhostChanges'] as const;
