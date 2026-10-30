@@ -232,5 +232,26 @@
   "constructionMethodSource": "docs/governance/universal-capabilities-bifurcation-20261028.json#workingMethodology",
   "externalOperatingProfileId": "EXTERNAL_GOVERNED_RECOVERY",
   "externalOperatingProfileScope": "MCP_GLOBAL_OPTIONAL_NOT_FND_SPECIFIC",
-  "methodRelationship": "Independent and composable: construction method mandatory for admitted GD-U slices; external recovery optional GitHub-first work path; neither grants E3/Task/Session/Lock/Plesk authority."
+  "methodRelationship": "Independent and composable: construction method mandatory for admitted GD-U slices; external recovery optional GitHub-first work path; neither grants E3/Task/Session/Lock/Plesk authority.",
+  "reconciliation": {
+    "checkedSources": [
+      {
+        "source": "GitHub MCP issue #349 comments",
+        "result": "No FND-001..FND-024 literal IDs found in retrieved comments"
+      },
+      {
+        "source": "GitHub default-branch code search FND-001 and FND-024",
+        "result": "No matches"
+      },
+      {
+        "source": "GitHub issue search FND-001 and FND-024",
+        "result": "No matches"
+      }
+    ],
+    "limitations": [
+      "Default branch code search does not index unmerged PR #355 files",
+      "Absence of a search match is not proof the historical definition never existed"
+    ],
+    "nextAction": "Find original 24-item historical inventory in PR/commit history or another canonical source before assigning per-ID labels"
+  }
 }
