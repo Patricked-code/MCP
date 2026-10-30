@@ -1,0 +1,40 @@
+# PILOT-E2-01 — preuve GitHub des entrées de chantier
+
+**Continuité canonique :** `MCP-PILOT-E2-01-CONT-20261030-ROOT-01`.  
+**Issue canonique :** [#359](https://github.com/Patricked-code/MCP/issues/359).  
+**Entrée demandée par le propriétaire :** `EXTERNAL_GOVERNED_RECOVERY`.  
+**Source :** instruction explicite « Lance PILOT-E2-01 par l'entrée 2 ».  
+**Nature :** chantier d'ajout strictement documentaire/read-only de traçabilité. Aucune Task Queue, autorité de sécurité, session, permission ni nouveau pipeline.
+
+## Périmètre et absence de collision
+
+Le code ajouté est isolé dans `src/governance/workEntryTrace.ts` et `tests/workEntryTrace.test.ts`. Il n'écrit aucun store, n'utilise aucun réseau et n'enregistre aucun outil de mutation. Les PR #354/#356/#358 et les chantiers historiques conservent leurs branches/owners. Le dossier présent appartient uniquement au pilote.
+
+## Utilisation sur une nouvelle évolution
+
+1. Le propriétaire choisit explicitement **entrée 1** `INITIAL_GOVERNED_ENTRY` ou **entrée 2** `EXTERNAL_GOVERNED_RECOVERY` avec son instruction.
+2. Sur entrée 1, la référence de tâche **existante** est exigée pour le contrat de traçabilité ; la trace ne crée jamais cette tâche et ne certifie pas une autorité runtime.
+3. Sur entrée 2, la source de sélection est `OWNER_DIRECTLY_REQUESTED_WORK` ou `AGENT_IDENTIFIED_WORK_WITHIN_EXISTING_OWNER_MANDATE`. La sélection doit être explicite. La référence de tâche interne est nulle ; aucune admission Task Queue n'est demandée pour les modifications GitHub déjà autorisées.
+4. L'agent relit `main`, les autres PR, ownership et collisions, puis inscrit dans l'issue canonique le Continuity ID, l'origine des instructions, l'acteur GitHub observé, le champ de travail et un unique `NEXT_ACTION`.
+5. Il utilise `assessGovernedWorkEntryTrace` pour vérifier **la cohérence structurelle du dossier**, puis `renderGovernedWorkEntryCheckpoint` pour obtenir un contenu durable. Le résultat n'est **pas** une authentification ou une permission ; vérifier les sources GitHub/runtime directement.
+6. La même branche/PR suit alors le pipeline préexistant : code additif, tests RED/GREEN, CI exact SHA, revues, merge, CI de main, Governed Deploy OIDC, attestation runtime S1. Un checkpoint historique est ajouté, pas écrasé.
+7. En cas de blocage, les preuves du dernier état sont consignées ; aucun changement d'entrée par défaut, claim fictif ou contournement des droits.
+
+## Contrat de traçabilité
+
+Le JSON de chaque chantier contient : `entryProfile`, `explicitOwnerSelection`, `workSelection`, instructions (`summary`, `sourceUrl`), `responsible.githubActor`, `responsible.internalTaskId` (uniquement entrée 1), issue, branche, PR, SHA de tête, SHA de merge, étape, URL de checkpoint, `NEXT_ACTION` et éventuelle preuve de déploiement.
+
+Les états `ISSUE_OPENED`, `PR_OPENED`, `MAIN_MERGED` et `S1_ATTESTED` représentent **des déclarations documentairement vérifiables**. Le validateur exige des références de forme cohérente ; il ne contacte pas GitHub ou S1 et ne certifie pas que les événements ont eu lieu. Les liens et SHA doivent être confrontés aux autorités réelles. La décision du validateur conserve `runtimeTaskCreated=false`, `runtimeClaimOrLockCreated=false`, `githubWriteGranted=false`, `serverWriteGranted=false` et `deployGranted=false`.
+
+## Preuves d'usage pilote E2
+
+- E2-00 : instruction explicite du propriétaire et issue #359.
+- E2-01 : issue #359 et Continuity ID indépendant.
+- E2-02 : `main` observé au départ `e39e8f0fade7e545b8c57584dee17be81c1233f2`, PR ouvertes inspectées.
+- E2-03 : création autorisée par mandat du propriétaire ; aucun task/claim/lock MCP créé pour les opérations GitHub.
+- E2-04 : branche `mcp/pilot-e2-01-work-entry-trace-20261030`, issue #359.
+- E2-05 : code de traçabilité et tests sur la PR du pilote (numéro/HEAD/CI à renseigner après création effective).
+- E2-06 : fusion/Deploy/S1 uniquement lorsqu'ils auront été constatés réellement ; aucun résultat n'est présumé.
+- E2-07 : checkpoints dans l'issue et la PR, avec preuves GitHub exact-SHA et `NEXT_ACTION`.
+
+**État initial de ce document :** constitution de la branche de pilote. L'achèvement doit être attesté séparément dans l'issue #359, pas déduit de cette description.
