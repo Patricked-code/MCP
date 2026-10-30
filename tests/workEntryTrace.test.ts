@@ -107,3 +107,29 @@ test('checkpoint rendering never reinterprets user instructions as an authority'
   assert.doesNotMatch(body,/<script>/);
   assert.match(body,/aucune Task, claim, lock/);
 });
+
+test('checkpoint retains the referenced E1 task without inventing any runtime ownership',()=>{
+  const entry:GovernedWorkEntryTrace={...base,entryProfile:'INITIAL_GOVERNED_ENTRY',
+    workSelection:'INTERNAL_MCP_TASK_ASSIGNMENT',
+    responsible:{githubActor:'Patricked-code',internalTaskId:'TASK-20261030-123'}};
+  const checkpoint=renderGovernedWorkEntryCheckpoint(entry);
+  assert.match(checkpoint,/TASK-20261030-123/);
+  assert.match(checkpoint,/INITIAL_GOVERNED_ENTRY/);
+  assert.equal(scan(entry).runtimeTaskCreated,false);
+});
+
+test('S1 checkpoint preserves the exact merge revision and deployment run evidence',()=>{
+  const mergedSha='b'.repeat(40);
+  const entry:GovernedWorkEntryTrace={...base,stage:'S1_ATTESTED',
+    github:{...base.github,mergeSha:mergedSha},
+    deployment:{workflowRunUrl:'https://github.com/Patricked-code/MCP/actions/runs/123456',
+      runtimeRevisionSha:mergedSha}};
+  const checkpoint=renderGovernedWorkEntryCheckpoint(entry);
+  assert.match(checkpoint,/actions\/runs\/123456/);
+  assert.match(checkpoint,new RegExp(mergedSha));
+  assert.match(checkpoint,/Révision runtime S1/);
+  const another:GovernedWorkEntryTrace={...entry,deployment:{...entry.deployment,
+    workflowRunUrl:'https://github.com/Patricked-code/MCP/actions/runs/123457'}};
+  assert.notEqual(renderGovernedWorkEntryCheckpoint(entry),renderGovernedWorkEntryCheckpoint(another));
+  assert.equal(scan(entry).serverWriteGranted,false);
+});
