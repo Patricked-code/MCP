@@ -226,5 +226,11 @@
     "No new permissions, tokens, production writes, merge or deployment from this registry",
     "Map each foundation to capabilities, existing code, tests, permissions and evidence before admission"
   ],
-  "nextSlice": "Verify historical FND-001..FND-024 definitions and populate mappings individually with source evidence"
+  "nextSlice": "Verify historical FND-001..FND-024 definitions and populate mappings individually with source evidence",
+  "methodFieldLegacyInterpretation": "Historical method field retained unchanged for compatibility; denotes optional external transport procedure/profile, NOT GD-U construction methodology and NOT runtime authority.",
+  "constructionMethodId": "GD-U-METHOD-20261028-01",
+  "constructionMethodSource": "docs/governance/universal-capabilities-bifurcation-20261028.json#workingMethodology",
+  "externalOperatingProfileId": "EXTERNAL_GOVERNED_RECOVERY",
+  "externalOperatingProfileScope": "MCP_GLOBAL_OPTIONAL_NOT_FND_SPECIFIC",
+  "methodRelationship": "Independent and composable: construction method mandatory for admitted GD-U slices; external recovery optional GitHub-first work path; neither grants E3/Task/Session/Lock/Plesk authority."
 }

@@ -3,8 +3,25 @@
 **Profil sélectionnable :** `EXTERNAL_GOVERNED_RECOVERY` (non activé par défaut).
 **Dépôt :** `Patricked-code/MCP`.
 **Autorité normative existante :** [`.mcp/github-first-operational-policy.json`](../../.mcp/github-first-operational-policy.json), [`AGENTS.md`](../../AGENTS.md), [`CLAUDE.md`](../../CLAUDE.md) et les contrôles runtime réellement observés.
-**Continuity programme concernée :** [issue #349](https://github.com/Patricked-code/MCP/issues/349), [PR #355](https://github.com/Patricked-code/MCP/pull/355), sans créer d'autorité supplémentaire. Les autres mandats réutilisent leur propre issue/PR canonique.
+**Portée :** méthode opérationnelle réutilisable sur **l'ensemble du MCP**, indépendamment du programme GD-U. L'issue globale [#235](https://github.com/Patricked-code/MCP/issues/235) conserve son propre périmètre. Chaque intervention réutilise l'issue, la PR et l'autorité d'exécution de SON chantier ; [#349](https://github.com/Patricked-code/MCP/issues/349) et [#355](https://github.com/Patricked-code/MCP/pull/355) ne sont que le chantier qui intègre ce document.
 **Nature :** instruction de travail et de reprise, sans permission supplémentaire ni activation automatique de runtime.
+
+## Modèle d'autorité : trois objets différents (ne jamais les fusionner)
+
+| Objet | Référence | Rôle | Autorité créée ? |
+|---|---|---|---|
+| Procédure de reprise externe | **Bifurcation externe gouvernée**, ce runbook | Comment travailler depuis GitHub quand le chemin interne est indisponible ou sur demande expresse | Non |
+| Profil de sélection | `EXTERNAL_GOVERNED_RECOVERY` dans la politique GitHub-first | Permet de demander à un agent de suivre cette procédure ; **aucun moteur runtime de sélection n'a été ajouté** | Non |
+| Méthode de construction du chantier | `GD-U-METHOD-20261028-01`, [`workingMethodology`](../governance/universal-capabilities-bifurcation-20261028.json) | GitHub-first, non-régression, tranches indépendantes, RED/GREEN pour **le seul programme GD-U #349** | Non, et n'est pas une méthode MCP globale |
+
+Le profil **n'est pas** la méthode de construction : un agent peut sélectionner `EXTERNAL_GOVERNED_RECOVERY` pour OAuth #346 tout en gardant la méthodologie de ce chantier ; sur #349, il applique **simultanément**, sans les confondre, le chemin externe et `GD-U-METHOD-20261028-01`.
+
+### Statut de sélection vérifiable
+
+- **Implémenté :** une déclaration lisible par agent dans `.mcp/github-first-operational-policy.json`, une procédure, des consignes dans `AGENTS.md`/`CLAUDE.md` et des tests documentaires.
+- **Non implémenté :** aucun routeur/runtime qui reçoit automatiquement le nom du profil et change de mode ; aucun worker ou dispatch de Claude ; aucune autorisation de serveur ou admission E3/Task/Session/Lock dérivée du nom.
+- **Sélection effective actuellement :** le propriétaire exprime le profil ; l'agent lit les instructions, confirme le chantier canonique, consigne son choix dans la PR/issue déjà existante et utilise seulement des transports autorisés. L'inscription d'un commentaire n'équivaut pas au réveil de Claude.
+- **Si la sélection automatique doit être ajoutée ultérieurement :** audit et extension additive du routeur existant, tests des permissions et non-régression, aucun nouveau dispatcher ou mode privilégié ; ce travail n'est ni créé ni présumé par ce document.
 
 ## 1. Pourquoi et quand choisir ce profil
 

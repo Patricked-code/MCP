@@ -1,8 +1,8 @@
 # AGENTS.md — Registre synthétique des agents
 
-## Mode selectable de reprise externe (documentaire, non exécutoire)
+## Procédure MCP globale de reprise externe (documentaire, non exécutoire)
 
-Sur demande explicite du propriétaire, l'agent peut sélectionner le profil `EXTERNAL_GOVERNED_RECOVERY` défini dans [la politique GitHub-first](.mcp/github-first-operational-policy.json). Lire alors le [runbook de bifurcation externe](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md) **après** l'INTAKE, le HEAD exact et la vérification des propriétaires/collision domains. Le profil ne crée **aucun** claim, session, lock, permission, droit de déploiement ou dispatcher ; la CI, les revues, les permissions E3/OAuth/OIDC et Governed Deploy demeurent obligatoires. Réutiliser la même issue/PR lorsque le périmètre le permet, sinon arrêter l'écriture et réconcilier. Ne jamais déclencher automatiquement ce mode du seul fait qu'une connexion MCP échoue.
+Sur demande explicite du propriétaire, pour **n'importe quel chantier MCP**, l'agent peut sélectionner le profil `EXTERNAL_GOVERNED_RECOVERY` défini dans [la politique GitHub-first](.mcp/github-first-operational-policy.json). Lire alors le [runbook de bifurcation externe](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md) **après** l'INTAKE, le HEAD exact et la vérification des propriétaires/collision domains. Documenter le choix dans l'issue/PR canonique du chantier. **Le profil choisit un chemin de travail, pas une méthode de construction :** pour GD-U #349, conserver séparément `GD-U-METHOD-20261028-01` ; pour les autres chantiers, leurs propres méthodes et autorités. Ce profil est actuellement lu par les agents, **non automatiquement activé par un moteur runtime**. Il ne crée aucun claim, session, lock, permission, droit de déploiement, tâche ni dispatcher ; CI, revues, contrôles E3/OAuth/OIDC et Governed Deploy restent obligatoires. Ne jamais déclencher automatiquement ce mode du seul fait qu'une connexion MCP échoue.
 
 ## Fil d'Ariane audit obligatoire — mémoire historique sans perte
 

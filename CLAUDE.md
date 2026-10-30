@@ -2,7 +2,7 @@
 
 ## Sélection explicite de la bifurcation externe gouvernée
 
-Si la mission demande `EXTERNAL_GOVERNED_RECOVERY`, suivre [le runbook GitHub-first / OIDC](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md) et [la politique MCP existante](.mcp/github-first-operational-policy.json) ; appliquer d'abord l'INTAKE de `AGENTS.md`, la réobservation de GitHub et les contrôles anti-collision. Ce profil est une **procédure**, ni un mode privilégié ni un worker autonome ; il ne contourne jamais E3/OAuth, Task Queue, Sessions, Locks, CI, revues ou Governed Deploy. Aucun Codex/Copilot et aucune nouvelle PR ou autorité parallèle pour le même chantier.
+Si la mission MCP demande `EXTERNAL_GOVERNED_RECOVERY`, suivre [le runbook GitHub-first / OIDC](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md) et [la politique MCP existante](.mcp/github-first-operational-policy.json) ; appliquer d'abord l'INTAKE de `AGENTS.md`, la réobservation de GitHub et les contrôles anti-collision. **Sélectionner le chemin de travail, pas la méthode de construction :** sur GD-U #349 conserver séparément `GD-U-METHOD-20261028-01` ; sur tout autre chantier, sa méthode et ses propres autorités. Inscrire le profil choisi dans le checkpoint existant. Ce profil n'est **pas automatiquement activé par le runtime** et n'est ni un mode privilégié ni un worker autonome ; il ne contourne jamais E3/OAuth, Task Queue, Sessions, Locks, CI, revues ou Governed Deploy. Aucun Codex/Copilot et aucune nouvelle PR ou autorité parallèle.
 
 ## Coordination inter-agents et reprise à froid — directive du 16 octobre 2026
 

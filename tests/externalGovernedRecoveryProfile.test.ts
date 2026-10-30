@@ -53,3 +53,32 @@ test('agents discover the same recovery procedure; no parallel profile authority
     assert.match(content, /GITHUB_FIRST_GOVERNED_RECOVERY\.md/);
   }
 });
+
+test('recovery selection applies MCP-wide without a new runtime engine or GD-U global authority', () => {
+  assert.equal(policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY.repositoryScope, 'MCP_GLOBAL_ALL_WORKSTREAMS');
+  assert.equal(policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY.implementationStatus, 'AGENT_READABLE_CONFIG_AND_RUNBOOK_ONLY_NOT_AUTOMATIC_RUNTIME_SELECTION');
+  const selection = policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY.selectionContract;
+  assert.equal(selection.automaticallyProcessedByRuntime, false);
+  assert.equal(selection.noNewTaskQueueOrWorker, true);
+  assert.equal(selection.selectedProfileRecordedInExistingIssueOrPrCheckpoint, true);
+  const runbook = readFileSync('docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md', 'utf8');
+  assert.match(runbook, /tout le MCP|l'ensemble du MCP/);
+  assert.match(runbook, /aucun moteur runtime/);
+  assert.match(runbook, /#346/);
+});
+
+test('GD-U construction methodology stays independent of optional recovery transport', () => {
+  const gd = JSON.parse(readFileSync('docs/governance/universal-capabilities-bifurcation-20261028.json', 'utf8'));
+  const foundations = JSON.parse(readFileSync('docs/governance/FND_FOUNDATIONS_REGISTRY.json', 'utf8'));
+  const p = policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY;
+  assert.equal(gd.workingMethodology.version, 'GD-U-METHOD-20261028-01');
+  assert.equal(p.constructionMethodRelationship.mayCoexistWith, gd.workingMethodology.version);
+  assert.equal(p.constructionMethodRelationship.independentOfConstructionMethods, true);
+  assert.equal(foundations.method, 'EXTERNAL_GOVERNED_RECOVERY'); // historical field preserved for compatibility
+  assert.equal(foundations.constructionMethodId, gd.workingMethodology.version);
+  assert.equal(foundations.externalOperatingProfileId, p.id);
+  assert.match(foundations.methodFieldLegacyInterpretation, /NOT GD-U construction methodology/);
+  assert.deepEqual(gd.workingMethodology.principles.map((x: { id: string }) => x.id), [
+    'GITHUB_FIRST', 'NO_REGRESSION', 'INDEPENDENT_SLICES', 'RED_GREEN_REGRESSION'
+  ]);
+});
