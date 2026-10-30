@@ -17,7 +17,11 @@ const manifest={
   destination:{server:'s1',host:target.host,urlPath:'/regulatory',
     url:'https://wealthtechinnovations.com/regulatory'},
   application:{basePath:'/regulatory',basePathMode:'subpath-on-existing-vhost'},
-  safety:{allowAutomaticProvisioning:false}
+  safety:{allowAutomaticProvisioning:false,
+    requireServerSideAllowlist:true,requireFreshPreflight:true,
+    requireGovernedClaimAndLock:true,requireExactCommitSha:true,
+    requireHealthAndRollback:true,forbidSecretsInRepository:true,
+    forbidOtherVhostChanges:true}
 };
 
 test('GD-U E2: exact declarative path is only a preflight, never runtime authority',()=>{
@@ -49,7 +53,7 @@ test('GD-U E2: host, path, source branch and repository crossovers are independe
   [{...manifest,destination:{...manifest.destination,url:'https://evil.example/regulatory'}},'DESTINATION_URL_MISMATCH'],
   [{...manifest,destination:{...manifest.destination,url:'http://wealthtechinnovations.com/regulatory'}},'DESTINATION_URL_MISMATCH'],
   [{...manifest,destination:{...manifest.destination,subdomain:{label:'regulatory'}}},'DEPLOYMENT_MODE_MISMATCH'],
-  [{...manifest,safety:{allowAutomaticProvisioning:true}},'AUTO_PROVISIONING_NOT_DISABLED']
+  [{...manifest,safety:{...manifest.safety,allowAutomaticProvisioning:true}},'AUTO_PROVISIONING_NOT_DISABLED']
  ];
  for(const [m,reason] of trials){
   const result=assessDeploymentManifestTarget(target,m);
@@ -67,5 +71,20 @@ test('GD-U E2: invalid target or absent manifest always fail closed',()=>{
  }
  for(const host of ['http://wealthtechinnovations.com','LOCALHOST','*.example.com']){
   assert.equal(assessDeploymentManifestTarget({...target,host},manifest).reason,'TARGET_INVALID');
+ }
+});
+
+test('GD-U E2: weakening any existing manifest safety requirement fails closed',()=>{
+ const safetyKeys=[
+  'requireServerSideAllowlist','requireFreshPreflight',
+  'requireGovernedClaimAndLock','requireExactCommitSha',
+  'requireHealthAndRollback','forbidSecretsInRepository',
+  'forbidOtherVhostChanges'
+ ] as const;
+ for(const field of safetyKeys){
+  const s= {...manifest.safety,[field]:false};
+  const result=assessDeploymentManifestTarget(target,{...manifest,safety:s});
+  assert.equal(result.status,'BLOCKED',field);
+  assert.equal(result.reason,'DECLARED_SECURITY_GATES_INCOMPLETE',field);
  }
 });
