@@ -4,64 +4,64 @@
   "mode": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
   "selectableProfiles": {
     "EXTERNAL_GOVERNED_RECOVERY": {
-      "id": "EXTERNAL_GOVERNED_RECOVERY",
-      "label": "Bifurcation externe gouvernée — GitHub-first / OIDC / Non-régression",
-      "kind": "SELECTABLE_NON_AUTHORITATIVE_OPERATING_PROCEDURE",
-      "enabledForExplicitSelection": true,
-      "selectedByDefault": false,
-      "executionEngineCreated": false,
-      "runtimeWritePermissionGranted": false,
-      "taskSessionOrLockCreated": false,
-      "policyAuthority": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
-      "runbook": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
-      "allowedSelectionReasons": [
-        "OWNER_EXPLICITLY_REQUESTS_EXTERNAL_GOVERNED_RECOVERY",
-        "NORMAL_MCP_ADMISSION_OR_OAUTH_PATH_UNAVAILABLE",
-        "BOUNDED_MCP_REPAIR_OR_EXTENSION_REQUIRES_GITHUB_FIRST_CONTINUITY"
-      ],
-      "transportOrder": [
-        "GITHUB_ONLY",
-        "GITHUB_ACTION_READONLY_EVIDENCE",
-        "GITHUB_ACTION_BOUNDED_WRITE",
-        "RUNTIME_REQUIRED"
-      ],
-      "mandatoryGates": [
-        "EXACT_HEAD_AND_BRANCH_REOBSERVED",
-        "CANONICAL_ISSUE_AND_EXISTING_PR_REUSED",
-        "OWNERSHIP_COLLISION_DEPENDENCY_CHECKED",
-        "NO_RUNTIME_AUTHORITY_INFERRED_FROM_GITHUB_ACCESS",
-        "NO_SERVER_MUTATION_FROM_READONLY_EVIDENCE",
-        "CI_AND_REQUIRED_REVIEWS_ON_EXACT_SHA",
-        "EXISTING_GOVERNED_DEPLOY_WITH_ATTESTATION_ONLY_IF_ADMITTED",
-        "CHECKPOINT_AND_RETURN_TO_NORMAL_GOVERNANCE"
-      ],
-      "forbidden": [
-        "BYPASS_E3_OAUTH_OIDC_TASK_SESSION_LOCK",
-        "GITHUB_DIRECT_MAIN_PUSH",
-        "SERVER_DIRECT_VERSIONED_SOURCE_EDIT",
-        "UNBOUNDED_SHELL_OR_PRIVILEGE_ESCALATION",
-        "FAKE_REVIEW_FAKE_CLAIM_OR_UNVERIFIED_DEPLOY",
-        "PARALLEL_DISPATCHER_OR_NEW_CANONICAL_AUTHORITY"
-      ],
-      "scope": "Selection of existing transport and governance controls only; no automatic branch, PR, production write, merge or deployment.",
-      "repositoryScope": "MCP_GLOBAL_ALL_WORKSTREAMS",
-      "implementationStatus": "AGENT_READABLE_CONFIG_AND_RUNBOOK_ONLY_NOT_AUTOMATIC_RUNTIME_SELECTION",
-      "selectionContract": {
-        "requestedInOwnerMandate": true,
-        "procedureLoadedByAgent": true,
-        "selectedProfileRecordedInExistingIssueOrPrCheckpoint": true,
-        "actualTransportDecidedPerOperationFromExistingPermissions": true,
-        "automaticallyProcessedByRuntime": false,
-        "noNewTaskQueueOrWorker": true,
-        "noRuntimeAccessIfRequiredAuthorityUnavailable": true
-      },
-      "constructionMethodRelationship": {
-        "independentOfConstructionMethods": true,
-        "mayCoexistWith": "GD-U-METHOD-20261028-01",
-        "scopedMethodSource": "docs/governance/universal-capabilities-bifurcation-20261028.json#workingMethodology",
-        "scopedMethodOnlyFor": "GOVERNED_DEPLOY_UNIVERSAL_ISSUE_349",
-        "rule": "Select transport/profile per operation; preserve each workstream's own construction methodology, continuity ID, ownership, PR and execution authority."
-      }
+        "id": "EXTERNAL_GOVERNED_RECOVERY",
+        "label": "Bifurcation externe gouvernée — GitHub-first / OIDC / Non-régression",
+        "kind": "SELECTABLE_NON_AUTHORITATIVE_OPERATING_PROCEDURE",
+        "enabledForExplicitSelection": true,
+        "selectedByDefault": false,
+        "executionEngineCreated": false,
+        "runtimeWritePermissionGranted": false,
+        "taskSessionOrLockCreated": false,
+        "policyAuthority": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
+        "runbook": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
+        "allowedSelectionReasons": [
+            "OWNER_EXPLICITLY_REQUESTS_EXTERNAL_GOVERNED_RECOVERY",
+            "NORMAL_MCP_ADMISSION_OR_OAUTH_PATH_UNAVAILABLE",
+            "BOUNDED_MCP_REPAIR_OR_EXTENSION_REQUIRES_GITHUB_FIRST_CONTINUITY"
+        ],
+        "transportOrder": [
+            "GITHUB_ONLY",
+            "GITHUB_ACTION_READONLY_EVIDENCE",
+            "GITHUB_ACTION_BOUNDED_WRITE",
+            "RUNTIME_REQUIRED"
+        ],
+        "mandatoryGates": [
+            "EXACT_HEAD_AND_BRANCH_REOBSERVED",
+            "CANONICAL_ISSUE_AND_EXISTING_PR_REUSED",
+            "OWNERSHIP_COLLISION_DEPENDENCY_CHECKED",
+            "NO_RUNTIME_AUTHORITY_INFERRED_FROM_GITHUB_ACCESS",
+            "NO_SERVER_MUTATION_FROM_READONLY_EVIDENCE",
+            "CI_AND_REQUIRED_REVIEWS_ON_EXACT_SHA",
+            "EXISTING_GOVERNED_DEPLOY_WITH_ATTESTATION_ONLY_IF_ADMITTED",
+            "CHECKPOINT_AND_RETURN_TO_NORMAL_GOVERNANCE"
+        ],
+        "forbidden": [
+            "BYPASS_E3_OAUTH_OIDC_TASK_SESSION_LOCK",
+            "GITHUB_DIRECT_MAIN_PUSH",
+            "SERVER_DIRECT_VERSIONED_SOURCE_EDIT",
+            "UNBOUNDED_SHELL_OR_PRIVILEGE_ESCALATION",
+            "FAKE_REVIEW_FAKE_CLAIM_OR_UNVERIFIED_DEPLOY",
+            "PARALLEL_DISPATCHER_OR_NEW_CANONICAL_AUTHORITY"
+        ],
+        "repositoryScope": "MCP_GLOBAL_ALL_WORKSTREAMS",
+        "implementationStatus": "AGENT_READABLE_CONFIG_AND_RUNBOOK_ONLY_NOT_AUTOMATIC_RUNTIME_SELECTION",
+        "selectionContract": {
+          "requestedInOwnerMandate": true,
+          "procedureLoadedByAgent": true,
+          "selectedProfileRecordedInExistingIssueOrPrCheckpoint": true,
+          "actualTransportDecidedPerOperationFromExistingPermissions": true,
+          "automaticallyProcessedByRuntime": false,
+          "noNewTaskQueueOrWorker": true,
+          "noRuntimeAccessIfRequiredAuthorityUnavailable": true
+        },
+        "constructionMethodRelationship": {
+          "independentOfConstructionMethods": true,
+          "mayCoexistWith": "GD-U-METHOD-20261028-01",
+          "scopedMethodSource": "docs/governance/universal-capabilities-bifurcation-20261028.json#workingMethodology",
+          "scopedMethodOnlyFor": "GOVERNED_DEPLOY_UNIVERSAL_ISSUE_349",
+          "rule": "Select transport/profile per operation; preserve each workstream's own construction methodology, continuity ID, ownership, PR and execution authority."
+        },
+        "scope": "Selection of existing transport and governance controls only; no automatic branch, PR, production write, merge or deployment."
     }
   },
   "bootstrap": {

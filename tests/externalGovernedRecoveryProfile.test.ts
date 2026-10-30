@@ -3,6 +3,18 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 type Profile = {
+  id: string;
+  repositoryScope: string;
+  implementationStatus: string;
+  selectionContract: {
+    automaticallyProcessedByRuntime: boolean;
+    noNewTaskQueueOrWorker: boolean;
+    selectedProfileRecordedInExistingIssueOrPrCheckpoint: boolean;
+  };
+  constructionMethodRelationship: {
+    independentOfConstructionMethods: boolean;
+    mayCoexistWith: string;
+  };
   enabledForExplicitSelection: boolean;
   selectedByDefault: boolean;
   executionEngineCreated: boolean;
