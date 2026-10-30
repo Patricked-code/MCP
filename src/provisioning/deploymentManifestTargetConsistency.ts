@@ -22,7 +22,8 @@ export type ManifestTargetAssessment = Readonly<{
     'URL_PATH_MISMATCH'|'APPLICATION_BASEPATH_MISMATCH'|
     'DEPLOYMENT_MODE_MISMATCH'|'AUTO_PROVISIONING_NOT_DISABLED'|
     'DECLARED_SECURITY_GATES_INCOMPLETE'|
-    'DESTINATION_URL_MISMATCH';
+    'DESTINATION_URL_MISMATCH'|'SOURCE_MANIFEST_READ_UNAVAILABLE'|
+    'SOURCE_MANIFEST_INVALID';
   runtimeWriteAuthorized:false;
   manifestMutated:false;
   operationExecuted:false;
@@ -93,4 +94,41 @@ export function assessDeploymentManifestTarget(
     status:'TARGET_MATCHED_NOT_ADMITTED',reason:'EXACT_DECLARATIVE_TARGET_MATCH',
     runtimeWriteAuthorized:false,manifestMutated:false,operationExecuted:false
   };
+}
+
+/** Existing authenticated GitHub GET provider, supplied by the MCP server.
+ * The exact commit SHA prevents branch-head TOCTOU during planning.
+ * This reader is a preflight only; it cannot grant or perform a deployment.
+ */
+export async function assessGithubDeploymentManifestAtRevision(
+ target:UniversalDeploymentTarget,
+ revision:string,
+ githubGet:(endpoint:string)=>Promise<{ok:boolean;status:number;json:unknown}>
+):Promise<ManifestTargetAssessment>{
+ if(!validTarget(target)||typeof revision!=='string'||!/^[a-f0-9]{40}$/.test(revision))
+   return block('TARGET_INVALID');
+ const [owner,repo]=target.repository.split('/');
+ const endpoint='/repos/'+encodeURIComponent(owner!)+'/'+encodeURIComponent(repo!)
+   +'/contents/deploy/mcp-target.json?ref='+revision;
+ let response:{ok:boolean;status:number;json:unknown};
+ try{response=await githubGet(endpoint);}
+ catch{return block('SOURCE_MANIFEST_READ_UNAVAILABLE');}
+ if(!response||!response.ok||response.status!==200)
+   return block('SOURCE_MANIFEST_READ_UNAVAILABLE');
+ const body=OBJ(response.json);
+ if(!body||body.type!=='file'||body.path!=='deploy/mcp-target.json'
+   ||body.encoding!=='base64'||typeof body.size!=='number'
+   ||!Number.isSafeInteger(body.size)||body.size<1||body.size>16_384
+   ||typeof body.content!=='string'||body.content.length>24_000)
+   return block('SOURCE_MANIFEST_INVALID');
+ const encoded=body.content.replace(/\s+/g,'');
+ if(encoded.length===0||encoded.length%4!==0
+   ||!/^[A-Za-z0-9+/]*={0,2}$/.test(encoded))
+   return block('SOURCE_MANIFEST_INVALID');
+ try{
+   const bytes=Buffer.from(encoded,'base64');
+   if(bytes.byteLength!==body.size)return block('SOURCE_MANIFEST_INVALID');
+   const raw=JSON.parse(bytes.toString('utf8')) as unknown;
+   return assessDeploymentManifestTarget(target,raw);
+ }catch{return block('SOURCE_MANIFEST_INVALID');}
 }
