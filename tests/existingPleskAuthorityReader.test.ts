@@ -36,8 +36,9 @@ const task={
 };
 const session={
   governedSessionId:sessionId,status:'ACTIVE' as const,ownerPrincipalId:owner,
-  lastHeartbeatAt:at,
-  bootstrapReceipt:{governedSessionId:sessionId,stateVersion:1150,expiresAt:'2026-10-28T05:38:00.000Z',status:'ACKNOWLEDGED'}
+  lastHeartbeatAt:at,sessionRevision:4,
+  bootstrapReceipt:{bootstrapReceiptId:'22222222-2222-4222-8222-222222222222',
+    governedSessionId:sessionId,stateVersion:1150,expiresAt:'2026-10-28T05:38:00.000Z',status:'ACKNOWLEDGED'}
 };
 const lockRecord={
   scope:lock,status:'ACTIVE' as const,governedSessionId:sessionId,
@@ -192,4 +193,19 @@ test('P1 RED: bootstrap receipt expiring during asynchronous source observation 
   assert.equal(observation.snapshot.source,'UNVERIFIED');
   assert.ok(observation.blockers.includes('BOOTSTRAP_RECEIPT_NOT_CURRENT'));
   assert.equal(observation.operationExecuted,false);
+});
+
+test('P1 bootstrap: malformed receipt identity or invalid session revision fails closed',async()=>{
+  const cases=[
+    {...session,bootstrapReceipt:{...session.bootstrapReceipt,bootstrapReceiptId:'foreign-or-invalid'}},
+    {...session,sessionRevision:0}
+  ];
+  for(const changed of cases){
+    const observation=await inspectExistingPleskAuthority(request,identity,{
+      ...ports(),getSession:async()=>changed
+    });
+    assert.equal(observation.snapshot.source,'UNVERIFIED');
+    assert.ok(observation.blockers.includes('BOOTSTRAP_RECEIPT_NOT_CURRENT'));
+    assert.equal(observation.operationExecuted,false);
+  }
 });
