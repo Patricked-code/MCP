@@ -25,6 +25,7 @@ type SessionView = Readonly<{
   status:string;
   ownerPrincipalId:string|null;
   lastHeartbeatAt:string;
+  bootstrapReceipt?:Readonly<{governedSessionId:string;stateVersion:number;expiresAt:string;status:string}>|null;
 }>;
 type LockView = Readonly<{
   status:string;
