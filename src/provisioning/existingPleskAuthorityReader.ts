@@ -25,7 +25,14 @@ type SessionView = Readonly<{
   status:string;
   ownerPrincipalId:string|null;
   lastHeartbeatAt:string;
-  bootstrapReceipt?:Readonly<{governedSessionId:string;stateVersion:number;expiresAt:string;status:string}>|null;
+  sessionRevision:number;
+  bootstrapReceipt?:Readonly<{
+    bootstrapReceiptId:string;
+    governedSessionId:string;
+    stateVersion:number;
+    expiresAt:string;
+    status:string;
+  }>|null;
 }>;
 type LockView = Readonly<{
   status:string;
@@ -136,6 +143,10 @@ export async function inspectExistingPleskAuthority(
   // to this session, remain acknowledged and match the current Live State.
   const receipt=session?.bootstrapReceipt;
   if(!receipt || receipt.status!=='ACKNOWLEDGED'
+    || typeof receipt.bootstrapReceiptId!=='string'
+    || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(receipt.bootstrapReceiptId)
+    || !Number.isSafeInteger(session?.sessionRevision)
+    || (session?.sessionRevision??0)<=0
     || receipt.governedSessionId!==request.expectedSessionId
     || !Number.isFinite(Date.parse(receipt.expiresAt))
     || Date.parse(receipt.expiresAt)<=nowMs
@@ -162,6 +173,11 @@ export async function inspectExistingPleskAuthority(
     lockOwnerSessionId:targetLock?.governedSessionId??null,
     lockScope:normalized,
     lockExpiresAt:targetLock?.expiresAt??'',
+    bootstrapReceiptId:receipt?.bootstrapReceiptId??null,
+    bootstrapReceiptExpiresAt:receipt?.expiresAt??null,
+    bootstrapReceiptStateVersion:receipt?.stateVersion??null,
+    liveStateVersion:live?.stateVersion??null,
+    sessionRevision:session?.sessionRevision??null,
     consent:null,
     githubMainSha:liveCurrent?live?.github.head??null:null,
     serverCheckoutSha:liveCurrent?live?.s1.head??null:null,
