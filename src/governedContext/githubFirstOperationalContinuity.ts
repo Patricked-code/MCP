@@ -233,6 +233,8 @@ export function projectGithubExecutionForCoordination(
   });
 }
 
+export const EXTERNAL_GOVERNED_RECOVERY_FULL_NAME = "Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression";
+
 export const ExternalGovernedRecoveryInputSchema = z.object({
   profile: z.literal('EXTERNAL_GOVERNED_RECOVERY'),
   ownerSelected: z.boolean(),
