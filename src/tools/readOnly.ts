@@ -21,7 +21,7 @@ import { registerGithubLifecycleReadTools } from './githubLifecycle.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 import { extendProjectContextWithUniversalCapabilities } from '../provisioning/universalCapabilityDiscovery.js';
 import { probeExistingAdminReadCapabilities } from '../provisioning/universalAdminLiveProbe.js';
-import { ExternalGovernedRecoveryInputSchema, previewExternalGovernedRecovery } from '../governedContext/githubFirstOperationalContinuity.js';
+import { EXTERNAL_GOVERNED_RECOVERY_FULL_NAME } from '../governedContext/githubFirstOperationalContinuity.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -29,12 +29,6 @@ async function run(serverId: ServerId, command: string) {
 }
 
 export function registerReadOnlyTools(server: McpServer): void {
-  server.registerTool('mcp_preview_external_governed_recovery', {
-    title: 'Preview External Governed Recovery',
-    description: 'Preview owner-selected GitHub-first recovery without creating tasks, permissions, merges or deployments.',
-    inputSchema: ExternalGovernedRecoveryInputSchema.shape,
-    annotations: { readOnlyHint: true, destructiveHint: false }
-  }, async (input) => asText(JSON.stringify(previewExternalGovernedRecovery(input))));
   server.tool('ping', 'Vérifie que le MCP WealthTech SSH Bridge répond.', {}, async () => asText('wealthtech_ssh_bridge_ok'));
 
   server.tool('get_project_context', 'Retourne le contexte projet, les serveurs et les domaines protégés.', {}, async () => {
@@ -42,11 +36,27 @@ export function registerReadOnlyTools(server: McpServer): void {
     // Actual bounded GitHub API and SSH reads; no privileged commands, no tokens in responses.
     // Failed providers are reported as BLOCKED without changing legacy project fields.
     const liveEvidence = await probeExistingAdminReadCapabilities();
-    return asText(JSON.stringify(extendProjectContextWithUniversalCapabilities({
+    const project = extendProjectContextWithUniversalCapabilities({
       name: 'wealthtech_ssh_bridge',
       mode: 'read-only-first',
       servers: managedServers
-    }, registered.map(tool => tool.name), registered, liveEvidence), null, 2));
+    }, registered.map(tool => tool.name), registered, liveEvidence);
+    return asText(JSON.stringify({
+      ...project,
+      selectableMaintenanceMethod: {
+        id: 'EXTERNAL_GOVERNED_RECOVERY',
+        fullName: EXTERNAL_GOVERNED_RECOVERY_FULL_NAME,
+        scope: 'MCP_GLOBAL_ALL_WORKSTREAMS',
+        selectedByDefault: false,
+        agentSelectableViaGithub: true,
+        runtimeAutomaticExecution: false,
+        requiresInternalTaskClaimForGithubOnlyOperations: false,
+        requiresCurrentGithubPermissionAndCollisionEvidence: true,
+        requiresGovernedDeployAdmission: true,
+        runbook: 'docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md',
+        advisoryOnly: true
+      }
+    }, null, 2));
   });
 
   server.tool('check_disk_s1', 'Affiche df -h sur S1.', {}, async () => run('s1', 'df -h'));
