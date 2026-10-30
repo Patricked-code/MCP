@@ -707,6 +707,23 @@ export async function startHttpServer(): Promise<void> {
           runReadOnlyCommand(input.serverId,'id -u',5_000,128),
           runReadOnlyCommand(input.serverId,'plesk version',5_000,1_024)
         ]);
+        // GitHub/SSH probes above are asynchronous. Re-read the real task,
+        // owned session, bootstrap receipt, lock and Live State after those
+        // calls, and bind the receipt to the earlier signed E3 admission.
+        // The executor repeats this check immediately before guarded write.
+        const atBoundary=await readExistingPleskAuthorityFromRuntime({
+          ...request,now:new Date().toISOString()
+        },proof.verified.transport);
+        const latest=atBoundary.snapshot;
+        if(atBoundary.blockers.length!==1
+          ||atBoundary.blockers[0]!=='E3_AND_CI_ATTESTATION_UNAVAILABLE'
+          ||latest.source!=='EXISTING_GOVERNED_RUNTIME'
+          ||latest.bootstrapReceiptId!==snapshot.bootstrapReceiptId
+          ||latest.bootstrapReceiptId!==e.runtimeAuthority.bootstrapReceiptId
+          ||latest.sessionRevision!==snapshot.sessionRevision
+          ||latest.sessionRevision!==e.runtimeAuthority.sessionRevision){
+          return latest;
+        }
         const releaseOk=review?.source==='SERVER_VALIDATED_GITHUB_API'
           &&review.repository==='Patricked-code/MCP'
           &&review.pr===e.pullRequestNumber
@@ -717,8 +734,8 @@ export async function startHttpServer(): Promise<void> {
           &&Date.parse(review.at)<=Date.now()
           &&Date.now()-Date.parse(review.at)<=300_000;
         if(!releaseOk||user.code!==0||user.stdout.trim()!=='0'
-          ||plesk.code!==0)return snapshot;
-        return {...snapshot,consent:'CREATE_SUBDOMAIN' as const,
+          ||plesk.code!==0)return latest;
+        return {...latest,consent:'CREATE_SUBDOMAIN' as const,
           reviewAndCiApproved:true};
       };
       return executeGovernedPleskSubdomainOnExistingSsh(request,readAuthority);
