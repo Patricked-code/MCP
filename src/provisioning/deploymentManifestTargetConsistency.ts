@@ -73,6 +73,11 @@ export function assessDeploymentManifestTarget(
     return block('DEPLOYMENT_MODE_MISMATCH');
   if(safety.allowAutomaticProvisioning!==false)
     return block('AUTO_PROVISIONING_NOT_DISABLED');
+  const requiredSafety=['requireServerSideAllowlist','requireFreshPreflight',
+    'requireGovernedClaimAndLock','requireExactCommitSha','requireHealthAndRollback',
+    'forbidSecretsInRepository','forbidOtherVhostChanges'] as const;
+  if(requiredSafety.some(field=>safety[field]!==true))
+    return block('DECLARED_SECURITY_GATES_INCOMPLETE');
   try{
     if(typeof destination.url!=='string')return block('DESTINATION_URL_MISMATCH');
     const u=new URL(destination.url);
