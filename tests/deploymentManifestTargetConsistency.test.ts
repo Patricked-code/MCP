@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   assessDeploymentManifestTarget,
+  assessGithubDeploymentManifestAtRevision,
   type UniversalDeploymentTarget
 } from '../src/provisioning/deploymentManifestTargetConsistency.js';
 
@@ -106,4 +107,63 @@ test('GD-U E2: same generic contract also accepts a separate root-domain applica
  assert.equal(result.runtimeWriteAuthorized,false);
  assert.equal(result.operationExecuted,false);
  assert.equal(assessDeploymentManifestTarget(target,otherManifest).status,'BLOCKED');
+});
+
+test('GD-U E2: exact SHA provider GET yields same bounded read-only target decision',async()=>{
+ const revision='a'.repeat(40);
+ const calls:string[]=[];
+ const content=Buffer.from(JSON.stringify(manifest),'utf8');
+ const result=await assessGithubDeploymentManifestAtRevision(
+  target,revision,async endpoint=>{
+   calls.push(endpoint);
+   return{ok:true,status:200,json:{
+    type:'file',path:'deploy/mcp-target.json',encoding:'base64',
+    size:content.length,content:content.toString('base64')
+   }};
+  }
+ );
+ assert.deepEqual(calls,[
+  '/repos/chainsolutions-wealthtech/Regulatory/contents/deploy/mcp-target.json?ref='+revision
+ ]);
+ assert.equal(result.status,'TARGET_MATCHED_NOT_ADMITTED');
+ assert.equal(result.runtimeWriteAuthorized,false);
+ assert.equal(result.operationExecuted,false);
+});
+test('GD-U E2: provider response cannot override the requested deployment destination',async()=>{
+ const source={...manifest,destination:{...manifest.destination,
+  host:'regulatory.wealthtechinnovations.com'}};
+ const bytes=Buffer.from(JSON.stringify(source));
+ const out=await assessGithubDeploymentManifestAtRevision(
+  target,'b'.repeat(40),async()=>({ok:true,status:200,json:{
+   type:'file',path:'deploy/mcp-target.json',encoding:'base64',
+   size:bytes.length,content:bytes.toString('base64')
+  }})
+ );
+ assert.equal(out.status,'BLOCKED');
+ assert.equal(out.reason,'HOST_MISMATCH');
+});
+test('GD-U E2: stale revisions, bogus GitHub blobs and provider failures are denied',async()=>{
+ let called=0;
+ const fn=async()=>{called++;return{ok:false,status:404,json:null};};
+ assert.equal((await assessGithubDeploymentManifestAtRevision(
+  target,'main',fn)).reason,'TARGET_INVALID');
+ assert.equal(called,0);
+ assert.equal((await assessGithubDeploymentManifestAtRevision(
+  target,'c'.repeat(40),fn)).reason,'SOURCE_MANIFEST_READ_UNAVAILABLE');
+ const cases=[
+  {type:'symlink',path:'deploy/mcp-target.json',encoding:'base64',size:2,content:'e30='},
+  {type:'file',path:'other.json',encoding:'base64',size:2,content:'e30='},
+  {type:'file',path:'deploy/mcp-target.json',encoding:'base64',size:10,content:'e30='},
+  {type:'file',path:'deploy/mcp-target.json',encoding:'base64',size:2,content:'%%'}
+ ];
+ for(const response of cases){
+  const r=await assessGithubDeploymentManifestAtRevision(
+   target,'d'.repeat(40),async()=>({ok:true,status:200,json:response}));
+  assert.equal(r.reason,'SOURCE_MANIFEST_INVALID');
+  assert.equal(r.runtimeWriteAuthorized,false);
+ }
+ const rejected=await assessGithubDeploymentManifestAtRevision(target,'e'.repeat(40),
+  async()=>{throw new Error('SECRET_REMOTE_PROVIDER_FAILURE');});
+ assert.equal(rejected.reason,'SOURCE_MANIFEST_READ_UNAVAILABLE');
+ assert.doesNotMatch(JSON.stringify(rejected),/SECRET_/);
 });
