@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "continuityId": "MCP-PILOT-E2-01-CONT-20261030-ROOT-01",
+  "repository": "Patricked-code/MCP",
+  "entryProfile": "EXTERNAL_GOVERNED_RECOVERY",
+  "workSelection": "OWNER_DIRECTLY_REQUESTED_WORK",
+  "explicitOwnerSelection": true,
+  "instructions": {
+    "summary": "Ajouter une preuve structurée de l'entrée choisie, des instructions, du responsable, de la branche, de la PR et du checkpoint pour les nouveaux chantiers MCP.",
+    "sourceUrl": "https://github.com/Patricked-code/MCP/issues/359"
+  },
+  "responsible": {
+    "githubActor": "Patricked-code",
+    "internalTaskId": null
+  },
+  "github": {
+    "issueNumber": 359,
+    "branch": null,
+    "pullRequestNumber": null,
+    "headSha": null,
+    "mergeSha": null
+  },
+  "checkpoint": {
+    "url": "https://github.com/Patricked-code/MCP/issues/359",
+    "nextAction": "Créer une branche indépendante, implémenter les tests et rejoindre la CI et la revue communes."
+  },
+  "deployment": {
+    "workflowRunUrl": null,
+    "runtimeRevisionSha": null
+  },
+  "stage": "ISSUE_OPENED"
+}
