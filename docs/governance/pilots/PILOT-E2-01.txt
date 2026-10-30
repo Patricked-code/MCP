@@ -1,9 +1,9 @@
 # PILOT-E2-01 — preuve GitHub des entrées de chantier
 
-**Continuité canonique :** `MCP-PILOT-E2-01-CONT-20261030-ROOT-01`.  
-**Issue canonique :** [#359](https://github.com/Patricked-code/MCP/issues/359).  
-**Entrée demandée par le propriétaire :** `EXTERNAL_GOVERNED_RECOVERY`.  
-**Source :** instruction explicite « Lance PILOT-E2-01 par l'entrée 2 ».  
+**Continuité canonique :** `MCP-PILOT-E2-01-CONT-20261030-ROOT-01`.
+**Issue canonique :** [#359](https://github.com/Patricked-code/MCP/issues/359).
+**Entrée demandée par le propriétaire :** `EXTERNAL_GOVERNED_RECOVERY`.
+**Source :** instruction explicite « Lance PILOT-E2-01 par l'entrée 2 ».
 **Nature :** chantier d'ajout strictement documentaire/read-only de traçabilité. Aucune Task Queue, autorité de sécurité, session, permission ni nouveau pipeline.
 
 ## Périmètre et absence de collision
