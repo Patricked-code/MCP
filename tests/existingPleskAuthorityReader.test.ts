@@ -182,3 +182,14 @@ test('EXTERNAL_GOVERNED_RECOVERY: live-state version drift invalidates bootstrap
   assert.equal(r.snapshot.source,'UNVERIFIED');
   assert.ok(r.blockers.includes('BOOTSTRAP_RECEIPT_NOT_CURRENT'));
 });
+
+test('P1 RED: bootstrap receipt expiring during asynchronous source observation fails closed',async()=>{
+  let timeReads=0;
+  const observation=await inspectExistingPleskAuthority(request,identity,{
+    ...ports(),
+    now:()=>new Date(Date.parse(at)+(timeReads++===0?0:181_000))
+  });
+  assert.equal(observation.snapshot.source,'UNVERIFIED');
+  assert.ok(observation.blockers.includes('BOOTSTRAP_RECEIPT_NOT_CURRENT'));
+  assert.equal(observation.operationExecuted,false);
+});
