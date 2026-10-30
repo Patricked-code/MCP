@@ -88,3 +88,22 @@ test('GD-U E2: weakening any existing manifest safety requirement fails closed',
   assert.equal(result.reason,'DECLARED_SECURITY_GATES_INCOMPLETE',field);
  }
 });
+
+test('GD-U E2: same generic contract also accepts a separate root-domain application model',()=>{
+ const other:UniversalDeploymentTarget={
+  repository:'example/demo-service',branch:'main',server:'s2',
+  host:'demo.example.com',urlPath:'/',applicationBasePath:'/'
+ };
+ const otherManifest={
+  ...manifest,source:{repository:other.repository,branch:other.branch},
+  destination:{server:'s2',host:'demo.example.com',urlPath:'/',
+    url:'https://demo.example.com/',
+    subdomain:{label:'demo'}},
+  application:{basePath:'/',basePathMode:'root-on-dedicated-subdomain'}
+ };
+ const result=assessDeploymentManifestTarget(other,otherManifest);
+ assert.equal(result.status,'TARGET_MATCHED_NOT_ADMITTED');
+ assert.equal(result.runtimeWriteAuthorized,false);
+ assert.equal(result.operationExecuted,false);
+ assert.equal(assessDeploymentManifestTarget(target,otherManifest).status,'BLOCKED');
+});
