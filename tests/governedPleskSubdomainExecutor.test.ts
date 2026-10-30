@@ -26,6 +26,11 @@ const authority = ():GovernedPleskAuthoritySnapshot=>({
   sessionLastHeartbeatAt:now,
   lockOwnerSessionId:session,lockScope:'resource:plesk:s1:wealthtechinnovations.com',
   lockExpiresAt:'2026-10-28T07:32:00.000Z',
+  bootstrapReceiptId:'22222222-2222-4222-8222-222222222222',
+  bootstrapReceiptExpiresAt:'2026-10-28T07:33:00.000Z',
+  bootstrapReceiptStateVersion:1150,
+  liveStateVersion:1150,
+  sessionRevision:4,
   consent:'CREATE_SUBDOMAIN',
   githubMainSha:sha,serverCheckoutSha:sha,runtimeRevisionSha:sha,
   reviewAndCiApproved:true
@@ -246,5 +251,60 @@ test('RED GD-U B3i-b CLOCK: expire lease during SSH preflight before guarded wri
   const deps={readExistingAuthority:async()=>authority(),remote:io,now:()=>serverNow};
   const out=await executeGovernedPleskSubdomain(input,deps);
   assert.equal(out.status,'BLOCKED');
+  assert.equal(base.calls.filter(x=>x.startsWith('W:')).length,0);
+});
+
+test('P1: missing, expired or stale bootstrap proof never reaches Plesk guarded mutation',async()=>{
+  const invalid=[
+    {bootstrapReceiptId:null},
+    {bootstrapReceiptId:'invalid-id'},
+    {sessionRevision:0},
+    {bootstrapReceiptExpiresAt:now},
+    {bootstrapReceiptStateVersion:1149},
+    {liveStateVersion:1151}
+  ];
+  for(const patch of invalid){
+    const {io,calls}=remote();
+    const outcome=await executeGovernedPleskSubdomain(input,{
+      now:()=>Date.parse(now),readExistingAuthority:async()=>({...authority(),...patch}),remote:io
+    });
+    assert.equal(outcome.status,'BLOCKED',JSON.stringify(patch));
+    assert.equal(calls.filter(x=>x.startsWith('W:')).length,0);
+  }
+});
+
+test('P1: bootstrap expiry while SSH preflight runs is rejected at final guarded boundary',async()=>{
+  let clock=Date.parse(now);
+  const base=remote();
+  const io:PleskRemotePort={
+    readonly:async(server,command)=>{
+      const result=await base.io.readonly(server,command);
+      clock=Date.parse(now)+90_000;
+      return result;
+    },
+    guarded:base.io.guarded
+  };
+  const proof={...authority(),bootstrapReceiptExpiresAt:new Date(Date.parse(now)+60_000).toISOString()};
+  const outcome=await executeGovernedPleskSubdomain(input,{
+    now:()=>clock,readExistingAuthority:async()=>proof,remote:io
+  });
+  assert.equal(outcome.status,'BLOCKED');
+  assert.equal(outcome.reason,'GOVERNED_AUTHORITY_EXPIRED_BEFORE_WRITE');
+  assert.equal(base.calls.filter(x=>x.startsWith('W:')).length,0);
+});
+
+test('P1: bootstrap receipt replacement during preflight never inherits initial approval',async()=>{
+  const base=remote();
+  let reads=0;
+  const outcome=await executeGovernedPleskSubdomain(input,{
+    now:()=>Date.parse(now),
+    readExistingAuthority:async()=>reads++===0?authority():{
+      ...authority(),bootstrapReceiptId:'33333333-3333-4333-8333-333333333333',
+      sessionRevision:5
+    },
+    remote:base.io
+  });
+  assert.equal(outcome.status,'BLOCKED');
+  assert.equal(outcome.reason,'GOVERNED_AUTHORITY_EXPIRED_BEFORE_WRITE');
   assert.equal(base.calls.filter(x=>x.startsWith('W:')).length,0);
 });
