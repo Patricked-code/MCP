@@ -34,6 +34,7 @@ type LockView = Readonly<{
 }>;
 type LiveView = Readonly<{
   freshness:string;
+  stateVersion?:number;
   alignment:Readonly<{global:string}>;
   github:Readonly<{status:string;head:string|null}>;
   s1:Readonly<{status:string;head:string|null}>;
@@ -123,6 +124,17 @@ export async function inspectExistingPleskAuthority(
     && live.s1.head===request.expectedHeadSha
     && live.runtime.revision===request.expectedHeadSha;
   if(!liveCurrent)blockers.push('LIVE_SHA_NOT_ATTESTED');
+  // Same bootstrap authority used by governed task tools: receipt must belong
+  // to this session, remain acknowledged and match the current Live State.
+  const receipt=session?.bootstrapReceipt;
+  if(!receipt || receipt.status!=='ACKNOWLEDGED'
+    || receipt.governedSessionId!==request.expectedSessionId
+    || !Number.isFinite(Date.parse(receipt.expiresAt))
+    || Date.parse(receipt.expiresAt)<=nowMs
+    || !live || !Number.isInteger(live.stateVersion)
+    || receipt.stateVersion!==live.stateVersion){
+    blockers.push('BOOTSTRAP_RECEIPT_NOT_CURRENT');
+  }
 
   // No Plesk-specific E3+CI grant in current Task/Session/Lock data schema:
   // fail closed. A historical checkpoint is NOT consent or independent review.
