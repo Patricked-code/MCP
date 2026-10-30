@@ -148,5 +148,5 @@ test('two work intakes converge into one existing engineering and deployment lif
     assert.ok(runbook.includes(step));
   }
   assert.match(runbook, /même cycle commun/i);
-  assert.match(runbook, /sans attribution préalable de Task Queue/i);
+  assert.match(runbook, /Non requise pour les opérations GitHub autorisées/i);
 });
