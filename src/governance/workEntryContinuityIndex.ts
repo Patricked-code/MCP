@@ -40,9 +40,11 @@ export function buildWorkEntryContinuityIndex(records:readonly GovernedWorkEntry
   const entries:IndexedWorkEntry[]=[];
   for(const [continuityId,raw] of grouped){
     const history=[...new Map(raw.map(x=>[canonical(x),x])).values()];
-    if(history.some(x=>x.github.issueNumber!==history[0].github.issueNumber
-      ||x.entryProfile!==history[0].entryProfile
-      ||x.instructions.sourceUrl!==history[0].instructions.sourceUrl)){
+    const first=history[0];
+    if(!first){blockers.push('EMPTY_HISTORY:'+continuityId);continue;}
+    if(history.some(x=>x.github.issueNumber!==first.github.issueNumber
+      ||x.entryProfile!==first.entryProfile
+      ||x.instructions.sourceUrl!==first.instructions.sourceUrl)){
       blockers.push('CONTINUITY_IDENTITY_CONFLICT:'+continuityId);
       continue;
     }
@@ -61,8 +63,10 @@ export function buildWorkEntryContinuityIndex(records:readonly GovernedWorkEntry
       blockers.push('AMBIGUOUS_STAGE:'+continuityId);
       continue;
     }
-    entries.push({continuityId,entryProfile:history[0].entryProfile,
-      issueNumber:history[0].github.issueNumber,latest:history[history.length-1],history});
+    const latest=history[history.length-1];
+    if(!latest){blockers.push('EMPTY_HISTORY:'+continuityId);continue;}
+    entries.push({continuityId,entryProfile:first.entryProfile,
+      issueNumber:first.github.issueNumber,latest,history});
   }
   entries.sort((a,b)=>a.continuityId.localeCompare(b.continuityId));
   return {status:blockers.length?'CONFLICT':'READY',entries:blockers.length?[]:entries,blockers};
