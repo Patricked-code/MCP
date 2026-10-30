@@ -232,3 +232,43 @@ export function projectGithubExecutionForCoordination(
     mutationPerformed: false
   });
 }
+
+export const ExternalGovernedRecoveryInputSchema = z.object({
+  profile: z.literal('EXTERNAL_GOVERNED_RECOVERY'),
+  ownerSelected: z.boolean(),
+  collisionFreeObserved: z.boolean(),
+  expectedMainSha: z.string().regex(/^[a-f0-9]{40}$/),
+  observedMainSha: z.string().regex(/^[a-f0-9]{40}$/),
+  expectedBranchSha: z.string().regex(/^[a-f0-9]{40}$/),
+  observedBranchSha: z.string().regex(/^[a-f0-9]{40}$/),
+  github: GithubFirstOperationalBootstrapInputSchema
+}).strict();
+
+export type ExternalGovernedRecoveryInput = z.infer<typeof ExternalGovernedRecoveryInputSchema>;
+
+export function previewExternalGovernedRecovery(raw: ExternalGovernedRecoveryInput) {
+  const input = ExternalGovernedRecoveryInputSchema.parse(raw);
+  const safe = {
+    profile: 'EXTERNAL_GOVERNED_RECOVERY' as const,
+    advisoryOnly: true as const,
+    newTaskOrSessionCreated: false as const,
+    githubWriteGranted: false as const,
+    serverWriteGranted: false as const,
+    deployGranted: false as const,
+    workflowTriggered: false as const
+  };
+  if (!input.ownerSelected) return { ...safe, state: 'EXPLICIT_SELECTION_REQUIRED', transport: null };
+  if (input.expectedMainSha !== input.observedMainSha ||
+      input.expectedBranchSha !== input.observedBranchSha ||
+      input.github.observedHeadSha !== input.observedBranchSha) {
+    return { ...safe, state: 'HEAD_DRIFT_STOP_WRITE', transport: null };
+  }
+  if (!input.collisionFreeObserved) return { ...safe, state: 'COLLISION_UNRESOLVED', transport: null };
+  if (!input.github.githubConnected) return { ...safe, state: 'GITHUB_CONNECTION_REQUIRED', transport: null };
+  const transport = resolveGithubFirstOperationalBootstrap(input.github);
+  const state = transport.mode === 'GITHUB_ONLY' ? 'GITHUB_WORK_CANDIDATE'
+    : transport.mode === 'GITHUB_ACTION_READONLY_EVIDENCE' ? 'OIDC_EVIDENCE_CANDIDATE'
+      : 'RUNTIME_AUTHORITY_REQUIRED';
+  return { ...safe, state, transport: transport.mode, nextAction: transport.nextAction,
+    githubOperationsRequireExistingPermissions: true as const };
+}
