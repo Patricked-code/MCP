@@ -2,7 +2,7 @@
 
 ## Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression
 
-Le nouvel outil en lecture seule `mcp_preview_external_governed_recovery` aide un agent MCP connecté à prévisualiser la sélection, mais reste facultatif : la voie GitHub directe continue même si le MCP est inaccessible. Le profil ne donne aucun droit d'exécution ; seuls GitHub et les autorités existantes déterminent les opérations admissibles.
+L'outil existant `get_project_context` expose le profil de reprise à un agent MCP connecté ; le sélecteur pur `previewExternalGovernedRecovery` permet d'évaluer les observations, mais reste facultatif : la voie GitHub directe continue même si le MCP est inaccessible. Le profil ne donne aucun droit d'exécution ; seuls GitHub et les autorités existantes déterminent les opérations admissibles.
 
 ## Procédure MCP globale de reprise externe (documentaire, non exécutoire)
 

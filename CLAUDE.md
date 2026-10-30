@@ -2,7 +2,7 @@
 
 ## Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression
 
-Profil `EXTERNAL_GOVERNED_RECOVERY` : utiliser éventuellement l'aperçu non privilégié `mcp_preview_external_governed_recovery` lorsque le MCP répond ; sinon emprunter GitHub sans attribution préalable de tâche interne pour les actions GitHub autorisées. L'aperçu ne crée ni task ni droit de déploiement.
+Profil `EXTERNAL_GOVERNED_RECOVERY` : utiliser éventuellement le contexte en lecture seule `get_project_context` lorsque le MCP répond ; sinon emprunter GitHub sans attribution préalable de tâche interne pour les actions GitHub autorisées. L'aperçu ne crée ni task ni droit de déploiement.
 
 ## Sélection explicite de la bifurcation externe gouvernée
 

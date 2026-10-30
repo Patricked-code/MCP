@@ -25,7 +25,7 @@ Le profil **n'est pas** la méthode de construction : un agent peut sélectionne
 
 ## Intégration MCP existante — surface de sélection read-only
 
-L'outil `mcp_preview_external_governed_recovery` est enregistré dans la surface MCP de **lecture seule** et appelle le sélecteur existant `resolveGithubFirstOperationalBootstrap`. Il ne crée aucun moteur de dispatch ni aucune autorité de travail. Les observations du propriétaire et des SHA/absence de collision produisent uniquement une **proposition de transport non autoritaire** ; les permissions GitHub réelles, les contraintes E3, les sessions et les locks restent vérifiés séparément.
+L'outil existant `get_project_context` expose le profil dans sa réponse en lecture seule. Le sélecteur pur `previewExternalGovernedRecovery` s'appuie sur `resolveGithubFirstOperationalBootstrap` pour produire un avis non autoritaire. Il ne crée aucun moteur de dispatch ni aucune autorité de travail. Les observations du propriétaire et des SHA/absence de collision produisent uniquement une **proposition de transport non autoritaire** ; les permissions GitHub réelles, les contraintes E3, les sessions et les locks restent vérifiés séparément.
 
 **Si le MCP ne répond pas**, la méthode externe fonctionne quand même en utilisant l'identité GitHub autorisée : branche/PR/CI et GitHub Actions/OIDC existants ne dépendent pas de l'attribution préalable d'une Task Queue MCP.
 
