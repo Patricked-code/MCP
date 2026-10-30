@@ -167,3 +167,16 @@ test('GD-U E2: stale revisions, bogus GitHub blobs and provider failures are den
  assert.equal(rejected.reason,'SOURCE_MANIFEST_READ_UNAVAILABLE');
  assert.doesNotMatch(JSON.stringify(rejected),/SECRET_/);
 });
+
+test('GD-U E2: explicitly declared guarded automation is compatible but never grants execution',()=>{
+ const proposed={...target,allowDeclaredAutomation:true};
+ const declared={...manifest,safety:{...manifest.safety,allowAutomaticProvisioning:true}};
+ const yes=assessDeploymentManifestTarget(proposed,declared);
+ assert.equal(yes.status,'TARGET_MATCHED_NOT_ADMITTED');
+ assert.equal(yes.runtimeWriteAuthorized,false);
+ assert.equal(yes.operationExecuted,false);
+ assert.equal(assessDeploymentManifestTarget(proposed,manifest).reason,
+  'DECLARED_AUTOMATION_NOT_ENABLED');
+ assert.equal(assessDeploymentManifestTarget(target,declared).reason,
+  'AUTO_PROVISIONING_NOT_DISABLED');
+});
