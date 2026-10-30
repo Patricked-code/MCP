@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "registryId": "GD-U-FND-FOUNDATIONS-20261030",
+  "continuityId": "GD-U-CONT-20261030-ROOT-01",
+  "method": "EXTERNAL_GOVERNED_RECOVERY",
+  "source": "User-confirmed 24 historical foundation IDs and domains; exact individual mappings pending historical evidence",
+  "authority": "NON_AUTHORITATIVE_RECONCILIATION",
+  "foundationCount": 24,
+  "foundations": [
+    {
+      "id": "FND-001",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-002",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-003",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-004",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-005",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-006",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-007",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-008",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-009",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-010",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-011",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-012",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-013",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-014",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-015",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-016",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-017",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-018",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-019",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-020",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-021",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-022",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-023",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    },
+    {
+      "id": "FND-024",
+      "status": "HISTORICAL_DEFINITION_PENDING_VERIFICATION",
+      "canonicalName": null,
+      "domainAssignments": [],
+      "implementationEvidence": [],
+      "notes": "Do not assign a name or domain without canonical source evidence"
+    }
+  ],
+  "confirmedDomains": [
+    "GitHub",
+    "Plesk",
+    "S1/S2",
+    "Docker",
+    "Kubernetes",
+    "bases de données",
+    "cloud",
+    "DNS",
+    "sécurité",
+    "observabilité",
+    "orchestration multi-agents"
+  ],
+  "capabilityCatalog": {
+    "path": "src/provisioning/universalAdminCapabilityCatalog.ts",
+    "count": 165,
+    "preserveHistoricalIds": true,
+    "relationshipStatus": "UNMAPPED_PENDING_EVIDENCE"
+  },
+  "constraints": [
+    "No renumbering or duplicate foundation IDs",
+    "No invented historical foundation names or assignments",
+    "Reuse existing MCP runtime authorities",
+    "No new permissions, tokens, production writes, merge or deployment from this registry",
+    "Map each foundation to capabilities, existing code, tests, permissions and evidence before admission"
+  ],
+  "nextSlice": "Verify historical FND-001..FND-024 definitions and populate mappings individually with source evidence"
+}
