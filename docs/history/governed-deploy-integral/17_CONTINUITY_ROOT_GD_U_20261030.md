@@ -24,18 +24,18 @@
 | Identifiant exact | Nature d'origine | Parent et provenance |
 |---|---|---|
 | `GD-U-CONT-20261030-ROOT-01` | **Nouveau Continuity ID documentaire racine** | Issue #349, [origine du 30/10](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512613394) |
-| `GD-U-02D-CONT-20261029-B3I-ROOT-01` | Continuity ID **fils**, root de B3i seulement | PR #355, [premier ancrage](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6506328959) ; [checkpoint source JSON](../../governance/gd-u-02d-b3i-authenticated-mcp-web-pairing-20261029.json) |
-| `MCP-GD-UNIVERSAL-CAPABILITIES-BIFURCATION-20261028` | ID de registre/plan historique | PR #355, [JSON existant](../../governance/universal-capabilities-bifurcation-20261028.json) |
+| `GD-U-02D-CONT-20261029-B3I-ROOT-01` | Continuity ID **fils**, root de B3i seulement | PR #355, [premier ancrage](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6506328959) ; [checkpoint source JSON](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/gd-u-02d-b3i-authenticated-mcp-web-pairing-20261029.json) |
+| `MCP-GD-UNIVERSAL-CAPABILITIES-BIFURCATION-20261028` | ID de registre/plan historique | PR #355, [JSON existant](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/universal-capabilities-bifurcation-20261028.json) |
 | `GD-U-METHOD-20261028-01` | Version de méthode, pas continuité | Propriété `workingMethodology.version` du registre |
-| `MCP-GD-U-02D-B3B-B3C-20261028` | `continuityId` local **B3b–B3c**, checkpoint de preuve de release | [Fichier original](../../governance/gd-u-02d-b3b-b3c-release-evidence-20261028.json), #355 |
-| `GD-U-02D-B3D-E3-SINGLE-USE-20261028` | `continuationId` local B3d E3 | [Fichier original](../../governance/gd-u-02d-b3d-e3-single-use-20261028.json), #355 |
-| `GD-U-02D-B3F-HTTP-MCP-ADMISSION-20261028` | `continuationId` local B3f, admission HTTP/MCP | [Fichier original](../../governance/gd-u-02d-b3f-http-mcp-admission-20261028.json), #355 |
-| `GD-U-02D-B3G-TRUSTED-CONSUMPTION-CLOCK-20261028` | ID du checkpoint d'horloge B3g | [Fichier original](../../governance/gd-u-02d-b3g-trusted-consumption-clock-20261028.json), #355 |
-| `GD-U-02D-B3H-GITHUB-INDEPENDENT-REVIEW-20261028` | `continuityId` local B3h, revue GitHub | [Fichier original](../../governance/gd-u-02d-b3h-review-integrity-20261028.json), #355 |
-| `GD-U-02D-B3i-GITHUB-REVIEW-TIMESTAMP-AMBIGUITY-20261028` | ID de checkpoint de vérification horodatage de revue | [Fichier original](../../governance/gd-u-02d-b3i-review-timestamp-ambiguity-20261028.json), #355 |
+| `MCP-GD-U-02D-B3B-B3C-20261028` | `continuityId` local **B3b–B3c**, checkpoint de preuve de release | [Fichier original](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/gd-u-02d-b3b-b3c-release-evidence-20261028.json), #355 |
+| `GD-U-02D-B3D-E3-SINGLE-USE-20261028` | `continuationId` local B3d E3 | [Fichier original](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/gd-u-02d-b3d-e3-single-use-20261028.json), #355 |
+| `GD-U-02D-B3F-HTTP-MCP-ADMISSION-20261028` | `continuationId` local B3f, admission HTTP/MCP | [Fichier original](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/gd-u-02d-b3f-http-mcp-admission-20261028.json), #355 |
+| `GD-U-02D-B3G-TRUSTED-CONSUMPTION-CLOCK-20261028` | ID du checkpoint d'horloge B3g | [Fichier original](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/gd-u-02d-b3g-trusted-consumption-clock-20261028.json), #355 |
+| `GD-U-02D-B3H-GITHUB-INDEPENDENT-REVIEW-20261028` | `continuityId` local B3h, revue GitHub | [Fichier original](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/gd-u-02d-b3h-review-integrity-20261028.json), #355 |
+| `GD-U-02D-B3i-GITHUB-REVIEW-TIMESTAMP-AMBIGUITY-20261028` | ID de checkpoint de vérification horodatage de revue | [Fichier original](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/gd-u-02d-b3i-review-timestamp-ambiguity-20261028.json), #355 |
 | `EXTERNAL_GOVERNED_RECOVERY` | Profil d'exécution gouvernée, **pas continuité** | Politique/runbook existants, aucune nouvelle voie de déploiement |
 | `GD-U-355-P1-BOOTSTRAP-RECEIPT-ATTESTATION` | Work/action ID documentaire, **pas Task ID runtime** | #355, [plan d'admission](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512084049) |
-| `GD-U-01`, `GD-U-02`, `GD-U-02D-B3a…B3k`, `GD-U-A1/MAX/COMPOSE/CONTINUITY/EXPOSE` | IDs de lots/jalons | [Navigateur GD-U existant](../../governance/universal-program-history/README.md) |
+| `GD-U-01`, `GD-U-02`, `GD-U-02D-B3a…B3k`, `GD-U-A1/MAX/COMPOSE/CONTINUITY/EXPOSE` | IDs de lots/jalons | [Navigateur GD-U existant](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/universal-program-history/README.md) |
 
 **Précision nouvelle de cet inventaire :** plusieurs fichiers JSON portent des clés `continuityId` ou `continuationId` **locales** (B3b/B3c, B3d, B3f, B3h) qui ne figuraient pas dans le tableau résumé du [correctif de périmètre #6512468496](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512468496). Ils sont ici préservés **comme identifiants de provenance propre**, non renommés ni rétroactivement déclarés racines du programme entier.
 
@@ -57,7 +57,7 @@ Le mandat `wealthtechinnovations.com/regulatory` (sous-chemin) et le manifeste p
 - [49 étapes reliées A00→A48 et 165 cibles](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512318604)
 - [Transitions dépendantes détaillées](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512322802)
 - [Correctif strict de périmètre](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512468496)
-- [Index GD-U des lots, branches, décisions et sources](../../governance/universal-program-history/README.md)
+- [Index GD-U des lots, branches, décisions et sources](https://github.com/Patricked-code/MCP/blob/mcp/universal-github-plesk-server-capabilities-20261028/docs/governance/universal-program-history/README.md)
 - [Archive historique et protocole de vérification](README.md)
 
 **L'ordre documentaire est une représentation de dépendances, pas une ordonnance aveugle** : #355 sécurité bootstrap RED/GREEN→CI/revues→merge admis→Governed Deploy du MCP→non-régression→autorités GitHub/Plesk/S1/S2→GitRegistry (mapping existant ou absent)→pilotes #351 et #352→#353→greenfield→maintenance→certification du **chantier**, pas de tout le MCP. Des lectures indépendantes peuvent avancer sans claim ; aucune écriture avant admission et permission. Les 165 entrées sont **cibles**, pas 165 outils opérables.
