@@ -10,6 +10,10 @@ type Profile = {
     automaticallyProcessedByRuntime: boolean;
     noNewTaskQueueOrWorker: boolean;
     selectedProfileRecordedInExistingIssueOrPrCheckpoint: boolean;
+    entryRole: string;
+    convergesToExistingCommonLifecycle: boolean;
+    noPriorMcpTaskAssignmentForAuthorizedGithubWork: boolean;
+    workSources: string[];
   };
   constructionMethodRelationship: {
     independentOfConstructionMethods: boolean;
@@ -31,6 +35,25 @@ const policy = JSON.parse(readFileSync('.mcp/github-first-operational-policy.jso
   mode: string;
   executionModes: Record<string, unknown>;
   selectableProfiles: Record<string, Profile>;
+  entryArchitecture: {
+    model: string;
+    onlyDifferingDimensions: string[];
+    entries: {
+      INITIAL_GOVERNED_ENTRY: {
+        requiresInternalTaskAssignmentForThisEntry: boolean;
+        changeToEngineeringLifecycle: boolean;
+      };
+      EXTERNAL_GOVERNED_RECOVERY: {
+        role: string;
+        source: string[];
+        internalTaskAssignmentPrerequisiteForAuthorizedGithubWork: boolean;
+        availableWhenInternalMcpIsHealthy: boolean;
+        claimOrLockAutomaticallyCreated: boolean;
+        changeToEngineeringLifecycle: boolean;
+      };
+    };
+    commonLifecycle: string[];
+  };
 };
 const profile = policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY;
 
@@ -100,4 +123,30 @@ test('official full name and read-only preview stay linked to the same non-autho
   assert.equal(profile.selectionContract.readonlySelectionPreviewTool, 'get_project_context');
   assert.equal(profile.selectionContract.automaticallyProcessedByRuntime, false);
   assert.match(readFileSync(profile.runbook, 'utf8'), /get_project_context/);
+});
+
+test('two work intakes converge into one existing engineering and deployment lifecycle', () => {
+  const arch = policy.entryArchitecture;
+  assert.equal(arch.model, 'ONE_COMMON_ENGINEERING_LIFECYCLE_TWO_WORK_INTAKES');
+  assert.deepEqual(arch.onlyDifferingDimensions, ['WORK_ENTRY', 'WORK_SELECTION_AND_ASSIGNMENT']);
+  assert.deepEqual(Object.keys(arch.entries), ['INITIAL_GOVERNED_ENTRY', 'EXTERNAL_GOVERNED_RECOVERY']);
+  assert.equal(arch.entries.INITIAL_GOVERNED_ENTRY.requiresInternalTaskAssignmentForThisEntry, true);
+  assert.equal(arch.entries.EXTERNAL_GOVERNED_RECOVERY.internalTaskAssignmentPrerequisiteForAuthorizedGithubWork, false);
+  assert.equal(arch.entries.EXTERNAL_GOVERNED_RECOVERY.availableWhenInternalMcpIsHealthy, true);
+  assert.equal(arch.entries.EXTERNAL_GOVERNED_RECOVERY.claimOrLockAutomaticallyCreated, false);
+  assert.equal(arch.entries.INITIAL_GOVERNED_ENTRY.changeToEngineeringLifecycle, false);
+  assert.equal(arch.entries.EXTERNAL_GOVERNED_RECOVERY.changeToEngineeringLifecycle, false);
+  assert.ok(arch.commonLifecycle.includes('CI_ON_EXACT_PR_SHA'));
+  assert.ok(arch.commonLifecycle.includes('EXISTING_OIDC_GOVERNED_DEPLOY_ONLY_IF_AUTHORIZED'));
+  const profile = policy.selectableProfiles.EXTERNAL_GOVERNED_RECOVERY;
+  assert.equal(profile.selectionContract.entryRole, arch.entries.EXTERNAL_GOVERNED_RECOVERY.role);
+  assert.equal(profile.selectionContract.convergesToExistingCommonLifecycle, true);
+  assert.equal(profile.selectionContract.noPriorMcpTaskAssignmentForAuthorizedGithubWork, true);
+  assert.deepEqual(profile.selectionContract.workSources, arch.entries.EXTERNAL_GOVERNED_RECOVERY.source);
+  const runbook = readFileSync(profile.runbook, 'utf8');
+  for (const step of ['E2-00', 'E2-01', 'E2-02', 'E2-03', 'E2-04', 'E2-05', 'E2-06', 'E2-07']) {
+    assert.ok(runbook.includes(step));
+  }
+  assert.match(runbook, /même cycle commun/i);
+  assert.match(runbook, /sans attribution préalable de Task Queue/i);
 });

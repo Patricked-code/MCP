@@ -4,66 +4,74 @@
   "mode": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
   "selectableProfiles": {
     "EXTERNAL_GOVERNED_RECOVERY": {
-        "id": "EXTERNAL_GOVERNED_RECOVERY",
-        "label": "Bifurcation externe gouvernée — GitHub-first / OIDC / Non-régression",
-        "fullName": "Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression",
-        "kind": "SELECTABLE_NON_AUTHORITATIVE_OPERATING_PROCEDURE",
-        "enabledForExplicitSelection": true,
-        "selectedByDefault": false,
-        "executionEngineCreated": false,
-        "runtimeWritePermissionGranted": false,
-        "taskSessionOrLockCreated": false,
-        "policyAuthority": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
-        "runbook": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
-        "allowedSelectionReasons": [
-            "OWNER_EXPLICITLY_REQUESTS_EXTERNAL_GOVERNED_RECOVERY",
-            "NORMAL_MCP_ADMISSION_OR_OAUTH_PATH_UNAVAILABLE",
-            "BOUNDED_MCP_REPAIR_OR_EXTENSION_REQUIRES_GITHUB_FIRST_CONTINUITY"
+      "id": "EXTERNAL_GOVERNED_RECOVERY",
+      "label": "Bifurcation externe gouvernée — GitHub-first / OIDC / Non-régression",
+      "fullName": "Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression",
+      "kind": "SELECTABLE_NON_AUTHORITATIVE_OPERATING_PROCEDURE",
+      "enabledForExplicitSelection": true,
+      "selectedByDefault": false,
+      "executionEngineCreated": false,
+      "runtimeWritePermissionGranted": false,
+      "taskSessionOrLockCreated": false,
+      "policyAuthority": "GITHUB_FIRST_OPERATIONAL_CONTINUITY",
+      "runbook": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
+      "allowedSelectionReasons": [
+        "OWNER_EXPLICITLY_REQUESTS_EXTERNAL_GOVERNED_RECOVERY",
+        "NORMAL_MCP_ADMISSION_OR_OAUTH_PATH_UNAVAILABLE",
+        "BOUNDED_MCP_REPAIR_OR_EXTENSION_REQUIRES_GITHUB_FIRST_CONTINUITY"
+      ],
+      "transportOrder": [
+        "GITHUB_ONLY",
+        "GITHUB_ACTION_READONLY_EVIDENCE",
+        "GITHUB_ACTION_BOUNDED_WRITE",
+        "RUNTIME_REQUIRED"
+      ],
+      "mandatoryGates": [
+        "EXACT_HEAD_AND_BRANCH_REOBSERVED",
+        "CANONICAL_ISSUE_AND_EXISTING_PR_REUSED",
+        "OWNERSHIP_COLLISION_DEPENDENCY_CHECKED",
+        "NO_RUNTIME_AUTHORITY_INFERRED_FROM_GITHUB_ACCESS",
+        "NO_SERVER_MUTATION_FROM_READONLY_EVIDENCE",
+        "CI_AND_REQUIRED_REVIEWS_ON_EXACT_SHA",
+        "EXISTING_GOVERNED_DEPLOY_WITH_ATTESTATION_ONLY_IF_ADMITTED",
+        "CHECKPOINT_AND_RETURN_TO_NORMAL_GOVERNANCE"
+      ],
+      "forbidden": [
+        "BYPASS_E3_OAUTH_OIDC_TASK_SESSION_LOCK",
+        "GITHUB_DIRECT_MAIN_PUSH",
+        "SERVER_DIRECT_VERSIONED_SOURCE_EDIT",
+        "UNBOUNDED_SHELL_OR_PRIVILEGE_ESCALATION",
+        "FAKE_REVIEW_FAKE_CLAIM_OR_UNVERIFIED_DEPLOY",
+        "PARALLEL_DISPATCHER_OR_NEW_CANONICAL_AUTHORITY"
+      ],
+      "repositoryScope": "MCP_GLOBAL_ALL_WORKSTREAMS",
+      "implementationStatus": "AGENT_RUNBOOK_AND_EXISTING_PROJECT_CONTEXT_DISCOVERY_NO_AUTOMATIC_EXECUTION",
+      "selectionContract": {
+        "requestedInOwnerMandate": true,
+        "procedureLoadedByAgent": true,
+        "selectedProfileRecordedInExistingIssueOrPrCheckpoint": true,
+        "actualTransportDecidedPerOperationFromExistingPermissions": true,
+        "automaticallyProcessedByRuntime": false,
+        "readonlySelectionPreviewTool": "get_project_context",
+        "noNewTaskQueueOrWorker": true,
+        "noRuntimeAccessIfRequiredAuthorityUnavailable": true,
+        "entryRole": "EXTERNAL_GITHUB_FIRST_WORK_INTAKE",
+        "noPriorMcpTaskAssignmentForAuthorizedGithubWork": true,
+        "workSources": [
+          "OWNER_DIRECTLY_REQUESTED_WORK",
+          "AGENT_IDENTIFIED_WORK_WITHIN_EXISTING_OWNER_MANDATE"
         ],
-        "transportOrder": [
-            "GITHUB_ONLY",
-            "GITHUB_ACTION_READONLY_EVIDENCE",
-            "GITHUB_ACTION_BOUNDED_WRITE",
-            "RUNTIME_REQUIRED"
-        ],
-        "mandatoryGates": [
-            "EXACT_HEAD_AND_BRANCH_REOBSERVED",
-            "CANONICAL_ISSUE_AND_EXISTING_PR_REUSED",
-            "OWNERSHIP_COLLISION_DEPENDENCY_CHECKED",
-            "NO_RUNTIME_AUTHORITY_INFERRED_FROM_GITHUB_ACCESS",
-            "NO_SERVER_MUTATION_FROM_READONLY_EVIDENCE",
-            "CI_AND_REQUIRED_REVIEWS_ON_EXACT_SHA",
-            "EXISTING_GOVERNED_DEPLOY_WITH_ATTESTATION_ONLY_IF_ADMITTED",
-            "CHECKPOINT_AND_RETURN_TO_NORMAL_GOVERNANCE"
-        ],
-        "forbidden": [
-            "BYPASS_E3_OAUTH_OIDC_TASK_SESSION_LOCK",
-            "GITHUB_DIRECT_MAIN_PUSH",
-            "SERVER_DIRECT_VERSIONED_SOURCE_EDIT",
-            "UNBOUNDED_SHELL_OR_PRIVILEGE_ESCALATION",
-            "FAKE_REVIEW_FAKE_CLAIM_OR_UNVERIFIED_DEPLOY",
-            "PARALLEL_DISPATCHER_OR_NEW_CANONICAL_AUTHORITY"
-        ],
-        "repositoryScope": "MCP_GLOBAL_ALL_WORKSTREAMS",
-        "implementationStatus": "AGENT_RUNBOOK_AND_EXISTING_PROJECT_CONTEXT_DISCOVERY_NO_AUTOMATIC_EXECUTION",
-        "selectionContract": {
-          "requestedInOwnerMandate": true,
-          "procedureLoadedByAgent": true,
-          "selectedProfileRecordedInExistingIssueOrPrCheckpoint": true,
-          "actualTransportDecidedPerOperationFromExistingPermissions": true,
-          "automaticallyProcessedByRuntime": false,
-          "readonlySelectionPreviewTool": "get_project_context",
-          "noNewTaskQueueOrWorker": true,
-          "noRuntimeAccessIfRequiredAuthorityUnavailable": true
-        },
-        "constructionMethodRelationship": {
-          "independentOfConstructionMethods": true,
-          "mayCoexistWith": "GD-U-METHOD-20261028-01",
-          "scopedMethodSource": "docs/governance/universal-capabilities-bifurcation-20261028.json#workingMethodology",
-          "scopedMethodOnlyFor": "GOVERNED_DEPLOY_UNIVERSAL_ISSUE_349",
-          "rule": "Select transport/profile per operation; preserve each workstream's own construction methodology, continuity ID, ownership, PR and execution authority."
-        },
-        "scope": "Selection of existing transport and governance controls only; no automatic branch, PR, production write, merge or deployment."
+        "availableWithoutInternalMcpFailure": true,
+        "convergesToExistingCommonLifecycle": true
+      },
+      "constructionMethodRelationship": {
+        "independentOfConstructionMethods": true,
+        "mayCoexistWith": "GD-U-METHOD-20261028-01",
+        "scopedMethodSource": "docs/governance/universal-capabilities-bifurcation-20261028.json#workingMethodology",
+        "scopedMethodOnlyFor": "GOVERNED_DEPLOY_UNIVERSAL_ISSUE_349",
+        "rule": "Select transport/profile per operation; preserve each workstream's own construction methodology, continuity ID, ownership, PR and execution authority."
+      },
+      "scope": "Selection of existing transport and governance controls only; no automatic branch, PR, production write, merge or deployment."
     }
   },
   "bootstrap": {
@@ -227,5 +235,49 @@
     "staleClientSchemaRule": "A stale or missing client-side runtime tool schema is not sufficient reason to request bridge exposure when an approved GitHub workflow/issue/OIDC fallback exists.",
     "noSurfaceThrashing": true,
     "rationale": "In clients where exposing the bridge can remove the GitHub surface, unnecessary bridge requests break GitHub-first continuity and can strand the agent away from branch/PR/CI/fallback controls."
+  },
+  "entryArchitecture": {
+    "model": "ONE_COMMON_ENGINEERING_LIFECYCLE_TWO_WORK_INTAKES",
+    "onlyDifferingDimensions": [
+      "WORK_ENTRY",
+      "WORK_SELECTION_AND_ASSIGNMENT"
+    ],
+    "entries": {
+      "INITIAL_GOVERNED_ENTRY": {
+        "role": "INTERNAL_WORK_INTAKE",
+        "source": "MCP_TASK_QUEUE_ASSIGNED_WORK",
+        "admission": "Existing GWC, Task Queue, Session, Claim, Lock when required by internal flow",
+        "requiresInternalTaskAssignmentForThisEntry": true,
+        "changeToEngineeringLifecycle": false
+      },
+      "EXTERNAL_GOVERNED_RECOVERY": {
+        "role": "EXTERNAL_GITHUB_FIRST_WORK_INTAKE",
+        "source": [
+          "OWNER_DIRECTLY_REQUESTED_WORK",
+          "AGENT_IDENTIFIED_WORK_WITHIN_EXISTING_OWNER_MANDATE"
+        ],
+        "internalTaskAssignmentPrerequisiteForAuthorizedGithubWork": false,
+        "availableWhenInternalMcpIsHealthy": true,
+        "availableWhenInternalMcpIsUnavailable": true,
+        "explicitOwnerSelectionRequired": true,
+        "gitHubPermissionsAndOwnershipMustBeObserved": true,
+        "claimOrLockAutomaticallyCreated": false,
+        "changeToEngineeringLifecycle": false
+      }
+    },
+    "convergence": "SAME_SCOPE_RECONCILIATION_ENGINEERING_VALIDATION_MERGE_DEPLOY_AND_CHECKPOINT",
+    "commonLifecycle": [
+      "CANONICAL_SCOPE_AND_COLLISION_RECONCILIATION",
+      "EXACT_HEAD_BRANCH_AND_PR",
+      "ADDITIVE_IMPLEMENTATION_AND_COMPATIBILITY",
+      "RED_GREEN_WHERE_RELEVANT_AND_REGRESSION_SECURITY_TESTS",
+      "CI_ON_EXACT_PR_SHA",
+      "REQUIRED_REVIEW_AND_PROTECTED_MERGE",
+      "EXISTING_OIDC_GOVERNED_DEPLOY_ONLY_IF_AUTHORIZED",
+      "S1_S2_RUNTIME_ATTESTATION_AND_ROLLBACK_READINESS",
+      "CANONICAL_CHECKPOINT_AND_HANDOFF"
+    ],
+    "effectiveAuthorityRule": "Work intake never grants repository, runtime or deployment permissions; existing GitHub and E3/OAuth/Task/Session/Lock controls apply to operations that require them.",
+    "noThirdGlobalMethod": "GD-U-METHOD-20261028-01 is a scoped GD-U engineering workstream method, not another intake or universal lifecycle."
   }
 }

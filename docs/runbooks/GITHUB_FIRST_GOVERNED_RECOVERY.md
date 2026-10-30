@@ -6,6 +6,36 @@
 **Portée :** méthode opérationnelle réutilisable sur **l'ensemble du MCP**, indépendamment du programme GD-U. L'issue globale [#235](https://github.com/Patricked-code/MCP/issues/235) conserve son propre périmètre. Chaque intervention réutilise l'issue, la PR et l'autorité d'exécution de SON chantier ; [#349](https://github.com/Patricked-code/MCP/issues/349) et [#355](https://github.com/Patricked-code/MCP/pull/355) ne sont que le chantier qui intègre ce document.
 **Nature :** instruction de travail et de reprise, sans permission supplémentaire ni activation automatique de runtime.
 
+## Architecture officielle — une seule méthode commune, deux entrées
+
+Les deux entrées ne constituent **ni deux méthodologies de développement ni deux pipelines de déploiement**. Elles divergent **uniquement** pour entrer sur le dépôt et déterminer **qui choisit ou attribue les travaux**. Le nom historique du profil `EXTERNAL_GOVERNED_RECOVERY` ne le limite pas à une panne : l'entrée externe est disponible sur demande même lorsque le MCP interne fonctionne.
+
+| Dimension | Entrée 1 : initiale gouvernée | Entrée 2 : bifurcation externe gouvernée |
+| --- | --- | --- |
+| Démarrage | Circuit opérationnel interne MCP | Identité GitHub extérieure autorisée |
+| Provenance du travail | Tâches attribuées par le MCP | Travail demandé directement par le propriétaire, ou identifié par l'agent **dans le mandat déjà autorisé** |
+| Attribution préalable de Task Queue | Appliquée selon le parcours interne | **Non requise pour les opérations GitHub autorisées** |
+| Coordination | Ownership, preuves de session/lock selon l'opération | Ownership GitHub, branche/PR, preuves anti-collision ; pas de claim fictif |
+| Développement, tests, CI, revues | **Même cycle commun** | **Même cycle commun** |
+| Fusion, déploiement, attestation | **Mêmes règles et mêmes pipelines existants** | **Mêmes règles et mêmes pipelines existants** |
+
+**Le travail librement choisi n'est pas un travail sans limites.** Il reste dans le mandat du propriétaire, ses permissions GitHub observées, son issue/PR canonique et son périmètre sans collision. L'absence de tâche interne ne prouve pas l'absence d'autre agent. Il n'est pas nécessaire de créer une tâche MCP simplement pour modifier une branche GitHub autorisée. En revanche, une opération runtime exigeant réellement Task/Session/Claim/Lock/E3 conserve ces prérequis quel que soit le point d'entrée.
+
+### Parcours 2 — protocole déterministe de prise en charge
+
+1. **E2-00 — Sélection :** le propriétaire demande `EXTERNAL_GOVERNED_RECOVERY` pour une évolution/correction, sans exiger une panne du MCP. Un agent peut suggérer un travail, mais doit rester dans les autorisations effectivement données.
+2. **E2-01 — Périmètre :** trouver le chantier, l'issue et le Continuity ID existants ; identifier la PR/branche propriétaire et la dernière `NEXT_ACTION`. Pas de nouvelle tâche attribuée artificiellement.
+3. **E2-02 — Réconciliation :** lire l'HEAD exact de `main` et de la branche, le statut PR/CI/revues, les éventuels travaux concurrents. Si l'ownership est incertain, **arrêter l'écriture ciblée** ou choisir un sous-périmètre indépendant démontré.
+4. **E2-03 — Choix du travail :** utiliser la demande directe du propriétaire ou une correction/amélioration identifiée dans son mandat. Consigner la justification dans la continuité du chantier, sans la transformer en task/claim/lock runtime.
+5. **E2-04 — Entrée GitHub :** reprendre la PR existante si son périmètre le permet ; sinon utiliser une branche/PR isolée autorisée, avec preuve d'absence de collision. Les modifications restent dans les permissions GitHub constatées.
+6. **E2-05 — Convergence :** **à partir de ce point, appliquer le même cycle que l'entrée 1** : analyse, construction additive, compatibilité, RED/GREEN si pertinent, tests de sécurité et régression, CI sur SHA exact, revue et fusion gouvernées.
+7. **E2-06 — Exploitation gouvernée :** employer les workflows OIDC/Governed Deploy existants uniquement si l'opération et la révision `main` sont admises ; vérifier S1/S2, la santé et le rollback. Aucun droit serveur déduit de l'entrée GitHub.
+8. **E2-07 — Continuité :** checkpoint append-only avec demandes, décisions, SHA, CI/revues, résultat et unique `NEXT_ACTION`. Si le MCP interne redevient accessible, réconcilier les preuves sans créer rétroactivement une fausse tâche ou un faux claim.
+
+**Cycle commun de référence :** `périmètre et collisions → HEAD/branche/PR → développement additif → RED/GREEN et non-régression → CI exact-SHA → revue/fusion autorisée → Governed Deploy OIDC → attestation runtime → checkpoint`. Ce cycle n'est pas redéfini par le profil ; il réutilise les règles, agents, interfaces et workflows existants.
+
+**Statut d'implémentation :** procédure dans ce runbook et politique déclarative `entryArchitecture` ; `previewExternalGovernedRecovery` fournit un avis non autoritaire, et `get_project_context` expose le profil lorsque le MCP fonctionne. Ce n'est pas un scheduler, un nouvel exécuteur, ni une sélection automatique. La branche GitHub autorisée reste utilisable directement si le MCP est inaccessible. Aucune fusion ou attestation de production ne découle de cette seule déclaration.
+
 ## Modèle d'autorité : trois objets différents (ne jamais les fusionner)
 
 | Objet | Référence | Rôle | Autorité créée ? |
