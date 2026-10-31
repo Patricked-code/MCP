@@ -32,7 +32,7 @@ export type McpReconcileObservation=Readonly<{
   evidenceCurrent:boolean;
 }>;
 export type McpReconcileDecision=Readonly<{
-  status:'FULLY_ALIGNED'|'FAST_FORWARD_CANDIDATE'|
+  status:'FULLY_ALIGNED'|'FAST_FORWARD_CANDIDATE'|'RUNTIME_REDEPLOY_CANDIDATE'|
     'APPROVED_LOCAL_CONTENT_CANDIDATE'|'S1_TO_GITHUB_REVIEW_REQUIRED'|'BLOCKED';
   blockers:readonly string[];
   paths:readonly string[];
@@ -89,6 +89,9 @@ export function assessMcpS1ToMainReconciliation(
   if(sameHead&&observation.s1WorkingTreeClean===true
     &&observation.runtimeRevision===observation.s1Head)
     return result('FULLY_ALIGNED',[],[],false,false);
+  if(sameHead&&observation.s1WorkingTreeClean===true
+    &&observation.runtimeRevision!==observation.githubMainHead)
+    return result('RUNTIME_REDEPLOY_CANDIDATE',[],[],false,false);
   if(!sameHead&&observation.s1AncestorOfGithubMain===true
     &&observation.s1WorkingTreeClean===true)
     return result('FAST_FORWARD_CANDIDATE',[],[],false,true);
