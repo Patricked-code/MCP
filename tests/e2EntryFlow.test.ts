@@ -22,7 +22,7 @@ const trace:GovernedWorkEntryTrace={
 const index=buildWorkEntryContinuityIndex([trace]);
 const snapshot:E2LiveSnapshot={
  repository:'Patricked-code/MCP',freshness:'CURRENT',
- generatedAt:'2026-10-31T00:01:21.672Z',
+ generatedAt:'2026-10-31T00:01:21.672Z',ageSeconds:2,maxAgeSeconds:60,
  github:{status:'CURRENT',head:sha},
  s1:{status:'CURRENT',head:sha,originMain:sha,workingTreeClean:false},
  runtime:{status:'CURRENT',revision:sha,containerStatus:'running',health:'healthy'},
@@ -30,7 +30,7 @@ const snapshot:E2LiveSnapshot={
   declaredS1Sha:'ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4'}
 };
 test('E2 observes exact main/S1/runtime, warns on drift, then asks the owner',()=>{
- const result=reconcileE2Entry(snapshot,index);
+ const result=reconcileE2Entry(snapshot,index,'2026-10-31T00:01:23.000Z');
  assert.equal(result.decision,'ASK_OWNER');
  assert.equal(result.alignment,'ALIGNED');
  assert.equal(result.candidates[0]?.continuityId,continuityId);
@@ -38,14 +38,14 @@ test('E2 observes exact main/S1/runtime, warns on drift, then asks the owner',()
  assert.equal(result.grantsWriteAccess,false);
 });
 test('E2 continues existing continuity ID without creating a new chantier',()=>{
- const observed=reconcileE2Entry(snapshot,index);
+ const observed=reconcileE2Entry(snapshot,index,'2026-10-31T00:01:23.000Z');
  const routed=routeE2OwnerChoice(observed,{kind:'CONTINUE',continuityId});
  assert.equal(routed.decision,'RESUME_EXISTING');
  assert.equal(routed.continuityId,continuityId);
  assert.equal(routed.grantsWriteAccess,false);
 });
 test('E2 new mandate is only sent to duplicate review, never automatically created',()=>{
- const observed=reconcileE2Entry(snapshot,index);
+ const observed=reconcileE2Entry(snapshot,index,'2026-10-31T00:01:23.000Z');
  const routed=routeE2OwnerChoice(observed,{kind:'NEW',mandate:'Build a new controlled E2 workflow'});
  assert.equal(routed.decision,'REVIEW_NEW_WORK_FOR_DUPLICATES');
  assert.equal(routed.continuityId,null);
@@ -53,14 +53,14 @@ test('E2 new mandate is only sent to duplicate review, never automatically creat
  assert.equal(routeE2OwnerChoice(observed,{kind:'NEW',mandate:' '}).decision,'BLOCKED');
 });
 test('unknown continuity cannot silently be converted into new work',()=>{
- const routed=routeE2OwnerChoice(reconcileE2Entry(snapshot,index),
+ const routed=routeE2OwnerChoice(reconcileE2Entry(snapshot,index,'2026-10-31T00:01:23.000Z'),
   {kind:'CONTINUE',continuityId:'MCP-NONEXISTENT-CONT-0000'});
  assert.equal(routed.decision,'BLOCKED');
  assert.deepEqual(routed.blockers,['UNKNOWN_OR_AMBIGUOUS_CONTINUITY']);
 });
 test('GitHub and S1 SHA mismatch blocks owner routing',()=>{
  const bad={...snapshot,s1:{...snapshot.s1,head:'a'.repeat(40)}};
- const observed=reconcileE2Entry(bad,index);
+ const observed=reconcileE2Entry(bad,index,'2026-10-31T00:01:23.000Z');
  assert.equal(observed.alignment,'DIVERGED');
  assert.equal(observed.decision,'BLOCKED');
  assert.equal(observed.question,null);
@@ -68,22 +68,28 @@ test('GitHub and S1 SHA mismatch blocks owner routing',()=>{
 });
 test('unverified runtime blocks owner routing, no claim of alignment',()=>{
  const bad={...snapshot,runtime:{...snapshot.runtime,revision:null,status:'UNKNOWN'}};
- const result=reconcileE2Entry(bad,index);
+ const result=reconcileE2Entry(bad,index,'2026-10-31T00:01:23.000Z');
  assert.equal(result.alignment,'UNVERIFIED');
  assert.equal(result.decision,'BLOCKED');
  assert.ok(result.blockers.includes('MISSING_EXACT_HEAD_EVIDENCE'));
 });
 test('unhealthy MCP runtime prevents reconciliation success',()=>{
  const bad={...snapshot,runtime:{...snapshot.runtime,health:'unhealthy'}};
- assert.equal(reconcileE2Entry(bad,index).decision,'BLOCKED');
+ assert.equal(reconcileE2Entry(bad,index,'2026-10-31T00:01:23.000Z').decision,'BLOCKED');
 });
 test('stale or incorrect repository evidence is refused',()=>{
- assert.equal(reconcileE2Entry({...snapshot,freshness:'STALE'},index).decision,'BLOCKED');
- assert.equal(reconcileE2Entry({...snapshot,repository:'another/repository'},index).decision,'BLOCKED');
+ assert.equal(reconcileE2Entry({...snapshot,freshness:'STALE'},index,'2026-10-31T00:01:23.000Z').decision,'BLOCKED');
+ assert.equal(reconcileE2Entry({...snapshot,repository:'another/repository'},index,'2026-10-31T00:01:23.000Z').decision,'BLOCKED');
 });
 test('conflicting continuity evidence blocks owner routing',()=>{
  const conflicting={...trace,github:{...trace.github,issueNumber:360},
   instructions:{...trace.instructions,sourceUrl:'https://github.com/Patricked-code/MCP/issues/360'}};
  const conflicted=buildWorkEntryContinuityIndex([trace,conflicting]);
- assert.equal(reconcileE2Entry(snapshot,conflicted).decision,'BLOCKED');
+ assert.equal(reconcileE2Entry(snapshot,conflicted,'2026-10-31T00:01:23.000Z').decision,'BLOCKED');
+});
+
+test('nominal CURRENT flag with expired observation is rejected',()=>{
+ const result=reconcileE2Entry(snapshot,index,'2026-10-31T00:04:00.000Z');
+ assert.equal(result.decision,'BLOCKED');
+ assert.ok(result.blockers.includes('STALE_OR_WRONG_REPOSITORY'));
 });
