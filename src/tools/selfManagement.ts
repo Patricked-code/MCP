@@ -199,17 +199,19 @@ export function registerMcpSelfWriteTools(server: McpServer): void {
 
   server.tool(
     'mcp_reconcile_s1_to_main',
-    'Reconciliation MCP S1 vers main GitHub : pour plusieurs fichiers versionnes strictement identiques au main approuve, sauvegarde et aligne Git sans suppression ; les modifications non publiees suivent une PR gouvernee separee.',
+    'E2 EXTERNAL_GOVERNED_RECOVERY seulement : rapproche le Git S1 avec le main approuve pour plusieurs fichiers strictement identiques, sans les ecraser. N est ni un declencheur global, ni une fusion, ni un deploy.',
     {
+      entry_profile: z.literal('EXTERNAL_GOVERNED_RECOVERY'),
+      e2_explicitly_selected: z.literal(true),
       expected_s1_sha: z.string().regex(/^[a-f0-9]{40}$/),
       approved_main_sha: z.string().regex(/^[a-f0-9]{40}$/),
       allow_write: z.boolean().default(false)
     },
-    async ({ expected_s1_sha, approved_main_sha, allow_write }) => {
+    async ({ entry_profile, e2_explicitly_selected, expected_s1_sha, approved_main_sha, allow_write }) => {
       assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
       assertWriteFlag(allow_write, 'mcp_reconcile_s1_to_main');
       return runS1Write(
-        buildMcpReconcileS1ToMainCommand(expected_s1_sha, approved_main_sha),
+        buildMcpReconcileS1ToMainCommand(expected_s1_sha, approved_main_sha, entry_profile, e2_explicitly_selected),
         'mcp_reconcile_s1_to_main',
         120_000
       );
