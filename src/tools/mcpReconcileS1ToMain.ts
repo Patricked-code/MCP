@@ -31,8 +31,8 @@ git diff --cached --quiet || { echo 'E2_INDEX_DIRTY'; exit 75; }
 # Only modifications of already tracked regular files can use the automatic path.
 [ -z "$(git diff --name-only --diff-filter=ACDRTUXB)" ] || { echo 'E2_UNSAFE_FILE_CHANGE'; exit 77; }
 mapfile -d '' -t FILES < <(git diff --name-only -z)
-[ "${#FILES[@]}" -gt 0 ] && [ "${#FILES[@]}" -le 100 ] || { echo 'E2_UNEXPECTED_FILE_COUNT'; exit 78; }
-for FILE in "${FILES[@]}"; do
+[ "\${#FILES[@]}" -gt 0 ] && [ "\${#FILES[@]}" -le 100 ] || { echo 'E2_UNEXPECTED_FILE_COUNT'; exit 78; }
+for FILE in "\${FILES[@]}"; do
  case "$FILE" in
   *..*|/*|*\\*|.env|.env.*|*.pem|*.key|*.crt|*.p8|*.p12|*.sql|*.dump|secrets/*|*/secrets/*|keys/*|*/keys/*|node_modules/*|*/node_modules/*|dist/*|*/dist/*|.git/*|.mcp_backups/*)
    echo 'E2_PROTECTED_PATH'; exit 79 ;;
@@ -48,7 +48,7 @@ git merge-base --is-ancestor "$EXPECTED_S1" "$REMOTE" || { echo 'E2_NOT_FAST_FOR
 cmp -s <(git diff --name-only -z) <(git diff --name-only -z "$EXPECTED_S1" "$REMOTE") || {
  echo 'E2_SCOPE_MISMATCH'; exit 84;
 }
-for FILE in "${FILES[@]}"; do
+for FILE in "\${FILES[@]}"; do
  LOCAL_BLOB="$(git hash-object -- "$FILE")"
  EXPECTED_BLOB="$(git rev-parse "FETCH_HEAD:$FILE")"
  [ "$LOCAL_BLOB" = "$EXPECTED_BLOB" ] || { echo 'E2_LOCAL_CONTENT_NOT_APPROVED'; exit 85; }
@@ -56,7 +56,7 @@ done
 # Retain every file, including its relative path, in an ignored private backup.
 mkdir -p .mcp_backups
 BACKUP="$(mktemp -d .mcp_backups/e2-main-XXXXXXXX)"
-for FILE in "${FILES[@]}"; do
+for FILE in "\${FILES[@]}"; do
  mkdir -p "$BACKUP/$(dirname "$FILE")"
  cp -- "$FILE" "$BACKUP/$FILE"
  [ "$(git hash-object -- "$BACKUP/$FILE")" = "$(git hash-object -- "$FILE")" ] || {
@@ -68,12 +68,12 @@ cmp -s <(git diff --name-only -z) <(git diff --name-only -z "$EXPECTED_S1" "$REM
  echo 'E2_STATE_CHANGED'; exit 87;
 }
 git update-ref refs/heads/main "$REMOTE" "$EXPECTED_S1"
-git add -- "${FILES[@]}"
+git add -- "\${FILES[@]}"
 [ "$(git rev-parse HEAD)" = "$REMOTE" ] || { echo 'E2_REF_NOT_ALIGNED'; exit 88; }
 [ -z "$(git status --porcelain --untracked-files=all)" ] || { echo 'E2_WORKTREE_NOT_CLEAN'; exit 89; }
 printf 'E2_GIT_CONVERGED=YES\\n'
 printf 'MAIN_SHA=%s\\n' "$REMOTE"
-printf 'FILE_COUNT=%s\\n' "${#FILES[@]}"
+printf 'FILE_COUNT=%s\\n' "\${#FILES[@]}"
 printf 'BACKUP_DIR=%s\\n' "$BACKUP"
 printf 'DEPLOY_RUNTIME_ATTESTATION_REQUIRED=YES\\n'`;
 }
