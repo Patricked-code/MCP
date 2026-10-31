@@ -20,11 +20,13 @@ export function registerE2OwnerTools(
    e2_explicitly_selected:z.literal(true),
    entry_id:z.string().regex(/^E2-[A-F0-9-]{36}$/),
    decision:z.enum(['NEW','RESUME']),
+   owner_authorized_github_write:z.literal(true),
    mandate:z.string().max(500).optional(),
    continuity_id:z.string().max(110).optional()
   },
-  async ({entry_profile,e2_explicitly_selected,entry_id,decision,mandate,continuity_id})=>{
-   if(entry_profile!=='EXTERNAL_GOVERNED_RECOVERY'||e2_explicitly_selected!==true)
+  async ({entry_profile,e2_explicitly_selected,entry_id,decision,mandate,continuity_id,owner_authorized_github_write})=>{
+   if(entry_profile!=='EXTERNAL_GOVERNED_RECOVERY'||e2_explicitly_selected!==true
+     ||owner_authorized_github_write!==true)
     return {...asText(JSON.stringify({status:'BLOCKED',reason:'E2_EXPLICIT_SELECTION_REQUIRED'})),isError:true};
    const choice:E2OwnerChoice={entryId:entry_id,kind:decision,
     ...(mandate!==undefined?{mandate}:{}),
