@@ -93,3 +93,14 @@ test('S1 origin/main drift or unrelated Git history blocks E2 updates',()=>{
   files:[{...base.files[0]!,approvedMainGitBlob:'b'.repeat(40)}]});
  assert.equal(diverged.status,'BLOCKED');
 });
+
+test('E2 can propose an unpublished S1 modification when GitHub and S1 share the same HEAD',()=>{
+ const x=assessMcpS1ToMainReconciliation({
+  ...base,s1Head:main,s1OriginMainSha:main,
+  githubMainAncestorOfS1:true,s1AncestorOfGithubMain:true,
+  files:[{...base.files[0]!,approvedMainGitBlob:'b'.repeat(40)}]
+ });
+ assert.equal(x.status,'S1_TO_GITHUB_REVIEW_REQUIRED');
+ assert.equal(x.canAutomaticallyPrepareGitHubPR,true);
+ assert.equal(x.canAutomaticallyMergeMain,false);
+});
