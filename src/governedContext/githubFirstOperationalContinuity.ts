@@ -1,3 +1,9 @@
+import {
+  reconcileE2Entry, routeE2OwnerChoice,
+  type E2LiveSnapshot, type E2OwnerChoice
+} from '../governance/e2EntryFlow.js';
+import type {WorkEntryIndexResult} from '../governance/workEntryContinuityIndex.js';
+
 import { z } from 'zod';
 
 import type { GithubOperationalContext } from './types.js';
@@ -273,4 +279,40 @@ export function previewExternalGovernedRecovery(raw: ExternalGovernedRecoveryInp
       : 'RUNTIME_AUTHORITY_REQUIRED';
   return { ...safe, state, transport: transport.mode, nextAction: transport.nextAction,
     githubOperationsRequireExistingPermissions: true as const };
+}
+
+/**
+ * E2 continuation adapter for the existing external governed recovery profile.
+ * The owner route is checked before the legacy GitHub-first preview is evaluated.
+ * This is an advisory projection: it never creates a task, permission, or runtime session.
+ */
+export function previewExternalGovernedRecoveryAfterE2Reconciliation(
+  rawInput:ExternalGovernedRecoveryInput,
+  liveState:E2LiveSnapshot,
+  index:WorkEntryIndexResult,
+  ownerChoice:E2OwnerChoice,
+  assessedAt:string=new Date().toISOString()
+){
+  const reconciliation=reconcileE2Entry(liveState,index,assessedAt);
+  const ownerRoute=routeE2OwnerChoice(reconciliation,ownerChoice);
+  const existingPreview=(
+    ownerRoute.decision==='RESUME_EXISTING'&&rawInput.ownerSelected===true
+  )?previewExternalGovernedRecovery(rawInput):null;
+  const state=rawInput.ownerSelected!==true?'EXPLICIT_SELECTION_REQUIRED'
+    :ownerRoute.decision==='BLOCKED'?'E2_RECONCILIATION_OR_CHOICE_BLOCKED'
+      :ownerRoute.decision==='REVIEW_NEW_WORK_FOR_DUPLICATES'
+        ?'E2_DUPLICATE_REVIEW_REQUIRED'
+        :existingPreview?.state??'E2_RECONCILIATION_OR_CHOICE_BLOCKED';
+  return {
+    profile:'EXTERNAL_GOVERNED_RECOVERY' as const,
+    state,
+    reconciliation,
+    ownerRoute,
+    existingPreview,
+    advisoryOnly:true as const,
+    newTaskOrSessionCreated:false as const,
+    githubWriteGranted:false as const,
+    serverWriteGranted:false as const,
+    deployGranted:false as const
+  };
 }
