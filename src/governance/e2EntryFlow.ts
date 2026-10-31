@@ -60,14 +60,16 @@ export function reconcileE2Entry(
   if(comparable&&!aligned)blockers.push('GITHUB_S1_RUNTIME_SHA_DIVERGENCE');
   if(runtime.containerStatus!=='running'||runtime.health!=='healthy')
     blockers.push('MCP_RUNTIME_NOT_HEALTHY');
-  if(s1.workingTreeClean!==true)warnings.push('S1_WORKTREE_NOT_CLEAN');
+  if(s1.workingTreeClean!==true)blockers.push('S1_WORKTREE_NOT_CLEAN');
   if(snapshot.documentation.status!=='CURRENT'||snapshot.documentation.drift!==false)
-    warnings.push('MCP_DOCUMENTATION_DRIFT_OR_UNKNOWN');
+    blockers.push('MCP_DOCUMENTATION_DRIFT_OR_UNKNOWN');
   if(index.status!=='READY')blockers.push('CONTINUITY_INDEX_CONFLICT');
   const decision=blockers.length===0?'ASK_OWNER':'BLOCKED';
   return {
     decision,
-    alignment:!comparable?'UNVERIFIED':aligned?'ALIGNED':'DIVERGED',
+    alignment:!comparable?'UNVERIFIED':aligned&&s1.workingTreeClean===true
+      &&snapshot.documentation.status==='CURRENT'&&snapshot.documentation.drift===false
+      ?'ALIGNED':'DIVERGED',
     blockers,warnings,
     question:decision==='ASK_OWNER'?'Continuer un chantier MCP existant ? Oui ou non ?':null,
     candidates:index.status==='READY'?index.entries.map(e=>({
