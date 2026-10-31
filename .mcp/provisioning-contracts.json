@@ -412,6 +412,12 @@
       "note": "Explicit E2-only one-call activation; reads Live State then automatically invokes guarded S1 Git reconciliation on approved local-content drift. No E1 hook, no GWC claim, no direct push to protected main, no unapproved writes or deploy."
     },
     {
+      "name": "mcp_e2_select_chantier",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "E2-only owner-first NEW/RESUME GitHub issue and Continuity ID registration, based on a persisted READY_FOR_OWNER receipt and fresh full alignment; no GWC claim, deploy or cross-repo write."
+    },
+    {
       "name": "mcp_reconcile_s1_to_main",
       "kind": "MCP_TOOL",
       "class": "SELF_MANAGEMENT",
