@@ -93,6 +93,11 @@
       "detail": "E2 read-only parser accepts machine-readable checkpoint evidence exclusively from the MCP repository's own GitHub issues; it never grants cross-repository or runtime authority."
     },
     {
+      "path": "src/governance/mcpS1ToMainPolicy.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Pure MCP-only bidirectional drift classifier; no write or target-project permission."
+    },
+    {
       "path": "src/governance/programBlueprintMaterialization.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Added by TB-W3-DISPATCH-01: Program Backlog V2 is the MCP repository's own program, so its blueprints materialize MCP-repository tasks only."
@@ -121,6 +126,11 @@
       "path": "src/tools/mcpGitSync.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Read-only/guarded git sync of the MCP checkout on S1."
+    },
+    {
+      "path": "src/tools/mcpReconcileS1ToMain.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "MCP S1↔approved GitHub main exact-content multi-file recovery, self-management only; never manages third-party application target scopes."
     },
     {
       "path": "src/tools/mcpS1ExactContentReconcile.ts",
