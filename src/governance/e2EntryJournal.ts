@@ -28,6 +28,8 @@ export type E2JournalEvent=Readonly<{
 }>;
 export type E2JournalComment=Readonly<{
  id:number;body:string;created_at:string;html_url:string;
+ user:Readonly<{login:string}>;
+ author_association:'OWNER'|'MEMBER'|'COLLABORATOR';
 }>;
 export type E2JournalResult=Readonly<{
  status:'READY'|'UNAVAILABLE'|'INCOMPLETE'|'CONFLICT'|'NOT_FOUND';
@@ -89,10 +91,17 @@ export function parseE2Journal(body:string):E2JournalEvent|null{
 const asComment=(x:unknown):E2JournalComment|null=>{
  if(!x||typeof x!=='object')return null;
  const c=x as Record<string,unknown>;
+ const user=c.user&&typeof c.user==='object'&&!Array.isArray(c.user)
+  ?c.user as Record<string,unknown>:null;
  if(!Number.isSafeInteger(c.id)||Number(c.id)<1
   ||typeof c.body!=='string'||typeof c.created_at!=='string'
-  ||typeof c.html_url!=='string')return null;
- return {id:Number(c.id),body:c.body,created_at:c.created_at,html_url:c.html_url};
+  ||typeof c.html_url!=='string'||!Number.isFinite(Date.parse(c.created_at))
+  ||!user||typeof user.login!=='string'||user.login.length<1
+  ||!['OWNER','MEMBER','COLLABORATOR'].includes(String(c.author_association)))
+  return null;
+ return {id:Number(c.id),body:c.body,created_at:c.created_at,html_url:c.html_url,
+  user:{login:user.login},
+  author_association:c.author_association as E2JournalComment['author_association']};
 };
 export async function loadE2Journal(port:E2JournalPort=defaultE2JournalPort):Promise<E2JournalResult>{
  const entries:E2JournalEvent[]=[],blockers:string[]=[];
