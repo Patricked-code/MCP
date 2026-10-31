@@ -27,17 +27,17 @@ const snapshot:E2LiveSnapshot={
  repository:'Patricked-code/MCP',freshness:'CURRENT',
  generatedAt:'2026-10-31T00:01:21.672Z',ageSeconds:2,maxAgeSeconds:60,
  github:{status:'CURRENT',head:sha},
- s1:{status:'CURRENT',head:sha,originMain:sha,workingTreeClean:false},
+ s1:{status:'CURRENT',head:sha,originMain:sha,workingTreeClean:true},
  runtime:{status:'CURRENT',revision:sha,containerStatus:'running',health:'healthy'},
- documentation:{status:'CURRENT',drift:true,declaredGithubSha:'ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4',
-  declaredS1Sha:'ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4'}
+ documentation:{status:'CURRENT',drift:false,declaredGithubSha:sha,
+  declaredS1Sha:sha}
 };
-test('E2 observes exact main/S1/runtime, warns on drift, then asks the owner',()=>{
+test('E2 asks owner only after a fully reconciled S1, main, runtime, and docs',()=>{
  const result=reconcileE2Entry(snapshot,index,'2026-10-31T00:01:23.000Z');
  assert.equal(result.decision,'ASK_OWNER');
  assert.equal(result.alignment,'ALIGNED');
  assert.equal(result.candidates[0]?.continuityId,continuityId);
- assert.deepEqual(result.warnings,['S1_WORKTREE_NOT_CLEAN','MCP_DOCUMENTATION_DRIFT_OR_UNKNOWN']);
+ assert.deepEqual(result.warnings,[]);
  assert.equal(result.grantsWriteAccess,false);
 });
 test('E2 continues existing continuity ID without creating a new chantier',()=>{
@@ -158,4 +158,22 @@ test('GitHub main SHA in recovery profile must match reconciled live state',()=>
   '2026-10-31T00:01:23.000Z');
  assert.equal(result.state,'E2_SELECTED_GITHUB_EVIDENCE_DRIFT');
  assert.equal(result.deployGranted,false);
+});
+
+test('E2 blocks normal owner routing when S1 worktree differs despite matching commit SHAs',()=>{
+ const dirty={...snapshot,s1:{...snapshot.s1,workingTreeClean:false}};
+ const observed=reconcileE2Entry(dirty,index,'2026-10-31T00:01:23.000Z');
+ assert.equal(observed.alignment,'DIVERGED');
+ assert.equal(observed.decision,'BLOCKED');
+ assert.ok(observed.blockers.includes('S1_WORKTREE_NOT_CLEAN'));
+ assert.equal(observed.question,null);
+ assert.equal(routeE2OwnerChoice(observed,{kind:'CONTINUE',continuityId}).decision,'BLOCKED');
+});
+test('E2 blocks normal owner routing on outdated canonical deployment documentation',()=>{
+ const drift={...snapshot,documentation:{...snapshot.documentation,drift:true}};
+ const observed=reconcileE2Entry(drift,index,'2026-10-31T00:01:23.000Z');
+ assert.equal(observed.alignment,'DIVERGED');
+ assert.equal(observed.decision,'BLOCKED');
+ assert.ok(observed.blockers.includes('MCP_DOCUMENTATION_DRIFT_OR_UNKNOWN'));
+ assert.equal(routeE2OwnerChoice(observed,{kind:'NEW',mandate:'New MCP work'}).decision,'BLOCKED');
 });
