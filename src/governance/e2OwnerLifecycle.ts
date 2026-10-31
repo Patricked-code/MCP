@@ -23,7 +23,7 @@ export type E2OwnerChoice=Readonly<{
  continuityId?:string;
 }>;
 export type E2OwnerResult=Readonly<{
- status:'READY_NEW'|'READY_RESUME'|'DUPLICATE_FOUND'|'BLOCKED';
+ status:'READY_NEW'|'READY_RESUME'|'RECOVERY_PARTIAL'|'DUPLICATE_FOUND'|'BLOCKED';
  continuityId:string|null;
  issueNumber:number|null;
  issueUrl:string|null;
@@ -103,22 +103,38 @@ export async function routeE2OwnerChoice(
  if(choice.kind==='RESUME'){
   if(!ID.test(choice.continuityId??''))return refused('E2_CONTINUITY_ID_REQUIRED');
   const match=findE2ContinuityInJournal(journal,choice.continuityId!);
-  if(match.status!=='READY'||!match.issueNumber)
-   return refused(match.status==='NOT_FOUND'
-     ?'E2_CONTINUITY_ID_NOT_INDEXED':'E2_CONTINUITY_REGISTRY_CONFLICT');
-  const issue=await port.journal.request(ROOT+'/issues/'+match.issueNumber);
+  let issueNumber=match.issueNumber;
+  let historical=false;
+  if(match.status==='NOT_FOUND'){
+   const q=encodeURIComponent('repo:Patricked-code/MCP is:issue "'+choice.continuityId!+'"');
+   const search=await port.journal.request('/search/issues?q='+q+'&per_page=100');
+   const response=asObject(search.json);
+   const items=response?.items;
+   if(!search.ok||!Array.isArray(items))
+    return refused('E2_HISTORICAL_SEARCH_INCOMPLETE');
+   const matches=items.map(asObject).filter((x):x is Record<string,unknown>=>
+     !!x&&typeof x.body==='string'&&x.body.includes(choice.continuityId!)
+      &&Number.isSafeInteger(x.number)&&Number(x.number)>0);
+   if(matches.length>1)return refused('E2_HISTORICAL_ID_CONFLICT');
+   issueNumber=matches.length===1?Number(matches[0]?.number):null;
+   historical=issueNumber!==null;
+  }else if(match.status!=='READY')
+   return refused('E2_CONTINUITY_REGISTRY_CONFLICT');
+  if(!issueNumber)return refused('E2_CONTINUITY_ID_NOT_INDEXED');
+  const issue=await port.journal.request(ROOT+'/issues/'+issueNumber);
   const item=asObject(issue.json);
-  if(!issue.ok||item?.number!==match.issueNumber
+  if(!issue.ok||item?.number!==issueNumber
     ||typeof item?.body!=='string'||!item.body.includes(choice.continuityId!))
     return refused('E2_CONTINUITY_ISSUE_NOT_ATTESTED');
   const receipt=await appendE2Journal(
-   recordFor(choice.entryId,'OWNER_RESUME',snapshot,choice.continuityId!,match.issueNumber),
+   recordFor(choice.entryId,'OWNER_RESUME',snapshot,choice.continuityId!,issueNumber),
    port.journal);
   if(receipt.status!=='RECORDED')return refused('E2_RESUME_JOURNAL_FAILED');
-  return {status:'READY_RESUME',continuityId:choice.continuityId!,
-   issueNumber:match.issueNumber,
-   issueUrl:'https://github.com/Patricked-code/MCP/issues/'+match.issueNumber,
-   reason:null,grantsPermission:false};
+  return {status:historical?'RECOVERY_PARTIAL':'READY_RESUME',
+   continuityId:choice.continuityId!,issueNumber,
+   issueUrl:'https://github.com/Patricked-code/MCP/issues/'+issueNumber,
+   reason:historical?'E2_HISTORICAL_CHECKPOINTS_REQUIRE_VERIFICATION':null,
+   grantsPermission:false};
  }
  if(!validMandate(choice.mandate))return refused('E2_NEW_MANDATE_MISSING_OR_SENSITIVE');
  const duplicate=await findExactDuplicate(choice.mandate,port.journal);
