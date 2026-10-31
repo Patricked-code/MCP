@@ -20,6 +20,18 @@ const { buildMcpServer } = await import('../src/server.js');
 type ToolHandler = (input: unknown, extra: unknown) => Promise<any>;
 type ResourceHandler = (uri: URL, extra: unknown) => Promise<any>;
 
+const TEST_SHA='7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6';
+const E2_LIVE_SNAPSHOT={
+ repository:'Patricked-code/MCP',stateVersion:11,
+ freshness:'CURRENT',generatedAt:'2026-10-31T01:40:00.000Z',
+ maxAgeSeconds:60,ageSeconds:0,
+ github:{status:'CURRENT',branch:'main',head:TEST_SHA},
+ s1:{status:'CURRENT',branch:'main',head:TEST_SHA,originMain:TEST_SHA,
+  fetchRemote:'git@github.com-mcp-patricked-ro:Patricked-code/MCP.git',
+  pushRemote:'disabled://mcp-s1-read-only',workingTreeClean:true,diffEmpty:true},
+ runtime:{status:'CURRENT',revision:TEST_SHA,containerStatus:'running',health:'healthy'},
+ documentation:{status:'CURRENT',drift:false}
+};
 const CONTEXT = {
   schemaVersion: 1,
   generatedAt: '2026-08-13T08:00:00.000Z',
@@ -101,6 +113,7 @@ function capture() {
         return CONTEXT;
       }
     },
+    reconcileE2LiveState: async()=>E2_LIVE_SNAPSHOT,
     sessions: {
       lookupGovernedSessionId(transportSessionId: string | undefined) {
         assert.equal(transportSessionId, 'transport-raw-current');
@@ -120,7 +133,7 @@ function textJson(result: { content: Array<{ text: string }> }) {
   return JSON.parse(result.content[0]?.text ?? 'null');
 }
 
-test('enregistre la ressource et les deux outils avec métadonnées MCP exactes', () => {
+test('enregistre la ressource et les trois outils dont l entrée E2 explicite avec métadonnées MCP exactes', () => {
   const captured = capture();
   const resource = captured.resources.get('wealthtech-governed-context-current');
   assert.equal(resource?.uri, GOVERNED_CONTEXT_RESOURCE_URI);
@@ -131,6 +144,7 @@ test('enregistre la ressource et les deux outils avec métadonnées MCP exactes'
     annotations: { audience: ['assistant'], priority: 1 }
   });
   assert.deepEqual([...captured.tools.keys()].sort(), [
+    'mcp_e2_reconcile_preflight',
     'mcp_get_governed_context',
     'mcp_reconcile_governed_context'
   ]);
@@ -199,4 +213,21 @@ test('E2 instructions require explicit profile and leave E1 bootstrap unchanged'
   assert.match(e2,/CI/);
   assert.doesNotMatch(e2,/6\. Réclamer mcp_claim_next_governed_task/);
   assert.equal(governedContextInstructions(false,'EXTERNAL_GOVERNED_RECOVERY'),undefined);
+});
+
+test('E2-only tool calls live reconciliation without affecting E1 or allocating GWC',async()=>{
+ const c=capture();
+ const tool=c.tools.get('mcp_e2_reconcile_preflight');
+ assert.ok(tool);
+ const correct=textJson(await tool.handler({
+  entry_profile:'EXTERNAL_GOVERNED_RECOVERY',e2_explicitly_selected:true
+ },extra()));
+ assert.equal(correct.gate,'DISCOVER_GITHUB_CONTINUITIES');
+ assert.equal(correct.grantsWriteAccess,false);
+ assert.equal(correct.stateVersion,11);
+ assert.deepEqual(c.counts(),{getCalls:0,reconcileCalls:0});
+ const bad=await tool.handler({entry_profile:'E1',e2_explicitly_selected:true},extra());
+ assert.equal(bad.isError,true);
+ assert.equal(textJson(bad).error.code,'E2_EXPLICIT_SELECTION_REQUIRED');
+ assert.deepEqual(c.counts(),{getCalls:0,reconcileCalls:0});
 });
