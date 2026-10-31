@@ -91,3 +91,27 @@ test('failed initial GitHub entry journal blocks observation and any chantier qu
  assert.equal(body.code,'E2_ENTRY_JOURNAL_UNAVAILABLE');
  assert.equal(observations,0);assert.equal(repairs,0);
 });
+
+test('terminal E2 checkpoint uses post-repair SHAs rather than stale initial values',async()=>{
+ let callback:((input:any)=>Promise<any>)|null=null,observed=0;
+ const events:any[]=[];
+ registerE2AutomaticActivationTool({
+  tool(_n:string,_d:string,_s:unknown,fn:(input:any)=>Promise<any>){callback=fn;}
+ } as unknown as McpServer,{
+  async observe(){return observation(observed++===0);},
+  async reconcile(){return {outcome:'S1_GIT_RECONCILED',reason:'E2_APPROVED_CONTENT_GIT_CONVERGED_REATTEST_RUNTIME'};},
+  async record(e){events.push(e);return {status:'RECORDED' as const,
+   commentUrl:'https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+events.length,
+   reason:null};}
+ });
+ assert.ok(callback);
+ const r=await callback!({entry_profile:'EXTERNAL_GOVERNED_RECOVERY',
+  e2_explicitly_selected:true,allow_write:false});
+ const result=JSON.parse(r.content[0].text);
+ assert.equal(result.status,'CONTINUE_E2');
+ assert.equal(observed,2);
+ assert.equal(events[1].stage,'READY_FOR_OWNER');
+ assert.equal(events[1].s1HeadSha,SHA);
+ assert.equal(events[1].runtimeSha,SHA);
+ assert.notEqual(events[1].s1HeadSha,OLD);
+});

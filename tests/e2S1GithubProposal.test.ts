@@ -29,10 +29,11 @@ const snapshot={
   fetchRemote:'git@github.com-mcp-patricked-ro:Patricked-code/MCP.git',
   pushRemote:'disabled://mcp-s1-read-only',workingTreeClean:false,diffEmpty:false}
 } as unknown as LiveStateSnapshot;
-type MockOptions={collision?:boolean;stale?:boolean;denied?:boolean;file?:E2LocalFile};
+type MockOptions={collision?:boolean;stale?:boolean;denied?:boolean;file?:E2LocalFile;originAhead?:boolean;failBlobOnce?:boolean;failPrOnce?:boolean};
 function createMock(options:MockOptions={}){
  const operations:string[]=[];
  let branchSha:string|null=null,createdPr:any=null,readCount=0;
+ let failedBlob=false,failedPr=false;
  const f=options.file??file;
  const ports:E2ProposalPorts={
   async readS1(){
@@ -40,7 +41,7 @@ function createMock(options:MockOptions={}){
    if(options.stale&&readCount===2)return {
     ...local,files:[{...f,localBlob:BASE}]
    };
-   return {...local,files:[f]};
+   return {...local,origin:options.originAhead?MAIN:S1,files:[f]};
   },
   async github(endpoint,opts){
    const method=opts?.method??'GET';
@@ -61,12 +62,15 @@ function createMock(options:MockOptions={}){
    if(endpoint.startsWith(ROOT+'/git/ref/heads/')&&method==='GET')
     return branchSha?yes({object:{sha:branchSha}}):no(404);
    if(endpoint===ROOT+'/git/commits/'+MAIN)return yes({tree:{sha:TREE}});
+   if(endpoint===ROOT+'/git/commits/'+PROPOSED)return yes({parents:[{sha:MAIN}]});
    if(endpoint===ROOT+'/git/refs'&&method==='POST'){
     if(options.denied)return no(403);
     branchSha=MAIN;return yes({object:{sha:MAIN}},201);
    }
-   if(endpoint===ROOT+'/git/blobs'&&method==='POST')
+   if(endpoint===ROOT+'/git/blobs'&&method==='POST'){
+    if(options.failBlobOnce&&!failedBlob){failedBlob=true;return no(503);}
     return yes({sha:f.localBlob},201);
+   }
    if(endpoint===ROOT+'/git/trees'&&method==='POST')
     return yes({sha:NEWTREE},201);
    if(endpoint===ROOT+'/git/commits'&&method==='POST')
@@ -76,6 +80,7 @@ function createMock(options:MockOptions={}){
    }
    if(endpoint===ROOT+'/pulls'&&method==='POST'){
     assert.equal(data.base,'main');assert.equal(data.draft,true);
+    if(options.failPrOnce&&!failedPr){failedPr=true;return no(503);}
     createdPr={html_url:'https://github.com/Patricked-code/MCP/pull/499',
       head:{sha:PROPOSED}};
     return yes(createdPr,201);
@@ -120,4 +125,36 @@ test('GitHub write permission denial blocks the proposal without main mutation',
  const m=createMock({denied:true});
  await assert.rejects(()=>proposeE2S1GithubReview(snapshot,m.ports),/E2_GITHUB_PROPOSAL_API_NOT_AUTHORIZED/);
  assert.ok(!m.operations.some(x=>/PATCH.*heads\/main/.test(x)));
+});
+
+test('S1 origin/main may advance after a guarded fetch without blocking a safe GitHub proposal',async()=>{
+ const m=createMock({originAhead:true});
+ const ahead={...snapshot,s1:{...snapshot.s1,originMain:MAIN}} as LiveStateSnapshot;
+ const r=await proposeE2S1GithubReview(ahead,m.ports);
+ assert.equal(r.status,'PROPOSAL_OPENED');
+});
+test('partially created branch at main resumes from blob creation after a transient 503',async()=>{
+ const m=createMock({failBlobOnce:true});
+ await assert.rejects(()=>proposeE2S1GithubReview(snapshot,m.ports),
+  /E2_GITHUB_PROPOSAL_API_NOT_AUTHORIZED/);
+ const r=await proposeE2S1GithubReview(snapshot,m.ports);
+ assert.equal(r.status,'PROPOSAL_OPENED');
+ assert.equal(m.operations.filter(x=>x==='POST /repos/Patricked-code/MCP/git/refs').length,1);
+});
+test('partial proposal with commit but no PR resumes safely on retry',async()=>{
+ const m=createMock({failPrOnce:true});
+ await assert.rejects(()=>proposeE2S1GithubReview(snapshot,m.ports),
+  /E2_GITHUB_PROPOSAL_API_NOT_AUTHORIZED/);
+ const r=await proposeE2S1GithubReview(snapshot,m.ports);
+ assert.equal(r.status,'PROPOSAL_OPENED');
+ assert.equal(m.operations.filter(x=>x==='POST /repos/Patricked-code/MCP/git/refs').length,1);
+});
+test('secret-labeled JSON bytes fail closed even if S1 classification says CLEAR',async()=>{
+ const sensitive=Buffer.from('{"password":"example-sensitive-value"}\n');
+ const item:E2LocalFile={...file,localBlob:sha(sensitive),sizeBytes:sensitive.length,
+  contentBase64:sensitive.toString('base64'),secretScan:'CLEAR'};
+ const m=createMock({file:item});
+ await assert.rejects(()=>proposeE2S1GithubReview(snapshot,m.ports),
+  /E2_S1_UNSAFE_OR_UNVERIFIED_FILE/);
+ assert.equal(m.operations.length,0);
 });

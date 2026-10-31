@@ -43,3 +43,13 @@ test('E2 blocks documentation drift, runtime drift and wrong remote independentl
   assert.equal(result.grantsWriteAccess,false);
  }
 });
+
+test('preflight accepts existing none-healthcheck semantics but not unhealthy',()=>{
+ const noHealthcheck=assessE2LivePreflight({
+  ...snapshot,runtime:{...snapshot.runtime,health:'none'}
+ });
+ assert.equal(noHealthcheck.gate,'DISCOVER_GITHUB_CONTINUITIES');
+ const bad=assessE2LivePreflight({...snapshot,runtime:{...snapshot.runtime,health:'unhealthy'}});
+ assert.equal(bad.gate,'BLOCKED');
+ assert.ok(bad.blockers.includes('E2_RUNTIME_UNHEALTHY'));
+});

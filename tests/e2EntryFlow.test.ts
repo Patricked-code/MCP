@@ -177,3 +177,8 @@ test('E2 blocks normal owner routing on outdated canonical deployment documentat
  assert.ok(observed.blockers.includes('MCP_DOCUMENTATION_DRIFT_OR_UNKNOWN'));
  assert.equal(routeE2OwnerChoice(observed,{kind:'NEW',mandate:'New MCP work'}).decision,'BLOCKED');
 });
+
+test('E2 remains compatible with a runtime lacking a Docker healthcheck',()=>{
+ const s={...snapshot,runtime:{...snapshot.runtime,health:'none' as const}};
+ assert.equal(reconcileE2Entry(s,index,'2026-10-31T00:01:23.000Z').decision,'ASK_OWNER');
+});

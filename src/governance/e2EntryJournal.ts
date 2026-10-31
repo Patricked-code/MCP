@@ -120,7 +120,7 @@ export async function loadE2Journal(port:E2JournalPort=defaultE2JournalPort):Pro
    if(!item||seen.has(item.id))
     return {status:'CONFLICT',entries:[],blockers:['E2_JOURNAL_COMMENT_INVALID_OR_DUPLICATE']};
    seen.add(item.id);
-      if(item.html_url!=='https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+item.id)
+   if(item.html_url!=='https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+item.id)
     return {status:'CONFLICT',entries:[],blockers:['E2_JOURNAL_URL_INVALID']};
    const event=parseE2Journal(item.body);
    if(!event)

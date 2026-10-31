@@ -101,7 +101,7 @@ try{
    ||git(["remote","get-url","--push","origin"])!=="disabled://mcp-s1-read-only")
     fail("E2_S1_REPOSITORY_IDENTITY_CHANGED");
  const head=ref("HEAD"),origin=ref("origin/main");
- if(!SHA.test(head)||!SHA.test(origin)||)fail("E2_S1_GIT_BASE_INVALID");
+ if(!SHA.test(head)||!SHA.test(origin))fail("E2_S1_GIT_BASE_INVALID");
  const staged=cp.spawnSync("git",["diff","--cached","--quiet"]);
  if(staged.status!==0)fail("E2_STAGED_CHANGES");
  if(git(["ls-files","--others","--exclude-standard"]).length)

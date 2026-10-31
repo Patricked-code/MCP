@@ -98,3 +98,15 @@ test('journal rejects forged issue comments from unauthorised GitHub actors',asy
  const result=await loadE2Journal(f.port);
  assert.equal(result.status,'CONFLICT');
 });
+
+test('unrelated issue discussion from a non-authorised contributor is ignored',async()=>{
+ const f=fake(),id=newE2EntryId();
+ await appendE2Journal(event(id,'ACTIVATED'),f.port);
+ f.comments.push({id:101,body:'Unrelated community question, no journal marker',
+  created_at:'2026-10-31T02:25:00Z',user:{login:'community-user'},
+  author_association:'CONTRIBUTOR',
+  html_url:'https://github.com/Patricked-code/MCP/issues/359#issuecomment-101'});
+ const r=await loadE2Journal(f.port);
+ assert.equal(r.status,'READY');
+ assert.equal(r.entries.length,1);
+});
