@@ -295,10 +295,19 @@ export function previewExternalGovernedRecoveryAfterE2Reconciliation(
 ){
   const reconciliation=reconcileE2Entry(liveState,index,assessedAt);
   const ownerRoute=routeE2OwnerChoice(reconciliation,ownerChoice);
+  const selected=index.entries.find(x=>x.continuityId===ownerRoute.continuityId);
+  const selectedHead=selected?.latest.github.headSha??null;
+  const headDrift=ownerRoute.decision==='RESUME_EXISTING'&&(
+    rawInput.github.repository!==liveState.repository
+    ||rawInput.observedMainSha!==liveState.github.head
+    ||rawInput.expectedMainSha!==liveState.github.head
+    ||(selectedHead!==null&&rawInput.observedBranchSha!==selectedHead)
+  );
   const existingPreview=(
-    ownerRoute.decision==='RESUME_EXISTING'&&rawInput.ownerSelected===true
+    ownerRoute.decision==='RESUME_EXISTING'&&rawInput.ownerSelected===true&&!headDrift
   )?previewExternalGovernedRecovery(rawInput):null;
   const state=rawInput.ownerSelected!==true?'EXPLICIT_SELECTION_REQUIRED'
+    :headDrift?'E2_SELECTED_GITHUB_EVIDENCE_DRIFT'
     :ownerRoute.decision==='BLOCKED'?'E2_RECONCILIATION_OR_CHOICE_BLOCKED'
       :ownerRoute.decision==='REVIEW_NEW_WORK_FOR_DUPLICATES'
         ?'E2_DUPLICATE_REVIEW_REQUIRED'
