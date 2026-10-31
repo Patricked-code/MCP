@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "4ae89dbb84b504053980690435b4eee3750cb247de753fda8de300f6b4f88309",
-  "registeredToolCount": 142,
-  "readOnlyToolCount": 87,
-  "writeToolCount": 55,
+  "catalogueDigest": "3456bc48c294c4689892966ad5865c10ed2a9b6a90a3793b6f62d4c0b0ed490a",
+  "registeredToolCount": 145,
+  "readOnlyToolCount": 89,
+  "writeToolCount": 56,
   "resourceCount": 2,
   "tools": [
     {
@@ -3123,6 +3123,36 @@
       "contractDigest": "a1508c2b51e045f5da9d1a1f90a69b9ec6c0ca523f6b6c56c4888884bdf13fdd"
     },
     {
+      "name": "mcp_e2_list_continuities",
+      "title": null,
+      "description": "E2 : apres le choix REPRISE du proprietaire, presente les Continuity IDs verifies par le registre GitHub, sans en creer aucun.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a30cc34e96b9828764548b14aa8f4d5035eee6f05a1ba29478a13f502b93ea5a"
+    },
+    {
       "name": "mcp_e2_reconcile_preflight",
       "title": null,
       "description": "EXTERNAL_GOVERNED_RECOVERY explicit only: read-only S1 then GitHub main, runtime and documentation alignment; returns BLOCKED on any mismatch. No GWC task or write.",
@@ -3151,6 +3181,92 @@
         "additionalProperties": false
       },
       "contractDigest": "a48a03d30ca73e6377128df22a29f24033e2c6eec96b2df173d5c5406be048dc"
+    },
+    {
+      "name": "mcp_e2_recover_continuity",
+      "title": null,
+      "description": "E2 : recupere automatiquement un chantier depuis son Continuity ID, son issue et ses checkpoints, en distinguant preuve complete et historique partiel.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "continuity_id": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{5,110}$"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "continuity_id"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "649a995aa80144bb97e9cb2e7b46e262ca88ad6f6d20860fa1cba5ee6a293242"
+    },
+    {
+      "name": "mcp_e2_select_chantier",
+      "title": null,
+      "description": "E2 uniquement : apres reconciliation et question du proprietaire, creer un nouveau chantier avec Continuity ID et enregistrement GitHub, ou reprendre la Continuity ID choisie. Aucun GWC requis.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "entry_id": {
+            "type": "string",
+            "pattern": "^E2-[A-F0-9-]{36}$"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "RESUME"
+            ]
+          },
+          "mandate": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "continuity_id": {
+            "type": "string",
+            "maxLength": 110
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "entry_id",
+          "decision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a7d55cf1890d7eec6e3c3feb80a0bf14eff41c7c76e28b8adefe37fdddd975b8"
     },
     {
       "name": "mcp_get_current_state_inventory",
