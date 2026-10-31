@@ -17,7 +17,8 @@ import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { registerE2AutomaticActivationTool } from './tools/e2Activation.js';
-import { registerE2OwnerTools } from './tools/e2OwnerTools.js';
+import { registerE2OwnerTools, registerE2ContinuityReadTools } from './tools/e2OwnerTools.js';
+import { registerE2PreflightReadOnlyTool } from './tools/e2Entry.js';
 import { governedContextInstructions } from './tools/governedContext.js';
 import { getGovernedContextToolDependencies } from './tools/governedContext.js';
 import { getGovernedSessionToolDependencies, sessionRequestFromToolExtra } from './tools/governedSessions.js';
@@ -393,6 +394,14 @@ export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
       decorateRegistrationCatalogServer(server, 'operational-write'),
       getDefaultScopedWriteGateDependencies()
     )
+  );
+  // These three read-only entry and recovery interfaces must be visible to
+  // external E2 agents even when the server write switch is disabled.
+  registerE2PreflightReadOnlyTool(
+    decorateRegistrationCatalogServer(server, 'read')
+  );
+  registerE2ContinuityReadTools(
+    decorateRegistrationCatalogServer(server, 'read')
   );
   registerE2OwnerTools(
     decorateScopedWriteServer(
