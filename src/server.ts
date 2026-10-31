@@ -17,6 +17,7 @@ import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { registerE2AutomaticActivationTool } from './tools/e2Activation.js';
+import { registerE2OwnerTools } from './tools/e2OwnerTools.js';
 import { governedContextInstructions } from './tools/governedContext.js';
 import { getGovernedContextToolDependencies } from './tools/governedContext.js';
 import { getGovernedSessionToolDependencies, sessionRequestFromToolExtra } from './tools/governedSessions.js';
@@ -388,6 +389,12 @@ export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   // classified as operational-write because its correction branch CAN mutate
   // S1, but the callback separately enforces ENABLE_WRITE_TOOLS + allow_write.
   registerE2AutomaticActivationTool(
+    decorateScopedWriteServer(
+      decorateRegistrationCatalogServer(server, 'operational-write'),
+      getDefaultScopedWriteGateDependencies()
+    )
+  );
+  registerE2OwnerTools(
     decorateScopedWriteServer(
       decorateRegistrationCatalogServer(server, 'operational-write'),
       getDefaultScopedWriteGateDependencies()
