@@ -114,8 +114,18 @@ export function recoverE2FromGitHubIssueComments(
     ||x.trace.instructions.sourceUrl!==first.trace.instructions.sourceUrl
     ||x.trace.workSelection!==first.trace.workSelection))
     blockers.push('CONTINUITY_IDENTITY_CHANGED');
-  if(history.some((x,i)=>i>0&&rank[x.trace.stage]<(rank[history[i-1]?.trace.stage??'ISSUE_OPENED'])))
-    blockers.push('CHECKPOINT_STAGE_REGRESSION');
+  for(let i=1;i<history.length;i++){
+    const previous=history[i-1];
+    const current=history[i];
+    if(!previous||!current||rank[current.trace.stage]>=rank[previous.trace.stage])continue;
+    // A root continuity may have several independently governed PR cycles.
+    const newCycle=current.trace.stage==='PR_OPENED'
+      &&current.trace.github.pullRequestNumber!==null
+      &&previous.trace.github.pullRequestNumber!==null
+      &&current.trace.github.pullRequestNumber!==previous.trace.github.pullRequestNumber
+      &&(previous.trace.stage==='MAIN_MERGED'||previous.trace.stage==='S1_ATTESTED');
+    if(!newCycle)blockers.push('CHECKPOINT_STAGE_REGRESSION');
+  }
   if(blockers.length)return empty('CONFLICT',blockers,legacy);
   if(history.length===0)return empty(legacy?'PARTIAL':'NOT_FOUND',
     legacy?['LEGACY_CHECKPOINT_REQUIRES_MANIFEST']:[],legacy);
