@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "0ee5618bcd41bdc89bf0c10e1dd1e84b3620a4a64ec678775f5a937bb75dae05",
-  "registeredToolCount": 138,
+  "catalogueDigest": "2de563cc302105980256143f8f3d799ed3853dc41b1db51188d51eca7be17f4a",
+  "registeredToolCount": 139,
   "readOnlyToolCount": 86,
-  "writeToolCount": 52,
+  "writeToolCount": 53,
   "resourceCount": 2,
   "tools": [
     {
@@ -3603,6 +3603,41 @@
         "additionalProperties": false
       },
       "contractDigest": "acf015ab4fcc62b805c078154b809f65a728328e1cd9bb38018350921ecc4b54"
+    },
+    {
+      "name": "mcp_reconcile_s1_approved_registry_to_main",
+      "title": null,
+      "description": "Reconcile le registre MCP S1 identique au main GitHub approuve : sauvegarde puis avancement Git sans ecraser le fichier ; ne deploie pas.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "expected_s1_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "approved_main_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "expected_s1_sha",
+          "approved_main_sha",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "3ec090d680d233a2db3fbc3dbcf564a2918a03904b6f037cf35b264c4e3584c8"
     },
     {
       "name": "mcp_release_governed_lock",
