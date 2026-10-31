@@ -6,8 +6,9 @@ import {join} from 'node:path';
 import test from 'node:test';
 import {buildMcpReconcileS1ToMainCommand} from '../src/tools/mcpReconcileS1ToMain.js';
 const a='a'.repeat(40),b='b'.repeat(40);
+const E2='EXTERNAL_GOVERNED_RECOVERY' as const;
 test('general named E2 tool builds valid Bash for a bounded multi-file preflight',()=>{
- const cmd=buildMcpReconcileS1ToMainCommand(a,b);
+ const cmd=buildMcpReconcileS1ToMainCommand(a,b,E2,true);
  const syntax=spawnSync('bash',['-n'],{input:cmd,encoding:'utf8'});
  assert.equal(syntax.status,0,syntax.stderr);
  assert.match(cmd,/mapfile -d '' -t FILES/);
@@ -24,8 +25,8 @@ test('general named E2 tool builds valid Bash for a bounded multi-file preflight
  }
 });
 test('bad or same SHA blocks command generation',()=>{
- assert.throws(()=>buildMcpReconcileS1ToMainCommand('not-a-sha',b),/E2_SHA_INPUT_INVALID/);
- assert.throws(()=>buildMcpReconcileS1ToMainCommand(a,a),/E2_SHA_INPUT_INVALID/);
+ assert.throws(()=>buildMcpReconcileS1ToMainCommand('not-a-sha',b,E2,true),/E2_SHA_INPUT_INVALID/);
+ assert.throws(()=>buildMcpReconcileS1ToMainCommand(a,a,E2,true),/E2_SHA_INPUT_INVALID/);
 });
 
 const gitEnv={...process.env,GIT_AUTHOR_NAME:'E2 test',
@@ -55,7 +56,7 @@ function fixture(){
  git(publisher,'add','.');git(publisher,'commit','-m','approved main');
  const main=git(publisher,'rev-parse','HEAD');git(publisher,'push','origin','main');
  const lock=join(home,'deploy.lock');
- const script=buildMcpReconcileS1ToMainCommand(old,main)
+ const script=buildMcpReconcileS1ToMainCommand(old,main,E2,true)
   .replace("cd '/opt/apps/wealthtech-mcp-ssh-bridge'",'cd '+JSON.stringify(server))
   .replace('exec 9>/opt/apps/wealthtech-mcp-deploy/deploy.lock','exec 9>'+JSON.stringify(lock))
   .replace("git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",origin);
@@ -105,4 +106,11 @@ test('unexpected untracked file blocks generalized synchronization without remov
   assert.equal(git(f.server,'rev-parse','HEAD'),f.old);
   assert.equal(readFileSync(join(f.server,'unexpected.txt'),'utf8'),'keep\n');
  }finally{rmSync(f.home,{recursive:true,force:true})}
+});
+
+test('scoped command refuses any nonexplicit E2 entry independently of write flag',()=>{
+ assert.throws(()=>buildMcpReconcileS1ToMainCommand(a,b,E2,false),
+   /E2_EXPLICIT_SELECTION_REQUIRED/);
+ assert.throws(()=>buildMcpReconcileS1ToMainCommand(a,b,'E1' as any,true),
+   /E2_EXPLICIT_SELECTION_REQUIRED/);
 });
