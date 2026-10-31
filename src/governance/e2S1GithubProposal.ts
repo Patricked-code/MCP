@@ -12,7 +12,7 @@ import type {LiveStateSnapshot} from '../liveState/types.js';
 
 const REPO='/repos/Patricked-code/MCP';
 const SHA=/^[0-9a-f]{40}$/;
-const PATH=/^[A-Za-z0-9_.@+/-]{1,220}$/;
+const PATH=/^[A-Za-z0-9_.@+\/-]{1,220}$/;
 const BLOCKED=/(^|\/)(?:\.git|\.mcp_backups|node_modules|dist|build|coverage|keys|secrets|\.env(?:\.|$))|(?:\.pem|\.p8|\.key|\.crt|\.p12|\.sql|\.dump)$/i;
 const FETCH='git@github.com-mcp-patricked-ro:Patricked-code/MCP.git';
 const PUSH='disabled://mcp-s1-read-only';
@@ -86,9 +86,9 @@ const git=(args)=>{const x=cp.spawnSync("git",args,{encoding:"utf8",maxBuffer:80
  if(x.status!==0)throw Error("E2_GIT_READ_FAILURE");return x.stdout.trim()};
 const ref=(s)=>git(["rev-parse",s]);
 const SHA=/^[a-f0-9]{40}$/;
-const PATH=/^[A-Za-z0-9_.@+/-]{1,220}$/;
-const deny=/(^|\\/)(?:\\.git|\\.mcp_backups|node_modules|dist|build|coverage|keys|secrets|\\.env(?:\\.|$))|(?:\\.pem|\\.p8|\\.key|\\.crt|\\.p12|\\.sql|\\.dump)$/i;
-const secret=/(?:-----BEGIN\\s|github_pat_|gh[pousr]_[A-Za-z0-9]{15}|sk-proj-|(?:api[_-]?key|access[_-]?token|refresh[_-]?token|password|secret|private[_-]?key)\\s*[:=]\\s*["\\x27][^"\\x27]{8,})/i;
+const PATH=/^[A-Za-z0-9_.@+\/-]{1,220}$/;
+const deny=/(^|\/)(?:\.git|\.mcp_backups|node_modules|dist|build|coverage|keys|secrets|\.env(?:\.|$))|(?:\.pem|\.p8|\.key|\.crt|\.p12|\.sql|\.dump)$/i;
+const secret=/(?:-----BEGIN\s|github_pat_|gh[pousr]_[A-Za-z0-9]{15}|sk-proj-|(?:api[_-]?key|access[_-]?token|refresh[_-]?token|password|secret|private[_-]?key)\s*[:=]\s*["\x27][^"\x27]{8,})/i;
 const fail=(reason)=>{process.stdout.write(JSON.stringify({ok:false,code:reason}));process.exit(1)};
 try{
  if(git(["branch","--show-current"])!=="main"
@@ -101,8 +101,8 @@ try{
  if(staged.status!==0)fail("E2_STAGED_CHANGES");
  if(git(["ls-files","--others","--exclude-standard"]).length)
    fail("E2_UNTRACKED_FILES");
- const list=git(["diff","--name-only"]).split("\\n").filter(Boolean);
- const mod=git(["diff","--name-only","--diff-filter=M"]).split("\\n").filter(Boolean);
+ const list=git(["diff","--name-only"]).split("\n").filter(Boolean);
+ const mod=git(["diff","--name-only","--diff-filter=M"]).split("\n").filter(Boolean);
  if(list.length<1||list.length>20||JSON.stringify(list)!==JSON.stringify(mod))
     fail("E2_UNSUPPORTED_CHANGE_KIND");
  const files=[];let sum=0;
@@ -113,12 +113,12 @@ try{
   if(!st.isFile()||st.isSymbolicLink()||st.size>64000)fail("E2_UNSAFE_FILE");
   const content=fs.readFileSync(path),plain=content.toString("utf8");
   if(Buffer.from(plain,"utf8").compare(content)!==0
-    ||plain.includes("\\0")||secret.test(plain))fail("E2_SENSITIVE_OR_NON_TEXT_FILE");
+    ||plain.includes("\0")||secret.test(plain))fail("E2_SENSITIVE_OR_NON_TEXT_FILE");
   sum+=content.length;if(sum>120000)fail("E2_TOO_MUCH_CONTENT");
   const ls=git(["ls-files","-s","--",path]);
-  const row=/^(100644|100755) ([a-f0-9]{40}) 0\\t/.exec(ls);
+  const row=/^(100644|100755) ([a-f0-9]{40}) 0\t/.exec(ls);
   if(!row)fail("E2_MODE_UNVERIFIED");
-  const blob=crypto.createHash("sha1").update("blob "+content.length+"\\0")
+  const blob=crypto.createHash("sha1").update("blob "+content.length+"\0")
     .update(content).digest("hex");
   files.push({path,mode:row[1],baseBlob:row[2],localBlob:blob,
    sizeBytes:content.length,contentBase64:content.toString("base64"),secretScan:"CLEAR"});
