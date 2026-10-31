@@ -50,7 +50,7 @@ function createMock(options:MockOptions={}){
    const no=(status:number)=>({ok:false,status,json:null});
    const ROOT='/repos/Patricked-code/MCP';
    if(endpoint===ROOT+'/branches/main')return yes({commit:{sha:MAIN}});
-   if(endpoint===ROOT+'/compare/'+S1+'...'+MAIN')
+   if(endpoint===ROOT+'/compare/'+S1+'...'+MAIN)
     return yes({status:'ahead',behind_by:0});
    if(endpoint===ROOT+'/contents/'+f.path+'?ref='+S1)
     return yes({type:'file',sha:BASE});
