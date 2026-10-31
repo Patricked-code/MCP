@@ -17,6 +17,7 @@ function fake(){
    const body=(options.jsonBody as any).body;
    const id=comments.length+100;
    const comment={id,body,created_at:'2026-10-31T02:25:00.000Z',
+    user:{login:'Patricked-code'},author_association:'OWNER',
     html_url:'https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+id};
    comments.push(comment);
    return {ok:true,status:201,json:comment};
@@ -82,6 +83,15 @@ test('all E2 registrations are append-only: same ID with conflicting issues is r
 test('invalid or conflicting GitHub journal comments cannot be promoted to successful recovery',async()=>{
  const f=fake();
  f.comments.push({id:101,body:'<!-- MCP_E2_ENTRY_EVENT_V1:INVALID:000000 -->',
-  created_at:'2026-10-31T02:25:00Z',html_url:'https://github.com/Patricked-code/MCP/issues/359#issuecomment-101'});
+  created_at:'2026-10-31T02:25:00Z',user:{login:'Patricked-code'},
+  author_association:'OWNER',html_url:'https://github.com/Patricked-code/MCP/issues/359#issuecomment-101'});
  assert.equal((await loadE2Journal(f.port)).status,'CONFLICT');
+});
+
+test('journal rejects forged issue comments from unauthorised GitHub actors',async()=>{
+ const f=fake(),id=newE2EntryId();
+ await appendE2Journal(event(id,'ACTIVATED'),f.port);
+ f.comments[0].author_association='NONE';
+ const result=await loadE2Journal(f.port);
+ assert.equal(result.status,'CONFLICT');
 });
