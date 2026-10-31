@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {recoverE2FromGitHubIssueComments,type E2GitHubComment}
+import {recoverE2FromGitHubIssueComments,indexRecoveredE2GitHubContinuity,type E2GitHubComment}
  from '../src/governance/e2GitHubEvidence.js';
 import {renderGovernedWorkEntryCheckpoint,type GovernedWorkEntryTrace}
  from '../src/governance/workEntryTrace.js';
+import {recoverWorkEntryByContinuityId} from '../src/governance/workEntryContinuityIndex.js';
 
 const ID='MCP-PILOT-E2-01-CONT-20261030-ROOT-01';
 const issueNumber=359;
@@ -106,4 +107,22 @@ test('a root continuity can open a second PR after the first PR was governed and
  assert.equal(result.status,'READY');
  assert.equal(result.history.length,2);
  assert.equal(result.latest?.trace.github.pullRequestNumber,365);
+});
+
+test('authenticated recovered GitHub evidence composes with existing owner-choice index',()=>{
+ const next={...base,checkpoint:{...base.checkpoint,nextAction:'Review the next checkpoint'}};
+ const recovered=recoverE2FromGitHubIssueComments(source([comment(1),comment(2,next)]),ID);
+ const index=indexRecoveredE2GitHubContinuity(recovered);
+ assert.equal(index.status,'READY');
+ assert.equal(recoverWorkEntryByContinuityId(index,ID)?.history.length,2);
+ assert.equal(recoverWorkEntryByContinuityId(index,ID)?.latest.checkpoint.nextAction,
+  next.checkpoint.nextAction);
+});
+test('legacy-only and partially collected timelines never become a ready index',()=>{
+ const old=comment(1);
+ const legacy={...old,body:old.body.replace(/<!-- MCP_GOVERNED_WORK_ENTRY_DATA_V1:[^>]* -->/,'')};
+ const partial=recoverE2FromGitHubIssueComments(source([legacy]),ID);
+ assert.equal(indexRecoveredE2GitHubContinuity(partial).status,'CONFLICT');
+ const missingPage=recoverE2FromGitHubIssueComments(source([comment(1)],false),ID);
+ assert.equal(indexRecoveredE2GitHubContinuity(missingPage).status,'CONFLICT');
 });
