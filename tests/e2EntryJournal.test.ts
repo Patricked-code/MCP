@@ -1,9 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {
- appendE2Journal,loadE2Journal,recoverE2JournalEntry,findE2ContinuityInJournal,
- newE2EntryId,serializeE2Journal,parseE2Journal,type E2JournalEvent,type E2JournalPort
-} from '../src/governance/e2EntryJournal.js';
+import type {E2JournalEvent,E2JournalPort} from '../src/governance/e2EntryJournal.js';
+process.env.MCP_AUTH_TOKEN ??= 'e2-journal-test-token-only-20261031';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/e2-test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/e2-test-s2-key';
+const {appendE2Journal,loadE2Journal,recoverE2JournalEntry,findE2ContinuityInJournal,
+ newE2EntryId,serializeE2Journal,parseE2Journal}
+ =await import('../src/governance/e2EntryJournal.js');
 
 function fake(){
  const comments:any[]=[];
