@@ -26,11 +26,11 @@ function fixture(){
  const journal:E2JournalPort={async request(endpoint,opts){
   if(endpoint.startsWith('/search/issues?'))
    return {ok:true,status:200,json:{items:legacySearch?[{
-    number:359,title:'PILOT-E2-01',body:'**Continuity ID canonique :** \`MCP-PILOT-E2-01-CONT-20261030-ROOT-01\`'
+    number:359,title:'PILOT-E2-01',body:'**Continuity ID canonique :** \`MCP-PILOT-E2-01-CONT-20261030-ROOT-01\` EXTERNAL_GOVERNED_RECOVERY'
    }]:[]}};
   if(endpoint==='/repos/Patricked-code/MCP/issues/359')
    return {ok:true,status:200,json:{
-    number:359,title:'PILOT-E2-01',body:'**Continuity ID canonique :** \`MCP-PILOT-E2-01-CONT-20261030-ROOT-01\`'
+    number:359,title:'PILOT-E2-01',body:'**Continuity ID canonique :** \`MCP-PILOT-E2-01-CONT-20261030-ROOT-01\` EXTERNAL_GOVERNED_RECOVERY'
    }};
   if(endpoint==='/repos/Patricked-code/MCP/issues'&&opts?.method==='POST'){
    const input=opts.jsonBody as any;
