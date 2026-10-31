@@ -141,3 +141,18 @@ test('known historical E2 continuity is selected by ID, with partial evidence ex
  assert.equal(result.reason,'E2_HISTORICAL_CHECKPOINTS_REQUIRE_VERIFICATION');
  assert.equal(f.issues.length,0);
 });
+
+test('E2 recovers issue created before an interrupted registry receipt without duplicate issue',async()=>{
+ const f=fixture(),entryId=await activate(f),continuityId='MCP-E2-CONT-20261031-A12B34C56';
+ f.issues.push({number:499,title:'Nouveau module MCP E2',body:
+  '## Entrée E2 — nouveau chantier gouverné\\n'
+  +'- **Continuity ID :** \`'+continuityId+'\`\\n'
+  +'- **E2 entry :** \`'+entryId+'\`\\n'});
+ const result=await routeE2OwnerChoice({
+  entryId,kind:'NEW',mandate:'Nouveau module MCP E2'
+ },f.port);
+ assert.equal(result.status,'READY_NEW');
+ assert.equal(result.continuityId,continuityId);
+ assert.equal(result.issueNumber,499);
+ assert.equal(f.issues.length,1);
+});
