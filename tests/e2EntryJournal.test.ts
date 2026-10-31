@@ -22,6 +22,9 @@ function fake(){
    comments.push(comment);
    return {ok:true,status:201,json:comment};
   }
+  // Official GitHub GET is /issues/comments/{id}; /issues/359/comments/{id} is invalid.
+  if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/359/comments/'))
+   return {ok:false,status:404,json:null};
   const item=/\/comments\/(\d+)$/.exec(endpoint);
   if(item)return {ok:true,status:200,json:comments.find(x=>x.id===Number(item[1]))??null};
   const page=Number(new URL('https://api.github.com'+endpoint).searchParams.get('page')??1);
