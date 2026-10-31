@@ -116,7 +116,7 @@ export async function routeE2OwnerChoice(
     if(!x||typeof x.body!=='string'||!Number.isSafeInteger(x.number)
       ||Number(x.number)<1||!x.body.includes('EXTERNAL_GOVERNED_RECOVERY'))
       return false;
-    const id=/\\*\\*Continuity ID(?: canonique)?\\s*:\\*\\*\\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(x.body)?.[1];
+    const id=/\*\*Continuity ID(?: canonique)?\s*:\*\*\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(x.body)?.[1];
     return id===choice.continuityId;
    });
    if(matches.length>1)return refused('E2_HISTORICAL_ID_CONFLICT');
