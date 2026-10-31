@@ -6,6 +6,7 @@ process.env.S1_HOST ??= '127.0.0.1';
 process.env.S1_KEY_PATH ??= '/tmp/e2-test-s1-key';
 process.env.S2_HOST ??= '127.0.0.1';
 process.env.S2_KEY_PATH ??= '/tmp/e2-test-s2-key';
+process.env.ENABLE_WRITE_TOOLS='true';
 const {registerE2AutomaticActivationTool,assertE2GithubProposalAuthority} = await import('../src/tools/e2Activation.js');
 
 const SHA='7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6';

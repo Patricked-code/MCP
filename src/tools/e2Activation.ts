@@ -109,6 +109,13 @@ export function registerE2AutomaticActivationTool(
         return {...asText(JSON.stringify({
           status:'RECONCILIATION_BLOCKED',code:'E2_EXPLICIT_SELECTION_REQUIRED'
         })),isError:true};
+      // E2 journals every admitted entry, but journal POST is a write.
+      // Never publish ACTIVATED while the global server write gate is closed.
+      try{assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);}
+      catch{return {...asText(JSON.stringify({
+        status:'RECONCILIATION_BLOCKED',code:'E2_SERVER_WRITE_GATE_DISABLED',
+        nextStep:'RECONCILE_BEFORE_WORK'
+      })),isError:true};}
       try{
         const entryId=newE2EntryId();
         const record=deps.record??appendE2Journal;
