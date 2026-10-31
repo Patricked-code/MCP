@@ -24,6 +24,7 @@ function fixture(){
  const publisher=join(home,'publisher');
  mkdirSync(server);git(server,'init','-b','main');
  mkdirSync(join(server,'data'));
+ writeFileSync(join(server,'.gitignore'),'.mcp_backups/\\n');
  writeFileSync(join(server,'data/github-accounts.json'),OLD_JSON);
  git(server,'add','.');
  git(server,'commit','-m','baseline');
