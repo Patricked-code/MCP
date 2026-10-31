@@ -400,6 +400,12 @@
       "class": "SELF_MANAGEMENT"
     },
     {
+      "name": "mcp_reconcile_s1_approved_registry_to_main",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "E2 exact-content registry rebaseline only: guarded write consent, approved SHA, single-file scope, verified Git ancestry, retained backup, no overwrite or deploy; cannot be used for target applications."
+    },
+    {
       "name": "mcp_sync_from_github_s1",
       "kind": "MCP_TOOL",
       "class": "SELF_MANAGEMENT"
