@@ -110,12 +110,13 @@ test('E1, missing explicit selection, or no profile can NEVER invoke the E2 cycl
  }
 });
 
-test('unreconciled documentation fails closed even with explicit E2 authority',async()=>{
+test('E2 may correct Git drift with outdated documentation but cannot enter owner routing',async()=>{
  const c={proposal:0,s1:0,deploy:0};
  const out=await executeMcpS1ReconciliationCycle(selected,
   {...obs,documentationAligned:false},{
    scopedS1WriteApproved:true,githubProposalApproved:true,governedDeployApproved:true
   },ports(c));
- assert.equal(out.disposition,'BLOCKED');
- assert.deepEqual(c,{proposal:0,s1:0,deploy:0});
+ assert.equal(out.disposition,'S1_GIT_CONVERGED');
+ assert.equal(out.mayEnterNormalE2,false);
+ assert.deepEqual(c,{proposal:0,s1:1,deploy:0});
 });
