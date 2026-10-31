@@ -107,8 +107,8 @@ export function assessMcpS1ToMainReconciliation(
   if(!sameHead&&observation.s1AncestorOfGithubMain===true&&allApproved)
     return result('APPROVED_LOCAL_CONTENT_CANDIDATE',[],paths,false,true);
   if(observation.files.length>0
-    &&(sameHead||observation.s1AncestorOfGithubMain===true)
-    &&observation.githubMainAncestorOfS1!==true
+    &&(sameHead||(observation.s1AncestorOfGithubMain===true
+      &&observation.githubMainAncestorOfS1!==true))
     &&observation.files.every(f=>
       f.kind==='MODIFIED'||f.kind==='ADDED'||f.kind==='DELETED'||f.kind==='RENAMED'))
     return result('S1_TO_GITHUB_REVIEW_REQUIRED',[],paths,true,false);
