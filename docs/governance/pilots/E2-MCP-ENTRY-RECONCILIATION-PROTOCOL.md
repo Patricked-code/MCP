@@ -11,7 +11,7 @@
 | Porte | Entrée obligatoire | Lecture / décision | Sortie attendue |
 | --- | --- | --- | --- |
 | E2-00 | Mandat explicite du propriétaire | Sélectionner `EXTERNAL_GOVERNED_RECOVERY`, sans repli implicite | Profil identifié, aucune tâche créée |
-| E2-01 | Accès GitHub et MCP en lecture | Observer exact HEAD de `main`, dépôt S1 `main`/`origin/main`, runtime MCP, état du conteneur, propreté Git, dérive documentaire, fraîcheur de l'observation | Réconciliation horodatée, `ALIGNED`/`DIVERGED`/`UNVERIFIED` et bloqueurs |
+| E2-01 | Accès GitHub et MCP en lecture | Observer **d'abord S1** : dépôt local, fichiers modifiés, contenu sécurisé, runtime et conteneur ; puis GitHub `main` et les divergences, documentation, fraîcheur et provenances | Réconciliation horodatée, `ALIGNED`/`DIVERGED`/`UNVERIFIED` et bloqueurs |
 | E2-02 | Résultat E2-01 | Découvrir issues, PR, commits, checkpoints, Continuity IDs déjà ouverts ; détecter doublons et travaux simultanés | Liste vérifiée et traçable de continuités ; lacunes explicites |
 | E2-03 | E2-01 et E2-02 terminées | Demander **« Continuer un chantier MCP existant ? Oui/non ? »** ; si oui, identifier précisément le chantier | Choix explicite et enregistré |
 | E2-04-R | « Oui » | Réutiliser issue, PR, branche, Continuity ID, instructions, preuves, décisions et NEXT_ACTION ; réconcilier HEAD et collisions | `RESUME_EXISTING`, jamais nouveau chantier |
@@ -35,7 +35,7 @@ Réutiliser exclusivement les outils et autorités déjà présents :
 
 - `main` GitHub, Git S1 et runtime avec SHA différents : `BLOCKED`, diagnostic ciblé ; aucune écriture privilégiée.
 - Observation manquante, ancienne ou incomplète : `BLOCKED`, ne pas déclarer l'état sain.
-- S1 modifié localement ou documentation obsolète **avec révisions du code alignées** : conserver des avertissements et imposer une revue avant toute opération privilégiée ; le travail sûr sur une PR isolée reste possible.
+- S1 modifié localement ou documentation courante obsolète **même avec des SHA identiques** : `BLOCKED` pour l'orientation normale E2. Seule la correction gouvernée de la divergence peut avancer (aucune admission GWC préalable), avec sauvegarde, revue, fusion et attestations. La présence d'un commit identique n'est pas une convergence complète.
 - Continuity ID absent ou contradictoire : `BLOCKED`, ne pas créer automatiquement une nouvelle continuité.
 - Nouveaux travaux : recenser les travaux existants et faire valider un ancrage GitHub avant attribution d'un nouvel ID.
 - GitHub issue-comment historique sans charge structurée : marquer `PARTIAL` et utiliser son manifeste canonique de référence, sans fabriquer de champs manquants.
@@ -56,3 +56,15 @@ Ces observations ont une date et ne valent **pas** attestation permanente. Aucun
 Les bibliothèques et leurs tests matérialisent la décision E2, son intégration additive dans la prévisualisation préexistante et une **lecture** de checkpoints structurés. Elles ne garantissent **pas encore** qu'un nouveau client ChatGPT/Claude déclenche automatiquement cette séquence, que tous les anciens checkpoints sont convertis en données structurées, ni qu'un commentaire GitHub est écrit systématiquement sans action de l'agent. Ces objectifs nécessitent des points d'intégration opérationnels et une démonstration de bout en bout avant déclaration « E2 complet ».
 
 **Porte de fusion :** exact SHA CI verte + revue indépendante + vérification d'absence de collision + tests E1/E2 et preuve de reprise inter-session. Ne pas fusionner une PR en brouillon sur seule réussite des tests unitaires.
+
+### Incident réel de réintégration ascendante S1 → GitHub (31 octobre 2026)
+
+La différence locale `Wealthtechinnovations.type` de `organization_or_user` vers `user` dans `data/github-accounts.json` a été comparée en lecture seule avec le nouveau contenu GitHub. La [PR #366](https://github.com/Patricked-code/MCP/pull/366), approuvée indépendamment par `Wealthtechinnovations`, a été fusionnée par squash le 31/10/2026 dans `main`, SHA `7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6`. La CI de `main` [#41152043914](https://github.com/Patricked-code/MCP/actions/runs/41152043914) a réussi. Le déploiement gouverné [#41152043903](https://github.com/Patricked-code/MCP/actions/runs/41152043903) a échoué : il ne faut **pas** attester S1 comme déployé sur le nouveau SHA. Le prérequis Git S1 dirty a été observé directement avant et après le merge ; le workflow ne donne pas le diagnostic interne exhaustif de l'échec.
+
+#### Capacité de reprise additive, dans cette PR #365
+
+`src/tools/mcpS1ExactContentReconcile.ts` et le nouvel outil `mcp_reconcile_s1_approved_registry_to_main` introduisent une procédure **ciblée sur un unique fichier versionné** déjà strictement identique à celui d'un `main` GitHub approuvé. Elle exige une approbation d'écriture explicite, deux SHA exacts, la branche `main`, le remote GitHub en lecture seule, l'absence de toute autre modification, un fast-forward, la vérification de l'identité du blob, une sauvegarde privée, puis une remise en cohérence de la référence Git et de son index **sans réécrire ni supprimer** `data/github-accounts.json`. Le runtime doit être redéployé et attesté séparément.
+
+L'opération échoue sans mutation du ref si un contrôle préalable échoue ; les tests s'exécutent sur de vrais dépôts Git temporaires sans toucher S1. La procédure **ne remplace pas** `mcp_sync_from_github_s1` ni le pipeline Governed Deploy et ne confère aucune autorisation nouvelle E3 ou GitHub.
+
+**Limitation d'amorçage impérative :** ce nouvel outil GitHub-side ne peut pas être appelé sur le runtime S1 déployé tant qu'une version du MCP le contenant n'a pas elle-même été installée. Comme le déploiement existant refuse actuellement le dépôt S1 dirty, une opération d'administration S1 extérieure et expressément autorisée demeure nécessaire pour la première remise en cohérence. Ne jamais prétendre que l'ajout du code à la PR effectue déjà cette intervention.
