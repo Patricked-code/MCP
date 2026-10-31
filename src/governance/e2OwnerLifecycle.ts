@@ -1,0 +1,163 @@
+/**
+ * Owner-first E2 routing: ask NEW vs RESUME only AFTER verified convergence.
+ * No GWC task, claim or lock. Persist every owner decision on the canonical
+ * E2 GitHub journal and create an issue/continuity only after duplicate review.
+ */
+import {randomUUID} from 'node:crypto';
+import {githubJsonRequestWithServerCredential} from '../github/connection.js';
+import {liveStateEngine} from '../liveState/engine.js';
+import {assessE2LivePreflight} from './e2LivePreflight.js';
+import {appendE2Journal,loadE2Journal,recoverE2JournalEntry,
+  findE2ContinuityInJournal,type E2JournalEvent,type E2JournalPort,
+  defaultE2JournalPort} from './e2EntryJournal.js';
+import type {LiveStateSnapshot} from '../liveState/types.js';
+
+const SHA=/^[0-9a-f]{40}$/;
+const ID=/^[A-Z][A-Z0-9-]{5,110}$/;
+const ROOT='/repos/Patricked-code/MCP';
+const SAFE_TEXT=/^[^\x00-\x1F]{8,500}$/;
+export type E2OwnerChoice=Readonly<{
+ entryId:string;
+ kind:'NEW'|'RESUME';
+ mandate?:string;
+ continuityId?:string;
+}>;
+export type E2OwnerResult=Readonly<{
+ status:'READY_NEW'|'READY_RESUME'|'DUPLICATE_FOUND'|'BLOCKED';
+ continuityId:string|null;
+ issueNumber:number|null;
+ issueUrl:string|null;
+ reason:string|null;
+ grantsPermission:false;
+}>;
+export type E2OwnerPort=Readonly<{
+ journal:E2JournalPort;
+ observe:()=>Promise<LiveStateSnapshot>;
+}>;
+export const defaultE2OwnerPort:E2OwnerPort={
+ journal:defaultE2JournalPort,
+ observe:()=>liveStateEngine.reconcileNow()
+};
+const refused=(reason:string):E2OwnerResult=>({
+ status:'BLOCKED',continuityId:null,issueNumber:null,issueUrl:null,
+ reason,grantsPermission:false
+});
+const validMandate=(x:unknown):x is string=>
+ typeof x==='string'&&SAFE_TEXT.test(x)&&!/(?:gh[pousr]_|github_pat_|sk-proj-|-----BEGIN|password\s*[:=]|secret\s*[:=])/i.test(x);
+export function proposeE2ContinuityId(at:Date=new Date(),uuid:string=randomUUID()):string{
+ const date=at.toISOString().slice(0,10).replace(/-/g,'');
+ const suffix=uuid.slice(0,12).replace(/-/g,'').toUpperCase();
+ if(!/^[A-F0-9]{9,12}$/.test(suffix))throw new Error('E2_CONTINUITY_SOURCE_INVALID');
+ return 'MCP-E2-CONT-'+date+'-'+suffix;
+}
+function recordFor(entryId:string,stage:E2JournalEvent['stage'],
+  snapshot:LiveStateSnapshot,continuityId:string|null,issueNumber:number|null):E2JournalEvent{
+ return {
+  schemaVersion:1,entryId,profile:'EXTERNAL_GOVERNED_RECOVERY',
+  observedAt:new Date().toISOString(),stage,
+  githubMainSha:snapshot.github.head,s1HeadSha:snapshot.s1.head,
+  runtimeSha:snapshot.runtime.revision,continuityId,issueNumber,
+  reasonCode:null
+ };
+}
+function asObject(x:unknown):Record<string,unknown>|null{
+ return x&&typeof x==='object'&&!Array.isArray(x)?x as Record<string,unknown>:null;
+}
+async function findExactDuplicate(
+  mandate:string,port:E2JournalPort
+):Promise<{status:'CLEAR'|'FOUND'|'BLOCKED';issueNumber:number|null}>{
+ const desired=mandate.toLowerCase().trim().replace(/\s+/g,' ');
+ for(let page=1;page<=30;page++){
+  const response=await port.request(ROOT+'/issues?state=all&per_page=100&page='+page);
+  if(!response.ok||!Array.isArray(response.json))
+   return {status:'BLOCKED',issueNumber:null};
+  for(const entry of response.json){
+   const item=asObject(entry);
+   const title=item?.title;
+   if(item?.pull_request||typeof title!=='string')continue;
+   if(title.toLowerCase().trim().replace(/\s+/g,' ')===desired)
+    return {status:'FOUND',issueNumber:Number(item?.number)||null};
+  }
+  if(response.json.length<100)return {status:'CLEAR',issueNumber:null};
+ }
+ return {status:'BLOCKED',issueNumber:null};
+}
+/**
+ * E2 NEW: duplicate detection -> new GitHub issue with canonical ID -> journal.
+ * RESUME: continuity ID -> durable journal registry -> existing issue, no writes.
+ * Both choices require the activation and READY_FOR_OWNER receipts to exist.
+ */
+export async function routeE2OwnerChoice(
+ choice:E2OwnerChoice,port:E2OwnerPort=defaultE2OwnerPort
+):Promise<E2OwnerResult>{
+ if(!/^E2-[A-F0-9-]{36}$/.test(choice.entryId))return refused('E2_ENTRY_ID_INVALID');
+ const journal=await loadE2Journal(port.journal);
+ const entry=recoverE2JournalEntry(journal,choice.entryId);
+ if(entry.status!=='READY'||entry.latest?.stage!=='READY_FOR_OWNER'
+   ||entry.history[0]?.stage!=='ACTIVATED')
+   return refused('E2_READY_ENTRY_RECEIPT_NOT_FOUND');
+ const snapshot=await port.observe();
+ const gate=assessE2LivePreflight(snapshot);
+ if(gate.gate!=='DISCOVER_GITHUB_CONTINUITIES')return refused('E2_ALIGNMENT_NO_LONGER_CURRENT');
+ if(!SHA.test(snapshot.github.head??''))return refused('E2_MAIN_SHA_INVALID');
+ if(choice.kind==='RESUME'){
+  if(!ID.test(choice.continuityId??''))return refused('E2_CONTINUITY_ID_REQUIRED');
+  const match=findE2ContinuityInJournal(journal,choice.continuityId!);
+  if(match.status!=='READY'||!match.issueNumber)
+   return refused(match.status==='NOT_FOUND'
+     ?'E2_CONTINUITY_ID_NOT_INDEXED':'E2_CONTINUITY_REGISTRY_CONFLICT');
+  const issue=await port.journal.request(ROOT+'/issues/'+match.issueNumber);
+  const item=asObject(issue.json);
+  if(!issue.ok||item?.number!==match.issueNumber
+    ||typeof item?.body!=='string'||!item.body.includes(choice.continuityId!))
+    return refused('E2_CONTINUITY_ISSUE_NOT_ATTESTED');
+  const receipt=await appendE2Journal(
+   recordFor(choice.entryId,'OWNER_RESUME',snapshot,choice.continuityId!,match.issueNumber),
+   port.journal);
+  if(receipt.status!=='RECORDED')return refused('E2_RESUME_JOURNAL_FAILED');
+  return {status:'READY_RESUME',continuityId:choice.continuityId!,
+   issueNumber:match.issueNumber,
+   issueUrl:'https://github.com/Patricked-code/MCP/issues/'+match.issueNumber,
+   reason:null,grantsPermission:false};
+ }
+ if(!validMandate(choice.mandate))return refused('E2_NEW_MANDATE_MISSING_OR_SENSITIVE');
+ const duplicate=await findExactDuplicate(choice.mandate,port.journal);
+ if(duplicate.status==='BLOCKED')return refused('E2_DUPLICATE_SCREEN_INCOMPLETE');
+ if(duplicate.status==='FOUND')
+  return {status:'DUPLICATE_FOUND',continuityId:null,
+   issueNumber:duplicate.issueNumber,
+   issueUrl:duplicate.issueNumber
+    ?'https://github.com/Patricked-code/MCP/issues/'+duplicate.issueNumber:null,
+   reason:'E2_EXISTING_ISSUE_REQUIRES_OWNER_DECISION',grantsPermission:false};
+ const continuityId=proposeE2ContinuityId();
+ const body='## Entrée E2 — nouveau chantier gouverné\n\n'
+  +'- **Continuity ID :** `'+continuityId+'`\n'
+  +'- **Origine :** `EXTERNAL_GOVERNED_RECOVERY`\n'
+  +'- **E2 entry :** `'+choice.entryId+'`\n'
+  +'- **Mandat :** '+choice.mandate+'\n'
+  +'- **GitHub main observé :** `'+snapshot.github.head+'`\n'
+  +'- **Étape :** `ISSUE_OPENED`\n'
+  +'- **GWC interne :** NON REQUIS\n'
+  +'- **Prochaine étape :** instructions, branche de travail, CI, revue, fusion et déploiement gouvernés.\n'
+  +'**Pas de création de tâche GWC ni de permission implicite.**\n';
+ const created=await port.journal.request(ROOT+'/issues',{method:'POST',jsonBody:{
+  title:choice.mandate.trim(),body,labels:[]
+ }});
+ const issue=asObject(created.json);
+ const issueNumber=issue?.number;
+ if(!created.ok||created.status!==201||!Number.isSafeInteger(issueNumber)
+  ||Number(issueNumber)<1)
+  return refused('E2_NEW_ISSUE_CREATION_FAILED');
+ const checked=await port.journal.request(ROOT+'/issues/'+issueNumber);
+ const proof=asObject(checked.json);
+ if(!checked.ok||checked.status!==200||proof?.body!==body||proof?.number!==issueNumber)
+  return refused('E2_NEW_ISSUE_READBACK_FAILED');
+ const receipt=await appendE2Journal(
+  recordFor(choice.entryId,'CONTINUITY_REGISTERED',snapshot,continuityId,Number(issueNumber)),
+  port.journal);
+ if(receipt.status!=='RECORDED')
+  return refused('E2_ISSUE_CREATED_BUT_REGISTRY_PENDING_RECOVERY');
+ return {status:'READY_NEW',continuityId,issueNumber:Number(issueNumber),
+  issueUrl:'https://github.com/Patricked-code/MCP/issues/'+issueNumber,
+  reason:null,grantsPermission:false};
+}
