@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "faf13ea61c5aed3f91cc4054bb60643b735a6cd60efd2f838daf3e53a306aa4f",
+  "catalogueDigest": "a115b0c1156733f1f9819f5806fd0e29bea9b6ff14c8ba00533cab98f7c047a1",
   "registeredToolCount": 141,
   "readOnlyToolCount": 87,
   "writeToolCount": 54,
@@ -3637,7 +3637,7 @@
     {
       "name": "mcp_reconcile_s1_approved_registry_to_main",
       "title": null,
-      "description": "Reconcile le registre MCP S1 identique au main GitHub approuve : sauvegarde puis avancement Git sans ecraser le fichier ; ne deploie pas.",
+      "description": "E2 seulement, compatibilite premier cas : rapproche le registre GitHub MCP strictement approuve depuis S1 sans supprimer le fichier. Ne remplace pas le reconcileur general.",
       "surface": "scoped-write",
       "annotations": {
         "readOnlyHint": null,
@@ -3647,6 +3647,14 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
           "expected_s1_sha": {
             "type": "string",
             "pattern": "^[a-f0-9]{40}$"
@@ -3661,13 +3669,15 @@
           }
         },
         "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
           "expected_s1_sha",
           "approved_main_sha",
           "allow_write"
         ],
         "additionalProperties": false
       },
-      "contractDigest": "3ec090d680d233a2db3fbc3dbcf564a2918a03904b6f037cf35b264c4e3584c8"
+      "contractDigest": "d19ef8fdf8d010a464d3e19c7d10772a27ffcddd4c1ccc6967bc6e4800dcbd99"
     },
     {
       "name": "mcp_reconcile_s1_to_main",
