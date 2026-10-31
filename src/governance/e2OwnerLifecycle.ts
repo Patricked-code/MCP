@@ -108,7 +108,7 @@ async function routeE2OwnerChoiceInner(
  if(!/^E2-[A-F0-9-]{36}$/.test(choice.entryId))return refused('E2_ENTRY_ID_INVALID');
  const journal=await loadE2Journal(port.journal);
  const entry=recoverE2JournalEntry(journal,choice.entryId);
- if(entry.status!=='READY'||!['READY_FOR_OWNER','CONTINUITY_REGISTERED'].includes(entry.latest?.stage??'')
+ if(entry.status!=='READY'||!['READY_FOR_OWNER','CONTINUITY_REGISTERED','OWNER_RESUME'].includes(entry.latest?.stage??'')
    ||entry.history[0]?.stage!=='ACTIVATED')
    return refused('E2_READY_ENTRY_RECEIPT_NOT_FOUND');
  const snapshot=await port.observe();
@@ -141,6 +141,31 @@ async function routeE2OwnerChoiceInner(
    issueNumber:receipt.issueNumber,
    issueUrl:'https://github.com/Patricked-code/MCP/issues/'+receipt.issueNumber,
    reason:null,grantsPermission:false};
+ }
+ // A persisted OWNER_RESUME event may survive a failed journal readback.
+ // Replay the identical choice without creating a duplicate event.
+ if(entry.latest?.stage==='OWNER_RESUME'){
+  if(choice.kind!=='RESUME'||!ID.test(choice.continuityId??''))
+   return refused('E2_REPLAY_OWNER_CHOICE_MISMATCH');
+  const receipts=entry.history.filter(e=>e.stage==='OWNER_RESUME');
+  if(new Set(receipts.map(e=>e.continuityId+':'+e.issueNumber)).size!==1)
+   return refused('E2_REPLAY_RESUME_CONFLICT');
+  const receipt=receipts[0];
+  if(!receipt?.issueNumber||receipt.continuityId!==choice.continuityId)
+   return refused('E2_REPLAY_OWNER_CHOICE_MISMATCH');
+  const proof=await port.journal.request(ROOT+'/issues/'+receipt.issueNumber);
+  const issue=asObject(proof.json);
+  if(!proof.ok||proof.status!==200||issue?.number!==receipt.issueNumber
+    ||typeof issue.body!=='string'
+    ||!issue.body.includes(choice.continuityId)
+    ||!issue.body.includes('EXTERNAL_GOVERNED_RECOVERY'))
+   return refused('E2_REPLAY_RESUME_ISSUE_NOT_ATTESTED');
+  const historical=findE2ContinuityInJournal(journal,choice.continuityId!).status==='NOT_FOUND';
+  return {status:historical?'RECOVERY_PARTIAL':'READY_RESUME',
+    continuityId:choice.continuityId!,issueNumber:receipt.issueNumber,
+    issueUrl:'https://github.com/Patricked-code/MCP/issues/'+receipt.issueNumber,
+    reason:historical?'E2_HISTORICAL_CHECKPOINTS_REQUIRE_VERIFICATION':null,
+    grantsPermission:false};
  }
  if(choice.kind==='RESUME'){
   if(!ID.test(choice.continuityId??''))return refused('E2_CONTINUITY_ID_REQUIRED');

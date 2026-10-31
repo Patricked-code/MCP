@@ -166,6 +166,26 @@ async function readBlob(port:E2ProposalPorts['github'],path:string,commit:string
   throw new Error('E2_APPROVED_CONTENT_BLOB_UNAVAILABLE');
  return data.sha as string;
 }
+async function approvedGitModes(
+ github:E2ProposalPorts['github'],sha:string,files:readonly E2LocalFile[]
+):Promise<Map<string,string>>{
+ const tree=await expect(github,REPO+'/git/trees/'+sha+'?recursive=1');
+ if(tree.truncated!==false||!Array.isArray(tree.tree))
+  throw new Error('E2_APPROVED_GIT_TREE_INCOMPLETE');
+ const requested=new Set(files.map(f=>f.path));
+ const modes=new Map<string,string>();
+ for(const raw of tree.tree){
+  const row=obj(raw),path=str(row?.path);
+  if(!path||!requested.has(path))continue;
+  if(row?.type!=='blob'||!['100644','100755'].includes(str(row.mode)??'')
+    ||!SHA.test(str(row.sha)??'')||modes.has(path))
+   throw new Error('E2_APPROVED_FILE_MODE_UNVERIFIED');
+  modes.set(path,str(row.mode)!);
+ }
+ if(modes.size!==requested.size)
+  throw new Error('E2_APPROVED_FILE_MODE_UNVERIFIED');
+ return modes;
+}
 export async function proposeE2S1GithubReview(
  snapshot:LiveStateSnapshot,
  ports:E2ProposalPorts=defaultE2ProposalPorts
@@ -183,6 +203,14 @@ export async function proposeE2S1GithubReview(
   const mainBlob=await readBlob(ports.github,file.path,main);
   if(file.baseBlob!==baseBlob||mainBlob!==baseBlob)
    throw new Error('E2_S1_MAIN_FILE_COLLISION');
+ }
+ // File contents alone cannot attest executable bits. Fail closed if the
+ // approved main mode differs from the S1/index mode, before GitHub writes.
+ const baseModes=await approvedGitModes(ports.github,base,initial.files);
+ const mainModes=await approvedGitModes(ports.github,main,initial.files);
+ for(const file of initial.files){
+  if(baseModes.get(file.path)!==file.mode||mainModes.get(file.path)!==file.mode)
+   throw new Error('E2_S1_MAIN_FILE_MODE_COLLISION');
  }
  // Reobserve the entire bounded snapshot before creating any GitHub object.
  const current=await ports.readS1();

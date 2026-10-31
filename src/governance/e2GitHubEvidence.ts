@@ -14,6 +14,7 @@ export type E2GitHubComment=Readonly<{
   created_at:string;
   html_url:string;
   user:Readonly<{login:string}>|null;
+  author_association?:string;
 }>;
 export type E2GitHubIssueComments=Readonly<{
   issueNumber:number;
@@ -76,7 +77,12 @@ export function recoverE2FromGitHubIssueComments(
       ||!comment.user||!comment.user.login){
       blockers.push('INVALID_GITHUB_COMMENT_PROVENANCE:'+String(comment.id));continue;
     }
-    const signature=JSON.stringify([comment.body,comment.created_at,comment.html_url,comment.user.login]);
+    // Matching self-declared actor is NOT authenticated issue-comment provenance.
+    if(!['OWNER','MEMBER','COLLABORATOR'].includes(comment.author_association??'')){
+      blockers.push('CHECKPOINT_AUTHOR_NOT_AUTHORIZED:'+String(comment.id));continue;
+    }
+    const signature=JSON.stringify([comment.body,comment.created_at,comment.html_url,
+      comment.user.login,comment.author_association]);
     const previous=seen.get(comment.id);
     if(previous!==undefined){
       if(previous!==signature)blockers.push('GITHUB_COMMENT_ID_COLLISION:'+comment.id);

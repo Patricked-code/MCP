@@ -53,6 +53,20 @@ TARGET_BLOB="$(git rev-parse "FETCH_HEAD:$FILE")"
 LOCAL_BLOB="$(git hash-object -- "$FILE")"
 [ "$TARGET_BLOB" = "$LOCAL_BLOB" ] || { echo 'E2_LOCAL_CONTENT_DIFFERS_FROM_APPROVED_MAIN'; exit 81; }
 
+# Blob equality does not attest executable bits. Guard approved mode before ref change.
+APPROVED_MODE="$(git ls-tree "$REMOTE_MAIN" -- "$FILE" | awk 'NR==1 {print $1}')"
+INDEX_MODE="$(git ls-files -s -- "$FILE" | awk 'NR==1 {print $1}')"
+case "$APPROVED_MODE" in
+  100644|100755) ;;
+  *) echo 'E2_APPROVED_FILE_MODE_UNSUPPORTED'; exit 87 ;;
+esac
+[ "$APPROVED_MODE" = "$INDEX_MODE" ] || { echo 'E2_REGISTRY_MODE_NOT_APPROVED'; exit 87; }
+if [ "$APPROVED_MODE" = '100755' ]; then
+  [ -x "$FILE" ] || { echo 'E2_REGISTRY_WORKTREE_MODE_MISMATCH'; exit 87; }
+else
+  [ ! -x "$FILE" ] || { echo 'E2_REGISTRY_WORKTREE_MODE_MISMATCH'; exit 87; }
+fi
+
 # Store an immutable copy in the repository's pre-existing ignored backup area.
 mkdir -p .mcp_backups
 BACKUP_DIR="$(mktemp -d .mcp_backups/e2-account-reconcile-XXXXXXXX)"
