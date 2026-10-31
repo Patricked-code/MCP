@@ -4,31 +4,15 @@
  * No task allocation, GitHub write, server write, claim, lock, or deployment authority.
  */
 import type {WorkEntryIndexResult} from './workEntryContinuityIndex.js';
+import type {LiveStateSnapshot} from '../liveState/types.js';
 
-type RevisionObservation=Readonly<{status:string;head:string|null}>;
-export type E2LiveSnapshot=Readonly<{
-  repository:string;
-  freshness:string;
-  generatedAt:string;
-  github:RevisionObservation;
-  s1:Readonly<{
-    status:string;
-    head:string|null;
-    originMain:string|null;
-    workingTreeClean:boolean|null;
-  }>;
-  runtime:Readonly<{
-    status:string;
-    revision:string|null;
-    containerStatus:string|null;
-    health:string|null;
-  }>;
-  documentation:Readonly<{
-    status:string;
-    drift:boolean|null;
-    declaredGithubSha:string|null;
-    declaredS1Sha:string|null;
-  }>;
+/** Shape projected from the authoritative existing Live State snapshot. */
+export type E2LiveSnapshot=Pick<LiveStateSnapshot,
+  'repository'|'freshness'|'generatedAt'|'ageSeconds'|'maxAgeSeconds'> & Readonly<{
+  github:Pick<LiveStateSnapshot['github'],'status'|'head'>;
+  s1:Pick<LiveStateSnapshot['s1'],'status'|'head'|'originMain'|'workingTreeClean'>;
+  runtime:Pick<LiveStateSnapshot['runtime'],'status'|'revision'|'containerStatus'|'health'>;
+  documentation:Pick<LiveStateSnapshot['documentation'],'status'|'drift'|'declaredGithubSha'|'declaredS1Sha'>;
 }>;
 export type E2Reconciliation=Readonly<{
   decision:'ASK_OWNER'|'BLOCKED';
@@ -46,12 +30,21 @@ const validSha=(v:unknown):v is string=>typeof v==='string'&&SHA.test(v);
 /** Reconciliation always precedes owner-choice routing, not vice versa. */
 export function reconcileE2Entry(
   snapshot:E2LiveSnapshot,
-  index:WorkEntryIndexResult
+  index:WorkEntryIndexResult,
+  assessedAt:string=new Date().toISOString()
 ):E2Reconciliation{
   const blockers:string[]=[];
   const warnings:string[]=[];
+  const observed=Date.parse(snapshot.generatedAt);
+  const assessed=Date.parse(assessedAt);
+  const maxAge=snapshot.maxAgeSeconds;
   if(snapshot.repository!=='Patricked-code/MCP'||snapshot.freshness!=='CURRENT'
-    ||!Number.isFinite(Date.parse(snapshot.generatedAt)))blockers.push('STALE_OR_WRONG_REPOSITORY');
+    ||!Number.isFinite(observed)||!Number.isFinite(assessed)
+    ||!Number.isFinite(maxAge)||maxAge<=0||maxAge>300
+    ||!Number.isFinite(snapshot.ageSeconds)||snapshot.ageSeconds<0
+    ||snapshot.ageSeconds>maxAge||assessed<observed
+    ||assessed-observed>maxAge*1000)
+    blockers.push('STALE_OR_WRONG_REPOSITORY');
   const github=snapshot.github;
   const s1=snapshot.s1;
   const runtime=snapshot.runtime;
