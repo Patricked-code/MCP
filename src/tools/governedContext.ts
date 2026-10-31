@@ -1,5 +1,4 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { z } from 'zod';
 
 import { env } from '../config/env.js';
 import { createGithubOperationalContextCollector } from '../governedContext/github.js';
@@ -9,8 +8,6 @@ import {
   type GovernedOperationalContextService
 } from '../governedContext/service.js';
 import { liveStateEngine } from '../liveState/engine.js';
-import type { LiveStateSnapshot } from '../liveState/types.js';
-import { assessE2LivePreflight } from '../governance/e2LivePreflight.js';
 import { oauthIssuer } from '../oauth.js';
 import type { GovernedSessionService } from '../operationalMemory/sessionService.js';
 import { operationalMemoryConfig } from '../operationalMemory/config.js';
@@ -61,7 +58,6 @@ export function governedContextInstructions(
 type GovernedContextToolDependencies = {
   context: GovernedOperationalContextService;
   sessions: Pick<GovernedSessionService, 'lookupGovernedSessionId'>;
-  reconcileE2LiveState?: () => Promise<LiveStateSnapshot>;
 };
 
 let sharedDependencies: GovernedContextToolDependencies | null = null;
@@ -200,22 +196,5 @@ export function registerGovernedContextTools(
       contextInput(extra, activeDependencies.sessions)
     ))
   );
-  server.registerTool(
-    'mcp_e2_reconcile_preflight',
-    {
-      title: 'E2 S1 ↔ GitHub Read-only Preflight',
-      description: 'EXTERNAL_GOVERNED_RECOVERY explicite : observe S1, GitHub main, runtime et documentation puis bloque toute orientation E2 sur divergence. Aucun effet sur E1, aucune ecriture.',
-      inputSchema: {
-        entry_profile: z.literal('EXTERNAL_GOVERNED_RECOVERY'),
-        e2_explicitly_selected: z.literal(true)
-      },
-      annotations
-    },
-    async ({ entry_profile, e2_explicitly_selected }) => handleTool(async () => {
-      if(entry_profile!=='EXTERNAL_GOVERNED_RECOVERY'||e2_explicitly_selected!==true)
-        throw new Error('E2_EXPLICIT_SELECTION_REQUIRED');
-      const snapshot=await (activeDependencies.reconcileE2LiveState ?? liveStateEngine.reconcileNow)();
-      return assessE2LivePreflight(snapshot);
-    })
-  );
+
 }
