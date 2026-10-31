@@ -139,12 +139,32 @@ export async function routeE2OwnerChoice(
  if(!validMandate(choice.mandate))return refused('E2_NEW_MANDATE_MISSING_OR_SENSITIVE');
  const duplicate=await findExactDuplicate(choice.mandate,port.journal);
  if(duplicate.status==='BLOCKED')return refused('E2_DUPLICATE_SCREEN_INCOMPLETE');
- if(duplicate.status==='FOUND')
+ if(duplicate.status==='FOUND'){
+  // Crash recovery: GitHub issue may have been created before its registry
+  // receipt was acknowledged. Never open a second issue for the same E2 entry.
+  if(duplicate.issueNumber){
+   const response=await port.journal.request(ROOT+'/issues/'+duplicate.issueNumber);
+   const issue=asObject(response.json);
+   const body=typeof issue?.body==='string'?issue.body:'';
+   const sameEntry=body.includes('- **E2 entry :** \`'+choice.entryId+'\`');
+   const id=/\\*\\*Continuity ID\\s*:\\*\\*\\s*\`([A-Z][A-Z0-9-]{5,110})\`/.exec(body)?.[1];
+   if(response.ok&&issue?.number===duplicate.issueNumber&&sameEntry&&id){
+    const receipt=await appendE2Journal(
+     recordFor(choice.entryId,'CONTINUITY_REGISTERED',snapshot,id,duplicate.issueNumber),
+     port.journal);
+    if(receipt.status!=='RECORDED')
+     return refused('E2_EXISTING_ISSUE_REGISTRY_RECOVERY_FAILED');
+    return {status:'READY_NEW',continuityId:id,issueNumber:duplicate.issueNumber,
+     issueUrl:'https://github.com/Patricked-code/MCP/issues/'+duplicate.issueNumber,
+     reason:null,grantsPermission:false};
+   }
+  }
   return {status:'DUPLICATE_FOUND',continuityId:null,
    issueNumber:duplicate.issueNumber,
    issueUrl:duplicate.issueNumber
     ?'https://github.com/Patricked-code/MCP/issues/'+duplicate.issueNumber:null,
    reason:'E2_EXISTING_ISSUE_REQUIRES_OWNER_DECISION',grantsPermission:false};
+ }
  const continuityId=proposeE2ContinuityId();
  const body='## Entrée E2 — nouveau chantier gouverné\n\n'
   +'- **Continuity ID :** `'+continuityId+'`\n'
