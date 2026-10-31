@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "2de563cc302105980256143f8f3d799ed3853dc41b1db51188d51eca7be17f4a",
-  "registeredToolCount": 139,
+  "catalogueDigest": "52f7b94f014df52318bb6d67c14fff8a2d7cfcdce18688dc09fa12734f3ada79",
+  "registeredToolCount": 140,
   "readOnlyToolCount": 86,
-  "writeToolCount": 53,
+  "writeToolCount": 54,
   "resourceCount": 2,
   "tools": [
     {
@@ -3638,6 +3638,41 @@
         "additionalProperties": false
       },
       "contractDigest": "3ec090d680d233a2db3fbc3dbcf564a2918a03904b6f037cf35b264c4e3584c8"
+    },
+    {
+      "name": "mcp_reconcile_s1_to_main",
+      "title": null,
+      "description": "Reconciliation MCP S1 vers main GitHub : pour plusieurs fichiers versionnes strictement identiques au main approuve, sauvegarde et aligne Git sans suppression ; les modifications non publiees suivent une PR gouvernee separee.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "expected_s1_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "approved_main_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "expected_s1_sha",
+          "approved_main_sha",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "3d7aa5f49ed41740110d59830a066484d7072391db349338a370f68dedf9de55"
     },
     {
       "name": "mcp_release_governed_lock",
