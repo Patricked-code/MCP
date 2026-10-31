@@ -36,7 +36,8 @@ export async function activateE2WithAutomaticReconciliation(
   if(selection.entryProfile!=='EXTERNAL_GOVERNED_RECOVERY'
      ||selection.explicitlySelected!==true)
     throw new Error('E2_EXPLICIT_SELECTION_REQUIRED');
-  const initial=assessE2LivePreflight(await ports.observe());
+  const firstObservation=await ports.observe();
+  const initial=assessE2LivePreflight(firstObservation);
   if(initial.gate==='DISCOVER_GITHUB_CONTINUITIES')
     return {
       entryProfile:'EXTERNAL_GOVERNED_RECOVERY',status:'CONTINUE_E2',
@@ -58,7 +59,7 @@ export async function activateE2WithAutomaticReconciliation(
   // second MCP tool manually. The adapter must enforce its own write gates.
   let repair:E2RepairResult;
   try{
-    repair=await ports.reconcile(await ports.observe(),initial);
+    repair=await ports.reconcile(firstObservation,initial);
   }catch{
     repair={outcome:'BLOCKED',reason:'E2_RECONCILIATION_CONNECTOR_FAILED'};
   }
