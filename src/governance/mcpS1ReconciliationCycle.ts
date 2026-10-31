@@ -71,7 +71,7 @@ export async function executeMcpS1ReconciliationCycle(
         return out('OPERATION_FAILED','GIT_CONVERGENCE_UNATTESTED');
       return out('S1_GIT_CONVERGED',null,result.backupEvidence);
     }
-    if(decision.status==='FAST_FORWARD_CANDIDATE'){
+    if(decision.status==='FAST_FORWARD_CANDIDATE'||decision.status==='RUNTIME_REDEPLOY_CANDIDATE'){
       if(!authority.governedDeployApproved)return out('AWAITING_AUTHORITY','GOVERNED_DEPLOY_AUTHORITY_REQUIRED');
       const result=await ports.requestGovernedDeploy(snapshot.githubMainHead!);
       if(!result.accepted||!/^https:\/\//.test(result.jobUrl))
