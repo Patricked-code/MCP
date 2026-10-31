@@ -42,6 +42,11 @@ function fixture(){
     number:99,title:'Nouveau module MCP E2'
    }]:issues};
   }
+  if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/comments/')){
+   const n=Number(endpoint.split('/').at(-1));
+   const found=comments.find(x=>x.id===n);
+   return {ok:!!found,status:found?200:404,json:found??null};
+  }
   if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/359/comments')){
    if(opts?.method==='POST'){
     const c={id:++sequence,body:(opts.jsonBody as any).body,
