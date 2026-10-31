@@ -112,9 +112,13 @@ export async function routeE2OwnerChoice(
    const items=response?.items;
    if(!search.ok||!Array.isArray(items))
     return refused('E2_HISTORICAL_SEARCH_INCOMPLETE');
-   const matches=items.map(asObject).filter((x):x is Record<string,unknown>=>
-     !!x&&typeof x.body==='string'&&x.body.includes(choice.continuityId!)
-      &&Number.isSafeInteger(x.number)&&Number(x.number)>0);
+   const matches=items.map(asObject).filter((x):x is Record<string,unknown>=>{
+    if(!x||typeof x.body!=='string'||!Number.isSafeInteger(x.number)
+      ||Number(x.number)<1||!x.body.includes('EXTERNAL_GOVERNED_RECOVERY'))
+      return false;
+    const id=/\\*\\*Continuity ID(?: canonique)?\\s*:\\*\\*\\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(x.body)?.[1];
+    return id===choice.continuityId;
+   });
    if(matches.length>1)return refused('E2_HISTORICAL_ID_CONFLICT');
    issueNumber=matches.length===1?Number(matches[0]?.number):null;
    historical=issueNumber!==null;
