@@ -72,7 +72,8 @@ export function registerE2ContinuityReadTools(
     if(history.status!=='READY')return asText(JSON.stringify({
       status:'BLOCKED',reason:'E2_CONTINUITY_REGISTRY_UNAVAILABLE'
     }));
-    const entries=new Map<string,{continuityId:string;issueNumber:number;source:'E2_GITHUB_JOURNAL'}>();
+    const entries=new Map<string,{continuityId:string;issueNumber:number;
+      source:'E2_GITHUB_JOURNAL'|'HISTORICAL_GITHUB_ISSUE'}>();
     for(const event of history.entries){
      if(event.stage==='CONTINUITY_REGISTERED'&&event.continuityId&&event.issueNumber){
       const previous=entries.get(event.continuityId);
@@ -82,9 +83,42 @@ export function registerE2ContinuityReadTools(
        continuityId:event.continuityId,issueNumber:event.issueNumber,source:'E2_GITHUB_JOURNAL'});
      }
     }
+    // Historical E2 issues predate the append-only V1 register. Discover their
+    // explicit canonical ID in the original issue body; never infer from titles.
+    const query=encodeURIComponent('repo:Patricked-code/MCP is:issue "Continuity ID"');
+    for(let page=1;page<=10;page++){
+      const response=await journal.request('/search/issues?q='+query
+        +'&per_page=100&page='+page);
+      const raw=response.json&&typeof response.json==='object'
+        &&!Array.isArray(response.json)
+        ?response.json as Record<string,unknown>:null;
+      const list=raw?.items;
+      if(!response.ok||!Array.isArray(list))
+       return asText(JSON.stringify({status:'PARTIAL',continuities:[...entries.values()],
+        reason:'E2_HISTORIC_ISSUE_SEARCH_INCOMPLETE'}));
+      for(const source of list){
+       if(!source||typeof source!=='object'||Array.isArray(source))continue;
+       const item=source as Record<string,unknown>;
+       if(!Number.isSafeInteger(item.number)||Number(item.number)<1
+         ||typeof item.body!=='string'
+         ||!item.body.includes('EXTERNAL_GOVERNED_RECOVERY'))continue;
+       const id=/\*\*Continuity ID(?: canonique)?\s*:\*\*\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(item.body)?.[1];
+       if(!id)continue;
+       const previous=entries.get(id);
+       if(previous&&previous.issueNumber!==item.number)
+        return asText(JSON.stringify({status:'CONFLICT',reason:'E2_HISTORICAL_ID_COLLISION'}));
+       if(!previous)entries.set(id,{
+        continuityId:id,issueNumber:Number(item.number),source:'HISTORICAL_GITHUB_ISSUE'});
+      }
+      if(list.length<100)break;
+      if(page===10)return asText(JSON.stringify({
+        status:'PARTIAL',continuities:[...entries.values()],
+        reason:'E2_HISTORICAL_SEARCH_PAGE_LIMIT'
+      }));
+    }
     return asText(JSON.stringify({status:'READY',continuities:[...entries.values()]
       .sort((a,b)=>a.continuityId.localeCompare(b.continuityId)),
-      warning:'Les continuites anterieures sans recu V1 doivent etre retrouvees via leurs ancrages GitHub; absence ici ne signifie pas absence dans le depot.'}));
+      warning:'Ancrages historiques retrouves : leur historique complet doit etre reconstitue et controle individuellement avant reprise.'}));
    }catch{
     return {...asText(JSON.stringify({status:'BLOCKED',reason:'E2_CONTINUITY_INDEX_UNAVAILABLE'})),isError:true};
    }
