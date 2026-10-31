@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "52f7b94f014df52318bb6d67c14fff8a2d7cfcdce18688dc09fa12734f3ada79",
-  "registeredToolCount": 140,
-  "readOnlyToolCount": 86,
+  "catalogueDigest": "faf13ea61c5aed3f91cc4054bb60643b735a6cd60efd2f838daf3e53a306aa4f",
+  "registeredToolCount": 141,
+  "readOnlyToolCount": 87,
   "writeToolCount": 54,
   "resourceCount": 2,
   "tools": [
@@ -3088,6 +3088,36 @@
       "contractDigest": "2ca1f2adf4b1373cec2da0a78a816daab2f4de5484718dec1176c136c71eed18"
     },
     {
+      "name": "mcp_e2_reconcile_preflight",
+      "title": null,
+      "description": "EXTERNAL_GOVERNED_RECOVERY explicit only: read-only S1 then GitHub main, runtime and documentation alignment; returns BLOCKED on any mismatch. No GWC task or write.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a48a03d30ca73e6377128df22a29f24033e2c6eec96b2df173d5c5406be048dc"
+    },
+    {
       "name": "mcp_get_current_state_inventory",
       "title": "Get Current-State Inventory",
       "description": "Retourne la dernière cartographie dérivée, la baseline d’audit, les sessions et la file de travail.",
@@ -3642,7 +3672,7 @@
     {
       "name": "mcp_reconcile_s1_to_main",
       "title": null,
-      "description": "Reconciliation MCP S1 vers main GitHub : pour plusieurs fichiers versionnes strictement identiques au main approuve, sauvegarde et aligne Git sans suppression ; les modifications non publiees suivent une PR gouvernee separee.",
+      "description": "E2 EXTERNAL_GOVERNED_RECOVERY seulement : rapproche le Git S1 avec le main approuve pour plusieurs fichiers strictement identiques, sans les ecraser. N est ni un declencheur global, ni une fusion, ni un deploy.",
       "surface": "scoped-write",
       "annotations": {
         "readOnlyHint": null,
@@ -3652,6 +3682,14 @@
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
           "expected_s1_sha": {
             "type": "string",
             "pattern": "^[a-f0-9]{40}$"
@@ -3666,13 +3704,15 @@
           }
         },
         "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
           "expected_s1_sha",
           "approved_main_sha",
           "allow_write"
         ],
         "additionalProperties": false
       },
-      "contractDigest": "3d7aa5f49ed41740110d59830a066484d7072391db349338a370f68dedf9de55"
+      "contractDigest": "59246a88e4d6fc81d09b38f3f2750627f4677c9a4072565b962fdc7ba87caf60"
     },
     {
       "name": "mcp_release_governed_lock",
