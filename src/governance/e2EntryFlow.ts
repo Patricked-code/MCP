@@ -58,7 +58,7 @@ export function reconcileE2Entry(
   const aligned=comparable&&github.head===s1.head&&s1.head===s1.originMain
     &&s1.head===runtime.revision;
   if(comparable&&!aligned)blockers.push('GITHUB_S1_RUNTIME_SHA_DIVERGENCE');
-  if(runtime.containerStatus!=='running'||!['healthy','none'].includes(runtime.health))
+  if(runtime.containerStatus!=='running'||!['healthy','none'].includes(runtime.health??''))
     blockers.push('MCP_RUNTIME_NOT_HEALTHY');
   if(s1.workingTreeClean!==true)blockers.push('S1_WORKTREE_NOT_CLEAN');
   if(snapshot.documentation.status!=='CURRENT'||snapshot.documentation.drift!==false)

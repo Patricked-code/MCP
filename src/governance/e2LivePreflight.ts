@@ -41,7 +41,7 @@ export function assessE2LivePreflight(snapshot:LiveStateSnapshot):E2Preflight{
    blockers.push('E2_REPOSITORY_IDENTITY_INVALID');
  if(snapshot.s1.workingTreeClean!==true||snapshot.s1.diffEmpty!==true)
    blockers.push('E2_S1_UNRECONCILED_LOCAL_CHANGES');
- if(snapshot.runtime.containerStatus!=='running'||!['healthy','none'].includes(snapshot.runtime.health))
+ if(snapshot.runtime.containerStatus!=='running'||!['healthy','none'].includes(snapshot.runtime.health??''))
    blockers.push('E2_RUNTIME_UNHEALTHY');
  if(snapshot.documentation.status!=='CURRENT'||snapshot.documentation.drift!==false)
    blockers.push('E2_DOCUMENTATION_DRIFT');
