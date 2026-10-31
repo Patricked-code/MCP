@@ -84,6 +84,12 @@ export function registerE2AutomaticActivationTool(
       allow_write:z.boolean().default(false)
     },
     async ({entry_profile,e2_explicitly_selected,allow_write})=>{
+      // Wrong entry must never be journaled as an E2 invocation.
+      if(entry_profile!=='EXTERNAL_GOVERNED_RECOVERY'
+        ||e2_explicitly_selected!==true)
+        return {...asText(JSON.stringify({
+          status:'RECONCILIATION_BLOCKED',code:'E2_EXPLICIT_SELECTION_REQUIRED'
+        })),isError:true};
       try{
         const entryId=newE2EntryId();
         const record=deps.record??appendE2Journal;
