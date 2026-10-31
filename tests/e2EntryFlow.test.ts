@@ -3,6 +3,9 @@ import test from 'node:test';
 import {reconcileE2Entry,routeE2OwnerChoice,type E2LiveSnapshot} from '../src/governance/e2EntryFlow.js';
 import {buildWorkEntryContinuityIndex} from '../src/governance/workEntryContinuityIndex.js';
 import type {GovernedWorkEntryTrace} from '../src/governance/workEntryTrace.js';
+import {previewExternalGovernedRecoveryAfterE2Reconciliation,
+ type ExternalGovernedRecoveryInput
+} from '../src/governedContext/githubFirstOperationalContinuity.js';
 
 const sha='1f6961063d27bc85087aab57a8f700fd7729e03f';
 const continuityId='MCP-PILOT-E2-01-CONT-20261030-ROOT-01';
@@ -92,4 +95,46 @@ test('nominal CURRENT flag with expired observation is rejected',()=>{
  const result=reconcileE2Entry(snapshot,index,'2026-10-31T00:04:00.000Z');
  assert.equal(result.decision,'BLOCKED');
  assert.ok(result.blockers.includes('STALE_OR_WRONG_REPOSITORY'));
+});
+
+const branchSha='b'.repeat(40);
+const previewInput:ExternalGovernedRecoveryInput={
+ profile:'EXTERNAL_GOVERNED_RECOVERY',ownerSelected:true,collisionFreeObserved:true,
+ expectedMainSha:sha,observedMainSha:sha,
+ expectedBranchSha:branchSha,observedBranchSha:branchSha,
+ github:{githubConnected:true,repository:'Patricked-code/MCP',observedHeadSha:branchSha,
+  needs:{repositoryRead:true,repositoryWrite:false,serverReadEvidence:false,
+   serverWrite:false,operationalMemoryMutation:false,runtimeToolInvocation:false},
+  fallback:{readonlyEvidenceWorkflowAvailable:false,readonlyEvidenceEnvironmentConfigured:false}}
+};
+test('existing external recovery profile is reused only after E2 reconciliation and owner choice',()=>{
+ const result=previewExternalGovernedRecoveryAfterE2Reconciliation(
+  previewInput,snapshot,index,{kind:'CONTINUE',continuityId},'2026-10-31T00:01:23.000Z');
+ assert.equal(result.state,'GITHUB_WORK_CANDIDATE');
+ assert.equal(result.existingPreview?.state,'GITHUB_WORK_CANDIDATE');
+ assert.equal(result.ownerRoute.continuityId,continuityId);
+ assert.equal(result.newTaskOrSessionCreated,false);
+ assert.equal(result.deployGranted,false);
+});
+test('new E2 work goes through duplicate review before legacy engineering preview',()=>{
+ const result=previewExternalGovernedRecoveryAfterE2Reconciliation(
+  previewInput,snapshot,index,{kind:'NEW',mandate:'New bounded MCP enhancement requested by owner'},
+  '2026-10-31T00:01:23.000Z');
+ assert.equal(result.state,'E2_DUPLICATE_REVIEW_REQUIRED');
+ assert.equal(result.existingPreview,null);
+ assert.equal(result.githubWriteGranted,false);
+});
+test('E2 entry fails closed if owner did not select the profile',()=>{
+ const result=previewExternalGovernedRecoveryAfterE2Reconciliation(
+  {...previewInput,ownerSelected:false},snapshot,index,
+  {kind:'CONTINUE',continuityId},'2026-10-31T00:01:23.000Z');
+ assert.equal(result.state,'EXPLICIT_SELECTION_REQUIRED');
+ assert.equal(result.existingPreview,null);
+});
+test('E2 entry cannot preview legacy execution for diverged main and S1',()=>{
+ const changed={...snapshot,s1:{...snapshot.s1,head:'a'.repeat(40)}};
+ const result=previewExternalGovernedRecoveryAfterE2Reconciliation(
+  previewInput,changed,index,{kind:'CONTINUE',continuityId},'2026-10-31T00:01:23.000Z');
+ assert.equal(result.state,'E2_RECONCILIATION_OR_CHOICE_BLOCKED');
+ assert.equal(result.existingPreview,null);
 });
