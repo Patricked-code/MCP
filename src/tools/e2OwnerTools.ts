@@ -39,6 +39,24 @@ export function registerE2OwnerTools(
  );
 }
 type E2ReadPort=Pick<E2JournalPort,'request'>;
+/** Historical pre-V1 issue discovery: exact body match, no fabricated registry. */
+async function findHistoricE2Issue(
+ journal:E2ReadPort,continuityId:string
+):Promise<{status:'READY'|'NOT_FOUND'|'CONFLICT'|'BLOCKED';issueNumber:number|null}>{
+ const q=encodeURIComponent('repo:Patricked-code/MCP is:issue "'+continuityId+'"');
+ const response=await journal.request('/search/issues?q='+q+'&per_page=100');
+ if(!response.ok||!response.json||typeof response.json!=='object'
+   ||Array.isArray(response.json))return {status:'BLOCKED',issueNumber:null};
+ const list=(response.json as {items?:unknown}).items;
+ if(!Array.isArray(list))return {status:'BLOCKED',issueNumber:null};
+ const matches=list.filter(x=>!!x&&typeof x==='object'
+   &&!Array.isArray(x)&&typeof x.body==='string'
+   &&x.body.includes(continuityId)&&Number.isSafeInteger(x.number)
+   &&x.number>0).map(x=>x.number as number);
+ const unique=[...new Set(matches)];
+ if(unique.length>1)return {status:'CONFLICT',issueNumber:null};
+ return {status:unique.length===1?'READY':'NOT_FOUND',issueNumber:unique[0]??null};
+}
 export function registerE2ContinuityReadTools(
  server:McpServer,
  journal:E2ReadPort=defaultE2JournalPort
@@ -84,15 +102,18 @@ export function registerE2ContinuityReadTools(
    try{
     const journalResult=await loadE2Journal(journal);
     const found=findE2ContinuityInJournal(journalResult,continuity_id);
-    if(found.status!=='READY'||!found.issueNumber){
+    const historic=found.status==='NOT_FOUND'
+      ?await findHistoricE2Issue(journal,continuity_id):null;
+    const effective=historic??found;
+    if(effective.status!=='READY'||!effective.issueNumber){
       return asText(JSON.stringify({
-       status:found.status==='CONFLICT'?'CONFLICT':found.status==='BLOCKED'?'BLOCKED':'NOT_FOUND',
-       continuityId:continuity_id,
-       reason:'E2_CONTINUITY_NOT_REGISTERED_IN_V1',
-       note:'Historical issues require separate canonical evidence recovery. Never fabricate missing histories.'
+       status:effective.status==='CONFLICT'?'CONFLICT'
+        :effective.status==='BLOCKED'?'BLOCKED':'NOT_FOUND',
+       continuityId:continuity_id,reason:'E2_CONTINUITY_CANONICAL_ISSUE_NOT_FOUND',
+       note:'Aucun historique suppose ; ne pas creer une deuxieme continuite.'
       }));
     }
-    const n=found.issueNumber;
+    const n=effective.issueNumber;
     const issue=await journal.request('/repos/Patricked-code/MCP/issues/'+n);
     if(!issue.ok||!issue.json||typeof issue.json!=='object'
       ||Array.isArray(issue.json)
