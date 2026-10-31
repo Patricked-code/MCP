@@ -8,10 +8,18 @@ const SHA=/^[a-f0-9]{40}$/;
 const MCP_ROOT='/opt/apps/wealthtech-mcp-ssh-bridge';
 const FETCH_REMOTE='git@github.com-mcp-patricked-ro:Patricked-code/MCP.git';
 const PUSH_DISABLED='disabled://mcp-s1-read-only';
+/** E2 selection is a scope gate, not a substitute for write authorization. */
+export function assertE2OnlyReconciliation(profile:unknown,selected:unknown):void{
+  if(profile!=='EXTERNAL_GOVERNED_RECOVERY'||selected!==true)
+    throw new Error('E2_EXPLICIT_SELECTION_REQUIRED');
+}
+
 
 export function buildMcpReconcileS1ToMainCommand(
-  expectedS1Sha:string,approvedMainSha:string
+  expectedS1Sha:string,approvedMainSha:string,
+  profile:'EXTERNAL_GOVERNED_RECOVERY',explicitlySelected:boolean
 ):string{
+ assertE2OnlyReconciliation(profile,explicitlySelected);
  if(!SHA.test(expectedS1Sha)||!SHA.test(approvedMainSha)
    ||expectedS1Sha===approvedMainSha)throw new Error('E2_SHA_INPUT_INVALID');
  return `set -euo pipefail
