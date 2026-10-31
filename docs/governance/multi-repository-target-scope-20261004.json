@@ -123,6 +123,11 @@
       "detail": "Read-only/guarded git sync of the MCP checkout on S1."
     },
     {
+      "path": "src/tools/mcpS1ExactContentReconcile.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2 S1 recovery is explicitly limited to the MCP repository and a single versioned account-registry path; it checks exact GitHub/S1 commit ancestry and identical contents before Git metadata updates, never grants target-project operations."
+    },
+    {
       "path": "src/tools/selfManagement.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Self-management project card of the MCP bridge."
