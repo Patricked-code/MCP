@@ -41,6 +41,7 @@ export const WRITE_SCOPED_TOOL_NAMES = new Set<string>([
   'legacy_vhosts_context_s1',
   'mcp_build_s1',
   'mcp_reconcile_s1_approved_registry_to_main',
+  'mcp_reconcile_s1_to_main',
   'mcp_sync_from_github_s1',
   'mcp_typecheck_s1',
   'patch_mcp_code_file_s1',
