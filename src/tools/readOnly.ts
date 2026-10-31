@@ -16,6 +16,7 @@ import { registerRuntimeAttestationReadOnlyTools } from './runtimeAttestation.js
 import { registerGovernedSessionTools } from './governedSessions.js';
 import { registerGovernedContextTools } from './governedContext.js';
 import { registerE2PreflightReadOnlyTool } from './e2Entry.js';
+import { registerE2ContinuityReadTools } from './e2OwnerTools.js';
 import { registerCurrentStateTools } from './currentState.js';
 import { registerGithubControlPlaneReadTools } from './githubControlPlaneRead.js';
 import { registerGithubLifecycleReadTools } from './githubLifecycle.js';
@@ -103,6 +104,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerGovernedSessionTools(server);
   registerGovernedContextTools(server);
   registerE2PreflightReadOnlyTool(server);
+  registerE2ContinuityReadTools(server);
   registerCurrentStateTools(server);
   registerMcpSelfReadOnlyTools(server);
   registerSadiaafTools(server);
