@@ -47,7 +47,7 @@ const empty=(status:E2GitHubRecovery['status'],blockers:string[],legacy:number):
 export function recoverE2FromGitHubIssueComments(
   source:E2GitHubIssueComments,continuityId:string
 ):E2GitHubRecovery{
-  if(!Number.isSafeInteger(source.issueNumber)||source.issueNumber<1
+  if(!source||!Array.isArray(source.comments)||!Number.isSafeInteger(source.issueNumber)||source.issueNumber<1
     ||source.comments.length>5000||!source.allPagesFetched)
     return empty('PARTIAL',['GITHUB_ISSUE_COLLECTION_INCOMPLETE'],0);
   const blockers:string[]=[];
@@ -55,6 +55,9 @@ export function recoverE2FromGitHubIssueComments(
   const seen=new Map<number,string>();
   let legacy=0;
   for(const comment of source.comments){
+    if(!comment||typeof comment.body!=='string'){
+      blockers.push('INVALID_GITHUB_COMMENT_BODY');continue;
+    }
     const hasMarker=comment.body.includes('MCP_GOVERNED_WORK_ENTRY_TRACE_V1:');
     const hasPayload=comment.body.includes('MCP_GOVERNED_WORK_ENTRY_DATA_V1:');
     if(!hasMarker&&!hasPayload)continue;
@@ -80,18 +83,19 @@ export function recoverE2FromGitHubIssueComments(
     seen.set(comment.id,signature);
     const values=[...comment.body.matchAll(payload)];
     if(values.length===0){legacy++;continue;}
-    if(values.length!==1||!values[0]?.[1]){
+    const encoded=values[0]?.[1];
+    if(values.length!==1||!encoded){
       blockers.push('INVALID_CHECKPOINT_PAYLOAD:'+comment.id);continue;
     }
     let trace:GovernedWorkEntryTrace;
     try{
-      const raw=Buffer.from(values[0][1],'base64url');
-      if(raw.toString('base64url')!==values[0][1])throw new Error('INVALID_BASE64');
+      const raw=Buffer.from(encoded,'base64url');
+      if(raw.toString('base64url')!==encoded)throw new Error('INVALID_BASE64');
       trace=JSON.parse(raw.toString('utf8')) as GovernedWorkEntryTrace;
     }catch{
       blockers.push('INVALID_CHECKPOINT_PAYLOAD:'+comment.id);continue;
     }
-    if(trace.continuityId!==continuityId
+    if(!trace||typeof trace!=='object'||trace.continuityId!==continuityId
       ||trace.github?.issueNumber!==source.issueNumber
       ||(trace.responsible?.githubActor!==null
         &&trace.responsible?.githubActor!==comment.user.login)
