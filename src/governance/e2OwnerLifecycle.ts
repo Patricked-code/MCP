@@ -87,8 +87,23 @@ async function findExactDuplicate(
  * RESUME: continuity ID -> durable journal registry -> existing issue, no writes.
  * Both choices require the activation and READY_FOR_OWNER receipts to exist.
  */
+// One MCP runtime process is authoritative for E2 NEW selections.
+// Serialize new issue creation across entry IDs and mandates in that process;
+// a horizontally scaled runtime must add a shared lock before enabling writes.
+let newOwnerQueue:Promise<void>=Promise.resolve();
 export async function routeE2OwnerChoice(
  choice:E2OwnerChoice,port:E2OwnerPort=defaultE2OwnerPort
+):Promise<E2OwnerResult>{
+ if(choice.kind!=='NEW')return routeE2OwnerChoiceInner(choice,port);
+ const predecessor=newOwnerQueue;
+ let release!:()=>void;
+ newOwnerQueue=new Promise<void>(resolve=>{release=resolve;});
+ await predecessor;
+ try{return await routeE2OwnerChoiceInner(choice,port);}
+ finally{release();}
+}
+async function routeE2OwnerChoiceInner(
+ choice:E2OwnerChoice,port:E2OwnerPort
 ):Promise<E2OwnerResult>{
  if(!/^E2-[A-F0-9-]{36}$/.test(choice.entryId))return refused('E2_ENTRY_ID_INVALID');
  const journal=await loadE2Journal(port.journal);

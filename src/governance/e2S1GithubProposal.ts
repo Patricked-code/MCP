@@ -130,6 +130,9 @@ try{
   const ls=git(["ls-files","-s","--",path]);
   const row=/^(100644|100755) ([a-f0-9]{40}) 0\t/.exec(ls);
   if(!row)fail("E2_MODE_UNVERIFIED");
+  // Git's index mode is not the actual worktree executable permission.
+  const actualMode=(st.mode&0o111)?"100755":"100644";
+  if(actualMode!==row[1])fail("E2_WORKTREE_MODE_CHANGED");
   const blob=crypto.createHash("sha1").update("blob "+content.length+"\0")
     .update(content).digest("hex");
   files.push({path,mode:row[1],baseBlob:row[2],localBlob:blob,

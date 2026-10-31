@@ -179,3 +179,16 @@ test('NEW choice retries after a persisted registry comment with lost readback, 
  assert.equal(wrong.status,'BLOCKED');
  assert.equal(wrong.reason,'E2_REPLAY_GITHUB_ISSUE_NOT_ATTESTED');
 });
+
+test('two concurrent NEW owner choices are single-flight and return the same existing issue',async()=>{
+ const f=fixture(),entryId=await activate(f);
+ const choice={entryId,kind:'NEW' as const,mandate:'Nouveau module MCP E2'};
+ const results=await Promise.all([
+  routeE2OwnerChoice(choice,f.port),routeE2OwnerChoice(choice,f.port)
+ ]);
+ assert.deepEqual(results.map(r=>r.status),['READY_NEW','READY_NEW']);
+ assert.equal(f.issues.length,1);
+ assert.equal(results[0]?.continuityId,results[1]?.continuityId);
+ assert.equal(results[0]?.issueNumber,results[1]?.issueNumber);
+ assert.equal(f.comments.filter(x=>x.body.includes('CONTINUITY_REGISTERED')).length,1);
+});

@@ -1,4 +1,6 @@
 import {z} from 'zod';
+import {env} from '../config/env.js';
+import {assertScopedWriteToolsEnabled} from '../ssh/writeSafety.js';
 import type {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {asText} from './format.js';
 import {routeE2OwnerChoice,type E2OwnerChoice,type E2OwnerPort,
@@ -28,6 +30,10 @@ export function registerE2OwnerTools(
    if(entry_profile!=='EXTERNAL_GOVERNED_RECOVERY'||e2_explicitly_selected!==true
      ||owner_authorized_github_write!==true)
     return {...asText(JSON.stringify({status:'BLOCKED',reason:'E2_EXPLICIT_SELECTION_REQUIRED'})),isError:true};
+   // The owner switch is not a server-side permission grant.
+   try{assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);}
+   catch{return {...asText(JSON.stringify({status:'BLOCKED',
+      reason:'E2_SERVER_WRITE_GATE_DISABLED'})),isError:true};}
    const choice:E2OwnerChoice={entryId:entry_id,kind:decision,
     ...(mandate!==undefined?{mandate}:{}),
     ...(continuity_id!==undefined?{continuityId:continuity_id}:{})};
