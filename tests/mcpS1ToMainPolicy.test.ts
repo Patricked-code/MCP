@@ -30,7 +30,7 @@ test('many different MCP files supported, not only github-accounts',()=>{
  assert.equal(x.paths.length,2);
 });
 test('unpublished legitimate S1 changes can prepare GitHub review without direct main push',()=>{
- const x=assessMcpS1ToMainReconciliation({...base,s1Head:main,
+ const x=assessMcpS1ToMainReconciliation({...base,s1Head:main,s1OriginMainSha:main,
  files:[{...base.files[0]!,path:'src/config/feature.ts',approvedMainGitBlob:'b'.repeat(40)}]});
  assert.equal(x.status,'S1_TO_GITHUB_REVIEW_REQUIRED');
  assert.equal(x.canAutomaticallyPrepareGitHubPR,true);
