@@ -201,4 +201,3 @@ test('E2 instructions require explicit profile and leave E1 bootstrap unchanged'
   assert.doesNotMatch(e2,/6\. Réclamer mcp_claim_next_governed_task/);
   assert.equal(governedContextInstructions(false,'EXTERNAL_GOVERNED_RECOVERY'),undefined);
 });
-
