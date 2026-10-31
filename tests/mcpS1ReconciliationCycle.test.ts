@@ -81,3 +81,13 @@ test('only a newly verified aligned observation unlocks normal E2',async()=>{
  assert.equal(result.mayEnterNormalE2,true);
  assert.deepEqual(c,{proposal:0,s1:0,deploy:0});
 });
+
+test('same main Git but stale S1 runtime requires governed redeploy, not a fake alignment',async()=>{
+ const c={proposal:0,s1:0,deploy:0};
+ const stale={...obs,s1Head:main,s1WorkingTreeClean:true,files:[]};
+ const result=await executeMcpS1ReconciliationCycle(stale,
+  {...no,governedDeployApproved:true},ports(c));
+ assert.equal(result.disposition,'DEPLOY_REQUESTED');
+ assert.equal(result.mayEnterNormalE2,false);
+ assert.deepEqual(c,{proposal:0,s1:0,deploy:1});
+});
