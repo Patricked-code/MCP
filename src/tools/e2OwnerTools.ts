@@ -55,7 +55,7 @@ async function findHistoricE2Issue(
    if(!x||typeof x!=='object'||Array.isArray(x)
      ||typeof x.body!=='string'||!Number.isSafeInteger(x.number)
      ||x.number<1||!x.body.includes('EXTERNAL_GOVERNED_RECOVERY'))return false;
-   const id=/\\*\\*Continuity ID(?: canonique)?\\s*:\\*\\*\\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(x.body)?.[1];
+   const id=/\*\*Continuity ID(?: canonique)?\s*:\*\*\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(x.body)?.[1];
    return id===continuityId;
  }).map(x=>x.number as number);
  const unique=[...new Set(matches)];
