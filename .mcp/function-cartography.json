@@ -3249,6 +3249,10 @@
               "RESUME"
             ]
           },
+          "owner_authorized_github_write": {
+            "type": "boolean",
+            "const": true
+          },
           "mandate": {
             "type": "string",
             "maxLength": 500
@@ -3256,10 +3260,6 @@
           "continuity_id": {
             "type": "string",
             "maxLength": 110
-          },
-          "owner_authorized_github_write": {
-            "type": "boolean",
-            "const": true
           }
         },
         "required": [
