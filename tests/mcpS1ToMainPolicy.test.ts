@@ -6,11 +6,11 @@ const old='1f6961063d27bc85087aab57a8f700fd7729e03f';
 const main='7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6';
 const blob='a'.repeat(40);
 const base:McpReconcileObservation={
- s1Head:old,githubMainHead:main,runtimeRevision:old,s1Branch:'main',
+ s1Head:old,s1OriginMainSha:old,githubMainHead:main,runtimeRevision:old,s1Branch:'main',
  s1OriginFetch:'git@github.com-mcp-patricked-ro:Patricked-code/MCP.git',
  s1OriginPush:'disabled://mcp-s1-read-only',
  githubMainAncestorOfS1:false,s1AncestorOfGithubMain:true,
- s1WorkingTreeClean:false,runtimeHealthy:true,
+ s1WorkingTreeClean:false,runtimeHealthy:true,documentationAligned:true,
  allChangesEnumerated:true,collisionFree:true,evidenceCurrent:true,
  files:[{path:'data/github-accounts.json',kind:'MODIFIED',localGitBlob:blob,
  approvedMainGitBlob:blob,sizeBytes:450,secretScan:'CLEAR'}]
@@ -43,7 +43,7 @@ test('clean server at old main may auto fast-forward after normal authority chec
 });
 test('equal code, clean worktree and healthy deployed runtime is aligned',()=>{
  const x=assessMcpS1ToMainReconciliation({...base,
- s1Head:main,runtimeRevision:main,s1WorkingTreeClean:true,files:[]});
+ s1Head:main,s1OriginMainSha:main,runtimeRevision:main,s1WorkingTreeClean:true,files:[]});
  assert.equal(x.status,'FULLY_ALIGNED');
 });
 test('secrets or unknown secret scan fail closed before GitHub upload',()=>{
@@ -75,4 +75,21 @@ test('missing evidence, branch or remote mismatch, collisions and unhealthy runt
   const x=assessMcpS1ToMainReconciliation({...base,...change});
   assert.equal(x.status,'BLOCKED',JSON.stringify(change));
  }
+});
+
+test('S1 documentation drift never yields FULLY_ALIGNED, despite matching code and runtime',()=>{
+ const x=assessMcpS1ToMainReconciliation({...base,
+  s1Head:main,s1OriginMainSha:main,runtimeRevision:main,
+  s1WorkingTreeClean:true,documentationAligned:false,files:[]});
+ assert.equal(x.status,'BLOCKED');
+ assert.ok(x.blockers.includes('MCP_DOCUMENTATION_NOT_RECONCILED'));
+});
+test('S1 origin/main drift or unrelated Git history blocks E2 updates',()=>{
+ const origin=assessMcpS1ToMainReconciliation({...base,s1OriginMainSha:main});
+ assert.equal(origin.status,'BLOCKED');
+ assert.ok(origin.blockers.includes('S1_ORIGIN_MAIN_DRIFT'));
+ const diverged=assessMcpS1ToMainReconciliation({...base,
+  s1AncestorOfGithubMain:false,githubMainAncestorOfS1:false,
+  files:[{...base.files[0]!,approvedMainGitBlob:'b'.repeat(40)}]});
+ assert.equal(diverged.status,'BLOCKED');
 });
