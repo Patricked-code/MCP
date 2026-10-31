@@ -9,6 +9,10 @@ import {assessMcpS1ToMainReconciliation} from './mcpS1ToMainPolicy.js';
 import type {McpReconcileObservation,McpReconcileDecision}
  from './mcpS1ToMainPolicy.js';
 
+export type E2ReconcileSelection=Readonly<{
+  entryProfile:'EXTERNAL_GOVERNED_RECOVERY'|'E1'|null;
+  explicitlySelected:boolean;
+}>;
 export type E2AutoReconcileAuthority=Readonly<{
   scopedS1WriteApproved:boolean;
   githubProposalApproved:boolean;
@@ -44,11 +48,24 @@ export type E2AutoReconcileResult=Readonly<{
 }>;
 /** One idempotent, bounded reconciliation attempt; no background execution implied. */
 export async function executeMcpS1ReconciliationCycle(
+  selection:E2ReconcileSelection,
   snapshot:McpReconcileObservation,
   authority:E2AutoReconcileAuthority,
   ports:E2AutoReconcilePorts
 ):Promise<E2AutoReconcileResult>{
-  const decision=assessMcpS1ToMainReconciliation(snapshot);
+  const selected=selection.entryProfile==='EXTERNAL_GOVERNED_RECOVERY'
+    &&selection.explicitlySelected===true;
+  const decision=selected
+    ?assessMcpS1ToMainReconciliation(snapshot)
+    :{
+      status:'BLOCKED' as const,
+      blockers:['E2_EXPLICIT_SELECTION_REQUIRED'],
+      paths:[],
+      canAutomaticallyPrepareGitHubPR:false,
+      canAutomaticallyAdvanceS1Git:false,
+      canAutomaticallyMergeMain:false as const,
+      canAutomaticallyDeploy:false as const
+    };
   const out=(disposition:E2AutoReconcileResult['disposition'],
     reason:string|null=null,evidenceUrl:string|null=null):E2AutoReconcileResult=>({
     disposition,decision,reason,evidenceUrl,mayEnterNormalE2:disposition==='READY_FOR_OWNER'
