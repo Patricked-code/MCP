@@ -88,6 +88,11 @@
       "detail": "E2 external governed recovery reconciles the MCP repository itself against its own S1 runtime before owner orientation; never selects or grants TargetScope or server authority."
     },
     {
+      "path": "src/governance/e2EntryJournal.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
+    },
+    {
       "path": "src/governance/e2GitHubEvidence.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "E2 read-only parser accepts machine-readable checkpoint evidence exclusively from the MCP repository's own GitHub issues; it never grants cross-repository or runtime authority."
@@ -96,6 +101,11 @@
       "path": "src/governance/e2LivePreflight.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Read-only explicit E2 preflight for this exact Patricked-code/MCP repository and its S1 runtime; never selects a third-party repository or performs writes."
+    },
+    {
+      "path": "src/governance/e2OwnerLifecycle.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
     },
     {
       "path": "src/governance/mcpS1ToMainPolicy.ts",
@@ -131,6 +141,11 @@
       "path": "src/tools/e2Activation.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Owner explicitly selected E2 entry for Patricked-code/MCP only; auto-triggered S1 Git correction is guarded and cannot write third-party repositories or bypass E1/CI/deploy."
+    },
+    {
+      "path": "src/tools/e2OwnerTools.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
     },
     {
       "path": "src/tools/mcpGitSync.ts",
