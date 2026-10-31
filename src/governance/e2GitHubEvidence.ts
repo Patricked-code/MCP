@@ -5,6 +5,8 @@
  */
 import {assessGovernedWorkEntryTrace} from './workEntryTrace.js';
 import type {GovernedWorkEntryTrace} from './workEntryTrace.js';
+import {buildWorkEntryContinuityIndex,type WorkEntryIndexResult}
+ from './workEntryContinuityIndex.js';
 
 export type E2GitHubComment=Readonly<{
   id:number;
@@ -133,4 +135,27 @@ export function recoverE2FromGitHubIssueComments(
     latest:history[history.length-1]??null,
     blockers:legacy?['LEGACY_CHECKPOINT_REQUIRES_MANIFEST']:[],
     legacyCheckpointCount:legacy,authoritative:false,grantsPermission:false};
+}
+
+/**
+ * Reuse the existing continuity-index contract, retaining GitHub comment order.
+ * Partial legacy evidence is NOT silently promoted into a complete registry.
+ */
+export function indexRecoveredE2GitHubContinuity(
+  recovery:E2GitHubRecovery
+):WorkEntryIndexResult{
+  if(recovery.status!=='READY'||!recovery.latest){
+    return {status:'CONFLICT',entries:[],
+      blockers:['GITHUB_CONTINUITY_RECOVERY_NOT_COMPLETE',...recovery.blockers]};
+  }
+  const index=buildWorkEntryContinuityIndex([recovery.latest.trace]);
+  if(index.status!=='READY')return index;
+  return {
+    status:'READY',
+    entries:index.entries.map(e=>({
+      ...e,latest:recovery.latest!.trace,
+      history:recovery.history.map(item=>item.trace)
+    })),
+    blockers:[]
+  };
 }
