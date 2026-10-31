@@ -45,6 +45,7 @@ function fixture(){
   if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/359/comments')){
    if(opts?.method==='POST'){
     const c={id:++sequence,body:(opts.jsonBody as any).body,
+     user:{login:'Patricked-code'},author_association:'OWNER',
      created_at:'2026-10-31T02:25:00.000Z',
      html_url:'https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+sequence};
     comments.push(c);return {ok:true,status:201,json:c};
