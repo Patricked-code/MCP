@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "3456bc48c294c4689892966ad5865c10ed2a9b6a90a3793b6f62d4c0b0ed490a",
+  "catalogueDigest": "16e61572e94fc9559c6af02101460ac0fab31d72f9037d6c5e7a73d9ad650ae1",
   "registeredToolCount": 145,
   "readOnlyToolCount": 89,
   "writeToolCount": 56,
@@ -3256,17 +3256,22 @@
           "continuity_id": {
             "type": "string",
             "maxLength": 110
+          },
+          "owner_authorized_github_write": {
+            "type": "boolean",
+            "const": true
           }
         },
         "required": [
           "entry_profile",
           "e2_explicitly_selected",
           "entry_id",
-          "decision"
+          "decision",
+          "owner_authorized_github_write"
         ],
         "additionalProperties": false
       },
-      "contractDigest": "a7d55cf1890d7eec6e3c3feb80a0bf14eff41c7c76e28b8adefe37fdddd975b8"
+      "contractDigest": "7d00fde37459086327ae7d7673dcf8af71955dae9fd7f5998b674100048290a8"
     },
     {
       "name": "mcp_get_current_state_inventory",
