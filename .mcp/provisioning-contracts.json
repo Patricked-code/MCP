@@ -406,6 +406,12 @@
       "note": "E2 exact-content registry rebaseline only: guarded write consent, approved SHA, single-file scope, verified Git ancestry, retained backup, no overwrite or deploy; cannot be used for target applications."
     },
     {
+      "name": "mcp_e2_activate",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "Explicit E2-only one-call activation; reads Live State then automatically invokes guarded S1 Git reconciliation on approved local-content drift. No E1 hook, no GWC claim, no direct push to protected main, no unapproved writes or deploy."
+    },
+    {
       "name": "mcp_reconcile_s1_to_main",
       "kind": "MCP_TOOL",
       "class": "SELF_MANAGEMENT",
