@@ -406,6 +406,12 @@
       "note": "E2 exact-content registry rebaseline only: guarded write consent, approved SHA, single-file scope, verified Git ancestry, retained backup, no overwrite or deploy; cannot be used for target applications."
     },
     {
+      "name": "mcp_reconcile_s1_to_main",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "MCP-only multi-file S1 reconciliation of approved main content; explicit write gating, shared deploy lock, exact SHA, path checks, backup; no direct GitHub main push or runtime deployment."
+    },
+    {
       "name": "mcp_sync_from_github_s1",
       "kind": "MCP_TOOL",
       "class": "SELF_MANAGEMENT"
