@@ -195,7 +195,7 @@ test('E2 instructions require explicit profile and leave E1 bootstrap unchanged'
   assert.ok(e2);
   assert.match(e2,/mcp_e2_reconcile_preflight/);
   assert.match(e2,/mcp_reconcile_s1_to_main/);
-  assert.match(e2,/Continuer un chantier existant/);
+  assert.match(e2,/Nouveau chantier ou reprise d un chantier existant/);
   assert.match(e2,/Continuity IDs/);
   assert.match(e2,/CI/);
   assert.doesNotMatch(e2,/6\. Réclamer mcp_claim_next_governed_task/);
