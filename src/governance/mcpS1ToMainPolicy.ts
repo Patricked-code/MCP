@@ -17,6 +17,7 @@ export type McpS1FileChange=Readonly<{
 }>;
 export type McpReconcileObservation=Readonly<{
   s1Head:string|null;
+  s1OriginMainSha:string|null;
   githubMainHead:string|null;
   runtimeRevision:string|null;
   s1Branch:string;
@@ -26,6 +27,7 @@ export type McpReconcileObservation=Readonly<{
   s1AncestorOfGithubMain:boolean|null;
   s1WorkingTreeClean:boolean|null;
   runtimeHealthy:boolean|null;
+  documentationAligned:boolean|null;
   files:readonly McpS1FileChange[];
   allChangesEnumerated:boolean;
   collisionFree:boolean;
@@ -64,12 +66,14 @@ export function assessMcpS1ToMainReconciliation(
     b.push('EVIDENCE_INCOMPLETE_OR_STALE');
   if(!observation.collisionFree)b.push('CONCURRENT_GOVERNED_OPERATION');
   if(!SHA.test(observation.githubMainHead??'')
+    ||!SHA.test(observation.s1OriginMainSha??'')
     ||!SHA.test(observation.s1Head??'')
     ||!SHA.test(observation.runtimeRevision??''))b.push('REVISION_UNVERIFIED');
   if(observation.s1Branch!=='main'
     ||observation.s1OriginFetch!==FETCH_REMOTE
     ||observation.s1OriginPush!==PUSH_REMOTE)b.push('GIT_IDENTITY_MISMATCH');
   if(observation.runtimeHealthy!==true)b.push('MCP_RUNTIME_NOT_HEALTHY');
+  if(observation.documentationAligned!==true)b.push('MCP_DOCUMENTATION_NOT_RECONCILED');
   if(observation.files.length>100)b.push('TOO_MANY_LOCAL_CHANGES');
   const unique=new Set<string>();
   for(const file of observation.files){
@@ -86,6 +90,8 @@ export function assessMcpS1ToMainReconciliation(
   if(b.length)return result('BLOCKED',[...new Set(b)],paths,false,false);
 
   const sameHead=observation.s1Head===observation.githubMainHead;
+  if(observation.s1OriginMainSha!==observation.s1Head)
+    return result('BLOCKED',['S1_ORIGIN_MAIN_DRIFT'],paths,false,false);
   if(sameHead&&observation.s1WorkingTreeClean===true
     &&observation.runtimeRevision===observation.s1Head)
     return result('FULLY_ALIGNED',[],[],false,false);
@@ -100,8 +106,11 @@ export function assessMcpS1ToMainReconciliation(
       SHA.test(f.localGitBlob??'')&&f.localGitBlob===f.approvedMainGitBlob);
   if(!sameHead&&observation.s1AncestorOfGithubMain===true&&allApproved)
     return result('APPROVED_LOCAL_CONTENT_CANDIDATE',[],paths,false,true);
-  if(observation.files.length>0&&observation.files.every(f=>
-    f.kind==='MODIFIED'||f.kind==='ADDED'||f.kind==='DELETED'||f.kind==='RENAMED'))
+  if(observation.files.length>0
+    &&(sameHead||observation.s1AncestorOfGithubMain===true)
+    &&observation.githubMainAncestorOfS1!==true
+    &&observation.files.every(f=>
+      f.kind==='MODIFIED'||f.kind==='ADDED'||f.kind==='DELETED'||f.kind==='RENAMED'))
     return result('S1_TO_GITHUB_REVIEW_REQUIRED',[],paths,true,false);
   return result('BLOCKED',['UNSUPPORTED_OR_DIVERGED_GIT_STATE'],paths,false,false);
 }
