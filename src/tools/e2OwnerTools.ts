@@ -51,10 +51,13 @@ async function findHistoricE2Issue(
    ||Array.isArray(response.json))return {status:'BLOCKED',issueNumber:null};
  const list=(response.json as {items?:unknown}).items;
  if(!Array.isArray(list))return {status:'BLOCKED',issueNumber:null};
- const matches=list.filter(x=>!!x&&typeof x==='object'
-   &&!Array.isArray(x)&&typeof x.body==='string'
-   &&x.body.includes(continuityId)&&Number.isSafeInteger(x.number)
-   &&x.number>0).map(x=>x.number as number);
+ const matches=list.filter(x=>{
+   if(!x||typeof x!=='object'||Array.isArray(x)
+     ||typeof x.body!=='string'||!Number.isSafeInteger(x.number)
+     ||x.number<1||!x.body.includes('EXTERNAL_GOVERNED_RECOVERY'))return false;
+   const id=/\\*\\*Continuity ID(?: canonique)?\\s*:\\*\\*\\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(x.body)?.[1];
+   return id===continuityId;
+ }).map(x=>x.number as number);
  const unique=[...new Set(matches)];
  if(unique.length>1)return {status:'CONFLICT',issueNumber:null};
  return {status:unique.length===1?'READY':'NOT_FOUND',issueNumber:unique[0]??null};
