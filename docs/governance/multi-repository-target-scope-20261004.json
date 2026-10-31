@@ -83,6 +83,11 @@
       "detail": "Governed deploy of the MCP runtime itself on S1."
     },
     {
+      "path": "src/governance/e2AutoActivation.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Owner explicitly selected E2 entry for Patricked-code/MCP only; auto-triggered S1 Git correction is guarded and cannot write third-party repositories or bypass E1/CI/deploy."
+    },
+    {
       "path": "src/governance/e2EntryFlow.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "E2 external governed recovery reconciles the MCP repository itself against its own S1 runtime before owner orientation; never selects or grants TargetScope or server authority."
@@ -126,6 +131,11 @@
       "path": "src/liveState/engine.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Live State observes the MCP runtime/repository alignment; the target project is an additive TargetContext."
+    },
+    {
+      "path": "src/tools/e2Activation.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Owner explicitly selected E2 entry for Patricked-code/MCP only; auto-triggered S1 Git correction is guarded and cannot write third-party repositories or bypass E1/CI/deploy."
     },
     {
       "path": "src/tools/mcpGitSync.ts",
