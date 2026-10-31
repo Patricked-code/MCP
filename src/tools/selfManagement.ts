@@ -5,6 +5,7 @@ import { runReadOnlyCommand, runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { buildMcpGitSyncCommand } from './mcpGitSync.js';
 import { buildMcpS1ExactContentReconcileCommand } from './mcpS1ExactContentReconcile.js';
+import { buildMcpReconcileS1ToMainCommand } from './mcpReconcileS1ToMain.js';
 import { buildMcpRestartCommand } from './mcpRuntimeDeploy.js';
 import { assertScopedWriteToolsEnabled, assertWriteFlag } from '../ssh/writeSafety.js';
 
@@ -195,6 +196,25 @@ export function registerMcpSelfWriteTools(server: McpServer): void {
     assertWriteFlag(allow_write, 'mcp_sync_from_github_s1');
     return runS1Write(buildMcpGitSyncCommand(), 'mcp_sync_from_github_s1', 120_000);
   });
+
+  server.tool(
+    'mcp_reconcile_s1_to_main',
+    'Reconciliation MCP S1 vers main GitHub : pour plusieurs fichiers versionnes strictement identiques au main approuve, sauvegarde et aligne Git sans suppression ; les modifications non publiees suivent une PR gouvernee separee.',
+    {
+      expected_s1_sha: z.string().regex(/^[a-f0-9]{40}$/),
+      approved_main_sha: z.string().regex(/^[a-f0-9]{40}$/),
+      allow_write: z.boolean().default(false)
+    },
+    async ({ expected_s1_sha, approved_main_sha, allow_write }) => {
+      assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
+      assertWriteFlag(allow_write, 'mcp_reconcile_s1_to_main');
+      return runS1Write(
+        buildMcpReconcileS1ToMainCommand(expected_s1_sha, approved_main_sha),
+        'mcp_reconcile_s1_to_main',
+        120_000
+      );
+    }
+  );
 
   server.tool(
     'mcp_reconcile_s1_approved_registry_to_main',
