@@ -17,6 +17,8 @@ const BLOCKED=/(^|\/)(?:\.git|\.mcp_backups|node_modules|dist|build|coverage|key
 const FETCH='git@github.com-mcp-patricked-ro:Patricked-code/MCP.git';
 const PUSH='disabled://mcp-s1-read-only';
 const MAX=64_000;
+// Independent scan at the GitHub write boundary, even if S1 claims CLEAR.
+const SENSITIVE=/(?:-----BEGIN\s|github_pat_|gh[pousr]_[A-Za-z0-9]{15}|sk-proj-|(?:["']?(?:api[_-]?key|access[_-]?token|refresh[_-]?token|password|passwd|secret|private[_-]?key|client[_-]?secret|authorization)["']?\s*[:=]))/i;
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
 export type E2LocalFile=Readonly<{
  path:string;mode:'100644'|'100755';baseBlob:string;localBlob:string;
@@ -54,6 +56,8 @@ function safeFile(file:E2LocalFile):boolean{
  const content=Buffer.from(file.contentBase64,'base64');
  if(content.toString('base64')!==file.contentBase64)return false;
  if(content.length!==file.sizeBytes)return false;
+ const plain=content.toString('utf8');
+ if(Buffer.from(plain,'utf8').compare(content)!==0||plain.includes('\0')||SENSITIVE.test(plain))return false;
  const gitBlob=createHash('sha1').update('blob '+content.length+'\0').update(content).digest('hex');
  return gitBlob===file.localBlob;
 }
@@ -63,7 +67,7 @@ function validate(s:LiveStateSnapshot,x:E2LocalSnapshot):void{
   ||s.github.branch!=='main'||s.s1.branch!=='main'
   ||s.s1.fetchRemote!==FETCH||s.s1.pushRemote!==PUSH
   ||!SHA.test(s.github.head??'')||!SHA.test(s.s1.head??'')
-  ||!SHA.test(s.s1.originMain??'')||s.s1.head!==s.s1.originMain
+  ||!SHA.test(s.s1.originMain??'')||!(s.s1.originMain===s.s1.head||s.s1.originMain===s.github.head)
   ||x.head!==s.s1.head||x.origin!==s.s1.originMain
   ||s.s1.workingTreeClean!==false||s.s1.diffEmpty!==false
   ||x.files.length<1||x.files.length>20)
@@ -78,7 +82,7 @@ function validate(s:LiveStateSnapshot,x:E2LocalSnapshot):void{
 // Fixed, read-only S1 JS. No dynamic user paths or shell expansion. Refuses
 // staged/untracked/deleted/renamed files, protected locations, secrets and
 // non-textual data before returning any file contents to the MCP runtime.
-const S1_READ_SCRIPT=String.raw`
+export const S1_READ_SCRIPT=String.raw`
 const fs=require("node:fs"),cp=require("node:child_process"),crypto=require("node:crypto");
 const root="/opt/apps/wealthtech-mcp-ssh-bridge";
 process.chdir(root);
@@ -89,7 +93,7 @@ const ref=(s)=>git(["rev-parse",s]);
 const SHA=/^[a-f0-9]{40}$/;
 const PATH=/^[A-Za-z0-9_.@+\/-]{1,220}$/;
 const deny=/(^|\/)(?:\.git|\.mcp_backups|node_modules|dist|build|coverage|keys|secrets|\.env(?:\.|$))|(?:\.pem|\.p8|\.key|\.crt|\.p12|\.sql|\.dump)$/i;
-const secret=/(?:-----BEGIN\s|github_pat_|gh[pousr]_[A-Za-z0-9]{15}|sk-proj-|(?:api[_-]?key|access[_-]?token|refresh[_-]?token|password|secret|private[_-]?key)\s*[:=]\s*["\x27][^"\x27]{8,})/i;
+const secret=/(?:-----BEGIN\s|github_pat_|gh[pousr]_[A-Za-z0-9]{15}|sk-proj-|(?:["\x27]?(?:api[_-]?key|access[_-]?token|refresh[_-]?token|password|passwd|secret|private[_-]?key|client[_-]?secret|authorization)["\x27]?\s*[:=]))/i;
 const fail=(reason)=>{process.stdout.write(JSON.stringify({ok:false,code:reason}));process.exit(1)};
 try{
  if(git(["branch","--show-current"])!=="main"
@@ -97,7 +101,7 @@ try{
    ||git(["remote","get-url","--push","origin"])!=="disabled://mcp-s1-read-only")
     fail("E2_S1_REPOSITORY_IDENTITY_CHANGED");
  const head=ref("HEAD"),origin=ref("origin/main");
- if(!SHA.test(head)||!SHA.test(origin)||head!==origin)fail("E2_S1_GIT_BASE_INVALID");
+ if(!SHA.test(head)||!SHA.test(origin)||)fail("E2_S1_GIT_BASE_INVALID");
  const staged=cp.spawnSync("git",["diff","--cached","--quiet"]);
  if(staged.status!==0)fail("E2_STAGED_CHANGES");
  if(git(["ls-files","--others","--exclude-standard"]).length)
@@ -187,31 +191,54 @@ export async function proposeE2S1GithubReview(
  const refPath=REPO+'/git/ref/heads/'+branch;
  const existing=await ports.github(refPath);
  if(existing.ok){
-  // An already created branch is never overwritten or force-pushed.
-  const refs=obj(existing.json);
-  const sha=str(obj(refs?.object)?.sha);
-  if(!SHA.test(sha??''))throw new Error('E2_EXISTING_BRANCH_INVALID');
+  const branchSha=str(obj(obj(existing.json)?.object)?.sha);
+  if(!SHA.test(branchSha??''))throw new Error('E2_EXISTING_BRANCH_INVALID');
   const pulls=await ports.github(REPO+'/pulls?state=open&head=Patricked-code:'+branch);
   if(!pulls.ok||!Array.isArray(pulls.json))throw new Error('E2_EXISTING_PR_UNVERIFIED');
-  const pr=pulls.json.find(x=>obj(x)&&str(obj(x)?.head&&obj(obj(x)?.head)?.sha)===sha);
-  const row=obj(pr);
+  const row=obj(pulls.json.find(x=>obj(x)&&str(obj(obj(x)?.head)?.sha)===branchSha));
   const url=str(row?.html_url);
-  if(!url||!/^https:\/\/github\.com\/Patricked-code\/MCP\/pull\/\d+$/.test(url))
-   throw new Error('E2_BRANCH_EXISTS_WITHOUT_VERIFIED_PR');
-  for(const file of initial.files){
-   if(await readBlob(ports.github,file.path,sha!)!==file.localBlob)
-    throw new Error('E2_EXISTING_PROPOSAL_CONTENT_DIFFERS');
+  if(url){
+   if(!/^https:\/\/github\.com\/Patricked-code\/MCP\/pull\/\d+$/.test(url))
+    throw new Error('E2_EXISTING_PR_UNVERIFIED');
+   for(const file of initial.files){
+    if(await readBlob(ports.github,file.path,branchSha!)!==file.localBlob)
+     throw new Error('E2_EXISTING_PROPOSAL_CONTENT_DIFFERS');
+   }
+   return {status:'EXISTING_PROPOSAL',url,sha:branchSha!,branch,created:false};
   }
-  return {status:'EXISTING_PROPOSAL',url,sha:sha!,branch,created:false};
- }
- if(existing.status!==404)throw new Error('E2_GITHUB_BRANCH_LOOKUP_FAILED');
+  if(branchSha!==main){
+   // Resume only a single-parent proposal commit with identical file blobs.
+   const previous=await expect(ports.github,REPO+'/git/commits/'+branchSha);
+   if(!Array.isArray(previous.parents)||previous.parents.length!==1
+    ||str(obj(previous.parents[0])?.sha)!==main)
+    throw new Error('E2_PARTIAL_PROPOSAL_PARENT_UNVERIFIED');
+   for(const file of initial.files){
+    if(await readBlob(ports.github,file.path,branchSha!)!==file.localBlob)
+     throw new Error('E2_PARTIAL_PROPOSAL_CONTENT_DIFFERS');
+   }
+   const resumed=await expect(ports.github,REPO+'/pulls',{method:'POST',jsonBody:{
+    title:'fix(e2): review unpublished S1 MCP changes',
+    head:branch,base:'main',draft:true,
+    body:'E2 EXTERNAL_GOVERNED_RECOVERY — resumed approved-scope proposal.\\n'
+     +'No direct main push, automatic approval, merge or deployment.'
+   }},[201]);
+   const resumedUrl=str(resumed.html_url);
+   if(!/^https:\/\/github\.com\/Patricked-code\/MCP\/pull\/\d+$/.test(resumedUrl??'')
+    ||str(obj(resumed.head)?.sha)!==branchSha)
+    throw new Error('E2_RESUMED_PROPOSAL_PR_UNVERIFIED');
+   return {status:'PROPOSAL_OPENED',url:resumedUrl!,sha:branchSha!,branch,created:true};
+  }
+  // Existing branch at main: resume interrupted blob and tree creation.
+ }else if(existing.status!==404)throw new Error('E2_GITHUB_BRANCH_LOOKUP_FAILED');
  const commit=await expect(ports.github,REPO+'/git/commits/'+main);
  const tree=str(obj(commit.tree)?.sha);
  if(!SHA.test(tree??''))throw new Error('E2_GITHUB_MAIN_TREE_UNAVAILABLE');
- const ref=await expect(ports.github,REPO+'/git/refs',{method:'POST',
-  jsonBody:{ref:'refs/heads/'+branch,sha:main}},[201]);
- if(str(obj(ref.object)?.sha)!==main)
-  throw new Error('E2_GITHUB_BRANCH_CREATION_UNVERIFIED');
+ if(!existing.ok){
+  const ref=await expect(ports.github,REPO+'/git/refs',{method:'POST',
+   jsonBody:{ref:'refs/heads/'+branch,sha:main}},[201]);
+  if(str(obj(ref.object)?.sha)!==main)
+   throw new Error('E2_GITHUB_BRANCH_CREATION_UNVERIFIED');
+ }
  const blobs:Array<{path:string;mode:string;type:'blob';sha:string}>=[];
  for(const file of initial.files){
   const raw=await expect(ports.github,REPO+'/git/blobs',{method:'POST',

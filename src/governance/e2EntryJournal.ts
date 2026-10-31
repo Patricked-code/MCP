@@ -111,12 +111,16 @@ export async function loadE2Journal(port:E2JournalPort=defaultE2JournalPort):Pro
   if(!response.ok||!Array.isArray(response.json))
    return {status:'UNAVAILABLE',entries:[],blockers:['E2_GITHUB_JOURNAL_UNAVAILABLE']};
   for(const raw of response.json){
-   const item=asComment(raw);
+   const body=raw&&typeof raw==='object'&&!Array.isArray(raw)
+     ?(raw as Record<string,unknown>).body:null;
+    if(typeof body!=='string')return {status:'CONFLICT',entries:[],blockers:['E2_JOURNAL_COMMENT_INVALID']};
+    // Ordinary GitHub discussion cannot invalidate a genuine E2 event history.
+    if(!body.includes(PREFIX))continue;
+    const item=asComment(raw);
    if(!item||seen.has(item.id))
     return {status:'CONFLICT',entries:[],blockers:['E2_JOURNAL_COMMENT_INVALID_OR_DUPLICATE']};
    seen.add(item.id);
-   if(!item.body.includes(PREFIX))continue;
-   if(item.html_url!=='https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+item.id)
+      if(item.html_url!=='https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+item.id)
     return {status:'CONFLICT',entries:[],blockers:['E2_JOURNAL_URL_INVALID']};
    const event=parseE2Journal(item.body);
    if(!event)

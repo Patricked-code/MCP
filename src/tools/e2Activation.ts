@@ -44,7 +44,8 @@ async function defaultReconcile(snapshot:LiveStateSnapshot,allowWrite:boolean):P
  const propose=async():Promise<E2RepairResult>=>{
    if(!allowWrite)return {outcome:'AWAITING_AUTHORITY',reason:'E2_GITHUB_PR_WRITE_NOT_AUTHORIZED'};
    try{
-     const review=await proposeE2S1GithubReview(snapshot);
+     const latest=await liveStateEngine.reconcileNow();
+      const review=await proposeE2S1GithubReview(latest);
      return {outcome:'GITHUB_PROPOSAL_OPENED',
        reason:review.created?'E2_GITHUB_PR_OPENED':'E2_EXISTING_GITHUB_PR_RECOVERED',
        reviewUrl:review.url};
@@ -131,9 +132,9 @@ export function registerE2AutomaticActivationTool(
             ?'RECONCILIATION_PENDING' as const:'RECONCILIATION_BLOCKED' as const;
         const event:E2JournalEvent={
           ...base,observedAt:new Date().toISOString(),stage,
-          githubMainSha:result.initial.githubMainSha,
-          s1HeadSha:result.initial.s1HeadSha,
-          runtimeSha:result.initial.runtimeSha,
+          githubMainSha:(result.final??result.initial).githubMainSha,
+          s1HeadSha:(result.final??result.initial).s1HeadSha,
+          runtimeSha:(result.final??result.initial).runtimeSha,
           reasonCode:result.repair?.reason?.replace(/[^A-Z0-9_:-]/g,'_').slice(0,120)
             ||(result.initial.blockers[0]??null)
         };
