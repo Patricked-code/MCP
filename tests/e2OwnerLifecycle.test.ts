@@ -106,6 +106,24 @@ test('E2 owner NEW -> check duplicates -> issue+Continuity ID -> registry -> RES
  assert.equal(resumed.issueNumber,result.issueNumber);
  assert.equal(f.issues.length,1);
 });
+test('NEW mandate rejects quoted JSON credentials before any GitHub issue POST',async()=>{
+ const f=fixture(),entryId=await activate(f);
+ const before=f.comments.length;
+ const result=await routeE2OwnerChoice({
+  entryId,kind:'NEW',mandate:'Investigate {"password":"example-sensitive-value"}'
+ },f.port);
+ assert.equal(result.status,'BLOCKED');
+ assert.equal(result.reason,'E2_NEW_MANDATE_MISSING_OR_SENSITIVE');
+ assert.equal(f.issues.length,0);
+ assert.equal(f.comments.length,before);
+ for(const name of ['apiKey','refresh_token','client-secret','authorization']){
+  const replay=await routeE2OwnerChoice({
+   entryId,kind:'NEW',mandate:'Investigate {"'+name+'":"example-value"}'
+  },f.port);
+  assert.equal(replay.status,'BLOCKED',name);
+  assert.equal(f.issues.length,0,name);
+ }
+});
 test('new mandate matching an issue is NOT duplicated',async()=>{
  const f=fixture(),entryId=await activate(f);f.setDuplicate(true);
  const result=await routeE2OwnerChoice({

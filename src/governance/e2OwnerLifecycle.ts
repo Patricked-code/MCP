@@ -42,8 +42,11 @@ const refused=(reason:string):E2OwnerResult=>({
  status:'BLOCKED',continuityId:null,issueNumber:null,issueUrl:null,
  reason,grantsPermission:false
 });
+// Same sensitive assignment categories as the S1 -> GitHub proposal boundary.
+// Account for JSON quoted property names: {"password":"..."}, etc.
+const MANDATE_SECRET=/(?:-----BEGIN\s|github_pat_|gh[pousr]_[A-Za-z0-9]{15}|sk-proj-|(?:["']?(?:api[_-]?key|access[_-]?token|refresh[_-]?token|password|passwd|secret|private[_-]?key|client[_-]?secret|authorization)["']?\s*[:=]))/i;
 const validMandate=(x:unknown):x is string=>
- typeof x==='string'&&SAFE_TEXT.test(x)&&!/(?:gh[pousr]_|github_pat_|sk-proj-|-----BEGIN|password\s*[:=]|secret\s*[:=])/i.test(x);
+ typeof x==='string'&&SAFE_TEXT.test(x)&&!MANDATE_SECRET.test(x);
 export function proposeE2ContinuityId(at:Date=new Date(),uuid:string=randomUUID()):string{
  const date=at.toISOString().slice(0,10).replace(/-/g,'');
  const suffix=uuid.slice(0,12).replace(/-/g,'').toUpperCase();
