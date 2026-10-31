@@ -17,6 +17,11 @@ import {appendE2Journal,newE2EntryId,type E2JournalEvent} from '../governance/e2
 const SHA=/^[a-f0-9]{40}$/;
 const FETCH='git@github.com-mcp-patricked-ro:Patricked-code/MCP.git';
 const PUSH='disabled://mcp-s1-read-only';
+/** E2 proposal writes require both owner approval and a server-enabled write gate. */
+export function assertE2GithubProposalAuthority(allowWrite:boolean,enabled:boolean):void{
+ assertWriteFlag(allowWrite,'mcp_e2_activate:github_proposal');
+ assertScopedWriteToolsEnabled(enabled);
+}
 type E2ActivateDeps=Readonly<{
  observe:()=>Promise<LiveStateSnapshot>;
  reconcile:(snapshot:LiveStateSnapshot,allowWrite:boolean)=>Promise<E2RepairResult>;
@@ -44,6 +49,7 @@ async function defaultReconcile(snapshot:LiveStateSnapshot,allowWrite:boolean):P
  const propose=async():Promise<E2RepairResult>=>{
    if(!allowWrite)return {outcome:'AWAITING_AUTHORITY',reason:'E2_GITHUB_PR_WRITE_NOT_AUTHORIZED'};
    try{
+     assertE2GithubProposalAuthority(allowWrite,env.ENABLE_WRITE_TOOLS);
      const latest=await liveStateEngine.reconcileNow();
       const review=await proposeE2S1GithubReview(latest);
      return {outcome:'GITHUB_PROPOSAL_OPENED',

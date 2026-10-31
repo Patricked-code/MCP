@@ -6,7 +6,7 @@ process.env.S1_HOST ??= '127.0.0.1';
 process.env.S1_KEY_PATH ??= '/tmp/e2-test-s1-key';
 process.env.S2_HOST ??= '127.0.0.1';
 process.env.S2_KEY_PATH ??= '/tmp/e2-test-s2-key';
-const {registerE2AutomaticActivationTool} = await import('../src/tools/e2Activation.js');
+const {registerE2AutomaticActivationTool,assertE2GithubProposalAuthority} = await import('../src/tools/e2Activation.js');
 
 const SHA='7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6';
 const OLD='1f6961063d27bc85087aab57a8f700fd7729e03f';
@@ -114,4 +114,10 @@ test('terminal E2 checkpoint uses post-repair SHAs rather than stale initial val
  assert.equal(events[1].s1HeadSha,SHA);
  assert.equal(events[1].runtimeSha,SHA);
  assert.notEqual(events[1].s1HeadSha,OLD);
+});
+
+test('E2 proposal writes require enabled server switch and explicit allow_write',()=>{
+ assert.throws(()=>assertE2GithubProposalAuthority(true,false),/Outils d’écriture désactivés/);
+ assert.throws(()=>assertE2GithubProposalAuthority(false,true),/Écriture refusée/);
+ assert.doesNotThrow(()=>assertE2GithubProposalAuthority(true,true));
 });

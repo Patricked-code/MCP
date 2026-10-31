@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
-import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,readdirSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,readdirSync,rmSync,chmodSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
@@ -37,7 +37,7 @@ function git(cwd:string,...args:string[]):string{
  assert.equal(r.status,0,r.stderr+' '+args.join(' '));
  return r.stdout.trim();
 }
-function fixture(){
+function fixture(changeExecutableMode=false){
  const home=mkdtempSync(join(tmpdir(),'e2-bidirectional-'));
  const server=join(home,'server'),origin=join(home,'origin.git'),publisher=join(home,'publisher');
  mkdirSync(server);git(server,'init','-b','main');
@@ -52,6 +52,7 @@ function fixture(){
  git(server,'remote','set-url','--push','origin','disabled://mcp-s1-read-only');
  git(home,'clone',origin,publisher);
  writeFileSync(join(publisher,'data/config.json'),'{"x":1}\n');
+ if(changeExecutableMode)chmodSync(join(publisher,'data/config.json'),0o755);
  writeFileSync(join(publisher,'docs/notes.md'),'new\n');
  git(publisher,'add','.');git(publisher,'commit','-m','approved main');
  const main=git(publisher,'rev-parse','HEAD');git(publisher,'push','origin','main');
@@ -113,4 +114,20 @@ test('scoped command refuses any nonexplicit E2 entry independently of write fla
    /E2_EXPLICIT_SELECTION_REQUIRED/);
  assert.throws(()=>buildMcpReconcileS1ToMainCommand(a,b,'E1' as any,true),
    /E2_EXPLICIT_SELECTION_REQUIRED/);
+});
+
+test('approved executable-bit change is blocked before advancing the local S1 Git ref',()=>{
+ const f=fixture(true);
+ try{
+  writeFileSync(join(f.server,'data/config.json'),'{"x":1}\n');
+  writeFileSync(join(f.server,'docs/notes.md'),'new\n');
+  const before=readFileSync(join(f.server,'data/config.json'));
+  const r=f.execute();
+  assert.equal(r.status,90,r.stdout+'\n'+r.stderr);
+  assert.match(r.stdout,/E2_FILE_MODE_NOT_APPROVED/);
+  assert.equal(git(f.server,'rev-parse','HEAD'),f.old);
+  assert.deepEqual(readFileSync(join(f.server,'data/config.json')),before);
+  assert.match(git(f.server,'ls-files','-s','--','data/config.json'),/^100644 /);
+  assert.equal(git(f.server,'diff','--cached','--name-only'),'');
+ }finally{rmSync(f.home,{recursive:true,force:true});}
 });

@@ -22,7 +22,7 @@ const local={
 } as any;
 function fixture(){
  const comments:any[]=[],issues:any[]=[];
- let sequence=100,duplicate=false,healthy=true,legacySearch=false;
+ let sequence=100,duplicate=false,healthy=true,legacySearch=false,failNextReadback=false;
  const journal:E2JournalPort={async request(endpoint,opts){
   if(endpoint.startsWith('/search/issues?'))
    return {ok:true,status:200,json:{items:legacySearch?[{
@@ -43,6 +43,7 @@ function fixture(){
    }]:issues};
   }
   if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/comments/')){
+   if(failNextReadback){failNextReadback=false;return {ok:false,status:503,json:null};}
    const n=Number(endpoint.split('/').at(-1));
    const found=comments.find(x=>x.id===n);
    return {ok:!!found,status:found?200:404,json:found??null};
@@ -72,7 +73,8 @@ function fixture(){
   ...local,s1:{...local.s1,workingTreeClean:false}
  }};
  return {journal,port,comments,issues,setDuplicate:(v:boolean)=>{duplicate=v;},
-  setHealthy:(v:boolean)=>{healthy=v;},setLegacySearch:(v:boolean)=>{legacySearch=v;}};
+  setHealthy:(v:boolean)=>{healthy=v;},setLegacySearch:(v:boolean)=>{legacySearch=v;},
+ failJournalReadbackOnce:()=>{failNextReadback=true;}};
 }
 function event(entryId:string,stage:'ACTIVATED'|'READY_FOR_OWNER'):E2JournalEvent{
  return {schemaVersion:1,entryId,observedAt:'2026-10-31T02:24:00.000Z',
@@ -160,4 +162,20 @@ test('E2 recovers issue created before an interrupted registry receipt without d
  assert.equal(result.continuityId,continuityId);
  assert.equal(result.issueNumber,499);
  assert.equal(f.issues.length,1);
+});
+
+test('NEW choice retries after a persisted registry comment with lost readback, without duplicate issue',async()=>{
+ const f=fixture(),entryId=await activate(f);
+ f.failJournalReadbackOnce();
+ const first=await routeE2OwnerChoice({entryId,kind:'NEW',mandate:'Nouveau module MCP E2'},f.port);
+ assert.equal(first.status,'BLOCKED');
+ assert.equal(first.reason,'E2_ISSUE_CREATED_BUT_REGISTRY_PENDING_RECOVERY');
+ assert.equal(f.issues.length,1);
+ const again=await routeE2OwnerChoice({entryId,kind:'NEW',mandate:'Nouveau module MCP E2'},f.port);
+ assert.equal(again.status,'READY_NEW');
+ assert.equal(again.issueNumber,f.issues[0]?.number);
+ assert.equal(f.issues.length,1);
+ const wrong=await routeE2OwnerChoice({entryId,kind:'NEW',mandate:'Un autre module E2'},f.port);
+ assert.equal(wrong.status,'BLOCKED');
+ assert.equal(wrong.reason,'E2_REPLAY_GITHUB_ISSUE_NOT_ATTESTED');
 });

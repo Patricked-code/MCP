@@ -60,6 +60,20 @@ for FILE in "\${FILES[@]}"; do
  LOCAL_BLOB="$(git hash-object -- "$FILE")"
  EXPECTED_BLOB="$(git rev-parse "FETCH_HEAD:$FILE")"
  [ "$LOCAL_BLOB" = "$EXPECTED_BLOB" ] || { echo 'E2_LOCAL_CONTENT_NOT_APPROVED'; exit 85; }
+ # File blob hashes do not attest the executable bit. Prove Git index,
+ # approved remote mode and worktree permissions before mutating any refs.
+ INDEX_MODE="$(git ls-files -s -- "$FILE" | awk 'NR==1 {print $1}')"
+ REMOTE_MODE="$(git ls-tree "$REMOTE" -- "$FILE" | awk 'NR==1 {print $1}')"
+ case "$REMOTE_MODE" in
+  100644|100755) ;;
+  *) echo 'E2_REMOTE_MODE_UNSUPPORTED'; exit 90 ;;
+ esac
+ [ "$INDEX_MODE" = "$REMOTE_MODE" ] || { echo 'E2_FILE_MODE_NOT_APPROVED'; exit 90; }
+ if [ "$REMOTE_MODE" = '100755' ]; then
+  [ -x "$FILE" ] || { echo 'E2_WORKTREE_EXEC_MODE_MISMATCH'; exit 90; }
+ else
+  [ ! -x "$FILE" ] || { echo 'E2_WORKTREE_EXEC_MODE_MISMATCH'; exit 90; }
+ fi
 done
 # Retain every file, including its relative path, in an ignored private backup.
 mkdir -p .mcp_backups

@@ -93,13 +93,40 @@ export async function routeE2OwnerChoice(
  if(!/^E2-[A-F0-9-]{36}$/.test(choice.entryId))return refused('E2_ENTRY_ID_INVALID');
  const journal=await loadE2Journal(port.journal);
  const entry=recoverE2JournalEntry(journal,choice.entryId);
- if(entry.status!=='READY'||entry.latest?.stage!=='READY_FOR_OWNER'
+ if(entry.status!=='READY'||!['READY_FOR_OWNER','CONTINUITY_REGISTERED'].includes(entry.latest?.stage??'')
    ||entry.history[0]?.stage!=='ACTIVATED')
    return refused('E2_READY_ENTRY_RECEIPT_NOT_FOUND');
  const snapshot=await port.observe();
  const gate=assessE2LivePreflight(snapshot);
  if(gate.gate!=='DISCOVER_GITHUB_CONTINUITIES')return refused('E2_ALIGNMENT_NO_LONGER_CURRENT');
  if(!SHA.test(snapshot.github.head??''))return refused('E2_MAIN_SHA_INVALID');
+ // After a lost registry readback, the registered event may already be durable.
+ // Resolve the exact issue and owner choice idempotently; never create a second issue.
+ if(entry.latest?.stage==='CONTINUITY_REGISTERED'){
+  if(choice.kind!=='NEW'||!validMandate(choice.mandate))
+   return refused('E2_REPLAY_OWNER_CHOICE_MISMATCH');
+  const registrations=entry.history.filter(e=>e.stage==='CONTINUITY_REGISTERED');
+  if(new Set(registrations.map(e=>e.continuityId+':'+e.issueNumber)).size!==1)
+   return refused('E2_REPLAY_REGISTRATION_CONFLICT');
+  const receipt=registrations[0];
+  if(!receipt?.continuityId||!receipt.issueNumber)
+   return refused('E2_REPLAY_REGISTRATION_INVALID');
+  const response=await port.journal.request(ROOT+'/issues/'+receipt.issueNumber);
+  const issue=asObject(response.json),body=issue?.body;
+  const bt=String.fromCharCode(96);
+  if(!response.ok||response.status!==200
+    ||issue?.number!==receipt.issueNumber
+    ||typeof issue.title!=='string'||issue.title.trim()!==choice.mandate.trim()
+    ||typeof body!=='string'
+    ||!body.includes('- **E2 entry :** '+bt+choice.entryId+bt)
+    ||!body.includes('- **Continuity ID :** '+bt+receipt.continuityId+bt)
+    ||!body.includes('EXTERNAL_GOVERNED_RECOVERY'))
+   return refused('E2_REPLAY_GITHUB_ISSUE_NOT_ATTESTED');
+  return {status:'READY_NEW',continuityId:receipt.continuityId,
+   issueNumber:receipt.issueNumber,
+   issueUrl:'https://github.com/Patricked-code/MCP/issues/'+receipt.issueNumber,
+   reason:null,grantsPermission:false};
+ }
  if(choice.kind==='RESUME'){
   if(!ID.test(choice.continuityId??''))return refused('E2_CONTINUITY_ID_REQUIRED');
   const match=findE2ContinuityInJournal(journal,choice.continuityId!);
