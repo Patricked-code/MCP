@@ -7,11 +7,11 @@ const old='1f6961063d27bc85087aab57a8f700fd7729e03f';
 const main='7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6';
 const blob='a'.repeat(40);
 const obs:McpReconcileObservation={
- s1Head:old,githubMainHead:main,runtimeRevision:old,s1Branch:'main',
+ s1Head:old,s1OriginMainSha:old,githubMainHead:main,runtimeRevision:old,s1Branch:'main',
  s1OriginFetch:'git@github.com-mcp-patricked-ro:Patricked-code/MCP.git',
  s1OriginPush:'disabled://mcp-s1-read-only',
  githubMainAncestorOfS1:false,s1AncestorOfGithubMain:true,
- s1WorkingTreeClean:false,runtimeHealthy:true,
+ s1WorkingTreeClean:false,runtimeHealthy:true,documentationAligned:true,
  files:[{path:'data/github-accounts.json',kind:'MODIFIED',
   localGitBlob:blob,approvedMainGitBlob:blob,sizeBytes:1000,secretScan:'CLEAR'}],
  allChangesEnumerated:true,collisionFree:true,evidenceCurrent:true
@@ -75,7 +75,7 @@ test('successful clean GitHub->S1 preflight requests existing Governed Deploy on
 });
 test('only a newly verified aligned observation unlocks normal E2',async()=>{
  const c={proposal:0,s1:0,deploy:0};
- const aligned={...obs,s1Head:main,runtimeRevision:main,
+ const aligned={...obs,s1Head:main,s1OriginMainSha:main,runtimeRevision:main,
   s1WorkingTreeClean:true,files:[]};
  const result=await executeMcpS1ReconciliationCycle(selected,aligned,no,ports(c));
  assert.equal(result.disposition,'READY_FOR_OWNER');
@@ -85,7 +85,7 @@ test('only a newly verified aligned observation unlocks normal E2',async()=>{
 
 test('same main Git but stale S1 runtime requires governed redeploy, not a fake alignment',async()=>{
  const c={proposal:0,s1:0,deploy:0};
- const stale={...obs,s1Head:main,s1WorkingTreeClean:true,files:[]};
+ const stale={...obs,s1Head:main,s1OriginMainSha:main,s1WorkingTreeClean:true,files:[]};
  const result=await executeMcpS1ReconciliationCycle(selected,stale,
   {...no,governedDeployApproved:true},ports(c));
  assert.equal(result.disposition,'DEPLOY_REQUESTED');
@@ -108,4 +108,14 @@ test('E1, missing explicit selection, or no profile can NEVER invoke the E2 cycl
   assert.equal(out.mayEnterNormalE2,false);
   assert.deepEqual(c,{proposal:0,s1:0,deploy:0});
  }
+});
+
+test('unreconciled documentation fails closed even with explicit E2 authority',async()=>{
+ const c={proposal:0,s1:0,deploy:0};
+ const out=await executeMcpS1ReconciliationCycle(selected,
+  {...obs,documentationAligned:false},{
+   scopedS1WriteApproved:true,githubProposalApproved:true,governedDeployApproved:true
+  },ports(c));
+ assert.equal(out.disposition,'BLOCKED');
+ assert.deepEqual(c,{proposal:0,s1:0,deploy:0});
 });
