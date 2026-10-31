@@ -34,7 +34,6 @@ export const E2_ENTRY_INSTRUCTIONS = [
 ] as const;
 
 export const GOVERNED_CONTEXT_INSTRUCTIONS = [
-  ...E2_ENTRY_INSTRUCTIONS,
   '1. Appeler ping puis mcp_reconcile_governed_context.',
   '2. Lire mcp://wealthtech/current-state/inventory ou mcp_get_current_state_inventory.',
   '3. Reprendre une governed session compatible ou en ouvrir une; MCP-Session-Id reste temporaire.',
@@ -45,8 +44,14 @@ export const GOVERNED_CONTEXT_INSTRUCTIONS = [
   '8. Le WRITE gate reste shadow et ne remplace ni ENABLE_WRITE_TOOLS ni allow_write.'
 ].join('\n');
 
-export function governedContextInstructions(enabled: boolean): string | undefined {
-  return enabled ? GOVERNED_CONTEXT_INSTRUCTIONS : undefined;
+export function governedContextInstructions(
+  enabled: boolean,
+  explicitlySelectedProfile?: 'EXTERNAL_GOVERNED_RECOVERY'
+): string | undefined {
+  if(!enabled)return undefined;
+  return explicitlySelectedProfile==='EXTERNAL_GOVERNED_RECOVERY'
+    ? E2_ENTRY_INSTRUCTIONS.join('\n')
+    : GOVERNED_CONTEXT_INSTRUCTIONS;
 }
 
 type GovernedContextToolDependencies = {
