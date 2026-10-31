@@ -1,8 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {routeE2OwnerChoice,type E2OwnerPort} from '../src/governance/e2OwnerLifecycle.js';
-import {appendE2Journal,newE2EntryId,type E2JournalEvent,type E2JournalPort}
- from '../src/governance/e2EntryJournal.js';
+import type {E2OwnerPort} from '../src/governance/e2OwnerLifecycle.js';
+import type {E2JournalEvent,E2JournalPort} from '../src/governance/e2EntryJournal.js';
+process.env.MCP_AUTH_TOKEN ??= 'e2-journal-test-token-only-20261031';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/e2-test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/e2-test-s2-key';
+const {routeE2OwnerChoice}=await import('../src/governance/e2OwnerLifecycle.js');
+const {appendE2Journal,newE2EntryId}=await import('../src/governance/e2EntryJournal.js');
 const sha='7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6';
 const local={
  repository:'Patricked-code/MCP',freshness:'CURRENT',stateVersion:42,
