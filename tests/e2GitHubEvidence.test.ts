@@ -92,3 +92,18 @@ test('a regression from PR_OPENED to ISSUE_OPENED is rejected',()=>{
  assert.equal(result.status,'CONFLICT');
  assert.ok(result.blockers.includes('CHECKPOINT_STAGE_REGRESSION'));
 });
+
+test('a root continuity can open a second PR after the first PR was governed and deployed',()=>{
+ const deployed:GovernedWorkEntryTrace={...base,stage:'S1_ATTESTED',
+  github:{...base.github,branch:'mcp/e2-first-cycle',pullRequestNumber:360,
+   headSha:'a'.repeat(40),mergeSha:'b'.repeat(40)},
+  deployment:{workflowRunUrl:'https://github.com/Patricked-code/MCP/actions/runs/123456',
+   runtimeRevisionSha:'b'.repeat(40)}};
+ const next:GovernedWorkEntryTrace={...base,stage:'PR_OPENED',
+  github:{...base.github,branch:'mcp/e2-second-cycle',pullRequestNumber:365,
+   headSha:'c'.repeat(40),mergeSha:null}};
+ const result=recoverE2FromGitHubIssueComments(source([comment(1,deployed),comment(2,next)]),ID);
+ assert.equal(result.status,'READY');
+ assert.equal(result.history.length,2);
+ assert.equal(result.latest?.trace.github.pullRequestNumber,365);
+});
