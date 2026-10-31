@@ -69,6 +69,23 @@ L'opération échoue sans mutation du ref si un contrôle préalable échoue ; l
 
 **Limitation d'amorçage impérative :** ce nouvel outil GitHub-side ne peut pas être appelé sur le runtime S1 déployé tant qu'une version du MCP le contenant n'a pas elle-même été installée. Comme le déploiement existant refuse actuellement le dépôt S1 dirty, une opération d'administration S1 extérieure et expressément autorisée demeure nécessaire pour la première remise en cohérence. Ne jamais prétendre que l'ajout du code à la PR effectue déjà cette intervention.
 
+## Déclenchement automatique à l'activation de l'Entrée 2 — décision propriétaire
+
+**Une seule action d'entrée :** quand le propriétaire sélectionne explicitement `EXTERNAL_GOVERNED_RECOVERY`, appeler `mcp_e2_activate` **une fois**, sans attendre une demande distincte de réconciliation.
+
+1. L'activation force une nouvelle observation S1/GitHub/runtime/documentation.
+2. **Aucune divergence :** retourner `CONTINUE_E2`, puis commencer immédiatement E2-02 (recherche des issues, PR et Continuity IDs existants). Aucun traitement de correction lancé.
+3. **Divergence :** l'activation appelle automatiquement le processus `mcp_reconcile_s1_to_main`, avec les mêmes verrous, contrôles de secrets, preuves et limites d'autorisation existants. La suite ordinaire E2 reste bloquée.
+4. **Contenu S1 local déjà identique au `main` approuvé :** une autorisation d'écriture préexistante peut permettre la remise en cohérence Git non destructive. Cette étape ne constitue **pas** un déploiement ni une preuve finale d'alignement.
+5. **Modification S1 non encore approuvée :** ne jamais pousser directement sur `main` ; le retour `GITHUB_PROPOSAL_REQUIRED` signifie que la proposition GitHub gouvernée reste à préparer et valider. Tant que l'adaptateur automatisé réel de PR n'est pas opérationnel, ne pas annoncer que cette branche est corrigée.
+6. **GitHub en avance ou runtime ancien :** utiliser le mécanisme MCP Governed Deploy existant, sans nouvelle voie de déploiement ni promotion non autorisée.
+7. **Contrôle final :** après une correction Git réussie, forcer à nouveau l'observation Live State et ne retourner `CONTINUE_E2` que lorsque GitHub main, S1 Git, runtime, worktree et documentation sont tous attestés au même niveau.
+8. **Permission insuffisante, collision, écart incomplet ou contenu inconnu :** `RECONCILIATION_BLOCKED` ou `RECONCILIATION_PENDING`. Ne pas demander quel chantier poursuivre, ne pas écraser la modification, conserver un checkpoint.
+
+**Autorité :** une sélection E2 n'accorde pas par elle-même des droits d'écriture. La nouvelle surface `mcp_e2_activate` est classifiée `scoped-write` car elle peut lancer une correction, et exige toujours `ENABLE_WRITE_TOOLS` ainsi que `allow_write=true` pour cette correction. Le contrôle read-only `mcp_e2_reconcile_preflight` reste disponible pour diagnostiquer sans autorisation de mutation. Les outils E1 ne sont pas modifiés.
+
+**Périmètre strict de cette tranche :** une activation explicite E2, pas de minuterie indépendante, pas d'activation automatique E1 ou Governed Deploy Application. L'orchestration fonctionne lorsqu'un client appelle effectivement `mcp_e2_activate` ; l'arrivée d'un message en langage naturel ne déclenche pas à elle seule un tool call en dehors d'une session agent. Avant déploiement de la branche E2, ces outils ne sont pas disponibles sur l'ancien runtime S1.
+
 ## Décision de périmètre propriétaire — 31 octobre 2026
 
 **Uniquement l'Entrée 2 pour la tranche actuelle.** La réconciliation multi-fichiers et bidirectionnelle reste limitée à `Patricked-code/MCP` et au runtime MCP S1, et ne démarre **qu'après la sélection explicite du profil `EXTERNAL_GOVERNED_RECOVERY`**. Pas de démon d'exploitation indépendant, pas d'activation par défaut au démarrage, pas d'appel depuis E1 et pas de nouvelle capacité pour Governed Deploy Application.
