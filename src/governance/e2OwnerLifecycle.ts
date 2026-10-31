@@ -147,7 +147,7 @@ export async function routeE2OwnerChoice(
    const issue=asObject(response.json);
    const body=typeof issue?.body==='string'?issue.body:'';
    const sameEntry=body.includes('- **E2 entry :** \`'+choice.entryId+'\`');
-   const id=/\\*\\*Continuity ID\\s*:\\*\\*\\s*\`([A-Z][A-Z0-9-]{5,110})\`/.exec(body)?.[1];
+   const id=/\*\*Continuity ID\s*:\*\*\s*\`([A-Z][A-Z0-9-]{5,110})\`/.exec(body)?.[1];
    if(response.ok&&issue?.number===duplicate.issueNumber&&sameEntry&&id){
     const receipt=await appendE2Journal(
      recordFor(choice.entryId,'CONTINUITY_REGISTERED',snapshot,id,duplicate.issueNumber),
