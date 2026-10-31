@@ -22,8 +22,16 @@ const local={
 } as any;
 function fixture(){
  const comments:any[]=[],issues:any[]=[];
- let sequence=100,duplicate=false,healthy=true;
+ let sequence=100,duplicate=false,healthy=true,legacySearch=false;
  const journal:E2JournalPort={async request(endpoint,opts){
+  if(endpoint.startsWith('/search/issues?'))
+   return {ok:true,status:200,json:{items:legacySearch?[{
+    number:359,title:'PILOT-E2-01',body:'**Continuity ID canonique :** \`MCP-PILOT-E2-01-CONT-20261030-ROOT-01\`'
+   }]:[]}};
+  if(endpoint==='/repos/Patricked-code/MCP/issues/359')
+   return {ok:true,status:200,json:{
+    number:359,title:'PILOT-E2-01',body:'**Continuity ID canonique :** \`MCP-PILOT-E2-01-CONT-20261030-ROOT-01\`'
+   }};
   if(endpoint==='/repos/Patricked-code/MCP/issues'&&opts?.method==='POST'){
    const input=opts.jsonBody as any;
    const result={number:++sequence,title:input.title,body:input.body};
@@ -58,7 +66,7 @@ function fixture(){
   ...local,s1:{...local.s1,workingTreeClean:false}
  }};
  return {journal,port,comments,issues,setDuplicate:(v:boolean)=>{duplicate=v;},
-  setHealthy:(v:boolean)=>{healthy=v;}};
+  setHealthy:(v:boolean)=>{healthy=v;},setLegacySearch:(v:boolean)=>{legacySearch=v;}};
 }
 function event(entryId:string,stage:'ACTIVATED'|'READY_FOR_OWNER'):E2JournalEvent{
  return {schemaVersion:1,entryId,observedAt:'2026-10-31T02:24:00.000Z',
@@ -119,4 +127,16 @@ test('unknown existing Continuity ID is not inferred or fabricated',async()=>{
  },f.port);
  assert.equal(result.status,'BLOCKED');
  assert.equal(result.reason,'E2_CONTINUITY_ID_NOT_INDEXED');
+});
+
+test('known historical E2 continuity is selected by ID, with partial evidence explicitly flagged',async()=>{
+ const f=fixture(),entryId=await activate(f);f.setLegacySearch(true);
+ const result=await routeE2OwnerChoice({
+  entryId,kind:'RESUME',continuityId:'MCP-PILOT-E2-01-CONT-20261030-ROOT-01'
+ },f.port);
+ assert.equal(result.status,'RECOVERY_PARTIAL');
+ assert.equal(result.issueNumber,359);
+ assert.equal(result.continuityId,'MCP-PILOT-E2-01-CONT-20261030-ROOT-01');
+ assert.equal(result.reason,'E2_HISTORICAL_CHECKPOINTS_REQUIRE_VERIFICATION');
+ assert.equal(f.issues.length,0);
 });
