@@ -11,6 +11,7 @@ import {runGuardedCommand} from '../ssh/client.js';
 import {assertScopedWriteToolsEnabled,assertWriteFlag}
   from '../ssh/writeSafety.js';
 import {asText} from './format.js';
+import {appendE2Journal,newE2EntryId,type E2JournalEvent} from '../governance/e2EntryJournal.js';
 
 const SHA=/^[a-f0-9]{40}$/;
 const FETCH='git@github.com-mcp-patricked-ro:Patricked-code/MCP.git';
@@ -18,6 +19,7 @@ const PUSH='disabled://mcp-s1-read-only';
 type E2ActivateDeps=Readonly<{
  observe:()=>Promise<LiveStateSnapshot>;
  reconcile:(snapshot:LiveStateSnapshot,allowWrite:boolean)=>Promise<E2RepairResult>;
+ record?:(event:E2JournalEvent)=>Promise<{status:'RECORDED'|'BLOCKED';commentUrl:string|null;reason:string|null}>;
 }>;
 /**
  * Only the current E2 activation may request corrective writes.
@@ -69,7 +71,8 @@ export function registerE2AutomaticActivationTool(
   server:McpServer,
   deps:E2ActivateDeps={
     observe:()=>liveStateEngine.reconcileNow(),
-    reconcile:defaultReconcile
+    reconcile:defaultReconcile,
+    record:appendE2Journal
   }
 ):void{
   server.tool(
@@ -82,6 +85,21 @@ export function registerE2AutomaticActivationTool(
     },
     async ({entry_profile,e2_explicitly_selected,allow_write})=>{
       try{
+        const entryId=newE2EntryId();
+        const record=deps.record??appendE2Journal;
+        const startedAt=new Date().toISOString();
+        const base={
+          schemaVersion:1 as const,entryId,observedAt:startedAt,
+          profile:'EXTERNAL_GOVERNED_RECOVERY' as const,
+          githubMainSha:null,s1HeadSha:null,runtimeSha:null,
+          continuityId:null,issueNumber:null
+        };
+        // Every E2 attempt is persisted BEFORE observation, even if it fails.
+        const first=await record({...base,stage:'ACTIVATED',reasonCode:null});
+        if(first.status!=='RECORDED')return {...asText(JSON.stringify({
+          status:'RECONCILIATION_BLOCKED',code:'E2_ENTRY_JOURNAL_UNAVAILABLE',
+          entryId,nextStep:'RECONCILE_BEFORE_WORK'
+        })),isError:true};
         const ports:E2ActivationPorts={
           observe:deps.observe,
           reconcile:(snapshot)=>deps.reconcile(snapshot,allow_write)
@@ -89,7 +107,32 @@ export function registerE2AutomaticActivationTool(
         const result=await activateE2WithAutomaticReconciliation({
           entryProfile:entry_profile,explicitlySelected:e2_explicitly_selected
         },ports);
-        return asText(JSON.stringify(result));
+        const stage=result.status==='CONTINUE_E2'
+          ?'READY_FOR_OWNER' as const
+          :result.status==='RECONCILIATION_PENDING'
+            ?'RECONCILIATION_PENDING' as const:'RECONCILIATION_BLOCKED' as const;
+        const event:E2JournalEvent={
+          ...base,observedAt:new Date().toISOString(),stage,
+          githubMainSha:result.initial.githubMainSha,
+          s1HeadSha:result.initial.s1HeadSha,
+          runtimeSha:result.initial.runtimeSha,
+          reasonCode:result.repair?.reason?.replace(/[^A-Z0-9_:-]/g,'_').slice(0,120)
+            ||(result.initial.blockers[0]??null)
+        };
+        const done=await record(event);
+        if(done.status!=='RECORDED')return {...asText(JSON.stringify({
+          status:'RECONCILIATION_BLOCKED',code:'E2_FINAL_JOURNAL_UNAVAILABLE',
+          entryId,initialJournalUrl:first.commentUrl,
+          nextStep:'RECONCILE_BEFORE_WORK'
+        })),isError:true};
+        return asText(JSON.stringify({
+          ...result,entryId,entryJournalUrl:first.commentUrl,
+          checkpointUrl:done.commentUrl,
+          ownerQuestion:result.status==='CONTINUE_E2'
+            ?'Nouveau chantier ou reprise d un chantier existant ?':null,
+          nextStep:result.status==='CONTINUE_E2'
+            ?'ASK_NEW_OR_RESUME':result.nextStep
+        }));
       }catch{
         return {...asText(JSON.stringify({
           status:'RECONCILIATION_BLOCKED',code:'E2_ACTIVATION_UNAVAILABLE',
