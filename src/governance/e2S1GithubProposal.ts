@@ -82,6 +82,7 @@ const S1_READ_SCRIPT=String.raw`
 const fs=require("node:fs"),cp=require("node:child_process"),crypto=require("node:crypto");
 const root="/opt/apps/wealthtech-mcp-ssh-bridge";
 process.chdir(root);
+const realRoot=fs.realpathSync(root);
 const git=(args)=>{const x=cp.spawnSync("git",args,{encoding:"utf8",maxBuffer:800000,timeout:18000});
  if(x.status!==0)throw Error("E2_GIT_READ_FAILURE");return x.stdout.trim()};
 const ref=(s)=>git(["rev-parse",s]);
@@ -109,6 +110,13 @@ try{
  for(const path of list){
   if(!PATH.test(path)||path.startsWith("/")||path.includes("..")
      ||path.includes("//")||deny.test(path))fail("E2_UNSAFE_PATH");
+  const parts=path.split("/");
+  for(let i=1;i<parts.length;i++){
+   const parent=fs.lstatSync(parts.slice(0,i).join("/"));
+   if(parent.isSymbolicLink()||!parent.isDirectory())fail("E2_SYMLINK_PARENT");
+  }
+  const resolved=fs.realpathSync(path);
+  if(!resolved.startsWith(realRoot+"/"))fail("E2_PATH_OUTSIDE_REPOSITORY");
   const st=fs.lstatSync(path);
   if(!st.isFile()||st.isSymbolicLink()||st.size>64000)fail("E2_UNSAFE_FILE");
   const content=fs.readFileSync(path),plain=content.toString("utf8");
