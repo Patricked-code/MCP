@@ -108,6 +108,11 @@
       "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
     },
     {
+      "path": "src/governance/e2S1GithubProposal.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Only explicit E2 for Patricked-code/MCP; fixed read-only S1 code snapshot with secret checks, exact Git blob comparison and governed GitHub draft PR via credential separate from S1 fetch-only key. No direct main push/merge/deploy."
+    },
+    {
       "path": "src/governance/mcpS1ToMainPolicy.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Pure MCP-only bidirectional drift classifier; no write or target-project permission."
