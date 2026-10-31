@@ -23,7 +23,7 @@ const base:GovernedWorkEntryTrace={
 const comment=(id:number,trace:GovernedWorkEntryTrace=base):E2GitHubComment=>({
  id,body:renderGovernedWorkEntryCheckpoint(trace),
  created_at:new Date(Date.UTC(2026,9,31,0,0,id)).toISOString(),
- html_url:issueUrl+'#issuecomment-'+id,user:{login:'Patricked-code'}
+ html_url:issueUrl+'#issuecomment-'+id,user:{login:'Patricked-code'},author_association:'OWNER'
 });
 const source=(comments:readonly E2GitHubComment[],allPagesFetched=true)=>({
  issueNumber,comments,allPagesFetched
@@ -69,6 +69,21 @@ test('old human-only GitHub checkpoint is not fabricated into structured history
 });
 test('partial GitHub pagination blocks authoritative-sounding recovery',()=>{
  assert.equal(recoverE2FromGitHubIssueComments(source([comment(1)],false),ID).status,'PARTIAL');
+});
+test('an untrusted external comment cannot forge a READY S1 attestation',()=>{
+ const deployed:GovernedWorkEntryTrace={...base,stage:'S1_ATTESTED',
+  responsible:{githubActor:'external-visitor',internalTaskId:null},
+  github:{...base.github,branch:'mcp/e2-example',pullRequestNumber:365,
+   headSha:'a'.repeat(40),mergeSha:'b'.repeat(40)},
+  deployment:{workflowRunUrl:'https://github.com/Patricked-code/MCP/actions/runs/12345',
+   runtimeRevisionSha:'b'.repeat(40)}};
+ const untrusted={...comment(1,deployed),user:{login:'external-visitor'},
+  author_association:'NONE'};
+ const recovered=recoverE2FromGitHubIssueComments(source([untrusted]),ID);
+ assert.notEqual(recovered.status,'READY');
+ assert.equal(recovered.latest,null);
+ assert.ok(recovered.blockers.includes('CHECKPOINT_AUTHOR_NOT_AUTHORIZED:1'));
+ assert.equal(indexRecoveredE2GitHubContinuity(recovered).status,'CONFLICT');
 });
 test('wrong GitHub author or issue comment URL is refused',()=>{
  const c=comment(1);

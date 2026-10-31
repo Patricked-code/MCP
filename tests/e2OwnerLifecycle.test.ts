@@ -180,6 +180,31 @@ test('NEW choice retries after a persisted registry comment with lost readback, 
  assert.equal(wrong.reason,'E2_REPLAY_GITHUB_ISSUE_NOT_ATTESTED');
 });
 
+test('persisted RESUME choice recovers idempotently after failed journal readback',async()=>{
+ const f=fixture(),original=await activate(f);
+ const newWork=await routeE2OwnerChoice({entryId:original,kind:'NEW',mandate:'Nouveau module MCP E2'},f.port);
+ assert.equal(newWork.status,'READY_NEW');
+ const entryId=await activate(f);
+ f.failJournalReadbackOnce();
+ const first=await routeE2OwnerChoice({
+  entryId,kind:'RESUME',continuityId:newWork.continuityId!
+ },f.port);
+ assert.equal(first.status,'BLOCKED');
+ assert.equal(first.reason,'E2_RESUME_JOURNAL_FAILED');
+ const before=f.comments.length;
+ const retried=await routeE2OwnerChoice({
+  entryId,kind:'RESUME',continuityId:newWork.continuityId!
+ },f.port);
+ assert.equal(retried.status,'READY_RESUME');
+ assert.equal(retried.issueNumber,newWork.issueNumber);
+ assert.equal(f.comments.length,before);
+ const wrong=await routeE2OwnerChoice({
+  entryId,kind:'RESUME',continuityId:'MCP-E2-CONT-20261031-BADCONTINUITY'
+ },f.port);
+ assert.equal(wrong.status,'BLOCKED');
+ assert.equal(wrong.reason,'E2_REPLAY_OWNER_CHOICE_MISMATCH');
+ assert.equal(f.comments.length,before);
+});
 test('two concurrent NEW owner choices are single-flight and return the same existing issue',async()=>{
  const f=fixture(),entryId=await activate(f);
  const choice={entryId,kind:'NEW' as const,mandate:'Nouveau module MCP E2'};

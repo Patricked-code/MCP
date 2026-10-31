@@ -29,7 +29,7 @@ const snapshot={
   fetchRemote:'git@github.com-mcp-patricked-ro:Patricked-code/MCP.git',
   pushRemote:'disabled://mcp-s1-read-only',workingTreeClean:false,diffEmpty:false}
 } as unknown as LiveStateSnapshot;
-type MockOptions={collision?:boolean;stale?:boolean;denied?:boolean;file?:E2LocalFile;originAhead?:boolean;failBlobOnce?:boolean;failPrOnce?:boolean};
+type MockOptions={collision?:boolean;stale?:boolean;denied?:boolean;file?:E2LocalFile;originAhead?:boolean;failBlobOnce?:boolean;failPrOnce?:boolean;mainMode?:'100644'|'100755'};
 function createMock(options:MockOptions={}){
  const operations:string[]=[];
  let branchSha:string|null=null,createdPr:any=null,readCount=0;
@@ -53,6 +53,10 @@ function createMock(options:MockOptions={}){
    if(endpoint===ROOT+'/branches/main')return yes({commit:{sha:MAIN}});
    if(endpoint===ROOT+'/compare/'+S1+'...'+MAIN)
     return yes({status:'ahead',behind_by:0});
+   if(endpoint===ROOT+'/git/trees/'+S1+'?recursive=1')
+    return yes({truncated:false,tree:[{path:f.path,type:'blob',mode:f.mode,sha:BASE}]});
+   if(endpoint===ROOT+'/git/trees/'+MAIN+'?recursive=1')
+    return yes({truncated:false,tree:[{path:f.path,type:'blob',mode:options.mainMode??f.mode,sha:BASE}]});
    if(endpoint===ROOT+'/contents/'+f.path+'?ref='+S1)
     return yes({type:'file',sha:BASE});
    if(endpoint===ROOT+'/contents/'+f.path+'?ref='+MAIN)
@@ -110,6 +114,12 @@ test('simultaneous main edit rejects proposal before any GitHub mutation',async(
  const m=createMock({collision:true});
  await assert.rejects(()=>proposeE2S1GithubReview(snapshot,m.ports),/E2_S1_MAIN_FILE_COLLISION/);
  assert.ok(!m.operations.some(x=>/^(POST|PATCH)/.test(x)));
+});
+test('approved executable bit change rejects S1 proposal before any GitHub mutation',async()=>{
+ const m=createMock({mainMode:'100755'});
+ await assert.rejects(()=>proposeE2S1GithubReview(snapshot,m.ports),
+  /E2_S1_MAIN_FILE_MODE_COLLISION/);
+ assert.equal(m.operations.filter(x=>/^(POST|PATCH)/.test(x)).length,0);
 });
 test('local content drift rejects before branch creation',async()=>{
  const m=createMock({stale:true});

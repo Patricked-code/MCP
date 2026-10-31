@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
-import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,existsSync,readdirSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,readFileSync,writeFileSync,existsSync,readdirSync,rmSync,chmodSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
@@ -35,8 +35,9 @@ function fixture(){
  git(home,'clone',origin,publisher);
  return {home,server,origin,publisher,old};
 }
-function publish(f:ReturnType<typeof fixture>,extraFile=false){
+function publish(f:ReturnType<typeof fixture>,extraFile=false,modeChange=false){
  writeFileSync(join(f.publisher,'data/github-accounts.json'),NEW_JSON);
+ if(modeChange)chmodSync(join(f.publisher,'data/github-accounts.json'),0o755);
  if(extraFile)writeFileSync(join(f.publisher,'new.txt'),'extra unrelated change\n');
  git(f.publisher,'add','.');
  git(f.publisher,'commit','-m','approve account registry change');
@@ -101,6 +102,19 @@ test('refuses approved main with unrelated repository changes',()=>{
   const r=execute(f,main);
   assert.equal(r.status,80,r.stdout+'\n'+r.stderr);
   assert.equal(git(f.server,'rev-parse','HEAD'),f.old);
+  assert.equal(readFileSync(join(f.server,'data/github-accounts.json'),'utf8'),NEW_JSON);
+ }finally{rmSync(f.home,{recursive:true,force:true})}
+});
+test('approved executable-bit drift blocks registry HEAD mutation',()=>{
+ const f=fixture();
+ try{
+  const main=publish(f,false,true);
+  writeFileSync(join(f.server,'data/github-accounts.json'),NEW_JSON);
+  const r=execute(f,main);
+  assert.equal(r.status,87,r.stdout+'\n'+r.stderr);
+  assert.match(r.stdout,/E2_REGISTRY_MODE_NOT_APPROVED/);
+  assert.equal(git(f.server,'rev-parse','HEAD'),f.old);
+  assert.equal(git(f.server,'diff','--cached','--name-only'),'');
   assert.equal(readFileSync(join(f.server,'data/github-accounts.json'),'utf8'),NEW_JSON);
  }finally{rmSync(f.home,{recursive:true,force:true})}
 });
