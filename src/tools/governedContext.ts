@@ -22,6 +22,18 @@ import { getCurrentStateService } from './currentState.js';
 
 export const GOVERNED_CONTEXT_RESOURCE_URI = 'mcp://wealthtech/governed-context/current';
 
+/** Owner-selected E2 alternative; do not replace the existing E1 procedure. */
+export const E2_ENTRY_INSTRUCTIONS = [
+  'ENTREE E2 (EXTERNAL_GOVERNED_RECOVERY) UNIQUEMENT SUR CHOIX EXPLICITE DU PROPRIETAIRE : voie GitHub-first sans attribution de tache GWC interne pour commencer les travaux de code.',
+  'E2-01 : des la selection explicite du profil EXTERNAL_GOVERNED_RECOVERY, appeler mcp_e2_activate UNE SEULE FOIS : il observe automatiquement S1/GitHub, declenche mcp_reconcile_s1_to_main si divergence admissible et reobserve. Si status CONTINUE_E2, aller directement a E2-02. Sinon, ne PAS avancer ; suivre la correction gouvernee sans autre admission GWC. Le read-only mcp_e2_reconcile_preflight reste disponible pour diagnostic sans ecriture.',
+  'E2-01-B : le declencheur est E2 UNIQUEMENT (pas de maintenance globale). Si divergence, le controle automatique commence sans deuxieme demande ; les corrections S1 deja presentes sur GitHub main et explicitement autorisees empruntent le rapprochement Git avec sauvegarde ; les autres divergences sont bloquees ou demandent PR GitHub gouvernee. Ne jamais masquer un etat en attente : le runtime, les fichiers locaux et la documentation doivent etre a nouveau attestes avant E2-02. Pas de git reset --hard, de force push, ni de suppression. Aucun claim GWC impose pour commencer une correction GitHub admissible.',
+  'E2-02 : APRES la reconciliation ET les deux checkpoints GitHub de l activation E2, poser D ABORD au proprietaire : Nouveau chantier ou reprise d un chantier existant ? Ne pas lancer une liste de continuite avant cette question. Conserver l entryId de l invocation.',
+  'E2-03 : SI REPRISE, appeler mcp_e2_list_continuities, presenter les Continuity IDs verifies, recevoir le choix et appeler mcp_e2_recover_continuity puis mcp_e2_select_chantier avec entry_id et continuity_id. SI NOUVEAU, recevoir mandat, verifier doublons et appeler mcp_e2_select_chantier avec entry_id et decision NEW ; l issue et le Continuity ID sont crees et inscrits durablement dans GitHub avant travail.',
+  'E2-04 : en reprise, reutiliser le meme issue/PR/Continuity ID et son NEXT_ACTION. En nouveau travail, obtenir un mandat explicite et creer le dossier uniquement apres controle des chevauchements.',
+  'E2-05 : poursuivre les memes tests, CI, revue, fusion et deploiement gouvernes que E1. Une entree E2 ne confere ni ecriture GitHub/serveur, ni claim/lock, ni autorisation E3/OIDC/deploy. Conserver un checkpoint GitHub append-only et reconciler a nouveau a chaque reprise.',
+  'ENTREE E1 PAR DEFAUT : appliquer les etapes numerotees 1 a 8 ci-dessous. E2 ne doit jamais etre infere automatiquement dun blocage E1.'
+] as const;
+
 export const GOVERNED_CONTEXT_INSTRUCTIONS = [
   '1. Appeler ping puis mcp_reconcile_governed_context.',
   '2. Lire mcp://wealthtech/current-state/inventory ou mcp_get_current_state_inventory.',
@@ -33,8 +45,14 @@ export const GOVERNED_CONTEXT_INSTRUCTIONS = [
   '8. Le WRITE gate reste shadow et ne remplace ni ENABLE_WRITE_TOOLS ni allow_write.'
 ].join('\n');
 
-export function governedContextInstructions(enabled: boolean): string | undefined {
-  return enabled ? GOVERNED_CONTEXT_INSTRUCTIONS : undefined;
+export function governedContextInstructions(
+  enabled: boolean,
+  explicitlySelectedProfile?: 'EXTERNAL_GOVERNED_RECOVERY'
+): string | undefined {
+  if(!enabled)return undefined;
+  return explicitlySelectedProfile==='EXTERNAL_GOVERNED_RECOVERY'
+    ? E2_ENTRY_INSTRUCTIONS.join('\n')
+    : GOVERNED_CONTEXT_INSTRUCTIONS;
 }
 
 type GovernedContextToolDependencies = {
@@ -178,4 +196,5 @@ export function registerGovernedContextTools(
       contextInput(extra, activeDependencies.sessions)
     ))
   );
+
 }

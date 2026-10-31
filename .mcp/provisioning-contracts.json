@@ -400,6 +400,30 @@
       "class": "SELF_MANAGEMENT"
     },
     {
+      "name": "mcp_reconcile_s1_approved_registry_to_main",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "E2 exact-content registry rebaseline only: guarded write consent, approved SHA, single-file scope, verified Git ancestry, retained backup, no overwrite or deploy; cannot be used for target applications."
+    },
+    {
+      "name": "mcp_e2_activate",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "Explicit E2-only one-call activation; reads Live State then automatically invokes guarded S1 Git reconciliation on approved local-content drift. No E1 hook, no GWC claim, no direct push to protected main, no unapproved writes or deploy."
+    },
+    {
+      "name": "mcp_e2_select_chantier",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "E2-only owner-first NEW/RESUME GitHub issue and Continuity ID registration, based on a persisted READY_FOR_OWNER receipt and fresh full alignment; no GWC claim, deploy or cross-repo write."
+    },
+    {
+      "name": "mcp_reconcile_s1_to_main",
+      "kind": "MCP_TOOL",
+      "class": "SELF_MANAGEMENT",
+      "note": "MCP-only multi-file S1 reconciliation of approved main content; explicit write gating, shared deploy lock, exact SHA, path checks, backup; no direct GitHub main push or runtime deployment."
+    },
+    {
       "name": "mcp_sync_from_github_s1",
       "kind": "MCP_TOOL",
       "class": "SELF_MANAGEMENT"

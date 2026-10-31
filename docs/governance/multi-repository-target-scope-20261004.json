@@ -83,6 +83,41 @@
       "detail": "Governed deploy of the MCP runtime itself on S1."
     },
     {
+      "path": "src/governance/e2EntryFlow.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2 external governed recovery reconciles the MCP repository itself against its own S1 runtime before owner orientation; never selects or grants TargetScope or server authority."
+    },
+    {
+      "path": "src/governance/e2EntryJournal.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
+    },
+    {
+      "path": "src/governance/e2GitHubEvidence.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2 read-only parser accepts machine-readable checkpoint evidence exclusively from the MCP repository's own GitHub issues; it never grants cross-repository or runtime authority."
+    },
+    {
+      "path": "src/governance/e2LivePreflight.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Read-only explicit E2 preflight for this exact Patricked-code/MCP repository and its S1 runtime; never selects a third-party repository or performs writes."
+    },
+    {
+      "path": "src/governance/e2OwnerLifecycle.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
+    },
+    {
+      "path": "src/governance/e2S1GithubProposal.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Only explicit E2 for Patricked-code/MCP; fixed read-only S1 code snapshot with secret checks, exact Git blob comparison and governed GitHub draft PR via credential separate from S1 fetch-only key. No direct main push/merge/deploy."
+    },
+    {
+      "path": "src/governance/mcpS1ToMainPolicy.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Pure MCP-only bidirectional drift classifier; no write or target-project permission."
+    },
+    {
       "path": "src/governance/programBlueprintMaterialization.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Added by TB-W3-DISPATCH-01: Program Backlog V2 is the MCP repository's own program, so its blueprints materialize MCP-repository tasks only."
@@ -108,9 +143,29 @@
       "detail": "Live State observes the MCP runtime/repository alignment; the target project is an additive TargetContext."
     },
     {
+      "path": "src/tools/e2Activation.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Owner explicitly selected E2 entry for Patricked-code/MCP only; auto-triggered S1 Git correction is guarded and cannot write third-party repositories or bypass E1/CI/deploy."
+    },
+    {
+      "path": "src/tools/e2OwnerTools.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
+    },
+    {
       "path": "src/tools/mcpGitSync.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Read-only/guarded git sync of the MCP checkout on S1."
+    },
+    {
+      "path": "src/tools/mcpReconcileS1ToMain.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "MCP S1↔approved GitHub main exact-content multi-file recovery, self-management only; never manages third-party application target scopes."
+    },
+    {
+      "path": "src/tools/mcpS1ExactContentReconcile.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2 S1 recovery is explicitly limited to the MCP repository and a single versioned account-registry path; it checks exact GitHub/S1 commit ancestry and identical contents before Git metadata updates, never grants target-project operations."
     },
     {
       "path": "src/tools/selfManagement.ts",

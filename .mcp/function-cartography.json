@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "0ee5618bcd41bdc89bf0c10e1dd1e84b3620a4a64ec678775f5a937bb75dae05",
-  "registeredToolCount": 138,
-  "readOnlyToolCount": 86,
-  "writeToolCount": 52,
+  "catalogueDigest": "16e61572e94fc9559c6af02101460ac0fab31d72f9037d6c5e7a73d9ad650ae1",
+  "registeredToolCount": 145,
+  "readOnlyToolCount": 89,
+  "writeToolCount": 56,
   "resourceCount": 2,
   "tools": [
     {
@@ -3088,6 +3088,192 @@
       "contractDigest": "2ca1f2adf4b1373cec2da0a78a816daab2f4de5484718dec1176c136c71eed18"
     },
     {
+      "name": "mcp_e2_activate",
+      "title": null,
+      "description": "E2 EXTERNAL_GOVERNED_RECOVERY : automatiquement observer S1/GitHub; si divergence, demarrer mcp_reconcile_s1_to_main dans les limites de la gouvernance; si tout est aligne, poursuivre E2. Aucun effet E1.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a1508c2b51e045f5da9d1a1f90a69b9ec6c0ca523f6b6c56c4888884bdf13fdd"
+    },
+    {
+      "name": "mcp_e2_list_continuities",
+      "title": null,
+      "description": "E2 : apres le choix REPRISE du proprietaire, presente les Continuity IDs verifies par le registre GitHub, sans en creer aucun.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a30cc34e96b9828764548b14aa8f4d5035eee6f05a1ba29478a13f502b93ea5a"
+    },
+    {
+      "name": "mcp_e2_reconcile_preflight",
+      "title": null,
+      "description": "EXTERNAL_GOVERNED_RECOVERY explicit only: read-only S1 then GitHub main, runtime and documentation alignment; returns BLOCKED on any mismatch. No GWC task or write.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a48a03d30ca73e6377128df22a29f24033e2c6eec96b2df173d5c5406be048dc"
+    },
+    {
+      "name": "mcp_e2_recover_continuity",
+      "title": null,
+      "description": "E2 : recupere automatiquement un chantier depuis son Continuity ID, son issue et ses checkpoints, en distinguant preuve complete et historique partiel.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "continuity_id": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{5,110}$"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "continuity_id"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "649a995aa80144bb97e9cb2e7b46e262ca88ad6f6d20860fa1cba5ee6a293242"
+    },
+    {
+      "name": "mcp_e2_select_chantier",
+      "title": null,
+      "description": "E2 uniquement : apres reconciliation et question du proprietaire, creer un nouveau chantier avec Continuity ID et enregistrement GitHub, ou reprendre la Continuity ID choisie. Aucun GWC requis.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "entry_id": {
+            "type": "string",
+            "pattern": "^E2-[A-F0-9-]{36}$"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "RESUME"
+            ]
+          },
+          "owner_authorized_github_write": {
+            "type": "boolean",
+            "const": true
+          },
+          "mandate": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "continuity_id": {
+            "type": "string",
+            "maxLength": 110
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "entry_id",
+          "decision",
+          "owner_authorized_github_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "7d00fde37459086327ae7d7673dcf8af71955dae9fd7f5998b674100048290a8"
+    },
+    {
       "name": "mcp_get_current_state_inventory",
       "title": "Get Current-State Inventory",
       "description": "Retourne la dernière cartographie dérivée, la baseline d’audit, les sessions et la file de travail.",
@@ -3603,6 +3789,96 @@
         "additionalProperties": false
       },
       "contractDigest": "acf015ab4fcc62b805c078154b809f65a728328e1cd9bb38018350921ecc4b54"
+    },
+    {
+      "name": "mcp_reconcile_s1_approved_registry_to_main",
+      "title": null,
+      "description": "E2 seulement, compatibilite premier cas : rapproche le registre GitHub MCP strictement approuve depuis S1 sans supprimer le fichier. Ne remplace pas le reconcileur general.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "expected_s1_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "approved_main_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "expected_s1_sha",
+          "approved_main_sha",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "d19ef8fdf8d010a464d3e19c7d10772a27ffcddd4c1ccc6967bc6e4800dcbd99"
+    },
+    {
+      "name": "mcp_reconcile_s1_to_main",
+      "title": null,
+      "description": "E2 EXTERNAL_GOVERNED_RECOVERY seulement : rapproche le Git S1 avec le main approuve pour plusieurs fichiers strictement identiques, sans les ecraser. N est ni un declencheur global, ni une fusion, ni un deploy.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "expected_s1_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "approved_main_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "expected_s1_sha",
+          "approved_main_sha",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "59246a88e4d6fc81d09b38f3f2750627f4677c9a4072565b962fdc7ba87caf60"
     },
     {
       "name": "mcp_release_governed_lock",

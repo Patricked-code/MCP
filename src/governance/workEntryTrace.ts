@@ -183,6 +183,8 @@ export function renderGovernedWorkEntryCheckpoint(trace:GovernedWorkEntryTrace):
     '',
     '**Limite :** entrée et métadonnées non autoritaires ; aucune Task, claim, lock,',
     'permission GitHub/serveur ni admission au Governed Deploy n’est créée.',
-    'Le cycle de développement, CI, revue, merge et déploiement reste commun.'
+    'Le cycle de développement, CI, revue, merge et déploiement reste commun.',
+    '<!-- MCP_GOVERNED_WORK_ENTRY_DATA_V1:'+
+      Buffer.from(JSON.stringify(trace),'utf8').toString('base64url')+' -->'
   ].join('\n');
 }
