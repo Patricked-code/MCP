@@ -10,8 +10,10 @@ import type {LiveStateSnapshot} from '../liveState/types.js';
 
 export type E2RepairResult=Readonly<{
   outcome:'S1_GIT_RECONCILED'|'GOVERNED_DEPLOY_PENDING'|
-    'GITHUB_PROPOSAL_REQUIRED'|'AWAITING_AUTHORITY'|'BLOCKED';
+    'GITHUB_PROPOSAL_REQUIRED'|'GITHUB_PROPOSAL_OPENED'|
+    'AWAITING_AUTHORITY'|'BLOCKED';
   reason:string;
+  reviewUrl?:string;
 }>;
 export type E2ActivationPorts=Readonly<{
   observe:()=>Promise<LiveStateSnapshot>;
