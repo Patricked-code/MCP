@@ -22,7 +22,19 @@ import { getCurrentStateService } from './currentState.js';
 
 export const GOVERNED_CONTEXT_RESOURCE_URI = 'mcp://wealthtech/governed-context/current';
 
+/** Owner-selected E2 alternative; do not replace the existing E1 procedure. */
+export const E2_ENTRY_INSTRUCTIONS = [
+  'ENTREE E2 (EXTERNAL_GOVERNED_RECOVERY) UNIQUEMENT SUR CHOIX EXPLICITE DU PROPRIETAIRE : voie GitHub-first sans attribution de tache GWC interne pour commencer les travaux de code.',
+  'E2-01 : appeler ping, mcp_reconcile_governed_context et mcp_get_current_state_inventory ; verifier le HEAD exact de main, Git S1/origin/main, revision runtime MCP, sante du conteneur, propreté locale et derive documentaire. Si une source manque, le signaler ; ne jamais inventer un etat serveur.',
+  'E2-02 : recuperer les chantiers MCP et Continuity IDs existants depuis les issues, PR et checkpoints GitHub ; verifier les liens, les collisions et les lacunes historiques avant toute creation.',
+  'E2-03 : APRES la reconciliation, demander au proprietaire : Continuer un chantier existant ? Oui ou non ? Si oui, lequel ? Si non, demander le nouveau mandat et rechercher les doublons avant de creer un ancrage.',
+  'E2-04 : en reprise, reutiliser le meme issue/PR/Continuity ID et son NEXT_ACTION. En nouveau travail, obtenir un mandat explicite et creer le dossier uniquement apres controle des chevauchements.',
+  'E2-05 : poursuivre les memes tests, CI, revue, fusion et deploiement gouvernes que E1. Une entree E2 ne confere ni ecriture GitHub/serveur, ni claim/lock, ni autorisation E3/OIDC/deploy. Conserver un checkpoint GitHub append-only et reconciler a nouveau a chaque reprise.',
+  'ENTREE E1 PAR DEFAUT : appliquer les etapes numerotees 1 a 8 ci-dessous. E2 ne doit jamais etre infere automatiquement dun blocage E1.'
+] as const;
+
 export const GOVERNED_CONTEXT_INSTRUCTIONS = [
+  ...E2_ENTRY_INSTRUCTIONS,
   '1. Appeler ping puis mcp_reconcile_governed_context.',
   '2. Lire mcp://wealthtech/current-state/inventory ou mcp_get_current_state_inventory.',
   '3. Reprendre une governed session compatible ou en ouvrir une; MCP-Session-Id reste temporaire.',
