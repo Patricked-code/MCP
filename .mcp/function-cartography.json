@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "a115b0c1156733f1f9819f5806fd0e29bea9b6ff14c8ba00533cab98f7c047a1",
-  "registeredToolCount": 141,
+  "catalogueDigest": "64d94fc7c75f3879b9dddd49b3e850dc1be2a3c8c4b8520329b2a9895b71b393",
+  "registeredToolCount": 142,
   "readOnlyToolCount": 87,
-  "writeToolCount": 54,
+  "writeToolCount": 55,
   "resourceCount": 2,
   "tools": [
     {
@@ -3086,6 +3086,41 @@
         "additionalProperties": false
       },
       "contractDigest": "2ca1f2adf4b1373cec2da0a78a816daab2f4de5484718dec1176c136c71eed18"
+    },
+    {
+      "name": "mcp_e2_activate",
+      "title": null,
+      "description": "E2 EXTERNAL_GOVERNED_RECOVERY : automatiquement observer S1/GitHub; si divergence, demarrer mcp_reconcile_s1_to_main dans les limites de la gouvernance; si tout est aligne, poursuivre E2. Aucun effet E1.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "ff322c3decb7c39c35e3c33e67a971f3c7f21db3f4af5f9491a5775a60539cb5"
     },
     {
       "name": "mcp_e2_reconcile_preflight",
