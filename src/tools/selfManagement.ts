@@ -5,7 +5,7 @@ import { runReadOnlyCommand, runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { buildMcpGitSyncCommand } from './mcpGitSync.js';
 import { buildMcpS1ExactContentReconcileCommand } from './mcpS1ExactContentReconcile.js';
-import { buildMcpReconcileS1ToMainCommand } from './mcpReconcileS1ToMain.js';
+import { buildMcpReconcileS1ToMainCommand, assertE2OnlyReconciliation } from './mcpReconcileS1ToMain.js';
 import { buildMcpRestartCommand } from './mcpRuntimeDeploy.js';
 import { assertScopedWriteToolsEnabled, assertWriteFlag } from '../ssh/writeSafety.js';
 
@@ -220,13 +220,16 @@ export function registerMcpSelfWriteTools(server: McpServer): void {
 
   server.tool(
     'mcp_reconcile_s1_approved_registry_to_main',
-    'Reconcile le registre MCP S1 identique au main GitHub approuve : sauvegarde puis avancement Git sans ecraser le fichier ; ne deploie pas.',
+    'E2 seulement, compatibilite premier cas : rapproche le registre GitHub MCP strictement approuve depuis S1 sans supprimer le fichier. Ne remplace pas le reconcileur general.',
     {
+      entry_profile: z.literal('EXTERNAL_GOVERNED_RECOVERY'),
+      e2_explicitly_selected: z.literal(true),
       expected_s1_sha: z.string().regex(/^[a-f0-9]{40}$/),
       approved_main_sha: z.string().regex(/^[a-f0-9]{40}$/),
       allow_write: z.boolean().default(false)
     },
-    async ({ expected_s1_sha, approved_main_sha, allow_write }) => {
+    async ({ entry_profile, e2_explicitly_selected, expected_s1_sha, approved_main_sha, allow_write }) => {
+      assertE2OnlyReconciliation(entry_profile,e2_explicitly_selected);
       assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
       assertWriteFlag(allow_write, 'mcp_reconcile_s1_approved_registry_to_main');
       return runS1Write(
