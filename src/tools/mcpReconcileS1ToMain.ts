@@ -34,7 +34,7 @@ mapfile -d '' -t FILES < <(git diff --name-only -z)
 [ "${#FILES[@]}" -gt 0 ] && [ "${#FILES[@]}" -le 100 ] || { echo 'E2_UNEXPECTED_FILE_COUNT'; exit 78; }
 for FILE in "${FILES[@]}"; do
  case "$FILE" in
-  *..*|/*|*\\*|.env|.env.*|*.pem|*.key|*.crt|*.p8|*.p12|*.sql|*.dump|secrets/*|keys/*|node_modules/*|dist/*|.git/*|.mcp_backups/*)
+  *..*|/*|*\\*|.env|.env.*|*.pem|*.key|*.crt|*.p8|*.p12|*.sql|*.dump|secrets/*|*/secrets/*|keys/*|*/keys/*|node_modules/*|*/node_modules/*|dist/*|*/dist/*|.git/*|.mcp_backups/*)
    echo 'E2_PROTECTED_PATH'; exit 79 ;;
  esac
  [ -f "$FILE" ] && [ ! -L "$FILE" ] || { echo 'E2_NOT_REGULAR_FILE'; exit 80; }
@@ -54,6 +54,7 @@ for FILE in "${FILES[@]}"; do
  [ "$LOCAL_BLOB" = "$EXPECTED_BLOB" ] || { echo 'E2_LOCAL_CONTENT_NOT_APPROVED'; exit 85; }
 done
 # Retain every file, including its relative path, in an ignored private backup.
+mkdir -p .mcp_backups
 BACKUP="$(mktemp -d .mcp_backups/e2-main-XXXXXXXX)"
 for FILE in "${FILES[@]}"; do
  mkdir -p "$BACKUP/$(dirname "$FILE")"
