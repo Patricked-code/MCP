@@ -11,6 +11,7 @@ import {runGuardedCommand} from '../ssh/client.js';
 import {assertScopedWriteToolsEnabled,assertWriteFlag}
   from '../ssh/writeSafety.js';
 import {asText} from './format.js';
+import {proposeE2S1GithubReview} from '../governance/e2S1GithubProposal.js';
 import {appendE2Journal,newE2EntryId,type E2JournalEvent} from '../governance/e2EntryJournal.js';
 
 const SHA=/^[a-f0-9]{40}$/;
@@ -38,9 +39,20 @@ async function defaultReconcile(snapshot:LiveStateSnapshot,allowWrite:boolean):P
      return {outcome:'GOVERNED_DEPLOY_PENDING',reason:'USE_EXISTING_MCP_GOVERNED_DEPLOY'};
    return {outcome:'BLOCKED',reason:'E2_DOCUMENTATION_OR_UNVERIFIED_STATE_DRIFT'};
  }
- // A local edit at an equal SHA has not yet been reviewed on GitHub.
- if(s1.head===github.head)
-   return {outcome:'GITHUB_PROPOSAL_REQUIRED',reason:'UNPUBLISHED_S1_FILE_DIFFERENCE'};
+ // A local edit at an equal SHA is unpublished; automatically open the
+ // governed GitHub PR (never push or merge main), if E2 write was authorized.
+ const propose=async():Promise<E2RepairResult>=>{
+   if(!allowWrite)return {outcome:'AWAITING_AUTHORITY',reason:'E2_GITHUB_PR_WRITE_NOT_AUTHORIZED'};
+   try{
+     const review=await proposeE2S1GithubReview(snapshot);
+     return {outcome:'GITHUB_PROPOSAL_OPENED',
+       reason:review.created?'E2_GITHUB_PR_OPENED':'E2_EXISTING_GITHUB_PR_RECOVERED',
+       reviewUrl:review.url};
+   }catch{
+     return {outcome:'BLOCKED',reason:'E2_GITHUB_PR_PROPOSAL_UNAVAILABLE_OR_COLLISION'};
+   }
+ };
+ if(s1.head===github.head)return propose();
  if(s1.originMain!==s1.head||s1.diffEmpty!==false)
    return {outcome:'BLOCKED',reason:'E2_UNEXPECTED_LOCAL_GIT_STATE'};
  // One owner-approved activation may request an automatic narrow operation.
@@ -60,7 +72,7 @@ async function defaultReconcile(snapshot:LiveStateSnapshot,allowWrite:boolean):P
    if(result.code===0&&result.stdout.includes('E2_GIT_CONVERGED=YES'))
      return {outcome:'S1_GIT_RECONCILED',reason:'E2_APPROVED_CONTENT_GIT_CONVERGED_REATTEST_RUNTIME'};
    if(result.code===85||result.code===84)
-     return {outcome:'GITHUB_PROPOSAL_REQUIRED',reason:'S1_CONTENT_NOT_PRESENT_IN_APPROVED_MAIN'};
+     return propose();
    return {outcome:'BLOCKED',reason:'E2_GUARDED_GIT_RECONCILIATION_REFUSED'};
  }catch{
    return {outcome:'BLOCKED',reason:'E2_GUARDED_S1_OPERATION_UNAVAILABLE'};
