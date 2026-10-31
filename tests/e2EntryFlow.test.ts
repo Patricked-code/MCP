@@ -138,3 +138,24 @@ test('E2 entry cannot preview legacy execution for diverged main and S1',()=>{
  assert.equal(result.state,'E2_RECONCILIATION_OR_CHOICE_BLOCKED');
  assert.equal(result.existingPreview,null);
 });
+
+test('selected continuity cannot be resumed with a different PR head SHA',()=>{
+ const prTrace:GovernedWorkEntryTrace={...trace,stage:'PR_OPENED',
+  github:{...trace.github,branch:'mcp/e2-bound-head',pullRequestNumber:365,
+   headSha:'a'.repeat(40),mergeSha:null}};
+ const selected=buildWorkEntryContinuityIndex([prTrace]);
+ const result=previewExternalGovernedRecoveryAfterE2Reconciliation(
+  previewInput,snapshot,selected,{kind:'CONTINUE',continuityId},
+  '2026-10-31T00:01:23.000Z');
+ assert.equal(result.state,'E2_SELECTED_GITHUB_EVIDENCE_DRIFT');
+ assert.equal(result.existingPreview,null);
+});
+test('GitHub main SHA in recovery profile must match reconciled live state',()=>{
+ const inconsistent={...previewInput,expectedMainSha:'a'.repeat(40),
+  observedMainSha:'a'.repeat(40)};
+ const result=previewExternalGovernedRecoveryAfterE2Reconciliation(
+  inconsistent,snapshot,index,{kind:'CONTINUE',continuityId},
+  '2026-10-31T00:01:23.000Z');
+ assert.equal(result.state,'E2_SELECTED_GITHUB_EVIDENCE_DRIFT');
+ assert.equal(result.deployGranted,false);
+});
