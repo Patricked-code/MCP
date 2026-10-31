@@ -137,7 +137,7 @@ export async function appendE2Journal(event:E2JournalEvent,
   ||comment.html_url!=='https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+comment.id)
    return {status:'BLOCKED',commentUrl:null,reason:'E2_JOURNAL_WRITE_NOT_ATTESTED'};
  // Read-after-write: a successful API response alone is not durable proof.
- const check=await port.request(ROOT+'/'+comment.id);
+ const check=await port.request('/repos/Patricked-code/MCP/issues/comments/'+comment.id);
  const persisted=asComment(check.json);
  if(!check.ok||check.status!==200||!persisted||persisted.body!==body
   ||persisted.id!==comment.id)
