@@ -73,7 +73,6 @@ export function assessMcpS1ToMainReconciliation(
     ||observation.s1OriginFetch!==FETCH_REMOTE
     ||observation.s1OriginPush!==PUSH_REMOTE)b.push('GIT_IDENTITY_MISMATCH');
   if(observation.runtimeHealthy!==true)b.push('MCP_RUNTIME_NOT_HEALTHY');
-  if(observation.documentationAligned!==true)b.push('MCP_DOCUMENTATION_NOT_RECONCILED');
   if(observation.files.length>100)b.push('TOO_MANY_LOCAL_CHANGES');
   const unique=new Set<string>();
   for(const file of observation.files){
@@ -93,8 +92,11 @@ export function assessMcpS1ToMainReconciliation(
   if(observation.s1OriginMainSha!==observation.s1Head)
     return result('BLOCKED',['S1_ORIGIN_MAIN_DRIFT'],paths,false,false);
   if(sameHead&&observation.s1WorkingTreeClean===true
-    &&observation.runtimeRevision===observation.s1Head)
+    &&observation.runtimeRevision===observation.s1Head){
+    if(observation.documentationAligned!==true)
+      return result('BLOCKED',['MCP_DOCUMENTATION_NOT_RECONCILED'],[],false,false);
     return result('FULLY_ALIGNED',[],[],false,false);
+  }
   if(sameHead&&observation.s1WorkingTreeClean===true
     &&observation.runtimeRevision!==observation.githubMainHead)
     return result('RUNTIME_REDEPLOY_CANDIDATE',[],[],false,false);
