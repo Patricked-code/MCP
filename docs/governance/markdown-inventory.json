@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 230,
+  "trackedCount": 231,
   "categories": {
     "canonical": 7,
-    "documentation": 79,
+    "documentation": 80,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -223,6 +223,10 @@
       "category": "documentation"
     },
     {
+      "path": "docs/governance/pilots/E2-MCP-ENTRY-RECONCILIATION-PROTOCOL.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md",
       "category": "documentation"
     },
@@ -363,11 +367,11 @@
       "category": "documentation"
     },
     {
-      "path": "docs/runbooks/GITHUB_PR_AUTHORIZATION_DIAGNOSTIC.md",
+      "path": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
       "category": "documentation"
     },
     {
-      "path": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
+      "path": "docs/runbooks/GITHUB_PR_AUTHORIZATION_DIAGNOSTIC.md",
       "category": "documentation"
     },
     {
