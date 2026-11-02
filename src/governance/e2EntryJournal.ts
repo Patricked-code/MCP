@@ -132,19 +132,31 @@ export async function loadE2Journal(port:E2JournalPort=defaultE2JournalPort):Pro
  }
  return {status:'INCOMPLETE',entries:[],blockers:['E2_GITHUB_JOURNAL_PAGINATION_LIMIT']};
 }
+/**
+ * Return bounded, non-sensitive HTTP failure categories for E2 journal
+ * diagnostics. The GitHub response body (which can contain private data)
+ * must never be forwarded to the MCP client.
+ */
+function journalHttpFailure(stage:'POST'|'READBACK',status:number|null):string{
+ const code=status===null?'UNAVAILABLE':String(status);
+ return 'E2_JOURNAL_'+stage+'_HTTP_'+code;
+}
 export async function appendE2Journal(event:E2JournalEvent,
  port:E2JournalPort=defaultE2JournalPort):Promise<{status:'RECORDED'|'BLOCKED';commentUrl:string|null;reason:string|null}>{
  const body=serializeE2Journal(event);
  const response=await port.request(ROOT,{method:'POST',jsonBody:{body}});
+ if(!response.ok||response.status!==201)
+  return {status:'BLOCKED',commentUrl:null,reason:journalHttpFailure('POST',response.status)};
  const comment=asComment(response.json);
- if(!response.ok||response.status!==201||!comment||comment.body!==body
+ if(!comment||comment.body!==body
   ||comment.html_url!=='https://github.com/Patricked-code/MCP/issues/359#issuecomment-'+comment.id)
-   return {status:'BLOCKED',commentUrl:null,reason:'E2_JOURNAL_WRITE_NOT_ATTESTED'};
+  return {status:'BLOCKED',commentUrl:null,reason:'E2_JOURNAL_POST_RECEIPT_UNATTESTED'};
  // Read-after-write: a successful API response alone is not durable proof.
  const check=await port.request('/repos/Patricked-code/MCP/issues/comments/'+comment.id);
+ if(!check.ok||check.status!==200)
+  return {status:'BLOCKED',commentUrl:null,reason:journalHttpFailure('READBACK',check.status)};
  const persisted=asComment(check.json);
- if(!check.ok||check.status!==200||!persisted||persisted.body!==body
-  ||persisted.id!==comment.id)
+ if(!persisted||persisted.body!==body||persisted.id!==comment.id)
   return {status:'BLOCKED',commentUrl:null,reason:'E2_JOURNAL_READBACK_MISMATCH'};
  return {status:'RECORDED',commentUrl:comment.html_url,reason:null};
 }
