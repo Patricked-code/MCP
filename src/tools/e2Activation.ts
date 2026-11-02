@@ -130,7 +130,8 @@ export function registerE2AutomaticActivationTool(
         const first=await record({...base,stage:'ACTIVATED',reasonCode:null});
         if(first.status!=='RECORDED')return {...asText(JSON.stringify({
           status:'RECONCILIATION_BLOCKED',code:'E2_ENTRY_JOURNAL_UNAVAILABLE',
-          entryId,nextStep:'RECONCILE_BEFORE_WORK'
+          entryId,journalReason:first.reason??'E2_JOURNAL_REASON_UNAVAILABLE',
+          nextStep:'RECONCILE_BEFORE_WORK'
         })),isError:true};
         const ports:E2ActivationPorts={
           observe:deps.observe,
@@ -155,6 +156,7 @@ export function registerE2AutomaticActivationTool(
         if(done.status!=='RECORDED')return {...asText(JSON.stringify({
           status:'RECONCILIATION_BLOCKED',code:'E2_FINAL_JOURNAL_UNAVAILABLE',
           entryId,initialJournalUrl:first.commentUrl,
+          journalReason:done.reason??'E2_JOURNAL_REASON_UNAVAILABLE',
           nextStep:'RECONCILE_BEFORE_WORK'
         })),isError:true};
         return asText(JSON.stringify({
