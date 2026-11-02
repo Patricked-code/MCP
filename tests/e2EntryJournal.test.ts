@@ -110,3 +110,33 @@ test('unrelated issue discussion from a non-authorised contributor is ignored',a
  assert.equal(r.status,'READY');
  assert.equal(r.entries.length,1);
 });
+
+test('journal surfaces bounded HTTP failure reasons without exposing provider bodies',async()=>{
+ const id=newE2EntryId(),e=event(id,'ACTIVATED');
+ const denied:E2JournalPort={async request(){return {
+  ok:false,status:403,json:{message:'provider response must not be exposed'}
+ };}};
+ const deniedResult=await appendE2Journal(e,denied);
+ assert.equal(deniedResult.status,'BLOCKED');
+ assert.equal(deniedResult.reason,'E2_JOURNAL_POST_HTTP_403');
+ assert.equal(deniedResult.commentUrl,null);
+ assert.equal(JSON.stringify(deniedResult).includes('provider response'),false);
+
+ const untrusted:E2JournalPort={async request(){return {ok:true,status:201,json:{
+  id:100,body:'unexpected',created_at:'2026-10-31T02:25:00Z',
+  user:{login:'Patricked-code'},author_association:'OWNER',
+  html_url:'https://github.com/Patricked-code/MCP/issues/359#issuecomment-100'
+ }};}};
+ assert.equal((await appendE2Journal(e,untrusted)).reason,'E2_JOURNAL_POST_RECEIPT_UNATTESTED');
+
+ const f=fake();
+ const failingReadback:E2JournalPort={async request(endpoint,options){
+  if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/comments/'))
+   return {ok:false,status:503,json:null};
+  return f.port.request(endpoint,options);
+ }};
+ const result=await appendE2Journal(e,failingReadback);
+ assert.equal(result.status,'BLOCKED');
+ assert.equal(result.reason,'E2_JOURNAL_READBACK_HTTP_503');
+ assert.equal(result.commentUrl,null);
+});
