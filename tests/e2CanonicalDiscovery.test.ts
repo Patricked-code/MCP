@@ -1,7 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {discoverE2CanonicalRoots,extractE2CanonicalIssueRoot,
-  extractE2CanonicalCommentRoot} from '../src/governance/e2CanonicalDiscovery.js';
+// E2 discovery uses the existing credential module; tests must initialize the
+// same bounded environment as other MCP governance integration tests.
+process.env.MCP_AUTH_TOKEN ??= 'e2-g2-test-token-only-20261103';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/e2-g2-unused-s1';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/e2-g2-unused-s2';
+const {discoverE2CanonicalRoots,extractE2CanonicalIssueRoot,
+  extractE2CanonicalCommentRoot}=await import('../src/governance/e2CanonicalDiscovery.js');
 import type {E2JournalPort} from '../src/governance/e2EntryJournal.js';
 
 const pilot='MCP-PILOT-E2-01-CONT-20261030-ROOT-01';
