@@ -22,12 +22,16 @@ const local={
 } as any;
 function fixture(){
  const comments:any[]=[],issues:any[]=[];
- let sequence=100,duplicate=false,healthy=true,legacySearch=false,failNextReadback=false;
+ let sequence=100,duplicate=false,healthy=true,legacySearch=false,legacyGdu=false,failNextReadback=false;
  const journal:E2JournalPort={async request(endpoint,opts){
   if(endpoint.startsWith('/search/issues?'))
    return {ok:true,status:200,json:{items:legacySearch?[{
     number:359,title:'PILOT-E2-01',body:'**Continuity ID canonique :** \`MCP-PILOT-E2-01-CONT-20261030-ROOT-01\` EXTERNAL_GOVERNED_RECOVERY'
    }]:[]}};
+  if(endpoint==='/repos/Patricked-code/MCP/issues/349'&&legacyGdu)
+   return {ok:true,status:200,json:{number:349,
+    title:'Évolution additive — provisionnement S1/S2',
+    body:'Extension de provisionnement S1/S2 sans racine dans le corps initial'}};
   if(endpoint==='/repos/Patricked-code/MCP/issues/359')
    return {ok:true,status:200,json:{
     number:359,title:'PILOT-E2-01',body:'**Continuity ID canonique :** \`MCP-PILOT-E2-01-CONT-20261030-ROOT-01\` EXTERNAL_GOVERNED_RECOVERY'
@@ -38,13 +42,22 @@ function fixture(){
    issues.push(result);return {ok:true,status:201,json:result};
   }
   if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/comments?'))
-   return {ok:true,status:200,json:[]};
+   return {ok:true,status:200,json:legacyGdu?[{
+    id:6512723639,
+    issue_url:'https://api.github.com/repos/Patricked-code/MCP/issues/349',
+    author_association:'OWNER',
+    body:'## Décision de continuité documentaire — racine unique adoptée\n'
+      +'**Identifiant retenu : `GD-U-CONT-20261030-ROOT-01`.**'
+   }]:[]};
   if(endpoint.startsWith('/repos/Patricked-code/MCP/issues?')){
    return {ok:true,status:200,json:duplicate?[{
     number:99,title:'Nouveau module MCP E2'
    }]:legacySearch?[...issues,{
     number:359,title:'PILOT-E2-01',
     body:'**Continuity ID canonique :** `MCP-PILOT-E2-01-CONT-20261030-ROOT-01` EXTERNAL_GOVERNED_RECOVERY'
+   }]:legacyGdu?[...issues,{
+     number:349,title:'Évolution additive — provisionnement S1/S2',
+     body:'Extension de provisionnement S1/S2 sans racine dans le corps initial'
    }]:issues};
   }
   if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/comments/')){
@@ -78,7 +91,7 @@ function fixture(){
   ...local,s1:{...local.s1,workingTreeClean:false}
  }};
  return {journal,port,comments,issues,setDuplicate:(v:boolean)=>{duplicate=v;},
-  setHealthy:(v:boolean)=>{healthy=v;},setLegacySearch:(v:boolean)=>{legacySearch=v;},
+  setHealthy:(v:boolean)=>{healthy=v;},setLegacySearch:(v:boolean)=>{legacySearch=v;},setLegacyGdu:(v:boolean)=>{legacyGdu=v;},
  failJournalReadbackOnce:()=>{failNextReadback=true;}};
 }
 function event(entryId:string,stage:'ACTIVATED'|'READY_FOR_OWNER'):E2JournalEvent{
@@ -255,4 +268,17 @@ test('G3 does not route NEW/RESUME when G2 GitHub comment discovery is incomplet
  assert.equal(decision.status,'BLOCKED');
  assert.equal(decision.reason,'E2_G2_DISCOVERY_INCOMPLETE');
  assert.equal(f.issues.length,0);
+});
+
+test('G3 RESUME reuses GD-U root adopted in GitHub #349 comments without a new issue',async()=>{
+ const f=fixture(),entryId=await activate(f);
+ f.setLegacyGdu(true);
+ const result=await routeE2OwnerChoice({
+  entryId,kind:'RESUME',continuityId:'GD-U-CONT-20261030-ROOT-01'
+ },f.port);
+ assert.equal(result.status,'RECOVERY_PARTIAL');
+ assert.equal(result.issueNumber,349);
+ assert.equal(result.continuityId,'GD-U-CONT-20261030-ROOT-01');
+ assert.equal(f.issues.length,0);
+ assert.equal(result.grantsPermission,false);
 });
