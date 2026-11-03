@@ -5,8 +5,7 @@ import type {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import {asText} from './format.js';
 import {routeE2OwnerChoice,type E2OwnerChoice,type E2OwnerPort,
  defaultE2OwnerPort} from '../governance/e2OwnerLifecycle.js';
-import {findE2ContinuityInJournal,loadE2Journal,type E2JournalPort,
- defaultE2JournalPort} from '../governance/e2EntryJournal.js';
+import {type E2JournalPort,defaultE2JournalPort} from '../governance/e2EntryJournal.js';
 import {recoverE2FromGitHubIssueComments}
  from '../governance/e2GitHubEvidence.js';
 import {discoverE2CanonicalRoots} from '../governance/e2CanonicalDiscovery.js';
@@ -48,27 +47,6 @@ export function registerE2OwnerTools(
  );
 }
 type E2ReadPort=Pick<E2JournalPort,'request'>;
-/** Historical pre-V1 issue discovery: exact body match, no fabricated registry. */
-async function findHistoricE2Issue(
- journal:E2ReadPort,continuityId:string
-):Promise<{status:'READY'|'NOT_FOUND'|'CONFLICT'|'BLOCKED';issueNumber:number|null}>{
- const q=encodeURIComponent('repo:Patricked-code/MCP is:issue "'+continuityId+'"');
- const response=await journal.request('/search/issues?q='+q+'&per_page=100');
- if(!response.ok||!response.json||typeof response.json!=='object'
-   ||Array.isArray(response.json))return {status:'BLOCKED',issueNumber:null};
- const list=(response.json as {items?:unknown}).items;
- if(!Array.isArray(list))return {status:'BLOCKED',issueNumber:null};
- const matches=list.filter(x=>{
-   if(!x||typeof x!=='object'||Array.isArray(x)
-     ||typeof x.body!=='string'||!Number.isSafeInteger(x.number)
-     ||x.number<1||!x.body.includes('EXTERNAL_GOVERNED_RECOVERY'))return false;
-   const id=/\*\*Continuity ID(?: canonique)?\s*:\*\*\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(x.body)?.[1];
-   return id===continuityId;
- }).map(x=>x.number as number);
- const unique=[...new Set(matches)];
- if(unique.length>1)return {status:'CONFLICT',issueNumber:null};
- return {status:unique.length===1?'READY':'NOT_FOUND',issueNumber:unique[0]??null};
-}
 export function registerE2ContinuityReadTools(
  server:McpServer,
  journal:E2ReadPort=defaultE2JournalPort
@@ -104,25 +82,25 @@ export function registerE2ContinuityReadTools(
   },
   async ({continuity_id})=>{
    try{
-    const journalResult=await loadE2Journal(journal);
-    const found=findE2ContinuityInJournal(journalResult,continuity_id);
-    const historic=found.status==='NOT_FOUND'
-      ?await findHistoricE2Issue(journal,continuity_id):null;
-    const effective=historic??found;
-    if(effective.status!=='READY'||!effective.issueNumber){
-      return asText(JSON.stringify({
-       status:effective.status==='CONFLICT'?'CONFLICT'
-        :effective.status==='BLOCKED'?'BLOCKED':'NOT_FOUND',
-       continuityId:continuity_id,reason:'E2_CONTINUITY_CANONICAL_ISSUE_NOT_FOUND',
-       note:'Aucun historique suppose ; ne pas creer une deuxieme continuite.'
-      }));
-    }
-    const n=effective.issueNumber;
+    // Reuse exactly the G2 canonical root index. An adopted root in issue
+    // comments is valid even when the issue's initial body predates the ID.
+    const discovered=await discoverE2CanonicalRoots(journal);
+    if(discovered.status!=='READY')return asText(JSON.stringify({
+      status:discovered.status,reason:'E2_G2_DISCOVERY_INCOMPLETE',
+      continuityId:continuity_id,grantsPermission:false
+    }));
+    const root=discovered.continuities.find(x=>x.continuityId===continuity_id);
+    if(!root)return asText(JSON.stringify({
+      status:'NOT_FOUND',continuityId:continuity_id,
+      reason:'E2_CONTINUITY_CANONICAL_ISSUE_NOT_FOUND',
+      note:'Ne pas creer une deuxieme continuite.'
+    }));
+    const n=root.issueNumber;
     const issue=await journal.request('/repos/Patricked-code/MCP/issues/'+n);
-    if(!issue.ok||!issue.json||typeof issue.json!=='object'
+    if(!issue.ok||issue.status!==200||!issue.json||typeof issue.json!=='object'
       ||Array.isArray(issue.json)
       ||(issue.json as Record<string,unknown>).number!==n
-      ||!String((issue.json as Record<string,unknown>).body??'').includes(continuity_id))
+      ||(issue.json as Record<string,unknown>).pull_request)
       return asText(JSON.stringify({status:'CONFLICT',reason:'E2_CONTINUITY_ISSUE_MISMATCH'}));
     const comments=[] as any[];
     for(let page=1;page<=50;page++){
