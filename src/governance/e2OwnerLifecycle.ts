@@ -11,6 +11,7 @@ import {appendE2Journal,loadE2Journal,recoverE2JournalEntry,
   findE2ContinuityInJournal,type E2JournalEvent,type E2JournalPort,
   defaultE2JournalPort} from './e2EntryJournal.js';
 import type {LiveStateSnapshot} from '../liveState/types.js';
+import {discoverE2CanonicalRoots} from './e2CanonicalDiscovery.js';
 
 const SHA=/^[0-9a-f]{40}$/;
 const ID=/^[A-Z][A-Z0-9-]{5,110}$/;
@@ -118,6 +119,10 @@ async function routeE2OwnerChoiceInner(
  const gate=assessE2LivePreflight(snapshot);
  if(gate.gate!=='DISCOVER_GITHUB_CONTINUITIES')return refused('E2_ALIGNMENT_NO_LONGER_CURRENT');
  if(!SHA.test(snapshot.github.head??''))return refused('E2_MAIN_SHA_INVALID');
+ // G2 is mandatory before any G3 decision. Reobserve the canonical GitHub
+ // roots, including older issues whose root was adopted in issue comments.
+ const discovery=await discoverE2CanonicalRoots(port.journal);
+ if(discovery.status!=='READY')return refused('E2_G2_DISCOVERY_INCOMPLETE');
  // After a lost registry readback, the registered event may already be durable.
  // Resolve the exact issue and owner choice idempotently; never create a second issue.
  if(entry.latest?.stage==='CONTINUITY_REGISTERED'){
@@ -159,9 +164,9 @@ async function routeE2OwnerChoiceInner(
   const proof=await port.journal.request(ROOT+'/issues/'+receipt.issueNumber);
   const issue=asObject(proof.json);
   if(!proof.ok||proof.status!==200||issue?.number!==receipt.issueNumber
-    ||typeof issue.body!=='string'
-    ||!issue.body.includes(choice.continuityId)
-    ||!issue.body.includes('EXTERNAL_GOVERNED_RECOVERY'))
+    ||issue.pull_request
+    ||!discovery.continuities.some(root=>root.continuityId===choice.continuityId
+      &&root.issueNumber===receipt.issueNumber))
    return refused('E2_REPLAY_RESUME_ISSUE_NOT_ATTESTED');
   const historical=findE2ContinuityInJournal(journal,choice.continuityId!).status==='NOT_FOUND';
   return {status:historical?'RECOVERY_PARTIAL':'READY_RESUME',
@@ -172,38 +177,21 @@ async function routeE2OwnerChoiceInner(
  }
  if(choice.kind==='RESUME'){
   if(!ID.test(choice.continuityId??''))return refused('E2_CONTINUITY_ID_REQUIRED');
-  const match=findE2ContinuityInJournal(journal,choice.continuityId!);
-  let issueNumber=match.issueNumber;
-  let historical=false;
-  if(match.status==='NOT_FOUND'){
-   const q=encodeURIComponent('repo:Patricked-code/MCP is:issue "'+choice.continuityId!+'"');
-   const search=await port.journal.request('/search/issues?q='+q+'&per_page=100');
-   const response=asObject(search.json);
-   const items=response?.items;
-   if(!search.ok||!Array.isArray(items))
-    return refused('E2_HISTORICAL_SEARCH_INCOMPLETE');
-   const matches=items.map(asObject).filter((x):x is Record<string,unknown>=>{
-    if(!x||typeof x.body!=='string'||!Number.isSafeInteger(x.number)
-      ||Number(x.number)<1||!x.body.includes('EXTERNAL_GOVERNED_RECOVERY'))
-      return false;
-    const id=/\*\*Continuity ID(?: canonique)?\s*:\*\*\s*`([A-Z][A-Z0-9-]{5,110})`/.exec(x.body)?.[1];
-    return id===choice.continuityId;
-   });
-   if(matches.length>1)return refused('E2_HISTORICAL_ID_CONFLICT');
-   issueNumber=matches.length===1?Number(matches[0]?.number):null;
-   historical=issueNumber!==null;
-  }else if(match.status!=='READY')
-   return refused('E2_CONTINUITY_REGISTRY_CONFLICT');
-  if(!issueNumber)return refused('E2_CONTINUITY_ID_NOT_INDEXED');
+  const root=discovery.continuities.find(x=>x.continuityId===choice.continuityId);
+  if(!root)return refused('E2_CONTINUITY_ID_NOT_INDEXED');
+  // Already verified by G2 across GitHub issue bodies, adopted comments and
+  // the E2 journal. Never assume the original issue body contains a later root.
+  const issueNumber=root.issueNumber;
   const issue=await port.journal.request(ROOT+'/issues/'+issueNumber);
   const item=asObject(issue.json);
-  if(!issue.ok||item?.number!==issueNumber
-    ||typeof item?.body!=='string'||!item.body.includes(choice.continuityId!))
+  if(!issue.ok||issue.status!==200||item?.number!==issueNumber
+    ||item.pull_request)
     return refused('E2_CONTINUITY_ISSUE_NOT_ATTESTED');
   const receipt=await appendE2Journal(
    recordFor(choice.entryId,'OWNER_RESUME',snapshot,choice.continuityId!,issueNumber),
    port.journal);
   if(receipt.status!=='RECORDED')return refused('E2_RESUME_JOURNAL_FAILED');
+  const historical=root.source!=='E2_GITHUB_JOURNAL';
   return {status:historical?'RECOVERY_PARTIAL':'READY_RESUME',
    continuityId:choice.continuityId!,issueNumber,
    issueUrl:'https://github.com/Patricked-code/MCP/issues/'+issueNumber,
