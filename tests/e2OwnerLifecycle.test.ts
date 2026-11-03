@@ -37,9 +37,14 @@ function fixture(){
    const result={number:++sequence,title:input.title,body:input.body};
    issues.push(result);return {ok:true,status:201,json:result};
   }
+  if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/comments?'))
+   return {ok:true,status:200,json:[]};
   if(endpoint.startsWith('/repos/Patricked-code/MCP/issues?')){
    return {ok:true,status:200,json:duplicate?[{
     number:99,title:'Nouveau module MCP E2'
+   }]:legacySearch?[...issues,{
+    number:359,title:'PILOT-E2-01',
+    body:'**Continuity ID canonique :** `MCP-PILOT-E2-01-CONT-20261030-ROOT-01` EXTERNAL_GOVERNED_RECOVERY'
    }]:issues};
   }
   if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/comments/')){
@@ -234,4 +239,20 @@ test('two concurrent NEW owner choices are single-flight and return the same exi
  assert.equal(results[0]?.continuityId,results[1]?.continuityId);
  assert.equal(results[0]?.issueNumber,results[1]?.issueNumber);
  assert.equal(f.comments.filter(x=>x.body.includes('CONTINUITY_REGISTERED')).length,1);
+});
+
+test('G3 does not route NEW/RESUME when G2 GitHub comment discovery is incomplete',async()=>{
+ const f=fixture(),entryId=await activate(f);
+ const original=f.journal.request;
+ const brokenJournal:E2JournalPort={request:(endpoint,opts)=>{
+  if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/comments?'))
+   return Promise.resolve({ok:false,status:503,json:null});
+  return original(endpoint,opts);
+ }};
+ const decision=await routeE2OwnerChoice(
+  {entryId,kind:'NEW',mandate:'Nouveau module MCP E2'},
+  {journal:brokenJournal,observe:f.port.observe});
+ assert.equal(decision.status,'BLOCKED');
+ assert.equal(decision.reason,'E2_G2_DISCOVERY_INCOMPLETE');
+ assert.equal(f.issues.length,0);
 });
