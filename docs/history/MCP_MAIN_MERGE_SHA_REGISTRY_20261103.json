@@ -1,0 +1,4245 @@
+{
+  "schemaVersion": 1,
+  "kind": "MCP_MAIN_MERGE_SHA_HISTORY",
+  "repository": "Patricked-code/MCP",
+  "branch": "main",
+  "snapshot_utc": "2026-11-03",
+  "baseline_main_sha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "scope": "all PRs merged into main available in GitHub history; excludes direct commits",
+  "dataSources": [
+    "GitHub REST pulls closed pages 1-3",
+    "GitHub Actions workflow run records segmented by calendar month",
+    "MCP current-state inventory 2026-11-03 06:42 UTC (current alignment only)"
+  ],
+  "caveats": [
+    "CI success is not proof of production deployment",
+    "Governed Deploy workflow success is not independent historical runtime attestation",
+    "Non-retrouve is missing matched observation not an execution failure",
+    "PR #261 runtime SHA is owner-reported and not independently re-attested"
+  ],
+  "counts": {
+    "merged_prs": 186,
+    "ci_main_found": 185,
+    "deploy_found": 171,
+    "ci_main_success": 185,
+    "deploy_success": 165,
+    "unverified_runtime": 185,
+    "owner_reported_runtime": 1
+  },
+  "records": [
+    {
+      "sequence": 1,
+      "merged_at": "2026-07-09T20:37:54Z",
+      "pr": 6,
+      "title": "docs: add MCP anti-dispersion manual and function cartography",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/6",
+      "merge_sha": "4ae11249a6ec129cbf7289e361416bc248311bca",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/4ae11249a6ec129cbf7289e361416bc248311bca",
+      "ci_main": null,
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 2,
+      "merged_at": "2026-07-13T01:51:54Z",
+      "pr": 11,
+      "title": "chore: harden MCP read-only safety, CI, and state docs",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/11",
+      "merge_sha": "38c999087b0e93adc2beeba04733af182c92be9c",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/38c999087b0e93adc2beeba04733af182c92be9c",
+      "ci_main": {
+        "run_id": 29218285676,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/29218285676",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 3,
+      "merged_at": "2026-07-13T02:12:59Z",
+      "pr": 14,
+      "title": "feat(mcp): add controlled S1 Git sync tool",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/14",
+      "merge_sha": "097dac93715c0af83fcfad82cd598bacec956125",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/097dac93715c0af83fcfad82cd598bacec956125",
+      "ci_main": {
+        "run_id": 29219052772,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/29219052772",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 4,
+      "merged_at": "2026-08-05T07:57:18Z",
+      "pr": 18,
+      "title": "docs: attest MCP runtime recovery and alignment plan",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/18",
+      "merge_sha": "3f79184eb6a647b39596ff408baa50c4a0c23c01",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3f79184eb6a647b39596ff408baa50c4a0c23c01",
+      "ci_main": {
+        "run_id": 30987031829,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/30987031829",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 5,
+      "merged_at": "2026-08-05T08:12:49Z",
+      "pr": 25,
+      "title": "feat(github): add read-only PR authorization diagnostics",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/25",
+      "merge_sha": "26af37dee3abd0ba36d61b60e2674d78cf1bedbf",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/26af37dee3abd0ba36d61b60e2674d78cf1bedbf",
+      "ci_main": {
+        "run_id": 30988105849,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/30988105849",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 6,
+      "merged_at": "2026-08-05T08:22:36Z",
+      "pr": 26,
+      "title": "security: establish clean read/write tool foundation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/26",
+      "merge_sha": "c4958d97ff67dbf4352b8a1f9c2716fe9cf25d7b",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c4958d97ff67dbf4352b8a1f9c2716fe9cf25d7b",
+      "ci_main": {
+        "run_id": 30988763145,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/30988763145",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 7,
+      "merged_at": "2026-08-05T08:28:13Z",
+      "pr": 27,
+      "title": "feat(registry): add GitRegistry v2 dry-run foundation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/27",
+      "merge_sha": "618f4020ac69801dd53f624e5cd188fc6d76cc24",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/618f4020ac69801dd53f624e5cd188fc6d76cc24",
+      "ci_main": {
+        "run_id": 30989153909,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/30989153909",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 8,
+      "merged_at": "2026-08-05T08:40:24Z",
+      "pr": 28,
+      "title": "docs: finalize MCP foundation state and resume point",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/28",
+      "merge_sha": "26452abda77e7f29ed27ac2f4d7f52d3daa88895",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/26452abda77e7f29ed27ac2f4d7f52d3daa88895",
+      "ci_main": {
+        "run_id": 30989995277,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/30989995277",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 9,
+      "merged_at": "2026-08-05T09:09:04Z",
+      "pr": 30,
+      "title": "security(oauth): redact client identifiers and query strings from logs",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/30",
+      "merge_sha": "59f07e21e8ad06b8cfac6039d08fc3c7d6652a62",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/59f07e21e8ad06b8cfac6039d08fc3c7d6652a62",
+      "ci_main": {
+        "run_id": 30992036364,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/30992036364",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 10,
+      "merged_at": "2026-08-05T09:15:48Z",
+      "pr": 31,
+      "title": "feat(runtime): add bounded read-only Docker image attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/31",
+      "merge_sha": "5c349ef7d20eba128a09bac3d4fcae779a48b3f7",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/5c349ef7d20eba128a09bac3d4fcae779a48b3f7",
+      "ci_main": {
+        "run_id": 30992518323,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/30992518323",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 11,
+      "merged_at": "2026-08-05T11:16:48Z",
+      "pr": 34,
+      "title": "feat(mcp): reconcile scoped operational tools",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/34",
+      "merge_sha": "18fd28d729f66bf243756a7e760e28089ab888e3",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/18fd28d729f66bf243756a7e760e28089ab888e3",
+      "ci_main": {
+        "run_id": 31000825444,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31000825444",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 12,
+      "merged_at": "2026-08-06T13:31:03Z",
+      "pr": 35,
+      "title": "fix(security): patch MCP production dependencies",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/35",
+      "merge_sha": "6d98006a17d2179e4ad154c8c5e84229f8b5b2e9",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/6d98006a17d2179e4ad154c8c5e84229f8b5b2e9",
+      "ci_main": {
+        "run_id": 31106287969,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31106287969",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 13,
+      "merged_at": "2026-08-08T23:57:57Z",
+      "pr": 36,
+      "title": "fix(security): update Hono node server override",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/36",
+      "merge_sha": "4228119a9950828d372d1fbacbd9a613a7efa2d6",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/4228119a9950828d372d1fbacbd9a613a7efa2d6",
+      "ci_main": {
+        "run_id": 31285144778,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31285144778",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 14,
+      "merged_at": "2026-08-09T10:41:47Z",
+      "pr": 37,
+      "title": "security: enforce read-only S1 GitHub identity",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/37",
+      "merge_sha": "d3bcac0cf17608963317a18aa2916a5997916394",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/d3bcac0cf17608963317a18aa2916a5997916394",
+      "ci_main": {
+        "run_id": 31308959387,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31308959387",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 15,
+      "merged_at": "2026-08-09T13:16:15Z",
+      "pr": 38,
+      "title": "feat(mcp): add governed Live State Engine V1",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/38",
+      "merge_sha": "cd80665837c1bbf692728d9fbb2c614bb1cb7734",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/cd80665837c1bbf692728d9fbb2c614bb1cb7734",
+      "ci_main": {
+        "run_id": 31315376574,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31315376574",
+        "conclusion": "success"
+      },
+      "governed_deploy": null,
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 16,
+      "merged_at": "2026-08-11T10:05:53Z",
+      "pr": 39,
+      "title": "feat(deploy): add governed exact-SHA MCP autodeploy",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/39",
+      "merge_sha": "989dcefd90b8820f27af70f2ce18dc4a7685f6e1",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/989dcefd90b8820f27af70f2ce18dc4a7685f6e1",
+      "ci_main": {
+        "run_id": 31480688497,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31480688497",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 31480688510,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31480688510",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 17,
+      "merged_at": "2026-08-12T10:38:34Z",
+      "pr": 40,
+      "title": "docs: record S1 bootstrap blocker and validate production state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/40",
+      "merge_sha": "f87bf471d2d62b9586113cd6a91fb411f03cba41",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/f87bf471d2d62b9586113cd6a91fb411f03cba41",
+      "ci_main": {
+        "run_id": 31588320526,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31588320526",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 31588320509,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31588320509",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 18,
+      "merged_at": "2026-08-12T15:40:02Z",
+      "pr": 41,
+      "title": "fix(runtime): force governed MCP container recreation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/41",
+      "merge_sha": "8fb075dd55a3b94ed620527f11b2a77f88627188",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/8fb075dd55a3b94ed620527f11b2a77f88627188",
+      "ci_main": {
+        "run_id": 31613542584,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31613542584",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 31613542715,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31613542715",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 19,
+      "merged_at": "2026-08-13T01:38:09Z",
+      "pr": 42,
+      "title": "fix(runtime): finalize governed autodeploy activation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/42",
+      "merge_sha": "9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9be5095cbf722cf8c5d1cd02bfc40ca32f93edd7",
+      "ci_main": {
+        "run_id": 31658327373,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31658327373",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 31658327435,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31658327435",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 20,
+      "merged_at": "2026-08-13T01:52:06Z",
+      "pr": 43,
+      "title": "docs: attest first automatic MCP deployment",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/43",
+      "merge_sha": "eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/eb61b97e1e8598b04e9c8cbb1cf69af2aeb62ab2",
+      "ci_main": {
+        "run_id": 31659053828,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31659053828",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 31659053836,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31659053836",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 21,
+      "merged_at": "2026-08-13T08:54:26Z",
+      "pr": 44,
+      "title": "feat: add MCP governed session continuity v1",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/44",
+      "merge_sha": "3838c3918c3411a3317c6ea81047e77a7b627673",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3838c3918c3411a3317c6ea81047e77a7b627673",
+      "ci_main": {
+        "run_id": 31684159546,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31684159546",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 31684159586,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31684159586",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 22,
+      "merged_at": "2026-08-15T20:51:25Z",
+      "pr": 45,
+      "title": "fix: harden Operational Memory retention after PR #44",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/45",
+      "merge_sha": "bac8779320c8b9529d2a5215dbb1b1f31f828987",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/bac8779320c8b9529d2a5215dbb1b1f31f828987",
+      "ci_main": {
+        "run_id": 31907827255,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31907827255",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 31907827212,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31907827212",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 23,
+      "merged_at": "2026-08-15T21:01:54Z",
+      "pr": 46,
+      "title": "docs: reconcile Operational Memory production state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/46",
+      "merge_sha": "389b8d967f5107bc7bcba07d5d68ccf492810a8c",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/389b8d967f5107bc7bcba07d5d68ccf492810a8c",
+      "ci_main": {
+        "run_id": 31908308540,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31908308540",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 31908308539,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/31908308539",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 24,
+      "merged_at": "2026-08-21T23:02:39Z",
+      "pr": 47,
+      "title": "fix: close late retention review gaps",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/47",
+      "merge_sha": "3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3fb5a1bce040113f9d2f2f16e508a76a10ffe7dc",
+      "ci_main": {
+        "run_id": 32535404248,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/32535404248",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 32535404345,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/32535404345",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 25,
+      "merged_at": "2026-08-21T23:12:38Z",
+      "pr": 48,
+      "title": "docs: reconcile late Operational Memory correction",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/48",
+      "merge_sha": "78dade5e103c2ac73727f44c571f99384d6b8798",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/78dade5e103c2ac73727f44c571f99384d6b8798",
+      "ci_main": {
+        "run_id": 32536025800,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/32536025800",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 32536025801,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/32536025801",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 26,
+      "merged_at": "2026-08-22T09:50:32Z",
+      "pr": 49,
+      "title": "feat: mandatory agent bootstrap and work orchestration v1",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/49",
+      "merge_sha": "c944fd9e7c05aad503f9e1d5d21e0ead25747886",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c944fd9e7c05aad503f9e1d5d21e0ead25747886",
+      "ci_main": {
+        "run_id": 32566022373,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/32566022373",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 32566022376,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/32566022376",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 27,
+      "merged_at": "2026-08-22T10:01:33Z",
+      "pr": 51,
+      "title": "docs: reconcile mandatory bootstrap production state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/51",
+      "merge_sha": "4d17e972ea04624fc41f90fbb908dc0f70b34430",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/4d17e972ea04624fc41f90fbb908dc0f70b34430",
+      "ci_main": {
+        "run_id": 32566520094,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/32566520094",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 32566520049,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/32566520049",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 28,
+      "merged_at": "2026-08-28T21:57:59Z",
+      "pr": 52,
+      "title": "fix(governance): harden governed task lifecycle",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/52",
+      "merge_sha": "fff44ff2db386942730a67f3884980c7824cae7f",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/fff44ff2db386942730a67f3884980c7824cae7f",
+      "ci_main": {
+        "run_id": 33214825660,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33214825660",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33214825772,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33214825772",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 29,
+      "merged_at": "2026-08-29T00:11:15Z",
+      "pr": 54,
+      "title": "docs(governance): reconcile PR 52 deployment state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/54",
+      "merge_sha": "a35280e172e40525689520e1443ccd59e850e91a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/a35280e172e40525689520e1443ccd59e850e91a",
+      "ci_main": {
+        "run_id": 33222774901,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33222774901",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33222774905,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33222774905",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 30,
+      "merged_at": "2026-08-29T14:03:05Z",
+      "pr": 55,
+      "title": "feat(governance): unify operational work state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/55",
+      "merge_sha": "2c2dde2bffe62b2685bf2fad94530571762470c8",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/2c2dde2bffe62b2685bf2fad94530571762470c8",
+      "ci_main": {
+        "run_id": 33256566688,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33256566688",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33256566695,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33256566695",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 31,
+      "merged_at": "2026-08-29T14:24:31Z",
+      "pr": 58,
+      "title": "docs(governance): reconcile PR 55 deployment state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/58",
+      "merge_sha": "f97624c090e639585949f40ce73b93213b267097",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/f97624c090e639585949f40ce73b93213b267097",
+      "ci_main": {
+        "run_id": 33257524751,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33257524751",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33257524744,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33257524744",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 32,
+      "merged_at": "2026-08-31T18:51:58Z",
+      "pr": 60,
+      "title": "feat(bootstrap): automatic governed connection session binding",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/60",
+      "merge_sha": "211a7de7940f115aa997f404927a8e0c9ace9055",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/211a7de7940f115aa997f404927a8e0c9ace9055",
+      "ci_main": {
+        "run_id": 33427386324,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33427386324",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33427386280,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33427386280",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 33,
+      "merged_at": "2026-08-31T21:45:09Z",
+      "pr": 62,
+      "title": "fix(bootstrap): preserve optimistic revisions across transport churn",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/62",
+      "merge_sha": "878a1646fc7e5928cdb7951a3d2ad1f0639a1d53",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/878a1646fc7e5928cdb7951a3d2ad1f0639a1d53",
+      "ci_main": {
+        "run_id": 33442929136,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33442929136",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33442929180,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33442929180",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 34,
+      "merged_at": "2026-08-31T21:56:20Z",
+      "pr": 63,
+      "title": "docs(governance): reconcile governed bootstrap deployment",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/63",
+      "merge_sha": "a026616fbf2df47962243bfcff46ac734bed50ba",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/a026616fbf2df47962243bfcff46ac734bed50ba",
+      "ci_main": {
+        "run_id": 33443823040,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33443823040",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33443822917,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33443822917",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 35,
+      "merged_at": "2026-08-31T23:23:54Z",
+      "pr": 64,
+      "title": "docs(governance): stabilize roadmap and governed program planning",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/64",
+      "merge_sha": "b99aa7f954b43b00adafd1588e11f786f9989eb4",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/b99aa7f954b43b00adafd1588e11f786f9989eb4",
+      "ci_main": {
+        "run_id": 33450509665,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33450509665",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33450509640,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33450509640",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 36,
+      "merged_at": "2026-08-31T23:27:46Z",
+      "pr": 65,
+      "title": "docs(suivi): make current-state checkpoint self-stable",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/65",
+      "merge_sha": "3b33086caf8e043624a126521f0d2b4804be3e66",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3b33086caf8e043624a126521f0d2b4804be3e66",
+      "ci_main": {
+        "run_id": 33450782748,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33450782748",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33450782799,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33450782799",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 37,
+      "merged_at": "2026-09-01T00:01:20Z",
+      "pr": 66,
+      "title": "docs(suivi): reconcile canonical checkpoint",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/66",
+      "merge_sha": "184107d5705248427d322922077d18f51e133c15",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/184107d5705248427d322922077d18f51e133c15",
+      "ci_main": {
+        "run_id": 33453072835,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33453072835",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33453072837,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33453072837",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 38,
+      "merged_at": "2026-09-01T06:23:39Z",
+      "pr": 68,
+      "title": "feat(governance): add minimal governed Connection Context",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/68",
+      "merge_sha": "024f6ad4c047614bdfaea0e317f371b789f60136",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/024f6ad4c047614bdfaea0e317f371b789f60136",
+      "ci_main": {
+        "run_id": 33477404891,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33477404891",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33477404901,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33477404901",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 39,
+      "merged_at": "2026-09-01T22:30:12Z",
+      "pr": 70,
+      "title": "docs(governance): reconcile A2.1 delivery after PR #68",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/70",
+      "merge_sha": "c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c87598ddab01131eb8d3b9bad35f9d0cbdc2a5d4",
+      "ci_main": {
+        "run_id": 33566616833,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33566616833",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33566616746,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33566616746",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 40,
+      "merged_at": "2026-09-02T20:31:01Z",
+      "pr": 72,
+      "title": "docs(governance): attest final A2.1 closure",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/72",
+      "merge_sha": "aa57b07cd3ba514df7b1ceb8cc60ab1587e15620",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/aa57b07cd3ba514df7b1ceb8cc60ab1587e15620",
+      "ci_main": {
+        "run_id": 33679748179,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33679748179",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 33679748175,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/33679748175",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 41,
+      "merged_at": "2026-09-09T06:39:17Z",
+      "pr": 73,
+      "title": "feat(identity): resolve contextual GitHub principal",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/73",
+      "merge_sha": "208b8744810a23e48a4282450786805e7ff18845",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/208b8744810a23e48a4282450786805e7ff18845",
+      "ci_main": {
+        "run_id": 34320053607,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34320053607",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34320053453,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34320053453",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 42,
+      "merged_at": "2026-09-09T22:06:53Z",
+      "pr": 74,
+      "title": "docs(governance): attest B1 functional delivery",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/74",
+      "merge_sha": "efb09ce7eeba85122b01c7fa48d99e967b7cdb7c",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/efb09ce7eeba85122b01c7fa48d99e967b7cdb7c",
+      "ci_main": {
+        "run_id": 34410537245,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34410537245",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34410537270,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34410537270",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 43,
+      "merged_at": "2026-09-11T23:39:56Z",
+      "pr": 75,
+      "title": "feat(b2): add fail-closed GitHub repository resolution",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/75",
+      "merge_sha": "f2c90902a627ee9209d805403e584f3123a0453a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/f2c90902a627ee9209d805403e584f3123a0453a",
+      "ci_main": {
+        "run_id": 34658914455,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34658914455",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34658914464,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34658914464",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 44,
+      "merged_at": "2026-09-11T23:54:01Z",
+      "pr": 76,
+      "title": "docs(b2): reconcile exact deployed delivery",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/76",
+      "merge_sha": "26fdcdfd1d1ffffc941afdf9f404f0312c20d4cf",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/26fdcdfd1d1ffffc941afdf9f404f0312c20d4cf",
+      "ci_main": {
+        "run_id": 34659756408,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34659756408",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34659756411,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34659756411",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 45,
+      "merged_at": "2026-09-12T01:08:55Z",
+      "pr": 77,
+      "title": "docs(b2): restore governed session closure",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/77",
+      "merge_sha": "fa563c6e21d6fa07bf5b33a58626ceae1cdedc13",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/fa563c6e21d6fa07bf5b33a58626ceae1cdedc13",
+      "ci_main": {
+        "run_id": 34663937640,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34663937640",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34663937636,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34663937636",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 46,
+      "merged_at": "2026-09-12T05:20:14Z",
+      "pr": 78,
+      "title": "feat(registry): add project compatibility foundation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/78",
+      "merge_sha": "b747dfc7f67786a40c19c285dbcdb3a07b78d5c0",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/b747dfc7f67786a40c19c285dbcdb3a07b78d5c0",
+      "ci_main": {
+        "run_id": 34675325100,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34675325100",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34675325119,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34675325119",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 47,
+      "merged_at": "2026-09-12T05:32:49Z",
+      "pr": 79,
+      "title": "docs(africafunds): reconcile phase 1 delivery",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/79",
+      "merge_sha": "740e62a248a804ed73babedc7b3869b3a28ef612",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/740e62a248a804ed73babedc7b3869b3a28ef612",
+      "ci_main": {
+        "run_id": 34675861229,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34675861229",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34675861155,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34675861155",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 48,
+      "merged_at": "2026-09-13T09:57:58Z",
+      "pr": 80,
+      "title": "feat(registry): map AfricaFunds project components",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/80",
+      "merge_sha": "1eac93f631fcf7843d7e768bba7a4125ed00bdbb",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/1eac93f631fcf7843d7e768bba7a4125ed00bdbb",
+      "ci_main": {
+        "run_id": 34750625729,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34750625729",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34750625897,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34750625897",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 49,
+      "merged_at": "2026-09-13T12:04:45Z",
+      "pr": 81,
+      "title": "docs(africafunds): reconcile terminal Phase 2 delivery",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/81",
+      "merge_sha": "8d350c31ebd57ab73d81f66b20064b72989e6084",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/8d350c31ebd57ab73d81f66b20064b72989e6084",
+      "ci_main": {
+        "run_id": 34756105783,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34756105783",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34756105771,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34756105771",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 50,
+      "merged_at": "2026-09-13T17:50:34Z",
+      "pr": 82,
+      "title": "docs(africafunds): correct SUIVI baseline ordering",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/82",
+      "merge_sha": "52c8aab7cefc7fb1ed56cb259c49f24ff2586581",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/52c8aab7cefc7fb1ed56cb259c49f24ff2586581",
+      "ci_main": {
+        "run_id": 34772809705,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34772809705",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34772809707,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34772809707",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 51,
+      "merged_at": "2026-09-13T19:57:06Z",
+      "pr": 83,
+      "title": "feat(registry): add fail-closed C1 activation readiness",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/83",
+      "merge_sha": "1a3af33054dc4b5429b0e36de4ee25efc3a9f88e",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/1a3af33054dc4b5429b0e36de4ee25efc3a9f88e",
+      "ci_main": {
+        "run_id": 34779240544,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34779240544",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34779240457,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34779240457",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 52,
+      "merged_at": "2026-09-13T20:05:01Z",
+      "pr": 84,
+      "title": "docs(registry): reconcile deployed C1 verification gate",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/84",
+      "merge_sha": "555a51d0648ef796eba4868282942055a2f67a65",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/555a51d0648ef796eba4868282942055a2f67a65",
+      "ci_main": {
+        "run_id": 34779651727,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34779651727",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34779651721,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34779651721",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 53,
+      "merged_at": "2026-09-15T02:06:52Z",
+      "pr": 87,
+      "title": "test(g3): add RED client tool surface attestation contract",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/87",
+      "merge_sha": "dc4698de66b7becfc924ea4fabe8037e089d3336",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/dc4698de66b7becfc924ea4fabe8037e089d3336",
+      "ci_main": {
+        "run_id": 34919927235,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34919927235",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34919927303,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34919927303",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 54,
+      "merged_at": "2026-09-15T03:08:57Z",
+      "pr": 91,
+      "title": "docs(g3): reconcile canonical documentation after G3 merge",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/91",
+      "merge_sha": "a533eeca5ca9e37fcad51ded161a2f1c8736c7fd",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/a533eeca5ca9e37fcad51ded161a2f1c8736c7fd",
+      "ci_main": {
+        "run_id": 34923880033,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34923880033",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34923880002,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34923880002",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 55,
+      "merged_at": "2026-09-15T03:41:27Z",
+      "pr": 92,
+      "title": "C2 — Repository → Project Resolution",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/92",
+      "merge_sha": "46d576e53820eba0360647b6fd96d41dd4a2bbc6",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/46d576e53820eba0360647b6fd96d41dd4a2bbc6",
+      "ci_main": {
+        "run_id": 34925946990,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34925946990",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34925946935,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34925946935",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 56,
+      "merged_at": "2026-09-15T03:46:42Z",
+      "pr": 93,
+      "title": "docs(c2): reconcile terminal project-resolution state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/93",
+      "merge_sha": "39662171bf89f1894cc84a0009e60840a772acaa",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/39662171bf89f1894cc84a0009e60840a772acaa",
+      "ci_main": {
+        "run_id": 34926281662,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34926281662",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34926281610,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34926281610",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 57,
+      "merged_at": "2026-09-15T04:05:52Z",
+      "pr": 94,
+      "title": "docs(gwc): define Governed Workflow Contract V1",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/94",
+      "merge_sha": "d1f303955c4d368950da2307dda41d826fc85d0a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/d1f303955c4d368950da2307dda41d826fc85d0a",
+      "ci_main": {
+        "run_id": 34927491513,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34927491513",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 34927491492,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/34927491492",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 58,
+      "merged_at": "2026-09-20T14:10:43Z",
+      "pr": 95,
+      "title": "docs(gwc): dossier canonique R3 + conception d'évolution GWC-0..GWC-17 + fermeture pre-code",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/95",
+      "merge_sha": "9da845822e122cc67fc86ad90243d4e7d6a6d4f4",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9da845822e122cc67fc86ad90243d4e7d6a6d4f4",
+      "ci_main": {
+        "run_id": 35515690847,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35515690847",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35515690831,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35515690831",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 59,
+      "merged_at": "2026-09-20T16:11:33Z",
+      "pr": 96,
+      "title": "docs(gwc): reconcile PR #95 terminal production state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/96",
+      "merge_sha": "5389f3a05ab22da551954c936fcc3fe5ab69872b",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/5389f3a05ab22da551954c936fcc3fe5ab69872b",
+      "ci_main": {
+        "run_id": 35521934764,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35521934764",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35521934733,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35521934733",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 60,
+      "merged_at": "2026-09-20T16:40:49Z",
+      "pr": 97,
+      "title": "docs(gwc): post-integration canonical handoff",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/97",
+      "merge_sha": "21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15",
+      "ci_main": {
+        "run_id": 35523471448,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35523471448",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35523471407,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35523471407",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 61,
+      "merged_at": "2026-09-20T16:47:14Z",
+      "pr": 98,
+      "title": "docs(gwc): close terminal canonical handoff drift",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/98",
+      "merge_sha": "847b775a0b64b42ba3bddfee518ca0a486d810ce",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/847b775a0b64b42ba3bddfee518ca0a486d810ce",
+      "ci_main": {
+        "run_id": 35523803124,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35523803124",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35523803004,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35523803004",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 62,
+      "merged_at": "2026-09-20T18:12:53Z",
+      "pr": 99,
+      "title": "feat(stablecoin): add read-only governed S2 status mapping",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/99",
+      "merge_sha": "030ae3ab3444b5f9e30212bf9b8db0dee7815119",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/030ae3ab3444b5f9e30212bf9b8db0dee7815119",
+      "ci_main": {
+        "run_id": 35528334894,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35528334894",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35528334868,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35528334868",
+        "conclusion": "failure"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 63,
+      "merged_at": "2026-09-20T18:49:16Z",
+      "pr": 100,
+      "title": "feat(github-first): add operational continuity and read-only evidence fallback",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/100",
+      "merge_sha": "fa5040b9879c3aa5443bcb495ff4487db3082572",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/fa5040b9879c3aa5443bcb495ff4487db3082572",
+      "ci_main": {
+        "run_id": 35530290618,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35530290618",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35530290482,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35530290482",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 64,
+      "merged_at": "2026-09-20T19:00:49Z",
+      "pr": 102,
+      "title": "feat(github-first): use GitHub OIDC for read-only server evidence",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/102",
+      "merge_sha": "1f058c61426110db458d449444374620c777bba6",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/1f058c61426110db458d449444374620c777bba6",
+      "ci_main": {
+        "run_id": 35530892389,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35530892389",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35530892326,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35530892326",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 65,
+      "merged_at": "2026-09-20T19:27:56Z",
+      "pr": 104,
+      "title": "feat(stablecoin): add read-only backend and runtime reconciliation probes",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/104",
+      "merge_sha": "7cdce197febaa9f868160145bcedcc8a4cd6e6ec",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/7cdce197febaa9f868160145bcedcc8a4cd6e6ec",
+      "ci_main": {
+        "run_id": 35532386478,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35532386478",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35532386441,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35532386441",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 66,
+      "merged_at": "2026-09-20T19:38:16Z",
+      "pr": 108,
+      "title": "fix(stablecoin): make reconciliation probes fail-soft and diagnosable",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/108",
+      "merge_sha": "32a6cea0284b1ae8244709f9bd1288da6ccff556",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/32a6cea0284b1ae8244709f9bd1288da6ccff556",
+      "ci_main": {
+        "run_id": 35532955008,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35532955008",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35532954957,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35532954957",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 67,
+      "merged_at": "2026-09-20T19:49:58Z",
+      "pr": 111,
+      "title": "fix(github-first): surface bounded read-only evidence failure reasons",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/111",
+      "merge_sha": "bb81baf7f8424bcb32c3e87b22018335461b1189",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/bb81baf7f8424bcb32c3e87b22018335461b1189",
+      "ci_main": {
+        "run_id": 35533584449,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35533584449",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35533584292,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35533584292",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 68,
+      "merged_at": "2026-09-21T06:41:40Z",
+      "pr": 117,
+      "title": "feat(github-first): add bounded Stablecoin S2 fast-forward",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/117",
+      "merge_sha": "ab9b1aa902aab3efed42ba527847ab48df3c8eaa",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/ab9b1aa902aab3efed42ba527847ab48df3c8eaa",
+      "ci_main": {
+        "run_id": 35569573733,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35569573733",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35569573744,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35569573744",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 69,
+      "merged_at": "2026-09-21T18:11:57Z",
+      "pr": 124,
+      "title": "docs(github-first): preserve GitHub client surface before bridge escalation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/124",
+      "merge_sha": "3a49044ff8f1981cfb0a64e14adb2ea17f529c3a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3a49044ff8f1981cfb0a64e14adb2ea17f529c3a",
+      "ci_main": {
+        "run_id": 35636843758,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35636843758",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35636843873,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35636843873",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 70,
+      "merged_at": "2026-09-21T18:33:54Z",
+      "pr": 126,
+      "title": "fix(live-state): source documentation SHAs from structured production state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/126",
+      "merge_sha": "65e633381e8ae811bb5d4060826d0d679f0c7e80",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/65e633381e8ae811bb5d4060826d0d679f0c7e80",
+      "ci_main": {
+        "run_id": 35639195678,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35639195678",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35639195637,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35639195637",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 71,
+      "merged_at": "2026-09-22T16:42:27Z",
+      "pr": 127,
+      "title": "docs(live-state): reconcile AF-09 structured production baseline",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/127",
+      "merge_sha": "161db894eb5a864eebb5b79e01e76446d6ef7af1",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/161db894eb5a864eebb5b79e01e76446d6ef7af1",
+      "ci_main": {
+        "run_id": 35755892285,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35755892285",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35755892251,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35755892251",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 72,
+      "merged_at": "2026-09-22T16:58:57Z",
+      "pr": 130,
+      "title": "fix(governance): reconcile AF-10 AF-18 AF-24 AF-27",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/130",
+      "merge_sha": "9b190a940d700f9b070bf5a9a8c0c8400337e53c",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9b190a940d700f9b070bf5a9a8c0c8400337e53c",
+      "ci_main": {
+        "run_id": 35757678558,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35757678558",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35757678718,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35757678718",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 73,
+      "merged_at": "2026-09-22T17:09:08Z",
+      "pr": 133,
+      "title": "docs(governance): reconcile AF-10 AF-18 AF-24 AF-27 production baseline",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/133",
+      "merge_sha": "b5d3b2a2c99643c9c6a853570b9f7b417fb1d7b2",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/b5d3b2a2c99643c9c6a853570b9f7b417fb1d7b2",
+      "ci_main": {
+        "run_id": 35758807363,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35758807363",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35758807253,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35758807253",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 74,
+      "merged_at": "2026-09-22T19:47:50Z",
+      "pr": 136,
+      "title": "fix(operational-memory): link checkpoints to journal events for AF-23",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/136",
+      "merge_sha": "21cb4860e9ab16ff7d98b294a0398fdcec409879",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/21cb4860e9ab16ff7d98b294a0398fdcec409879",
+      "ci_main": {
+        "run_id": 35776085995,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35776085995",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35776086173,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35776086173",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 75,
+      "merged_at": "2026-09-22T20:08:08Z",
+      "pr": 139,
+      "title": "chore(gwc): reconcile corrected findings and AF-23 production state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/139",
+      "merge_sha": "2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/2495647c3ccf3f676aa979bbe3e8337d9dbf12bf",
+      "ci_main": {
+        "run_id": 35778289861,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35778289861",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35778290026,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35778290026",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 76,
+      "merged_at": "2026-09-22T20:20:59Z",
+      "pr": 142,
+      "title": "docs(state): close corrected findings production baseline",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/142",
+      "merge_sha": "87deb6311e13a37f09f6570a78c2f502df12a240",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/87deb6311e13a37f09f6570a78c2f502df12a240",
+      "ci_main": {
+        "run_id": 35779705585,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35779705585",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35779705158,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35779705158",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 77,
+      "merged_at": "2026-09-22T21:52:09Z",
+      "pr": 146,
+      "title": "fix(continuity): hand off merged historical candidates to main",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/146",
+      "merge_sha": "38f7ab60b4fa30db50536278d2b34ddbcfe2c204",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/38f7ab60b4fa30db50536278d2b34ddbcfe2c204",
+      "ci_main": {
+        "run_id": 35789164585,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35789164585",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35789164675,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35789164675",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 78,
+      "merged_at": "2026-09-22T22:00:10Z",
+      "pr": 149,
+      "title": "docs(state): record historical candidate handoff baseline",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/149",
+      "merge_sha": "3933852cdb40b05b59b06460faa9116715d597a9",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3933852cdb40b05b59b06460faa9116715d597a9",
+      "ci_main": {
+        "run_id": 35789919009,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35789919009",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35789919030,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35789919030",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 79,
+      "merged_at": "2026-09-22T22:08:32Z",
+      "pr": 145,
+      "title": "docs(governance): reconcile legacy open PR intents",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/145",
+      "merge_sha": "cda7610e1dcd5bc56511f0b42f372f68058ca2fb",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/cda7610e1dcd5bc56511f0b42f372f68058ca2fb",
+      "ci_main": {
+        "run_id": 35790732547,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35790732547",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35790732553,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35790732553",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 80,
+      "merged_at": "2026-09-22T23:43:17Z",
+      "pr": 159,
+      "title": "docs(governance): converge exhaustive program backlog",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/159",
+      "merge_sha": "84bbe9b1684f5f6be73eaf2d6aa21063fb62697a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/84bbe9b1684f5f6be73eaf2d6aa21063fb62697a",
+      "ci_main": {
+        "run_id": 35798761258,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35798761258",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35798761237,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35798761237",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 81,
+      "merged_at": "2026-09-23T00:48:24Z",
+      "pr": 164,
+      "title": "feat(stablecoin): add safe backend metadata inventory probe",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/164",
+      "merge_sha": "327379a782a7f13940f0edf302dced833b326dca",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/327379a782a7f13940f0edf302dced833b326dca",
+      "ci_main": {
+        "run_id": 35803644180,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35803644180",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 35803644155,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/35803644155",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 82,
+      "merged_at": "2026-09-24T16:33:27Z",
+      "pr": 154,
+      "title": "feat(coordination): generalize agent heartbeat and claim observability",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/154",
+      "merge_sha": "ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/ba9acd1cb15942f37aba2b9a0a45b267ec50d5b4",
+      "ci_main": {
+        "run_id": 36028205563,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36028205563",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36028205582,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36028205582",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 83,
+      "merged_at": "2026-09-24T16:43:01Z",
+      "pr": 168,
+      "title": "docs(coordination): reconcile terminal UAC deployment state",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/168",
+      "merge_sha": "ebc7443513627450643d46c8e676b795cc3aa03a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/ebc7443513627450643d46c8e676b795cc3aa03a",
+      "ci_main": {
+        "run_id": 36029300112,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36029300112",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36029300151,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36029300151",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 84,
+      "merged_at": "2026-09-24T17:13:14Z",
+      "pr": 171,
+      "title": "feat(governance): materialize Program Backlog V2 planning graph",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/171",
+      "merge_sha": "d30b06f4c8b72b4888f32397be207798a56b8bb8",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/d30b06f4c8b72b4888f32397be207798a56b8bb8",
+      "ci_main": {
+        "run_id": 36032772266,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36032772266",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36032772198,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36032772198",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 85,
+      "merged_at": "2026-09-24T19:54:01Z",
+      "pr": 174,
+      "title": "chore(governance): execute W1 program state convergence",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/174",
+      "merge_sha": "3d5dd39f4342290fd6ddb9f2fbc4cbadd13b870e",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3d5dd39f4342290fd6ddb9f2fbc4cbadd13b870e",
+      "ci_main": {
+        "run_id": 36051252007,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36051252007",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36051252008,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36051252008",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 86,
+      "merged_at": "2026-09-25T04:32:33Z",
+      "pr": 176,
+      "title": "feat(github): W2 bounded read complements",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/176",
+      "merge_sha": "c104e24259232dced2a24a7397640747c052d140",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c104e24259232dced2a24a7397640747c052d140",
+      "ci_main": {
+        "run_id": 36094867098,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36094867098",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36094867094,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36094867094",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 87,
+      "merged_at": "2026-09-25T05:25:13Z",
+      "pr": 178,
+      "title": "chore(governance): converge intake #177 into Program Backlog V2",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/178",
+      "merge_sha": "574dccb1eefd4562e72788ea075456261058cd9a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/574dccb1eefd4562e72788ea075456261058cd9a",
+      "ci_main": {
+        "run_id": 36098485869,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36098485869",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36098485794,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36098485794",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 88,
+      "merged_at": "2026-09-25T05:52:02Z",
+      "pr": 181,
+      "title": "feat(governance): automate Program Backlog continuation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/181",
+      "merge_sha": "df34fd24e6dd7863b54e2f17b5a295b09997471b",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/df34fd24e6dd7863b54e2f17b5a295b09997471b",
+      "ci_main": {
+        "run_id": 36100364890,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36100364890",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36100364880,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36100364880",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 89,
+      "merged_at": "2026-09-25T05:57:46Z",
+      "pr": 184,
+      "title": "docs(governance): close Program Backlog auto-continuation handoff",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/184",
+      "merge_sha": "001ed65dc84d9f70694d2b2ceea84b3b1fc82523",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/001ed65dc84d9f70694d2b2ceea84b3b1fc82523",
+      "ci_main": {
+        "run_id": 36100763474,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36100763474",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36100763467,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36100763467",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 90,
+      "merged_at": "2026-09-25T06:47:34Z",
+      "pr": 187,
+      "title": "docs(governance): complete W3 A2.2.1 client evidence inventory",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/187",
+      "merge_sha": "5c08e865eef7877f5450262db726b17fe2110a2e",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/5c08e865eef7877f5450262db726b17fe2110a2e",
+      "ci_main": {
+        "run_id": 36104487570,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36104487570",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36104487577,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36104487577",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 91,
+      "merged_at": "2026-09-25T11:22:27Z",
+      "pr": 188,
+      "title": "feat(ssh): add governed ephemeral repository SSH certificates",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/188",
+      "merge_sha": "9c222136019d77af39a36c43a54259f1df489ab8",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9c222136019d77af39a36c43a54259f1df489ab8",
+      "ci_main": {
+        "run_id": 36129030482,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36129030482",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36129030564,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36129030564",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 92,
+      "merged_at": "2026-09-25T11:35:56Z",
+      "pr": 189,
+      "title": "feat(ssh): add governed issue trigger for CA bootstrap",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/189",
+      "merge_sha": "31f47325f92b9652d0564ebc66131d7bd3cca397",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/31f47325f92b9652d0564ebc66131d7bd3cca397",
+      "ci_main": {
+        "run_id": 36130265040,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36130265040",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36130265030,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36130265030",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 93,
+      "merged_at": "2026-09-26T16:18:53Z",
+      "pr": 191,
+      "title": "fix(ssh): reconcile repository_dispatch OIDC intake #192",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/191",
+      "merge_sha": "0eb55a511c821bb4082e147325cf211404a8e5f6",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/0eb55a511c821bb4082e147325cf211404a8e5f6",
+      "ci_main": {
+        "run_id": 36255009457,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36255009457",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36255009423,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36255009423",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 94,
+      "merged_at": "2026-09-26T19:36:43Z",
+      "pr": 193,
+      "title": "docs(program): close repository SSH workstream after E2E attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/193",
+      "merge_sha": "b3eb823429a4357b3a7abc49421bd8bd5cbf232a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/b3eb823429a4357b3a7abc49421bd8bd5cbf232a",
+      "ci_main": {
+        "run_id": 36266654445,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36266654445",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36266654506,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36266654506",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 95,
+      "merged_at": "2026-09-27T03:54:43Z",
+      "pr": 194,
+      "title": "feat(connection): TB-W3-A22-02 bounded client evidence projection (A2.2.2)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/194",
+      "merge_sha": "70ee280c89d5ca3747f762a89287923dde320add",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/70ee280c89d5ca3747f762a89287923dde320add",
+      "ci_main": {
+        "run_id": 36292779495,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36292779495",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36292779401,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36292779401",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 96,
+      "merged_at": "2026-09-27T04:03:51Z",
+      "pr": 195,
+      "title": "docs(program): close TB-W3-A22-02 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/195",
+      "merge_sha": "eb1667d2a377a6fd2d15f715a6fcedd819386f0c",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/eb1667d2a377a6fd2d15f715a6fcedd819386f0c",
+      "ci_main": {
+        "run_id": 36293218231,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36293218231",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36293218273,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36293218273",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 97,
+      "merged_at": "2026-09-28T17:38:37Z",
+      "pr": 196,
+      "title": "docs(governance): complete W3 A3.1 OAuth correlation inventory",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/196",
+      "merge_sha": "c65a83f203932ee2c464eb2116c02b0204216fd0",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c65a83f203932ee2c464eb2116c02b0204216fd0",
+      "ci_main": {
+        "run_id": 36459581811,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36459581811",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36459581847,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36459581847",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 98,
+      "merged_at": "2026-09-28T17:46:54Z",
+      "pr": 199,
+      "title": "docs(governance): checkpoint A3 post-merge runtime gate",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/199",
+      "merge_sha": "54f195973362da30d0e03c6623bbe6bb7e39f4ea",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/54f195973362da30d0e03c6623bbe6bb7e39f4ea",
+      "ci_main": {
+        "run_id": 36460567470,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36460567470",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36460567543,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36460567543",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 99,
+      "merged_at": "2026-09-29T19:40:36Z",
+      "pr": 200,
+      "title": "feat(governance): add read-only runtime authority evidence for A3.2",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/200",
+      "merge_sha": "d53b9de48617920eae7a0bba46f5a7387bc11ab8",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/d53b9de48617920eae7a0bba46f5a7387bc11ab8",
+      "ci_main": {
+        "run_id": 36620933205,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36620933205",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36620933098,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36620933098",
+        "conclusion": "failure"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 100,
+      "merged_at": "2026-09-29T19:55:15Z",
+      "pr": 202,
+      "title": "docs(governance): checkpoint A3.2 TLS deployment blocker",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/202",
+      "merge_sha": "7945d2e7bb1bd3fc7a2edd372c036cdb9cc26999",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/7945d2e7bb1bd3fc7a2edd372c036cdb9cc26999",
+      "ci_main": {
+        "run_id": 36622636791,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36622636791",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36622636726,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36622636726",
+        "conclusion": "failure"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 101,
+      "merged_at": "2026-09-29T20:18:57Z",
+      "pr": 203,
+      "title": "docs(governance): converge TLS intake #201 into bounded server-write",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/203",
+      "merge_sha": "9511d434f3a66a2b92e847eabfd26596200e5f5c",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9511d434f3a66a2b92e847eabfd26596200e5f5c",
+      "ci_main": {
+        "run_id": 36625479424,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36625479424",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36625479517,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36625479517",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 102,
+      "merged_at": "2026-10-01T18:16:40Z",
+      "pr": 208,
+      "title": "feat(oauth): explicit operator consent before code issuance (TB-W3-OAUTH-CONSENT-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/208",
+      "merge_sha": "2febc46dda1ddfbe275658957ebfd8c5bdbc7128",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/2febc46dda1ddfbe275658957ebfd8c5bdbc7128",
+      "ci_main": {
+        "run_id": 36905634628,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36905634628",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36905634643,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36905634643",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 103,
+      "merged_at": "2026-10-01T18:22:39Z",
+      "pr": 209,
+      "title": "docs(program): close TB-W3-OAUTH-CONSENT-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/209",
+      "merge_sha": "661a0517aebb3bc6dafe4eec4afc3677820ed510",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/661a0517aebb3bc6dafe4eec4afc3677820ed510",
+      "ci_main": {
+        "run_id": 36906370426,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36906370426",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36906370455,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36906370455",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 104,
+      "merged_at": "2026-10-01T18:30:39Z",
+      "pr": 210,
+      "title": "docs(governance): TB-W3-B3-01 multi-repository residual inventory (B3.1)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/210",
+      "merge_sha": "153ef45218285bbfe9586755854e2937a021d85e",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/153ef45218285bbfe9586755854e2937a021d85e",
+      "ci_main": {
+        "run_id": 36907370462,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36907370462",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36907370371,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36907370371",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 105,
+      "merged_at": "2026-10-01T18:39:24Z",
+      "pr": 211,
+      "title": "feat(c1.1): bounded GitRegistry V2 readiness OIDC read-only probe",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/211",
+      "merge_sha": "e7143506ea30acc666805f67f3a186eea4d1060b",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/e7143506ea30acc666805f67f3a186eea4d1060b",
+      "ci_main": {
+        "run_id": 36908452378,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36908452378",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36908452245,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36908452245",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 106,
+      "merged_at": "2026-10-01T18:45:59Z",
+      "pr": 212,
+      "title": "docs(c1.1): close TB-W3-C1-01 after deploy and registry attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/212",
+      "merge_sha": "1a2303722b4e30f02d056c455ff5088739bd57ac",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/1a2303722b4e30f02d056c455ff5088739bd57ac",
+      "ci_main": {
+        "run_id": 36909277622,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36909277622",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36909277606,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36909277606",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 107,
+      "merged_at": "2026-10-01T18:51:32Z",
+      "pr": 213,
+      "title": "feat(g1): journal real-client presence separately from heartbeat and health",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/213",
+      "merge_sha": "90df50b2497cdc17eb01a60c9223ca06fc715893",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/90df50b2497cdc17eb01a60c9223ca06fc715893",
+      "ci_main": {
+        "run_id": 36909975085,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36909975085",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36909975077,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36909975077",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 108,
+      "merged_at": "2026-10-01T18:57:58Z",
+      "pr": 214,
+      "title": "docs(g1): close TB-W4-G1-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/214",
+      "merge_sha": "261d2976bf373a097a080becda48f5df1c97c84d",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/261d2976bf373a097a080becda48f5df1c97c84d",
+      "ci_main": {
+        "run_id": 36910778610,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36910778610",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36910778501,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36910778501",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 109,
+      "merged_at": "2026-10-01T23:06:34Z",
+      "pr": 215,
+      "title": "feat(g2): two-clock client presence with bounded read-only states",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/215",
+      "merge_sha": "e21320990a4e8534f4c261b3bec6021417b4efb6",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/e21320990a4e8534f4c261b3bec6021417b4efb6",
+      "ci_main": {
+        "run_id": 36938973433,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36938973433",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36938973474,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36938973474",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 110,
+      "merged_at": "2026-10-01T23:13:41Z",
+      "pr": 216,
+      "title": "docs(g2): close TB-W4-G2-01 and PB-G12 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/216",
+      "merge_sha": "18e227fa08178272c0f5d678379351377425af0a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/18e227fa08178272c0f5d678379351377425af0a",
+      "ci_main": {
+        "run_id": 36939644197,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36939644197",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36939644210,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36939644210",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 111,
+      "merged_at": "2026-10-01T23:20:44Z",
+      "pr": 217,
+      "title": "docs(b3.2): guard TB-W3-B3-02 behind an owner decision on target project selection",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/217",
+      "merge_sha": "ba950c51462e7e2076afaafe412429860ff744ae",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/ba950c51462e7e2076afaafe412429860ff744ae",
+      "ci_main": {
+        "run_id": 36940303568,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36940303568",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36940303585,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36940303585",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 112,
+      "merged_at": "2026-10-01T23:30:59Z",
+      "pr": 218,
+      "title": "feat(g3): governed client tool surface attestation and server-vs-client projection",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/218",
+      "merge_sha": "02f2da91741da4ff36eea3f138b00155ff49bad7",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/02f2da91741da4ff36eea3f138b00155ff49bad7",
+      "ci_main": {
+        "run_id": 36941224841,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36941224841",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36941224817,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36941224817",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 113,
+      "merged_at": "2026-10-01T23:37:11Z",
+      "pr": 219,
+      "title": "docs(g3): close TB-W4-G3-01 and PB-G3 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/219",
+      "merge_sha": "52f6129d519ba637e0073443275f0f5e74cb5fbd",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/52f6129d519ba637e0073443275f0f5e74cb5fbd",
+      "ci_main": {
+        "run_id": 36941761305,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36941761305",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36941761206,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36941761206",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 114,
+      "merged_at": "2026-10-02T00:27:53Z",
+      "pr": 223,
+      "title": "docs(governance): master resume memory from full read-only pass",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/223",
+      "merge_sha": "0f8ceebbae386832f66028fd9163e81871e746f0",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/0f8ceebbae386832f66028fd9163e81871e746f0",
+      "ci_main": {
+        "run_id": 36946118805,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36946118805",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 36946118607,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/36946118607",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 115,
+      "merged_at": "2026-10-04T16:54:03Z",
+      "pr": 224,
+      "title": "docs(program): converge intakes #220-#222 — B3.2 owner decision, human gate admissibility, dispatch loop",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/224",
+      "merge_sha": "5bf4b799e2feefd4ddff82d525177d04b9e3fe8c",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/5bf4b799e2feefd4ddff82d525177d04b9e3fe8c",
+      "ci_main": {
+        "run_id": 37218469388,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37218469388",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37218469371,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37218469371",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 116,
+      "merged_at": "2026-10-04T17:11:27Z",
+      "pr": 225,
+      "title": "feat(b3.2): operator-configured server target project and TargetScope tool surface (TB-W3-B3-02)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/225",
+      "merge_sha": "93d631e5dbc61354047f0847b96d23d5cb23ba21",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/93d631e5dbc61354047f0847b96d23d5cb23ba21",
+      "ci_main": {
+        "run_id": 37219562852,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37219562852",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37219562851,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37219562851",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 117,
+      "merged_at": "2026-10-04T17:19:41Z",
+      "pr": 226,
+      "title": "docs(b3.2): close TB-W3-B3-02 and PB-B3 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/226",
+      "merge_sha": "21dc3e43984fd684f5013991dc4de57885b9fd4e",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/21dc3e43984fd684f5013991dc4de57885b9fd4e",
+      "ci_main": {
+        "run_id": 37220083294,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37220083294",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37220083281,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37220083281",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 118,
+      "merged_at": "2026-10-04T17:29:52Z",
+      "pr": 227,
+      "title": "feat(dispatch-01): blueprint-bound governed task materialization (TB-W3-DISPATCH-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/227",
+      "merge_sha": "c5fc1d78ea4213791fa38ba67f3fcf4b7ed535d0",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c5fc1d78ea4213791fa38ba67f3fcf4b7ed535d0",
+      "ci_main": {
+        "run_id": 37220729943,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37220729943",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37220729894,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37220729894",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 119,
+      "merged_at": "2026-10-04T17:35:56Z",
+      "pr": 228,
+      "title": "docs(dispatch-01): close TB-W3-DISPATCH-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/228",
+      "merge_sha": "ef22f55ed715c664154f1b9ee550888a82654f00",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/ef22f55ed715c664154f1b9ee550888a82654f00",
+      "ci_main": {
+        "run_id": 37221125939,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37221125939",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37221125863,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37221125863",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 120,
+      "merged_at": "2026-10-04T17:41:24Z",
+      "pr": 229,
+      "title": "feat(dispatch-02): resume-owned-first governed claim (TB-W3-DISPATCH-02)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/229",
+      "merge_sha": "870305fc814773d8fb10f0a4fc2480a74885e46f",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/870305fc814773d8fb10f0a4fc2480a74885e46f",
+      "ci_main": {
+        "run_id": 37221468356,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37221468356",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37221468346,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37221468346",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 121,
+      "merged_at": "2026-10-04T17:48:02Z",
+      "pr": 230,
+      "title": "docs(dispatch-02): close TB-W3-DISPATCH-02 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/230",
+      "merge_sha": "3177919faabc2fe4615746651d1ab26de9b62682",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3177919faabc2fe4615746651d1ab26de9b62682",
+      "ci_main": {
+        "run_id": 37221889231,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37221889231",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37221889122,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37221889122",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 122,
+      "merged_at": "2026-10-04T18:10:27Z",
+      "pr": 231,
+      "title": "feat(dispatch-03): connected-agent next-work projection (TB-W3-DISPATCH-03)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/231",
+      "merge_sha": "6df23b91551a97cdf10968c22071036d5942f11b",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/6df23b91551a97cdf10968c22071036d5942f11b",
+      "ci_main": {
+        "run_id": 37223380722,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37223380722",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37223380611,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37223380611",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 123,
+      "merged_at": "2026-10-04T18:18:32Z",
+      "pr": 232,
+      "title": "docs(dispatch-03): close TB-W3-DISPATCH-03 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/232",
+      "merge_sha": "9a79c7a1b822e5717f2931c069369516f94a241a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9a79c7a1b822e5717f2931c069369516f94a241a",
+      "ci_main": {
+        "run_id": 37223934398,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37223934398",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37223934429,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37223934429",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 124,
+      "merged_at": "2026-10-04T18:35:12Z",
+      "pr": 233,
+      "title": "feat(c3): integrate GW-07 server resolution after project resolution (TB-W3-C3-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/233",
+      "merge_sha": "dbc5a5062716ae2fd186d36c4f54e97204ede9a3",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/dbc5a5062716ae2fd186d36c4f54e97204ede9a3",
+      "ci_main": {
+        "run_id": 37225005005,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37225005005",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37225005052,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37225005052",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 125,
+      "merged_at": "2026-10-04T22:23:48Z",
+      "pr": 234,
+      "title": "docs(c3): close TB-W3-C3-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/234",
+      "merge_sha": "0ac9ecf70adab117f2175ef2451fc62fe15abac7",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/0ac9ecf70adab117f2175ef2451fc62fe15abac7",
+      "ci_main": {
+        "run_id": 37239857289,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37239857289",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37239857290,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37239857290",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 126,
+      "merged_at": "2026-10-04T22:52:05Z",
+      "pr": 237,
+      "title": "Converge program intakes #235 (complete-to-terminal) and #236 (Super Admin Cockpit)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/237",
+      "merge_sha": "e6ea0d853e03f3100c0cd13fad297650f688e936",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/e6ea0d853e03f3100c0cd13fad297650f688e936",
+      "ci_main": {
+        "run_id": 37241641333,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37241641333",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37241641250,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37241641250",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 127,
+      "merged_at": "2026-10-04T23:09:40Z",
+      "pr": 238,
+      "title": "TB-W3-C4-01 GW-08 runtime resolution after server resolution",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/238",
+      "merge_sha": "4654c9edb57e37806eb9783f2b5d863301b50d01",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/4654c9edb57e37806eb9783f2b5d863301b50d01",
+      "ci_main": {
+        "run_id": 37242741995,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37242741995",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37242742016,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37242742016",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 128,
+      "merged_at": "2026-10-04T23:16:02Z",
+      "pr": 239,
+      "title": "Close TB-W3-C4-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/239",
+      "merge_sha": "538394a290c6f461f3d6c87a173ef87d08751f56",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/538394a290c6f461f3d6c87a173ef87d08751f56",
+      "ci_main": {
+        "run_id": 37243134982,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37243134982",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37243134986,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37243134986",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 129,
+      "merged_at": "2026-10-05T03:24:41Z",
+      "pr": 240,
+      "title": "TB-W3-C5-01 GW-09 domain resolution after server resolution",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/240",
+      "merge_sha": "9131bd8c2983377a62afbdb559bc3cf2392f1b5d",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9131bd8c2983377a62afbdb559bc3cf2392f1b5d",
+      "ci_main": {
+        "run_id": 37259332125,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37259332125",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37259332214,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37259332214",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 130,
+      "merged_at": "2026-10-05T03:31:26Z",
+      "pr": 241,
+      "title": "Close TB-W3-C5-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/241",
+      "merge_sha": "9afadd753e9c4d4cf882ad5fc7e0d4154cb4a25d",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9afadd753e9c4d4cf882ad5fc7e0d4154cb4a25d",
+      "ci_main": {
+        "run_id": 37259778743,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37259778743",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37259778898,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37259778898",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 131,
+      "merged_at": "2026-10-05T03:55:33Z",
+      "pr": 242,
+      "title": "feat(c345): project reality acceptance (TB-W3-C345-02)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/242",
+      "merge_sha": "d4a98988b6e5327cb1b802a3d2099f634d29b82d",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/d4a98988b6e5327cb1b802a3d2099f634d29b82d",
+      "ci_main": {
+        "run_id": 37261351989,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37261351989",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37261351824,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37261351824",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 132,
+      "merged_at": "2026-10-05T04:02:18Z",
+      "pr": 243,
+      "title": "docs(c345): close TB-W3-C345-02 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/243",
+      "merge_sha": "c4fb286efb38bb084013b62c6bdce533725021aa",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c4fb286efb38bb084013b62c6bdce533725021aa",
+      "ci_main": {
+        "run_id": 37261802718,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37261802718",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37261802693,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37261802693",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 133,
+      "merged_at": "2026-10-05T08:29:56Z",
+      "pr": 244,
+      "title": "feat(d1): project-scoped governance inheritance (TB-W3-D1-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/244",
+      "merge_sha": "87109f4153cea8d208c861e7ba456e617e3e4d24",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/87109f4153cea8d208c861e7ba456e617e3e4d24",
+      "ci_main": {
+        "run_id": 37284001092,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37284001092",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37284001114,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37284001114",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 134,
+      "merged_at": "2026-10-05T08:37:37Z",
+      "pr": 245,
+      "title": "Close TB-W3-D1-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/245",
+      "merge_sha": "9936325c773de58c9e1114f0094b2e477a6fde12",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/9936325c773de58c9e1114f0094b2e477a6fde12",
+      "ci_main": {
+        "run_id": 37284805820,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37284805820",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37284805811,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37284805811",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 135,
+      "merged_at": "2026-10-05T08:58:07Z",
+      "pr": 246,
+      "title": "Project-scoped effective capabilities (TB-W3-D2-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/246",
+      "merge_sha": "1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a",
+      "ci_main": {
+        "run_id": 37286964026,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37286964026",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37286964083,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37286964083",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 136,
+      "merged_at": "2026-10-05T09:04:28Z",
+      "pr": 247,
+      "title": "Close TB-W3-D2-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/247",
+      "merge_sha": "a22293fc78212e0375569c628af9964de2a28960",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/a22293fc78212e0375569c628af9964de2a28960",
+      "ci_main": {
+        "run_id": 37287641002,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37287641002",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37287641329,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37287641329",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 137,
+      "merged_at": "2026-10-05T13:27:56Z",
+      "pr": 248,
+      "title": "Proven references in the bootstrap receipt (TB-W3-D3-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/248",
+      "merge_sha": "7c9331695b034dea1c9f1fecfab775ff0e328358",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/7c9331695b034dea1c9f1fecfab775ff0e328358",
+      "ci_main": {
+        "run_id": 37317001429,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37317001429",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37317001064,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37317001064",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 138,
+      "merged_at": "2026-10-05T13:34:16Z",
+      "pr": 249,
+      "title": "Close TB-W3-D3-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/249",
+      "merge_sha": "121fba9c4ff7ddfb7526a00673ca67b253c9cd4b",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/121fba9c4ff7ddfb7526a00673ca67b253c9cd4b",
+      "ci_main": {
+        "run_id": 37317837657,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37317837657",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37317837513,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37317837513",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 139,
+      "merged_at": "2026-10-05T13:39:25Z",
+      "pr": 250,
+      "title": "Converge the #236 owner clarification EXISTING_MCP_EXPOSURE_FIRST",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/250",
+      "merge_sha": "df4a99e5e3b953a595a7c3defc33471538b0dc57",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/df4a99e5e3b953a595a7c3defc33471538b0dc57",
+      "ci_main": {
+        "run_id": 37318498936,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37318498936",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37318498997,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37318498997",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 140,
+      "merged_at": "2026-10-05T14:02:46Z",
+      "pr": 251,
+      "title": "Missing-context detection (TB-W3-E1-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/251",
+      "merge_sha": "4dcc90d4296e380574acd0da68001b586992d5b5",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/4dcc90d4296e380574acd0da68001b586992d5b5",
+      "ci_main": {
+        "run_id": 37321550003,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37321550003",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37321550025,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37321550025",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 141,
+      "merged_at": "2026-10-05T18:23:43Z",
+      "pr": 252,
+      "title": "Close TB-W3-E1-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/252",
+      "merge_sha": "59d02d590b0baeca8f5d5f75f90c9131e46aeff0",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/59d02d590b0baeca8f5d5f75f90c9131e46aeff0",
+      "ci_main": {
+        "run_id": 37355609392,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37355609392",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37355609277,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37355609277",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 142,
+      "merged_at": "2026-10-05T18:42:13Z",
+      "pr": 253,
+      "title": "Context completion wizard on the existing surfaces (TB-W3-E2-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/253",
+      "merge_sha": "e51e9958b211186560b2054595fe7bc3fc564d19",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/e51e9958b211186560b2054595fe7bc3fc564d19",
+      "ci_main": {
+        "run_id": 37357946975,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37357946975",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37357947034,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37357947034",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 143,
+      "merged_at": "2026-10-05T18:48:42Z",
+      "pr": 254,
+      "title": "Close TB-W3-E2-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/254",
+      "merge_sha": "fecbb6fe178ef1ffd74416b565081ef1f299678e",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/fecbb6fe178ef1ffd74416b565081ef1f299678e",
+      "ci_main": {
+        "run_id": 37358768792,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37358768792",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37358768813,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37358768813",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 144,
+      "merged_at": "2026-10-05T18:55:01Z",
+      "pr": 255,
+      "title": "Explicit consent before completion mutations (TB-W3-E3-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/255",
+      "merge_sha": "61b90a1eca532b088ec213b7ae6ad9e2241eece4",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/61b90a1eca532b088ec213b7ae6ad9e2241eece4",
+      "ci_main": {
+        "run_id": 37359562990,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37359562990",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37359563522,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37359563522",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 145,
+      "merged_at": "2026-10-05T23:28:55Z",
+      "pr": 256,
+      "title": "Close TB-W3-E3-01 and PB-E after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/256",
+      "merge_sha": "bf7312e6e8f52e660f2743b8ba40c779e98fe8d0",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/bf7312e6e8f52e660f2743b8ba40c779e98fe8d0",
+      "ci_main": {
+        "run_id": 37388727871,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37388727871",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37388727978,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37388727978",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 146,
+      "merged_at": "2026-10-05T23:46:56Z",
+      "pr": 257,
+      "title": "Provisioning capability decomposition (TB-W3-F-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/257",
+      "merge_sha": "d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1",
+      "ci_main": {
+        "run_id": 37390441248,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37390441248",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37390442113,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37390442113",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 147,
+      "merged_at": "2026-10-05T23:54:30Z",
+      "pr": 258,
+      "title": "Close TB-W3-F-01 after deploy attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/258",
+      "merge_sha": "3700bcb48188c1134d948d03504e94e6e905134c",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3700bcb48188c1134d948d03504e94e6e905134c",
+      "ci_main": {
+        "run_id": 37391136233,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37391136233",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37391136454,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37391136454",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 148,
+      "merged_at": "2026-10-06T00:10:44Z",
+      "pr": 259,
+      "title": "Project runtime provisioning, increment 1: absence proof and plan (TB-W3-F-03)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/259",
+      "merge_sha": "0d4f3d429026cc84dff340fada64bd3a5aec2b61",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/0d4f3d429026cc84dff340fada64bd3a5aec2b61",
+      "ci_main": {
+        "run_id": 37392611476,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37392611476",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37392611525,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37392611525",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 149,
+      "merged_at": "2026-10-06T04:37:42Z",
+      "pr": 260,
+      "title": "Project runtime provisioning, increment 2: target-bounded executor (TB-W3-F-03)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/260",
+      "merge_sha": "73bd0ff908ce53e2f177e1bc246cc62050b47a05",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/73bd0ff908ce53e2f177e1bc246cc62050b47a05",
+      "ci_main": {
+        "run_id": 37414610066,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37414610066",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37414610072,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37414610072",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 150,
+      "merged_at": "2026-10-08T17:35:46Z",
+      "pr": 261,
+      "title": "Project runtime provisioning, increment 3: consented surface and wiring (TB-W3-F-03)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/261",
+      "merge_sha": "6576b5287f23566684005adf6032734e2ecdea50",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/6576b5287f23566684005adf6032734e2ecdea50",
+      "ci_main": {
+        "run_id": 37817792888,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37817792888",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37817792904,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37817792904",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "OWNER_REPORTED_NOT_INDEPENDENTLY_VERIFIED",
+        "sha": "6576b5287f23566684005adf6032734e2ecdea50"
+      }
+    },
+    {
+      "sequence": 151,
+      "merged_at": "2026-10-08T17:42:56Z",
+      "pr": 263,
+      "title": "Close TB-W3-F-03: project runtime provisioning DONE with evidence",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/263",
+      "merge_sha": "bc1d9865d11cc296447ff239ae08012829beb6d5",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/bc1d9865d11cc296447ff239ae08012829beb6d5",
+      "ci_main": {
+        "run_id": 37818707310,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37818707310",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37818707389,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37818707389",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 152,
+      "merged_at": "2026-10-09T06:27:24Z",
+      "pr": 267,
+      "title": "F-04 increment 1: Live State served-domain observation for C5 (observe-binding)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/267",
+      "merge_sha": "5b631eb5520ed06c52bf18169a38dd22171ba90e",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/5b631eb5520ed06c52bf18169a38dd22171ba90e",
+      "ci_main": {
+        "run_id": 37893614504,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37893614504",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37893614512,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37893614512",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 153,
+      "merged_at": "2026-10-09T06:33:00Z",
+      "pr": 269,
+      "title": "F-04 increment 1: record merge, governed deploy and attestation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/269",
+      "merge_sha": "44c4bdf671f9b07aedb4e9b2aa45c72fe46edf9a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/44c4bdf671f9b07aedb4e9b2aa45c72fe46edf9a",
+      "ci_main": {
+        "run_id": 37894109762,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37894109762",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37894109843,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37894109843",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 154,
+      "merged_at": "2026-10-09T17:21:10Z",
+      "pr": 270,
+      "title": "docs(governance): F-04 recovery and parallel dispatch evidence",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/270",
+      "merge_sha": "4cd2a60b5d13600a76def29d15a41af87428bb03",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/4cd2a60b5d13600a76def29d15a41af87428bb03",
+      "ci_main": {
+        "run_id": 37965655453,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37965655453",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37965655380,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37965655380",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 155,
+      "merged_at": "2026-10-09T17:33:52Z",
+      "pr": 271,
+      "title": "fix(f04): reject ambiguous verified Plesk realPath ownership",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/271",
+      "merge_sha": "05cb448159e16c2e4b17696ca246c760107be005",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/05cb448159e16c2e4b17696ca246c760107be005",
+      "ci_main": {
+        "run_id": 37967171286,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37967171286",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37967171266,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37967171266",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 156,
+      "merged_at": "2026-10-09T18:15:11Z",
+      "pr": 272,
+      "title": "test(dispatch): concurrent CAS claims preserve single ownership",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/272",
+      "merge_sha": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+      "ci_main": {
+        "run_id": 37971981540,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37971981540",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37971981537,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37971981537",
+        "conclusion": "failure"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 157,
+      "merged_at": "2026-10-09T18:46:51Z",
+      "pr": 273,
+      "title": "docs(governance): indexed architecture chronology and handoff from #65",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/273",
+      "merge_sha": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/765eecf8c9dc86280a51a41cbb888432037bfeeb",
+      "ci_main": {
+        "run_id": 37975655748,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37975655748",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 37975655618,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/37975655618",
+        "conclusion": "failure"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 158,
+      "merged_at": "2026-10-11T17:02:42Z",
+      "pr": 274,
+      "title": "docs(governance): preserve initial PR inline review thread evidence",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/274",
+      "merge_sha": "c91c1a1191f40f20a6de841914947e94356658df",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c91c1a1191f40f20a6de841914947e94356658df",
+      "ci_main": {
+        "run_id": 38158118306,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38158118306",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38158118349,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38158118349",
+        "conclusion": "failure"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 159,
+      "merged_at": "2026-10-15T18:13:09Z",
+      "pr": 275,
+      "title": "docs(governance): successive audit-to-terminal workblock with collision gates",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/275",
+      "merge_sha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2",
+      "ci_main": {
+        "run_id": 38783796158,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38783796158",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38783796272,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38783796272",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 160,
+      "merged_at": "2026-10-15T18:27:44Z",
+      "pr": 289,
+      "title": "docs(governance): GitHub Actions OIDC-first continuity for OAuth outage",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/289",
+      "merge_sha": "f9aeaf9c0b6f1e97866c131833fd32ade58031a9",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/f9aeaf9c0b6f1e97866c131833fd32ade58031a9",
+      "ci_main": {
+        "run_id": 38785813872,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38785813872",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38785813546,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38785813546",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 161,
+      "merged_at": "2026-10-15T18:42:05Z",
+      "pr": 290,
+      "title": "docs(governance): GWB-04 94-blueprint source/test traceability snapshot",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/290",
+      "merge_sha": "b3454eab0cdac60332365dc0edabbd93bde514ae",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/b3454eab0cdac60332365dc0edabbd93bde514ae",
+      "ci_main": {
+        "run_id": 38787800931,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38787800931",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38787800896,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38787800896",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 162,
+      "merged_at": "2026-10-15T18:47:12Z",
+      "pr": 291,
+      "title": "docs(governance): GWB-02 full PR review provenance #65 onward",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/291",
+      "merge_sha": "dec94d9892a1fe56af91845bde4a85f3327f90cb",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/dec94d9892a1fe56af91845bde4a85f3327f90cb",
+      "ci_main": {
+        "run_id": 38788507126,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38788507126",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38788507212,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38788507212",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 163,
+      "merged_at": "2026-10-15T18:55:10Z",
+      "pr": 292,
+      "title": "docs(governance): GWB-03 triage of historical P1/P2 review findings",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/292",
+      "merge_sha": "b187953de89d8f6529e2af97abc1de4570c53146",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/b187953de89d8f6529e2af97abc1de4570c53146",
+      "ci_main": {
+        "run_id": 38789597872,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38789597872",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38789597877,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38789597877",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 164,
+      "merged_at": "2026-10-15T20:59:41Z",
+      "pr": 293,
+      "title": "docs(governance): unifier la reprise de l'audit et préserver les checkpoints",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/293",
+      "merge_sha": "92f4e51c1e7e3489b5d6e5c78369dcf0249e8703",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/92f4e51c1e7e3489b5d6e5c78369dcf0249e8703",
+      "ci_main": {
+        "run_id": 38806396589,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38806396589",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38806396431,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38806396431",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 165,
+      "merged_at": "2026-10-15T21:16:32Z",
+      "pr": 294,
+      "title": "docs(governance): ordered 15-stage MCP priority map and shared agent handoff",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/294",
+      "merge_sha": "0817f340dcd57f59b348b8a023082efd472342e3",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/0817f340dcd57f59b348b8a023082efd472342e3",
+      "ci_main": {
+        "run_id": 38808611902,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38808611902",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38808612012,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38808612012",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 166,
+      "merged_at": "2026-10-15T21:32:36Z",
+      "pr": 295,
+      "title": "docs(governance): GWB03-01 PR261 evidence and existing F-03 policy gaps",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/295",
+      "merge_sha": "773abe5542b3cd209943a648e750e2ec863b1e62",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/773abe5542b3cd209943a648e750e2ec863b1e62",
+      "ci_main": {
+        "run_id": 38810672702,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38810672702",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38810672684,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38810672684",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 167,
+      "merged_at": "2026-10-15T21:38:46Z",
+      "pr": 296,
+      "title": "docs(governance): GWB03-02 F-04 domain review and live-evidence limitations",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/296",
+      "merge_sha": "c7d33d4477db5c6a974a97e4280ab1056efcc5c9",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/c7d33d4477db5c6a974a97e4280ab1056efcc5c9",
+      "ci_main": {
+        "run_id": 38811444653,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38811444653",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38811444716,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38811444716",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 168,
+      "merged_at": "2026-10-15T21:49:01Z",
+      "pr": 300,
+      "title": "docs(governance): reconcile 18 READY blueprints with PR overlaps and OIDC authority",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/300",
+      "merge_sha": "cc31ce12bea236b4cfb31d99ecee700c543f0c17",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/cc31ce12bea236b4cfb31d99ecee700c543f0c17",
+      "ci_main": {
+        "run_id": 38812707495,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38812707495",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38812707629,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38812707629",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 169,
+      "merged_at": "2026-10-15T22:51:38Z",
+      "pr": 304,
+      "title": "docs(intake): make MCP agent cold-start continuation immediately discoverable",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/304",
+      "merge_sha": "cdae63af7140c10b411ed43a9ddfacc039c731eb",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/cdae63af7140c10b411ed43a9ddfacc039c731eb",
+      "ci_main": {
+        "run_id": 38819930332,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38819930332",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38819930312,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38819930312",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 170,
+      "merged_at": "2026-10-15T23:36:39Z",
+      "pr": 311,
+      "title": "docs(audit): preserve MCP historical breadcrumbs and mandatory agent handoffs",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/311",
+      "merge_sha": "8f804e3113daf37d5fe7e96bda86bf987b7043cb",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/8f804e3113daf37d5fe7e96bda86bf987b7043cb",
+      "ci_main": {
+        "run_id": 38824614573,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38824614573",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38824614436,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38824614436",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 171,
+      "merged_at": "2026-10-16T19:22:43Z",
+      "pr": 317,
+      "title": "feat(auto-intake): owner-verified GitHub mission discovery and idempotent receipts",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/317",
+      "merge_sha": "721805d6a9850a2576d0ce897bff316eb13487eb",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/721805d6a9850a2576d0ce897bff316eb13487eb",
+      "ci_main": {
+        "run_id": 38954477490,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38954477490",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38954477106,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38954477106",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 172,
+      "merged_at": "2026-10-16T19:28:35Z",
+      "pr": 318,
+      "title": "fix(auto-intake): accept GitHub write collaborators for unprivileged intake submission",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/318",
+      "merge_sha": "67e17a08fb324033245f46334c814da0b5ec5425",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/67e17a08fb324033245f46334c814da0b5ec5425",
+      "ci_main": {
+        "run_id": 38955194385,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38955194385",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 38955194433,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/38955194433",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 173,
+      "merged_at": "2026-10-22T17:44:13Z",
+      "pr": 329,
+      "title": "feat(tasks): exact-ID claim primitive for governed OIDC continuity",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/329",
+      "merge_sha": "78884dc65627dcdc4ec61ab66ab16fc976a316b6",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/78884dc65627dcdc4ec61ab66ab16fc976a316b6",
+      "ci_main": {
+        "run_id": 39825295242,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39825295242",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 39825294829,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39825294829",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 174,
+      "merged_at": "2026-10-22T19:26:32Z",
+      "pr": 334,
+      "title": "fix(oauth): P0 consent provenance diagnostics without security regression",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/334",
+      "merge_sha": "339aaf2ba71619d518c3256ba313d988dd80647f",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/339aaf2ba71619d518c3256ba313d988dd80647f",
+      "ci_main": {
+        "run_id": 39840090355,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39840090355",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 39840090470,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39840090470",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 175,
+      "merged_at": "2026-10-22T19:56:54Z",
+      "pr": 337,
+      "title": "fix(oauth): identify precise production origin mismatch safely",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/337",
+      "merge_sha": "0eaaeb948e9539d1662b5b9924869bfd0aaed4cf",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/0eaaeb948e9539d1662b5b9924869bfd0aaed4cf",
+      "ci_main": {
+        "run_id": 39844542138,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39844542138",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 39844541797,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39844541797",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 176,
+      "merged_at": "2026-10-22T20:27:52Z",
+      "pr": 342,
+      "title": "fix(oauth): diagnose opaque Origin on S1 without weakening consent security",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/342",
+      "merge_sha": "3261d5fefae5d9e3cba75423fa20c737afd9681b",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/3261d5fefae5d9e3cba75423fa20c737afd9681b",
+      "ci_main": {
+        "run_id": 39849075026,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39849075026",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 39849074998,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39849074998",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 177,
+      "merged_at": "2026-10-22T20:55:37Z",
+      "pr": 345,
+      "title": "fix(oauth): narrowly accept opaque Origin with signed same-origin consent",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/345",
+      "merge_sha": "a3df3b01f65cd6c212cf9948b68cd8531c6e76d5",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/a3df3b01f65cd6c212cf9948b68cd8531c6e76d5",
+      "ci_main": {
+        "run_id": 39853020928,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39853020928",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 39853020819,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39853020819",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 178,
+      "merged_at": "2026-10-23T01:35:36Z",
+      "pr": 350,
+      "title": "feat(provisioning): additive S1/S2 Plesk planner and consented executor (TDD)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/350",
+      "merge_sha": "48a529889517aa1c11974802d23acc3f35e0f187",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/48a529889517aa1c11974802d23acc3f35e0f187",
+      "ci_main": {
+        "run_id": 39884876837,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39884876837",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 39884876866,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/39884876866",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 179,
+      "merged_at": "2026-10-30T02:59:11Z",
+      "pr": 357,
+      "title": "feat(gd-u-02b): scoped GitHub repository permission observation with negative tests",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/357",
+      "merge_sha": "2bcca795b48f18638eccd8d2fd3a64c4f094859b",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/2bcca795b48f18638eccd8d2fd3a64c4f094859b",
+      "ci_main": {
+        "run_id": 40994789335,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/40994789335",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 40994789367,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/40994789367",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 180,
+      "merged_at": "2026-10-30T05:37:41Z",
+      "pr": 355,
+      "title": "feat(github): additive universal GitHub/Plesk/server capability foundations (GD-U-01)",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/355",
+      "merge_sha": "e39e8f0fade7e545b8c57584dee17be81c1233f2",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/e39e8f0fade7e545b8c57584dee17be81c1233f2",
+      "ci_main": {
+        "run_id": 41009489153,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41009489153",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 41009489056,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41009489056",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 181,
+      "merged_at": "2026-10-30T06:07:05Z",
+      "pr": 360,
+      "title": "feat(pilot-e2-01): trace explicit E1/E2 work entry using existing GitHub continuity",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/360",
+      "merge_sha": "10309573502c5bc8cd3d22f0b473434bf794cdc8",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/10309573502c5bc8cd3d22f0b473434bf794cdc8",
+      "ci_main": {
+        "run_id": 41012207735,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41012207735",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 41012207646,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41012207646",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 182,
+      "merged_at": "2026-10-30T06:55:02Z",
+      "pr": 361,
+      "title": "feat(gd-u-e2): read-only live GitHub App repository permission wiring",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/361",
+      "merge_sha": "0655bb3bd1ca351750999a9cb2776b95413da38f",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/0655bb3bd1ca351750999a9cb2776b95413da38f",
+      "ci_main": {
+        "run_id": 41016900098,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41016900098",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 41016900131,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41016900131",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 183,
+      "merged_at": "2026-10-30T17:29:55Z",
+      "pr": 363,
+      "title": "test(gd-u-e2): verifiable 165-capability runtime evidence matrix",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/363",
+      "merge_sha": "1f6961063d27bc85087aab57a8f700fd7729e03f",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/1f6961063d27bc85087aab57a8f700fd7729e03f",
+      "ci_main": {
+        "run_id": 41099335690,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41099335690",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 41099335740,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41099335740",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 184,
+      "merged_at": "2026-10-31T00:47:12Z",
+      "pr": 366,
+      "title": "fix(mcp): reconcile S1 durable GitHub account type before E2 continuation",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/366",
+      "merge_sha": "7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/7cbc5496e2a3bd28cf1205d7b659429f61ef6cc6",
+      "ci_main": {
+        "run_id": 41152043914,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41152043914",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 41152043903,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41152043903",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 185,
+      "merged_at": "2026-10-31T04:54:20Z",
+      "pr": 365,
+      "title": "feat(e2): reconcile MCP before owner choice and recover GitHub continuity evidence",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/365",
+      "merge_sha": "fbbacfb53e43dada95b969f39eef03efb6f08dcb",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/fbbacfb53e43dada95b969f39eef03efb6f08dcb",
+      "ci_main": {
+        "run_id": 41170431672,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41170431672",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 41170431660,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41170431660",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    },
+    {
+      "sequence": 186,
+      "merged_at": "2026-10-31T05:08:14Z",
+      "pr": 367,
+      "title": "docs(e2): reconcile attested production state after PR #365",
+      "pr_url": "https://github.com/Patricked-code/MCP/pull/367",
+      "merge_sha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+      "commit_url": "https://github.com/Patricked-code/MCP/commit/05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+      "ci_main": {
+        "run_id": 41171370591,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41171370591",
+        "conclusion": "success"
+      },
+      "governed_deploy": {
+        "run_id": 41171370599,
+        "url": "https://github.com/Patricked-code/MCP/actions/runs/41171370599",
+        "conclusion": "success"
+      },
+      "runtime_historical": {
+        "status": "UNVERIFIED",
+        "sha": null
+      }
+    }
+  ]
+}
