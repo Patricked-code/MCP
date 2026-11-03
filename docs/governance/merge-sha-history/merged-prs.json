@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "repository": "Patricked-code/MCP",
+  "scope": "ALL_MERGED_PULL_REQUESTS",
+  "baseline_main_sha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "source": "GitHub REST Pull Request details via connected GitHub account Patricked-code",
+  "snapshot_date_utc": "2026-11-03",
+  "status": "IN_PROGRESS",
+  "scan": {
+    "from_pr_number": 1,
+    "to_pr_number": 0,
+    "scan_ceiling": 370,
+    "not_pull_requests": [],
+    "non_merged_pull_requests": [],
+    "errors": []
+  },
+  "rows": []
+}
