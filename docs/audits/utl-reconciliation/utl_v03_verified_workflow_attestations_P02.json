@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "kind": "UTL_V03_APPEND_ONLY_WORKFLOW_ATTESTATIONS_P02",
+  "source": "GitHub Actions validated deploy job logs (read only)",
+  "provenanceClass": "GITHUB_WORKFLOW_S1_STATUS_ATTESTED_NOT_INDEPENDENT_RUNTIME_RECHECK",
+  "appendTo": "docs/audits/utl-reconciliation/utl_v03_verified_workflow_attestations.json",
+  "attestations": [
+    {
+      "witness_id": "WITNESS-TB-W3-F-03",
+      "pr_number": 259,
+      "main_sha": "0d4f3d429026cc84dff340fada64bd3a5aec2b61",
+      "ci_main_run_id": 37392611476,
+      "deploy_workflow_run_id": 37392611525,
+      "github_job_id": 112040991037,
+      "server_job_id": "mcp-s1-37392611525-0d4f3d429026",
+      "admission_kind": "push_ci_gate",
+      "accepted_at_utc": "2026-10-06T00:11:59.7883813Z",
+      "attested_at_utc": "2026-10-06T00:12:34.7560976Z",
+      "attestation_phrase": "Deployment attested for exact SHA 0d4f3d429026cc84dff340fada64bd3a5aec2b61.",
+      "log_url": "https://github.com/Patricked-code/MCP/actions/runs/37392611525/job/112040991037"
+    },
+    {
+      "witness_id": "WITNESS-TB-W3-F-03",
+      "pr_number": 260,
+      "main_sha": "73bd0ff908ce53e2f177e1bc246cc62050b47a05",
+      "ci_main_run_id": 37414610066,
+      "deploy_workflow_run_id": 37414610072,
+      "github_job_id": 112110350757,
+      "server_job_id": "mcp-s1-37414610072-73bd0ff908ce",
+      "admission_kind": "push_ci_gate",
+      "accepted_at_utc": "2026-10-06T04:39:09.0641271Z",
+      "attested_at_utc": "2026-10-06T04:39:42.8449204Z",
+      "attestation_phrase": "Deployment attested for exact SHA 73bd0ff908ce53e2f177e1bc246cc62050b47a05.",
+      "log_url": "https://github.com/Patricked-code/MCP/actions/runs/37414610072/job/112110350757"
+    },
+    {
+      "witness_id": "WITNESS-TB-W3-F-03",
+      "pr_number": 263,
+      "main_sha": "bc1d9865d11cc296447ff239ae08012829beb6d5",
+      "ci_main_run_id": 37818707310,
+      "deploy_workflow_run_id": 37818707389,
+      "github_job_id": 113453887656,
+      "server_job_id": "mcp-s1-37818707389-bc1d9865d11c",
+      "admission_kind": "push_ci_gate",
+      "accepted_at_utc": "2026-10-08T17:44:01.0663417Z",
+      "attested_at_utc": "2026-10-08T17:44:35.8089557Z",
+      "attestation_phrase": "Deployment attested for exact SHA bc1d9865d11cc296447ff239ae08012829beb6d5.",
+      "log_url": "https://github.com/Patricked-code/MCP/actions/runs/37818707389/job/113453887656"
+    },
+    {
+      "witness_id": "WITNESS-E2-PILOT-359",
+      "pr_number": 360,
+      "main_sha": "10309573502c5bc8cd3d22f0b473434bf794cdc8",
+      "ci_main_run_id": 41012207735,
+      "deploy_workflow_run_id": 41012207646,
+      "github_job_id": 123920382898,
+      "server_job_id": "mcp-s1-41012207646-10309573502c",
+      "admission_kind": "push_ci_gate",
+      "accepted_at_utc": "2026-10-30T06:09:02.2341798Z",
+      "attested_at_utc": "2026-10-30T06:09:37.5860249Z",
+      "attestation_phrase": "Deployment attested for exact SHA 10309573502c5bc8cd3d22f0b473434bf794cdc8.",
+      "log_url": "https://github.com/Patricked-code/MCP/actions/runs/41012207646/job/123920382898"
+    },
+    {
+      "witness_id": "WITNESS-E2-PILOT-359",
+      "pr_number": 367,
+      "main_sha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+      "ci_main_run_id": 41171370591,
+      "deploy_workflow_run_id": 41171370599,
+      "github_job_id": 124449834987,
+      "server_job_id": "mcp-s1-41171370599-05dbb66ed81a",
+      "admission_kind": "push_ci_gate",
+      "accepted_at_utc": "2026-10-31T05:10:07.5155654Z",
+      "attested_at_utc": "2026-10-31T05:10:41.9706593Z",
+      "attestation_phrase": "Deployment attested for exact SHA 05dbb66ed81aa4e7443655c89d10c0c390ff0f10.",
+      "log_url": "https://github.com/Patricked-code/MCP/actions/runs/41171370599/job/124449834987"
+    }
+  ],
+  "notes": [
+    "Complementary source file: retains both original PR261/PR365 evidence rows without alteration",
+    "Workflow validated S1 response, not an independent historical S1 observation",
+    "No UTL_OUT or T_OUT inferred from these deployed SHA attestations"
+  ]
+}
