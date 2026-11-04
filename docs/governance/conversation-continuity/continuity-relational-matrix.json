@@ -11,9 +11,9 @@
     "continuityContract": "continuity-contract.json",
     "continuityContractBlobSha": "3ea4fde73d4281087a077b32f237dc70e82e3230",
     "conversationEventLog": "conversation-event-log.json",
-    "conversationEventLogBlobSha": "47720e39a17eeab0efd3cc1964c55648d6b0e648",
+    "conversationEventLogBlobSha": "6ed991b2280571bd37e3e3c1dcb5b1de38eb9ee5",
     "treeVersion": "1.2",
-    "eventCount": 5
+    "eventCount": 6
   },
   "counts": {
     "rootRecords": 1,
@@ -23,7 +23,7 @@
     "structuralEdges": 104,
     "crossReferenceEdges": 103,
     "ancestorClosureRows": 354,
-    "eventNodeLinks": 20,
+    "eventNodeLinks": 30,
     "externalReferenceRecords": 3,
     "externalNodeLinks": 7,
     "maxDepth": 4
@@ -6478,6 +6478,14 @@
         "status": "DOCUMENTARY_ACTION_IN_PROGRESS_VALIDATION_PENDING",
         "source": "user request for IDs of every child at every depth and an evolving relational tracking/ID-link matrix",
         "nextDiscussionAction": "Rebuild derived matrices against tree 1.2, event sequence 5 and contract 1.2; check exact SHA and zero regression; do not merge without review."
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "sequence": 6,
+        "kind": "USER_SOURCE_AND_DISCIPLINE_COMPREHENSION",
+        "status": "CONVERSATION_UNDERSTANDING_RECORDED_NO_RUNTIME_CLAIM",
+        "source": "user-provided detailed 11-point analysis of existing MCP discipline, followed by assistant's explicit understanding",
+        "nextDiscussionAction": "On further exploration, verify exact source paths and relevant passages before promoting specific claims; preserve chapter 5 hierarchy."
       }
     ],
     "eventNodeLinks": [
@@ -6579,6 +6587,56 @@
       {
         "eventId": "MCP-CONV-EVT-20261104-005",
         "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "role": "PRIMARY"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.4",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-006",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
         "role": "RELATED"
       }
     ],
