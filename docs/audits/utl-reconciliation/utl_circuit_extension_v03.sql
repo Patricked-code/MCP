@@ -288,3 +288,40 @@ LEFT JOIN utl_v03_units u ON u.parent_work_ref=p.parent_work_ref
 LEFT JOIN v_utl_v03_unit_gate_strict ug ON ug.utl_ref=u.utl_ref
 LEFT JOIN utl_v03_parent_acceptance pa ON pa.parent_work_ref=p.parent_work_ref
 GROUP BY p.parent_work_ref,p.work_entry,p.continuity_id,pa.state;
+
+
+-- Supplemental historical server-job receipts independently retrieved from
+-- GitHub Actions execution logs (not newly polled historical S1 observations).
+CREATE TABLE IF NOT EXISTS utl_v03_workflow_server_attestations (
+ witness_id TEXT NOT NULL REFERENCES utl_v03_historical_witnesses(witness_id),
+ pr_number INTEGER NOT NULL REFERENCES merged_prs(pr_number),
+ main_sha TEXT NOT NULL CHECK(length(main_sha)=40),
+ ci_main_run_id INTEGER NOT NULL,
+ deploy_workflow_run_id INTEGER NOT NULL,
+ github_job_id INTEGER NOT NULL,
+ server_job_id TEXT NOT NULL,
+ admission_kind TEXT NOT NULL CHECK(admission_kind='push_ci_gate'),
+ accepted_at_utc TEXT NOT NULL,
+ attested_at_utc TEXT NOT NULL,
+ attestation_phrase TEXT NOT NULL,
+ workflow_log_url TEXT NOT NULL,
+ provenance_class TEXT NOT NULL CHECK(
+ provenance_class='GITHUB_WORKFLOW_S1_STATUS_ATTESTED_NOT_INDEPENDENT_RUNTIME_RECHECK'),
+ PRIMARY KEY(witness_id,pr_number),
+ CHECK(server_job_id='mcp-s1-'||deploy_workflow_run_id||'-'||substr(main_sha,1,12)),
+ FOREIGN KEY(witness_id,pr_number) REFERENCES utl_v03_witness_prs(witness_id,pr_number)
+);
+
+CREATE VIEW IF NOT EXISTS v_utl_v03_historical_runtime_correlated AS
+SELECT base.*, proof.github_job_id,proof.server_job_id,
+       proof.admission_kind,proof.workflow_log_url,
+       proof.accepted_at_utc,proof.attested_at_utc,
+ CASE WHEN proof.main_sha=base.merge_sha AND
+     proof.ci_main_run_id=base.ci_main_run_id AND
+     proof.deploy_workflow_run_id=base.governed_deploy_run_id
+   THEN 'WORKFLOW_S1_STATUS_ATTESTED'
+   ELSE base.effective_runtime_proof
+ END AS strongest_historical_runtime_proof
+FROM v_utl_v03_historical_witness_matrix base
+LEFT JOIN utl_v03_workflow_server_attestations proof
+ ON proof.witness_id=base.witness_id AND proof.pr_number=base.pr_number;
