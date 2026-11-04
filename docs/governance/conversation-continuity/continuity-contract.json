@@ -18,7 +18,8 @@
     "Register each new substantive question/answer/source during an authorized interactive turn, attaching a precise parent and versioned event",
     "The technical conversation journal is an append-only record of summaries; it is not a complete transcript or an independent runtime memory authority",
     "Do not say a turn is persisted until an actual GitHub commit and verification exist",
-    "Keep owner-supplied MGEF diagrams as proposal pending reconciliation with the existing E2 GitHub-only rule"
+    "Keep owner-supplied MGEF diagrams as proposal pending reconciliation with the existing E2 GitHub-only rule",
+    "After any tree or event journal change, the relational matrix projections must be rebuilt; stale projections are not current"
   ],
   "continuationRecordSchema": {
     "id": "stable node ID",
@@ -50,9 +51,9 @@
     "runtime": "no S1/S2 mutation"
   },
   "boundary": "An ID created here is DOCUMENTARY and must not be passed off as runtime Continuity ID. Existing operational IDs are linked only as references.",
-  "nextDiscussionAction": "On each future relevant chat turn, read PR373 and newest commit, update deepest relevant nodes and append technical event, then verify before claiming persistence.",
+  "nextDiscussionAction": "Use PR373 only; expand deepest real node with stable IDs, append technical event, rebuild and validate all derived matrices, report exact HEAD and verified status.",
   "evolutionProtocol": {
-    "version": "1.1",
+    "version": "1.2",
     "nature": "CONVERSATION_DOCUMENTATION_ONLY_NOT_RUNTIME_AUTHORITY",
     "scope": "same open PR #373 and established canonical tree",
     "capture": "every relevant new question, response, technical source and explicit decision during interactive turns",
@@ -68,7 +69,8 @@
       "Append chronological event with source/provenance and separate user statement from assistant explanation",
       "Commit changed files into PR373 existing branch; verify actual GitHub file content and SHA",
       "Check original 63 nodes still exist, parent/child refs and unique IDs remain valid, and no events were lost",
-      "Report the persisted commit or accurately report NOT_PERSISTED with reason and next action"
+      "Report the persisted commit or accurately report NOT_PERSISTED with reason and next action",
+      "Rebuild node, relation and ancestor closure projections with build-relational-matrix.mjs --write, then verify --check before declaring the matrix current"
     ],
     "eventFields": [
       "eventId",
@@ -98,5 +100,66 @@
     "userSourceVsRuntime": "MGEF is a user supplied representation. Its diagrams do not grant Task/Session/Receipt/Lock authority and cannot silently override observed E2 GitHub-only rules.",
     "revisionPolicy": "Additive descendants and provenance events; previous corrections superseded by reference, not deleted; one stable primary parent per node; unlimited real depth.",
     "integration": "Read via GitHub on future ChatGPT conversations when available; not a scheduler, event subscription, automatic background agent, nor a complete archive of earlier conversations."
+  },
+  "relationalMatrix": {
+    "schemaVersion": 1,
+    "model": "ONE_CANONICAL_ADJACENCY_TREE_PLUS_DETERMINISTIC_DERIVED_RELATIONAL_PROJECTIONS",
+    "canonicalSource": "canonical-tree.json",
+    "chronologicalSource": "conversation-event-log.json",
+    "generatedFiles": [
+      "continuity-relational-matrix.json",
+      "continuity-node-matrix.csv",
+      "continuity-relation-matrix.csv"
+    ],
+    "builder": "build-relational-matrix.mjs",
+    "commands": {
+      "write": "node docs/governance/conversation-continuity/build-relational-matrix.mjs --write",
+      "check": "node docs/governance/conversation-continuity/build-relational-matrix.mjs --check"
+    },
+    "matrixNodeSchema": {
+      "id": "stable full ID",
+      "path": "immutable dotted path",
+      "parentId": "exact stable ID",
+      "chapterId": "root chapter",
+      "depth": "derived ancestor count",
+      "siblingOrder": "parent child array position",
+      "ancestorIds": "ordered root to immediate parent",
+      "childIds": "direct child IDs",
+      "descendantCount": "derived transitive count",
+      "crossReferenceIds": "nonstructural links",
+      "provenance": "evidence of statement origin",
+      "nextDiscussionAction": "optional precise continuation"
+    },
+    "linkTypes": {
+      "PARENT_OF": "structural single-parent edge",
+      "CROSS_REFERENCE": "non-structural topic link",
+      "SELF": "zero-length identity closure",
+      "ANCESTOR": "positive-length closure",
+      "EVENT_PRIMARY": "event to primary subject",
+      "EVENT_RELATED": "event to secondary subject",
+      "EXTERNAL_POINTER": "link only to actual GitHub evidence, no ownership"
+    },
+    "invariants": [
+      "Every existing child already has one persistent ID (including all depths)",
+      "No ID assigned to hypothetical descendants until the subject is developed",
+      "Exactly one structural parent; multiple cross references allowed",
+      "No cycle or unresolved parent/child/reference",
+      "Every root chapter title unchanged and chapter count remains eight",
+      "All existing IDs, titles and parent assignments preserved unless explicit governed change with evidence",
+      "Matrix is a derived projection, never an independent Task Queue, memory runtime, or permission source",
+      "No public posting of secrets or sensitive conversation material",
+      "No GitHub persistence claim without actual commit and read-back validation"
+    ],
+    "pathsAndIdsImmutable": true,
+    "unlimitedFutureDepth": true,
+    "ancestorClosure": "derived from canonical parent links",
+    "recheckAfterEverySourceUpdate": true,
+    "separateOperationalContinuityIds": "Link actual task/session/pr/continuity evidence as external references, do not fabricate",
+    "collisionProtectedScopes": [
+      "PR372",
+      "docs/governance/markdown-inventory.json",
+      ".github/workflows",
+      "MCP runtime S1/S2"
+    ]
   }
 }
