@@ -6,7 +6,7 @@
   "provenance": "Discussion-backed extracts, not verbatim complete chat transcript",
   "initialCoverage": "RECENT_RELEVANT_DIALOGUE_ONLY",
   "disclaimer": "No automated background collection. Historical earlier turns are not exhaustively included. Unknown details remain unknown.",
-  "nextSequence": 7,
+  "nextSequence": 8,
   "events": [
     {
       "eventId": "MCP-CONV-EVT-20261104-001",
@@ -211,6 +211,53 @@
       "sourceClassification": "USER_SUPPLIED_ANALYSIS_NOT_INDEPENDENTLY_REVERIFIED_PER_INDIVIDUAL_CLAIM",
       "status": "CONVERSATION_UNDERSTANDING_RECORDED_NO_RUNTIME_CLAIM",
       "nextDiscussionAction": "On further exploration, verify exact source paths and relevant passages before promoting specific claims; preserve chapter 5 hierarchy."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-007",
+      "sequence": 7,
+      "kind": "HISTORICAL_FOUNDING_INSTRUCTIONS_RECONSTRUCTION",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.A",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.B",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "source": "Historical user instructions recovered from previous conversations, checked against original Github PR #6 and historical repository documents",
+      "userIntent": "Identify original instructions that created historical MCP discipline, not merely restate current policies.",
+      "assistantOutcome": "Rooted discipline in July 2026 requirements: preserve existing behavior; additive change; agent anti-dispersion; protected main, dedicated branches and PR; GitHub↔server reconciliation; DirtyCount gate; documented evidence and continuation without replay. Verified PR #6 created 2026-07-09 and merged to 4ae11249a6ec129cbf7289e361416bc248311bca, introducing anti-dispersion/manual/machine-readable footprint. Early July 4 onboarding planning in PR #1 is historical context, not proof that PR #1 was merged. Subsequent refinements are not retroactively original July 9 instructions.",
+      "evidence": [
+        {
+          "type": "GITHUB_PR",
+          "url": "https://github.com/Patricked-code/MCP/pull/6",
+          "state": "MERGED",
+          "createdAt": "2026-07-09T20:21:44Z"
+        },
+        {
+          "type": "GITHUB_MERGE_COMMIT",
+          "url": "https://github.com/Patricked-code/MCP/commit/4ae11249a6ec129cbf7289e361416bc248311bca",
+          "sha": "4ae11249a6ec129cbf7289e361416bc248311bca"
+        },
+        {
+          "type": "GITHUB_PR_HISTORICAL_CONTEXT",
+          "url": "https://github.com/Patricked-code/MCP/pull/1",
+          "state": "NOT_MERGED",
+          "createdAt": "2026-07-04T11:10:51Z"
+        },
+        {
+          "type": "HISTORICAL_USER_MESSAGES",
+          "date": "2026-07-09",
+          "note": "Personal conversation history corroborates initial instructions; full exact master prompt not available in this register."
+        }
+      ],
+      "status": "HISTORICAL_RECONSTRUCTION_WITH_SOURCE_BOUNDARIES",
+      "nextDiscussionAction": "If the owner requests verbatim original master prompt, locate full historical text instead of inventing quotation; preserve four conceptual layers and no drift."
     }
   ]
 }
