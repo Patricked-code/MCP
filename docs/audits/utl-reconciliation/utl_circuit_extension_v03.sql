@@ -244,3 +244,47 @@ LEFT JOIN utl_v03_units u ON u.parent_work_ref=p.parent_work_ref
 LEFT JOIN utl_v03_unit_acceptance a ON a.utl_ref=u.utl_ref AND a.status='ATTESTED'
 LEFT JOIN utl_v03_parent_acceptance pa ON pa.parent_work_ref=p.parent_work_ref
 GROUP BY p.parent_work_ref,p.work_entry,p.continuity_id,pa.state;
+
+
+-- Owner contract documents are preserved with an independent hash family.
+CREATE TABLE IF NOT EXISTS utl_v03_contract_sources (
+ source_path TEXT PRIMARY KEY,
+ original_filename TEXT NOT NULL,
+ sha256 TEXT NOT NULL CHECK(length(sha256)=64),
+ document_role TEXT NOT NULL CHECK(document_role IN ('PREPARATORY_V02','EXTENSION_V03')),
+ original_lines INTEGER NOT NULL CHECK(original_lines>0)
+);
+
+-- Strict, read-only projection: a workflow result never attests a unit.
+CREATE VIEW IF NOT EXISTS v_utl_v03_unit_gate_strict AS
+SELECT u.utl_ref,u.parent_work_ref,u.continuity_id,u.deploy_required,
+ CASE
+   WHEN NOT EXISTS (SELECT 1 FROM utl_v03_unit_acceptance a
+                   WHERE a.utl_ref=u.utl_ref AND a.status='ATTESTED')
+     THEN 'UNIT_NOT_ATTESTED'
+   WHEN u.deploy_required=1 AND NOT EXISTS
+       (SELECT 1 FROM utl_v03_delivery_evidence d
+        WHERE d.utl_ref=u.utl_ref AND d.attestation_status='SOURCE_ATTESTED')
+     THEN 'DEPLOY_ATTESTATION_MISSING'
+   ELSE 'UNIT_EVIDENCE_PRESENT'
+ END AS evidence_projection
+FROM utl_v03_units u;
+
+CREATE VIEW IF NOT EXISTS v_utl_v03_parent_gate_strict AS
+SELECT p.parent_work_ref,p.work_entry,p.continuity_id,
+ COUNT(DISTINCT u.utl_ref) AS canonical_unit_count,
+ COUNT(DISTINCT CASE WHEN ug.evidence_projection='UNIT_EVIDENCE_PRESENT' THEN u.utl_ref END) AS unit_evidence_count,
+ pa.state AS parent_recorded_state,
+ CASE
+   WHEN pa.state='ATTESTED'
+    AND NOT EXISTS (SELECT 1 FROM v_utl_v03_unit_gate_strict sub
+                    WHERE sub.parent_work_ref=p.parent_work_ref
+                    AND sub.evidence_projection!='UNIT_EVIDENCE_PRESENT')
+    THEN 'PARENT_EVIDENCE_PRESENT'
+   ELSE 'PARENT_NOT_ATTESTED'
+ END AS strict_projection
+FROM utl_v03_parents p
+LEFT JOIN utl_v03_units u ON u.parent_work_ref=p.parent_work_ref
+LEFT JOIN v_utl_v03_unit_gate_strict ug ON ug.utl_ref=u.utl_ref
+LEFT JOIN utl_v03_parent_acceptance pa ON pa.parent_work_ref=p.parent_work_ref
+GROUP BY p.parent_work_ref,p.work_entry,p.continuity_id,pa.state;
