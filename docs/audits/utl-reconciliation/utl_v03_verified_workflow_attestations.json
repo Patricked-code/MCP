@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "source": "GitHub Actions deploy job execution logs, sanitized field extraction",
+  "provenanceClass": "GITHUB_WORKFLOW_S1_STATUS_ATTESTED_NOT_INDEPENDENT_RUNTIME_RECHECK",
+  "attestations": [
+    {
+      "witness_id": "WITNESS-E2-PILOT-359",
+      "pr_number": 365,
+      "main_sha": "fbbacfb53e43dada95b969f39eef03efb6f08dcb",
+      "ci_main_run_id": 41170431672,
+      "deploy_workflow_run_id": 41170431660,
+      "github_job_id": 124447019576,
+      "server_job_id": "mcp-s1-41170431660-fbbacfb53e43",
+      "admission_kind": "push_ci_gate",
+      "accepted_at_utc": "2026-10-31T04:55:53.6981886Z",
+      "attested_at_utc": "2026-10-31T04:56:28.5380665Z",
+      "attestation_phrase": "Deployment attested for exact SHA fbbacfb53e43dada95b969f39eef03efb6f08dcb.",
+      "log_url": "https://github.com/Patricked-code/MCP/actions/runs/41170431660/job/124447019576"
+    },
+    {
+      "witness_id": "WITNESS-TB-W3-F-03",
+      "pr_number": 261,
+      "main_sha": "6576b5287f23566684005adf6032734e2ecdea50",
+      "ci_main_run_id": 37817792888,
+      "deploy_workflow_run_id": 37817792904,
+      "github_job_id": 113450762668,
+      "server_job_id": "mcp-s1-37817792904-6576b5287f23",
+      "admission_kind": "push_ci_gate",
+      "accepted_at_utc": "2026-10-08T17:37:20.8253108Z",
+      "attested_at_utc": "2026-10-08T17:37:54.6560514Z",
+      "attestation_phrase": "Deployment attested for exact SHA 6576b5287f23566684005adf6032734e2ecdea50.",
+      "log_url": "https://github.com/Patricked-code/MCP/actions/runs/37817792904/job/113450762668"
+    }
+  ],
+  "meaning": "These successful GitHub workflow logs show accepted server job ID and attest exact SHA after status-response validation requiring status succeeded, phase attested, runtimeRevision=SHA, rollbackStatus not_needed, healthOk/oauthOk/mcpAuthOk true. This proves workflow-observed historical attestation, not a newly independent S1 history re-read.",
+  "limitations": [
+    "No raw server response persisted in this snapshot",
+    "Do not promote historical workflow evidence into canonical UTL_OUT/T_OUT",
+    "Other 169 Governed Deploy observations remain to be corroborated at job-log level"
+  ]
+}
