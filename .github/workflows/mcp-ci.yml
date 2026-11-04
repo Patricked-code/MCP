@@ -92,6 +92,12 @@ jobs:
       - name: Attach historical exact-SHA S1 workflow receipts
         run: python3 scripts/attach_utl_workflow_evidence_v03.py --db /tmp/mcp-utl-reconciliation.sqlite --report /tmp/mcp-utl-workflow-evidence-v03-report.json
 
+      - name: UTL v03 five additional workflow receipt tests
+        run: python3 -m unittest discover -s tests -p 'test_utl_workflow_evidence_v03_p02.py' -v
+
+      - name: Extend seven historical exact-SHA S1 workflow receipts
+        run: python3 scripts/append_utl_workflow_evidence_v03.py --db /tmp/mcp-utl-reconciliation.sqlite --report /tmp/mcp-utl-workflow-evidence-v03-p02-report.json
+
       - name: Upload UTL reconciliation evidence
         uses: actions/upload-artifact@v4
         with:
@@ -101,6 +107,7 @@ jobs:
             /tmp/mcp-utl-reconciliation-report.json
             /tmp/mcp-utl-circuit-matrix-v03-report.json
             /tmp/mcp-utl-workflow-evidence-v03-report.json
+            /tmp/mcp-utl-workflow-evidence-v03-p02-report.json
           if-no-files-found: error
           retention-days: 30
 
