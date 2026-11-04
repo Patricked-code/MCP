@@ -981,7 +981,11 @@
       "kind": "child",
       "source": "conversation-first-eight-part-answer",
       "status": "established",
-      "children": [],
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.3"
+      ],
       "crossReferences": [],
       "nextDiscussionAction": null,
       "operationalAuthority": false
@@ -1618,6 +1622,93 @@
       "nextDiscussionAction": null,
       "operationalAuthority": false,
       "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "7.5.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+      "title": "Identité stable de chaque nœud et de chaque descendant",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "7.5.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+      "title": "Matrice relationnelle évolutive de l'arborescence",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.2"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "7.5.2.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+      "title": "Relations parent-enfant, ancêtres et descendants",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "7.5.2.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+      "title": "Relations transversales, événements et références externes",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "7.5.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+      "title": "Reconstruction, contrôles d'intégrité et points de reprise",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
     }
   ],
   "versionLog": [
@@ -1632,6 +1723,12 @@
       "date": "2026-11-04",
       "kind": "ADDITIVE_DEEPENING",
       "note": "28 descendants of original six stages and 8 MGEF proposal nodes; all 63 original nodes and titles unchanged."
+    },
+    {
+      "version": "1.2",
+      "date": "2026-11-04",
+      "kind": "ADDITIVE_RELATIONAL_CONTINUITY_MATRIX",
+      "note": "Five user-requested descendants under original continuity rule 7.5; 99 original node identities and all original titles maintained. Derived node/relation/ancestry/event/external tables generated from this source."
     }
   ]
 }
