@@ -138,7 +138,7 @@ export function assessUtlPlan(plan:UtlPlanContract):UtlEvidenceProjection{
     }
   }
   for(const u of plan.units){
-    if(u.dependsOnUtlRefs.some(dep=>!refs.has(dep)))b.push('MISSING_UTL_DEPENDENCY');
+    if(u.dependsOnUtlRefs.some((dep:string)=>!refs.has(dep)))b.push('MISSING_UTL_DEPENDENCY');
   }
   if(hasCycle(plan.units))b.push('CYCLIC_UTL_DEPENDENCIES');
   if(plan.units.length===0&&!validLink(plan.alreadySatisfiedEvidenceUrl)){
