@@ -74,6 +74,19 @@ jobs:
       - name: UTL reconciliation offline evidence and non-regression tests
         run: python3 -m unittest discover -s tests -p 'test_utl_reconciliation.py' -v
 
+      - name: Build UTL reconciliation SQLite evidence artifact
+        run: python3 scripts/build_utl_reconciliation.py --out /tmp/mcp-utl-reconciliation.sqlite --report /tmp/mcp-utl-reconciliation-report.json
+
+      - name: Upload UTL reconciliation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-utl-reconciliation
+          path: |
+            /tmp/mcp-utl-reconciliation.sqlite
+            /tmp/mcp-utl-reconciliation-report.json
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Governance tests
         run: npm run test:governance
 
