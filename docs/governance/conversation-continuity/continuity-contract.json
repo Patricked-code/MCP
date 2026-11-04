@@ -14,7 +14,11 @@
     "Claims of runtime success require exact external evidence",
     "No automatic Task, Session, Lock, Receipt, UTL or E2 registry mutations",
     "No authority or scope transferred to document IDs",
-    "Existing PR #372 is not changed or superseded"
+    "Existing PR #372 is not changed or superseded",
+    "Register each new substantive question/answer/source during an authorized interactive turn, attaching a precise parent and versioned event",
+    "The technical conversation journal is an append-only record of summaries; it is not a complete transcript or an independent runtime memory authority",
+    "Do not say a turn is persisted until an actual GitHub commit and verification exist",
+    "Keep owner-supplied MGEF diagrams as proposal pending reconciliation with the existing E2 GitHub-only rule"
   ],
   "continuationRecordSchema": {
     "id": "stable node ID",
@@ -46,5 +50,53 @@
     "runtime": "no S1/S2 mutation"
   },
   "boundary": "An ID created here is DOCUMENTARY and must not be passed off as runtime Continuity ID. Existing operational IDs are linked only as references.",
-  "nextDiscussionAction": "Use root/node ID in future requests and enrich this same PR until review/merge authorizes integration."
+  "nextDiscussionAction": "On each future relevant chat turn, read PR373 and newest commit, update deepest relevant nodes and append technical event, then verify before claiming persistence.",
+  "evolutionProtocol": {
+    "version": "1.1",
+    "nature": "CONVERSATION_DOCUMENTATION_ONLY_NOT_RUNTIME_AUTHORITY",
+    "scope": "same open PR #373 and established canonical tree",
+    "capture": "every relevant new question, response, technical source and explicit decision during interactive turns",
+    "executionMode": "ON_DEMAND_DURING_CURRENT_CHAT_TURN_WHEN_AUTHORIZED_GITHUB_TOOLS_ARE_AVAILABLE",
+    "noBackgroundAgent": true,
+    "requiredSteps": [
+      "Read canonical-tree, continuity-contract, conversation-event-log and live PR HEAD before changes",
+      "Verify exact owner and no collision; do not change any other PR including #372",
+      "Classify user input and reply as stated fact, proposed model, verified external fact, decision or unknown",
+      "Locate deepest existing canonical parent; prefer existing node before append",
+      "Create only explicitly explored descendants; keep original ID and title unchanged",
+      "Create links to other chapters and operational IDs as references, never imply ownership or permission",
+      "Append chronological event with source/provenance and separate user statement from assistant explanation",
+      "Commit changed files into PR373 existing branch; verify actual GitHub file content and SHA",
+      "Check original 63 nodes still exist, parent/child refs and unique IDs remain valid, and no events were lost",
+      "Report the persisted commit or accurately report NOT_PERSISTED with reason and next action"
+    ],
+    "eventFields": [
+      "eventId",
+      "sequence",
+      "kind",
+      "primaryNodeId",
+      "relatedNodeIds",
+      "source",
+      "userIntent",
+      "assistantOutcome",
+      "status",
+      "nextDiscussionAction"
+    ],
+    "statusValues": [
+      "USER_STATED",
+      "ASSISTANT_EXPLAINED",
+      "SOURCE_PROPOSAL",
+      "REPO_VERIFIED",
+      "HUMAN_VALIDATED",
+      "NOT_VERIFIED",
+      "PERSISTED",
+      "PENDING"
+    ],
+    "publicRepositorySafety": "Repository is public: technical summaries and approved references only; never publish secret, sensitive personal content, private correspondence or full private chat by default",
+    "failureMode": "FAIL_CLOSED: if GitHub inaccessible, scope ambiguous, branch changed, or write forbidden, hold in chat as NOT_PERSISTED; never pretend that memory was saved",
+    "noParallelAuthoritativeStore": true,
+    "userSourceVsRuntime": "MGEF is a user supplied representation. Its diagrams do not grant Task/Session/Receipt/Lock authority and cannot silently override observed E2 GitHub-only rules.",
+    "revisionPolicy": "Additive descendants and provenance events; previous corrections superseded by reference, not deleted; one stable primary parent per node; unlimited real depth.",
+    "integration": "Read via GitHub on future ChatGPT conversations when available; not a scheduler, event subscription, automatic background agent, nor a complete archive of earlier conversations."
+  }
 }
