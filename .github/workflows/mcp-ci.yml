@@ -68,6 +68,9 @@ jobs:
       - name: OAuth consent and PKCE regression tests
         run: npx tsx --test tests/oauthAuthorizeConsent.test.ts
 
+      - name: UTL V03 T_IN–T_OUT TypeScript contract safety tests
+        run: npx tsx --test tests/utlCircuitTrace.test.ts
+
       - name: Docs check
         run: npm run docs:check
 
