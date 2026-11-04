@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "repository": "Patricked-code/MCP",
+  "snapshot_date": "2026-11-03",
+  "baseline_main_sha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "source_documents": [
+    {
+      "source_id": "PR370_MERGED_PRS",
+      "upstream_pr": 370,
+      "original_path": "docs/history/mcp-main-merged-pr-shas-20261103.csv",
+      "local_path": "docs/audits/utl-reconciliation/sources/PR370_MERGED_PRS_20261103.csv",
+      "git_blob_sha": "8ce3c60ac9c313dd68943adafced97e3d0ce778c",
+      "purpose": "independent merged PR SHA cross-check"
+    },
+    {
+      "source_id": "PR371_MERGED_PRS",
+      "upstream_pr": 371,
+      "original_path": "docs/history/MCP_MAIN_MERGE_SHA_DATABASE_20261103.sql",
+      "local_path": "docs/audits/utl-reconciliation/sources/PR371_MERGED_PRS_20261103.sql",
+      "git_blob_sha": "e1cee6cdb25d1e17fdad767465600503559c3fe2",
+      "purpose": "merged PR, CI, deploy, historical runtime evidence source"
+    },
+    {
+      "source_id": "PR371_MAIN_P01",
+      "upstream_pr": 371,
+      "original_path": "docs/history/MCP_ALL_MAIN_COMMITS_20261103_P01.sql",
+      "local_path": "docs/audits/utl-reconciliation/sources/PR371_MAIN_COMMITS_P01.sql",
+      "git_blob_sha": "ad36116c5f935a8614ef5ea177e94666e5a9b6df",
+      "purpose": "main reachable commit history partition 1"
+    },
+    {
+      "source_id": "PR371_MAIN_P02",
+      "upstream_pr": 371,
+      "original_path": "docs/history/MCP_ALL_MAIN_COMMITS_20261103_P02.sql",
+      "local_path": "docs/audits/utl-reconciliation/sources/PR371_MAIN_COMMITS_P02.sql",
+      "git_blob_sha": "9d255ba8791cc256fcb9bd125ce1405b9a8a9972",
+      "purpose": "main reachable commit history partition 2"
+    },
+    {
+      "source_id": "PR371_MANIFEST",
+      "upstream_pr": 371,
+      "original_path": "docs/history/MCP_ALL_MAIN_COMMITS_20261103_MANIFEST.json",
+      "local_path": "docs/audits/utl-reconciliation/sources/PR371_MANIFEST_20261103.json",
+      "git_blob_sha": "60dc2894335f4204eaf28f276a10ed7d6e0d6d",
+      "purpose": "source completeness and count assertions"
+    }
+  ],
+  "mandates": [
+    {
+      "mandate_id": "MCP-GD-UNIVERSAL",
+      "mandate_type": "PROGRAM",
+      "label": "Governed Deploy universel",
+      "canonical_issue": 349,
+      "evidence_url": "https://github.com/Patricked-code/MCP/issues/349"
+    },
+    {
+      "mandate_id": "MCP-PILOT-E2-01",
+      "mandate_type": "PROJECT",
+      "label": "Pilote E2 - traçabilité des deux entrées",
+      "canonical_issue": 359,
+      "evidence_url": "https://github.com/Patricked-code/MCP/issues/359"
+    }
+  ],
+  "work_items": [
+    {
+      "work_item_id": "TB-W3-F-03",
+      "work_type": "TASK",
+      "label": "Project runtime provisioning, increment 3",
+      "mandate_id": null,
+      "evidence_url": "https://github.com/Patricked-code/MCP/pull/261",
+      "evidence_level": "SOURCE_DOCUMENTED"
+    },
+    {
+      "work_item_id": "GD-U-01",
+      "work_type": "CHANTIER",
+      "label": "Universal GitHub/Plesk/server capability foundations",
+      "mandate_id": "MCP-GD-UNIVERSAL",
+      "evidence_url": "https://github.com/Patricked-code/MCP/pull/355",
+      "evidence_level": "SOURCE_DOCUMENTED"
+    },
+    {
+      "work_item_id": "PILOT-E2-01",
+      "work_type": "CHANTIER",
+      "label": "Trace explicit E1/E2 work entry using existing GitHub continuity",
+      "mandate_id": "MCP-PILOT-E2-01",
+      "evidence_url": "https://github.com/Patricked-code/MCP/issues/359",
+      "evidence_level": "SOURCE_DOCUMENTED"
+    }
+  ],
+  "circuits": [
+    {
+      "circuit_id": "EXTERNAL_GOVERNED_RECOVERY",
+      "entry_profile": "E2",
+      "description": "E2-00 to E2-07 explicit external governed recovery",
+      "evidence_url": "https://github.com/Patricked-code/MCP/issues/359"
+    }
+  ],
+  "item_circuits": [
+    {
+      "work_item_id": "PILOT-E2-01",
+      "circuit_id": "EXTERNAL_GOVERNED_RECOVERY",
+      "evidence_url": "https://github.com/Patricked-code/MCP/issues/359"
+    }
+  ],
+  "continuities": [
+    {
+      "continuity_id": "MCP-PILOT-E2-01-CONT-20261030-ROOT-01",
+      "root_id": null,
+      "evidence_url": "https://github.com/Patricked-code/MCP/issues/359",
+      "evidence_level": "SOURCE_DOCUMENTED"
+    }
+  ],
+  "item_continuities": [
+    {
+      "work_item_id": "PILOT-E2-01",
+      "continuity_id": "MCP-PILOT-E2-01-CONT-20261030-ROOT-01",
+      "evidence_url": "https://github.com/Patricked-code/MCP/issues/359"
+    }
+  ],
+  "pr_links": [
+    {
+      "pr_number": 261,
+      "work_item_id": "TB-W3-F-03",
+      "relation": "IMPLEMENTATION",
+      "evidence_url": "https://github.com/Patricked-code/MCP/pull/261",
+      "evidence_level": "SOURCE_DOCUMENTED"
+    },
+    {
+      "pr_number": 355,
+      "work_item_id": "GD-U-01",
+      "relation": "IMPLEMENTATION",
+      "evidence_url": "https://github.com/Patricked-code/MCP/pull/355",
+      "evidence_level": "SOURCE_DOCUMENTED"
+    },
+    {
+      "pr_number": 360,
+      "work_item_id": "PILOT-E2-01",
+      "relation": "IMPLEMENTATION",
+      "evidence_url": "https://github.com/Patricked-code/MCP/pull/360",
+      "evidence_level": "SOURCE_DOCUMENTED"
+    }
+  ],
+  "runtime_observation": {
+    "observed_at": "2026-11-04T17:54:58.204Z",
+    "environment": "S1",
+    "github_main_sha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+    "runtime_sha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+    "alignment": "FULLY_ALIGNED",
+    "state_version": 1202,
+    "evidence_origin": "MCP mcp_reconcile_governed_context read-only observation (2026-11-04)"
+  },
+  "notes": [
+    "This is an offline analytical mapping, not a Task Queue or authority",
+    "No UTL-only identifier is invented",
+    "Only explicit PR-title/issue links become SOURCE_DOCUMENTED",
+    "Source snapshots are immutable Git blob SHA-pinned; PRs #370/#371 may evolve separately."
+  ]
+}
