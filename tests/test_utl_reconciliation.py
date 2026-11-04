@@ -43,6 +43,10 @@ class UtlReconciliationTest(unittest.TestCase):
         self.assertEqual(self.report["other_main_commits_without_verified_pr_association"], 1965)
         self.assertEqual(self.report["foreign_key_errors"], 0)
         self.assertEqual(self.report["integrity"], "ok")
+        self.assertTrue(self.report["root_zero_parent_null_normalized"])
+        root=self.db.execute("SELECT parent_count,parent_sha_list FROM main_commits WHERE history_position_newest_first=2151").fetchone()
+        self.assertEqual(root["parent_count"],0)
+        self.assertEqual(root["parent_sha_list"],"")
 
     def test_261_exact_evidence_but_runtime_not_inferred(self):
         pr=self.db.execute("SELECT * FROM v_utl_pr_reconciliation WHERE pr_number=261").fetchone()
