@@ -41,7 +41,7 @@
       "upstream_pr": 371,
       "original_path": "docs/history/MCP_ALL_MAIN_COMMITS_20261103_MANIFEST.json",
       "local_path": "docs/audits/utl-reconciliation/sources/PR371_MANIFEST_20261103.json",
-      "git_blob_sha": "60dc2894335f4204eaf28f276a10ed7d6e0d6d",
+      "git_blob_sha": "60dc2894335f4204eaf28f276a10ed7d6e0d6c6d",
       "purpose": "source completeness and count assertions"
     }
   ],
