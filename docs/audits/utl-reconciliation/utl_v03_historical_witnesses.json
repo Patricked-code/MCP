@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "V0.3",
+  "repository": "Patricked-code/MCP",
+  "branch": "audit/mcp-historical-merge-traceability-20261103",
+  "immutableHistoricalSnapshot": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "documentSourcePath": "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v03.md",
+  "evidencePolicy": {
+    "candidateTitleNotAuthority": true,
+    "witnessNotCanonicalUTL": true,
+    "ownerRuntimeReportNotIndependentAttestation": true,
+    "mainAndPrCISeparate": true,
+    "workflowSuccessNotRuntimeAttestation": true,
+    "noInventedTaskIds": true
+  },
+  "contract_types": [
+    [
+      "T_IN",
+      "Existing parent work with admission evidence, continuity, governance"
+    ],
+    [
+      "UTL_PLAN",
+      "Versioned 0..n UTL decomposition, dependencies, scope and criteria"
+    ],
+    [
+      "D_IN",
+      "Single bounded unit admitted to existing governed GitHub development circuit"
+    ],
+    [
+      "D_OUT",
+      "Real reviewed merged main SHA; separate PR CI evidence"
+    ],
+    [
+      "L_IN",
+      "Exact main SHA with CI-main admission and deploy workflow evidence"
+    ],
+    [
+      "L_OUT",
+      "Bounded server job and exact-SHA runtime/health/rollback attestation"
+    ],
+    [
+      "UTL_OUT",
+      "UTL criteria and integrated revision attestation"
+    ],
+    [
+      "T_OUT",
+      "Parent's independent global acceptance and next action"
+    ]
+  ],
+  "parents": [
+    {
+      "parent_work_ref": "GITHUB-ISSUE-359",
+      "work_entry": "E2",
+      "parent_kind": "EXTERNAL_ISSUE",
+      "continuity_id": "MCP-PILOT-E2-01-CONT-20261030-ROOT-01",
+      "mandate_ref": "GITHUB-ISSUE-359",
+      "program_ref": null,
+      "work_item_ref": "PILOT-E2-01",
+      "wave_ref": null,
+      "lot_ref": null,
+      "blueprint_ref": null,
+      "authority_reference_url": "https://github.com/Patricked-code/MCP/issues/359",
+      "provenance": "AUTHORITATIVE_REFERENCE"
+    },
+    {
+      "parent_work_ref": "BLUEPRINT-TB-W3-F-03",
+      "work_entry": "UNDETERMINED",
+      "parent_kind": "BLUEPRINT",
+      "continuity_id": null,
+      "mandate_ref": null,
+      "program_ref": "program-backlog-convergence-v2-20260924",
+      "work_item_ref": "PB-F",
+      "wave_ref": "W3",
+      "lot_ref": "F.2",
+      "blueprint_ref": "TB-W3-F-03",
+      "authority_reference_url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/program-backlog-convergence.json",
+      "provenance": "AUTHORITATIVE_REFERENCE"
+    }
+  ],
+  "witnesses": [
+    {
+      "witness_id": "WITNESS-E2-PILOT-359",
+      "parent_work_ref": "GITHUB-ISSUE-359",
+      "witness_kind": "E2_CONTINUITY",
+      "canonical_utl_ref": null,
+      "owner_document_path": "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v03.md",
+      "source_url": "https://github.com/Patricked-code/MCP/issues/359",
+      "evidence_class": "HISTORICAL_DOCUMENTED",
+      "pull_requests": [
+        {
+          "pr_number": 360,
+          "relation": "IMPLEMENTATION",
+          "attribution_level": "SOURCE_DOCUMENTED"
+        },
+        {
+          "pr_number": 365,
+          "relation": "RECONCILIATION",
+          "attribution_level": "OWNER_DOCUMENTED"
+        },
+        {
+          "pr_number": 367,
+          "relation": "CLOSURE_DOCUMENTATION",
+          "attribution_level": "SOURCE_DOCUMENTED"
+        }
+      ]
+    },
+    {
+      "witness_id": "WITNESS-TB-W3-F-03",
+      "parent_work_ref": "BLUEPRINT-TB-W3-F-03",
+      "witness_kind": "BLUEPRINT_MULTI_INCREMENT",
+      "canonical_utl_ref": null,
+      "owner_document_path": "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v03.md",
+      "source_url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/program-backlog-convergence.json",
+      "evidence_class": "HISTORICAL_DOCUMENTED",
+      "pull_requests": [
+        {
+          "pr_number": 259,
+          "relation": "INCREMENT",
+          "attribution_level": "SOURCE_DOCUMENTED"
+        },
+        {
+          "pr_number": 260,
+          "relation": "INCREMENT",
+          "attribution_level": "SOURCE_DOCUMENTED"
+        },
+        {
+          "pr_number": 261,
+          "relation": "INCREMENT",
+          "attribution_level": "SOURCE_DOCUMENTED"
+        },
+        {
+          "pr_number": 263,
+          "relation": "CLOSURE_DOCUMENTATION",
+          "attribution_level": "SOURCE_DOCUMENTED"
+        }
+      ]
+    }
+  ],
+  "reported_runtime": [
+    {
+      "witness_id": "WITNESS-E2-PILOT-359",
+      "pr_number": 365,
+      "reported_runtime_sha": "fbbacfb53e43dada95b969f39eef03efb6f08dcb",
+      "evidence_level": "OWNER_DOCUMENTED",
+      "source_document_path": "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v03.md"
+    },
+    {
+      "witness_id": "WITNESS-TB-W3-F-03",
+      "pr_number": 261,
+      "reported_runtime_sha": "6576b5287f23566684005adf6032734e2ecdea50",
+      "evidence_level": "OWNER_DOCUMENTED",
+      "source_document_path": "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v03.md"
+    }
+  ],
+  "notes": [
+    "The data does not assert that PR #259/#260/#261 are UTL instances; they are only incremental analogues.",
+    "E2 continuity for issue #359 is independent of GD-U issue #349.",
+    "No TASK-* runtime ID is invented for TB-W3-F-03.",
+    "Existing PR #372 snapshots, run relationships and database tables remain untouched."
+  ]
+}
