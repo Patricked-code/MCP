@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "artifactType": "conversation_continuity_book_contract",
+  "rootId": "MCP-CONV-CONT-20261104-ROOT-01",
+  "scope": "discussion_and_documentary_navigation_only",
+  "status": "PROPOSED_IN_DRAFT_PR",
+  "invariants": [
+    "Exact eight primary headings remain unchanged",
+    "Existing child labels and parent links remain stable",
+    "New topics attach to most specific existing node",
+    "Cross-cutting topics use one primary parent and cross references",
+    "Deeper levels have no arbitrary maximum",
+    "Corrections preserve prior version and source",
+    "Claims of runtime success require exact external evidence",
+    "No automatic Task, Session, Lock, Receipt, UTL or E2 registry mutations",
+    "No authority or scope transferred to document IDs",
+    "Existing PR #372 is not changed or superseded"
+  ],
+  "continuationRecordSchema": {
+    "id": "stable node ID",
+    "path": "hierarchical dotted path",
+    "parentId": "primary ID",
+    "title": "exact heading",
+    "status": "OPEN|EXPLORING|DECIDED|TO_VERIFY|PAUSED|CLOSED",
+    "factsAndSources": [],
+    "decisions": [],
+    "history": [],
+    "crossReferences": [],
+    "dependencies": [],
+    "operationalReferences": [],
+    "nextDiscussionAction": null
+  },
+  "intakeWorkflow": [
+    "LOCATE deepest existing node",
+    "REOBSERVE existing decisions and artifacts",
+    "CLASSIFY addition, correction, decision, proof or cross reference",
+    "LINK one primary parent",
+    "EXTEND by append-only child if needed",
+    "VALIDATE wording and evidence",
+    "LOG version delta",
+    "RECORD nextDiscussionAction"
+  ],
+  "conflicts": {
+    "PR372": "do not touch PR #372, UTL historical matrices or shared docs/governance/markdown-inventory.json",
+    "githubMain": "no direct push",
+    "runtime": "no S1/S2 mutation"
+  },
+  "boundary": "An ID created here is DOCUMENTARY and must not be passed off as runtime Continuity ID. Existing operational IDs are linked only as references.",
+  "nextDiscussionAction": "Use root/node ID in future requests and enrich this same PR until review/merge authorizes integration."
+}
