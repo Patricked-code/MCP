@@ -71,6 +71,9 @@ jobs:
       - name: Docs check
         run: npm run docs:check
 
+      - name: UTL reconciliation offline evidence and non-regression tests
+        run: python3 -m unittest discover -s tests -p 'test_utl_reconciliation.py' -v
+
       - name: Governance tests
         run: npm run test:governance
 
