@@ -6,7 +6,7 @@
   "provenance": "Discussion-backed extracts, not verbatim complete chat transcript",
   "initialCoverage": "RECENT_RELEVANT_DIALOGUE_ONLY",
   "disclaimer": "No automated background collection. Historical earlier turns are not exhaustively included. Unknown details remain unknown.",
-  "nextSequence": 5,
+  "nextSequence": 6,
   "events": [
     {
       "eventId": "MCP-CONV-EVT-20261104-001",
@@ -170,6 +170,24 @@
       "assistantOutcome": "PR373 tree extended to 99 nodes; 36 source-backed nodes added; contract 1.1 created for interactive persistence, stable IDs, provenance and safety.",
       "status": "DOCUMENTARY_MUTATIONS_COMMITTED_PENDING_FINAL_VERIFICATION",
       "nextDiscussionAction": "Verify committed files exact SHA and continue next turn through established ledger protocol."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261104-005",
+      "sequence": 5,
+      "kind": "EXPLICIT_OWNER_RELATIONAL_MATRIX_INSTRUCTION",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "source": "user request for IDs of every child at every depth and an evolving relational tracking/ID-link matrix",
+      "userIntent": "Preserve an ID for every existing node, build a verifiable parent/child/ancestor/descendant/cross-reference relationship matrix, support indefinite additive deepening in PR373.",
+      "assistantOutcome": "Added five real descendants under rule 7.5; generated node and relation CSV plus derived relational JSON and rebuild script; extended the contract for source-first reconstruction and checks.",
+      "status": "DOCUMENTARY_ACTION_IN_PROGRESS_VALIDATION_PENDING",
+      "nextDiscussionAction": "Rebuild derived matrices against tree 1.2, event sequence 5 and contract 1.2; check exact SHA and zero regression; do not merge without review."
     }
   ]
 }
