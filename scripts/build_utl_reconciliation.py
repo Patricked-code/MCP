@@ -152,8 +152,28 @@ def build(output: Path, report_path: Path | None):
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA foreign_keys=ON")
     try:
+        root_normalized = False
         for name in SOURCE_SQL:
-            db.executescript((SOURCE_DIR/"sources"/name).read_text(encoding="utf-8"))
+            sql_text = (SOURCE_DIR/"sources"/name).read_text(encoding="utf-8")
+            if name == "PR371_MAIN_COMMITS_P02.sql":
+                # PR #371 archival SQL has a single root commit (zero parents)
+                # encoded as NULL, despite its own NOT NULL parent_sha_list DDL.
+                # Keep the Git-blob-pinned source untouched; normalize ONLY
+                # the manifest-identified root to the empty parent list.
+                oldest_sha = historic_manifest["bounds"]["oldestGitCommitSha"]
+                sql_lines = sql_text.splitlines(keepends=True)
+                root_indices = [i for i,line in enumerate(sql_lines)
+                    if line.startswith("INSERT INTO main_commits(")
+                    and ("VALUES ('" + oldest_sha + "',") in line]
+                if len(root_indices) != 1 or ",0,NULL," not in sql_lines[root_indices[0]]:
+                    raise ValueError("Expected exact root-parent NULL anomaly not found; source changed")
+                index = root_indices[0]
+                sql_lines[index] = sql_lines[index].replace(",0,NULL,", ",0,'',", 1)
+                sql_text = "".join(sql_lines)
+                root_normalized = True
+            db.executescript(sql_text)
+        if not root_normalized:
+            raise ValueError("Root commit normalization not applied")
         counts = verify_history(db, historic_manifest)
         verify_pr370(db)
         db.executescript(SCHEMA.read_text(encoding="utf-8"))
@@ -180,6 +200,7 @@ def build(output: Path, report_path: Path | None):
             "deploy_missing_observations":scalar(db,"SELECT COUNT(*) FROM v_utl_evidence_gaps WHERE gap_type='DEPLOY_NOT_FOUND'"),
             "historical_runtime_not_source_attested":scalar(db,"SELECT COUNT(*) FROM v_utl_evidence_gaps WHERE gap_type='HISTORICAL_RUNTIME_NOT_SOURCE_ATTESTED'"),
             "foreign_key_errors":len(foreign_key_issues),"integrity":"ok",
+            "root_zero_parent_null_normalized":root_normalized,
             "notes":["No historical runtime attestation inferred from workflow success.",
                      "No unlabeled main-reachable commit classified as direct push.",
                      "No canonical UTL identity invented; explicit mentions remain candidates unless curated."]
