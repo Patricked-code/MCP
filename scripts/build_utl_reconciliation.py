@@ -92,7 +92,7 @@ def verify_pr370(db: sqlite3.Connection):
 
 def insert_curated(db: sqlite3.Connection, seed: dict):
     for s in seed["source_documents"]:
-        url = f"https://github.com/Patricked-code/MCP/blob/pull/{s['upstream_pr']}/head/{s['original_path']}"
+        url = f"https://github.com/Patricked-code/MCP/pull/{s['upstream_pr']}/files"
         db.execute("INSERT INTO utl_source_documents VALUES (?,?,?,?,?,?,?)",
           (s["source_id"],s["upstream_pr"],url,s["local_path"],s["git_blob_sha"],s["purpose"],"SOURCE_VERIFIED"))
     for m in seed["mandates"]:
