@@ -46,7 +46,7 @@ CREATE VIEW v_production_modification_independently_proven AS
 
 def git_blob_sha(path: Path) -> str:
     content = path.read_bytes()
-    return hashlib.sha1(b"blob " + str(len(content)).encode() + b"\\0" + content).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(content)).encode() + b"\0" + content).hexdigest()
 
 def scalar(db: sqlite3.Connection, query: str) -> int:
     return int(db.execute(query).fetchone()[0])
@@ -139,7 +139,7 @@ def main() -> None:
         output = sqlite3.connect(args.out)
         db.backup(output)
         output.close()
-        args.report.write_text(json.dumps(report, indent=2) + "\\n", encoding="utf-8")
+        args.report.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     finally:
         db.close()
     print(json.dumps(report, indent=2))
