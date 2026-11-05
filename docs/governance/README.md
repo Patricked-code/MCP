@@ -1,5 +1,27 @@
 # Gouvernance documentaire MCP
 
+## GLOBAL WORK — Nomenclature des trois chantiers historiques (2026-11-05)
+
+**Statut : index de navigation documentaire transversal, sans autorité opérationnelle.** Cette section distingue trois chantiers existants pour la reprise historique et l'organisation des travaux. « Global Work » est ici le nom de la section et du changement documentaire, **pas** un nouveau programme, une Task Queue, un Continuity ID, un owner, un claim ou un moteur d'exécution. La [directive globale de continuité #235](https://github.com/Patricked-code/MCP/issues/235) demeure l'ancre de programme ; l'[index de priorité PCM #294](https://github.com/Patricked-code/MCP/pull/294) et les autorités existantes gardent leur rôle.
+
+| Chantier conservé | Finalité propre | Ancres vérifiables | Frontière d'autorité |
+|---|---|---|---|
+| **GWC** | Architecture, contrats, conception et validation du flux gouverné évolué, 18 blueprints `GWC-0..GWC-17` et travaux de candidate `GWC-PRE-*` | [PR #95](https://github.com/Patricked-code/MCP/pull/95) (PRECODE, fusionnée) ; [PR #354](https://github.com/Patricked-code/MCP/pull/354) (candidate, Draft observée au 2026-11-05) ; [flux PRECODE](../../docs/gwc/PRECODE_ACTION_TASK_FLOW.txt) | Les `GWC-PRE-*` sont des work items de conception/candidate, jamais des `TASK-*` runtime automatiques ; la candidate ne prouve pas à elle seule l'intégration production. L'expansion longue de « GWC » n'est pas attestée ici : ne pas l'inventer. |
+| **UAC — Universal Agent Coordination** | Généralisation et observabilité de la coordination agent/session/claim/heartbeat à partir des autorités existantes | [PR #154](https://github.com/Patricked-code/MCP/pull/154) (fusionnée le 2026-09-24) | Projection de coordination en lecture seule ; ne crée ni Queue/Session/Lock/ownership parallèle ; un heartbeat STALE/UNKNOWN ne libère ni ne transfère un claim. |
+| **Program Backlog V2** | Planification post-UAC, vagues W1 à W4, Work Items et Task Blueprints, dépendances, readiness et sélection déterministe du prochain candidat | [PR #171](https://github.com/Patricked-code/MCP/pull/171) (fusionnée le 2026-09-24) ; [projection machine](program-backlog-convergence.json), `projectionId=program-backlog-convergence-v2-20260924` | `DERIVED_NON_EXECUTABLE_PROJECTION` : `createsRuntimeTasks=false`, `replacesTaskQueue=false`. `READY` n'implique ni matérialisation d'une Task, ni claim, ni permission d'écriture. |
+
+### Raccordement sans confusion des chantiers
+
+- **GWC** décrit et vérifie le comportement des contrats et parcours ; **UAC** fournit l'observabilité de coordination en réutilisant les autorités existantes ; **Program Backlog V2** ordonnance les travaux admissibles. Ce sont **trois périmètres complémentaires**, pas trois nouvelles autorités runtime ni une chaîne de dispatch autonome démontrée.
+- **Admission/exécution réelles** : conserver `Governed Task Queue`, `Governed Session`, claim/lock authorities, Operational Memory et contrôles de permissions. La politique demeure `RESUME_OWNED_FIRST → FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, suivie d'une réobservation des autorités réelles et du HEAD exact avant toute écriture.
+- **Cycle gouverné** : branche, RED/GREEN/régression, PR, CI exact-head, revue, fusion gouvernée, Governed Deploy si applicable, attestation, checkpoint, mise à jour du backlog. La présence des étapes dans une documentation n'est pas une preuve d'automatisation intégrale.
+- **Blocages historiques à requalifier avant reprise** : `READY` sans claim/session/lock attesté ; décalage backlog/autorité runtime ; continuité après merge ; incidents de transport/deploy/S1. Un ancien blocker n'est pas automatiquement un blocker actuel. Ne jamais attribuer une tâche ou résoudre un conflit par inférence.
+- **Chantiers adjacents et non fusionnés** : [GWB #275](https://github.com/Patricked-code/MCP/pull/275), audit/reprise `GWB-00..09`, fusionnée le 2026-10-15 ; [PR #372](https://github.com/Patricked-code/MCP/pull/372), matrice/contrats UTL historiques ; [PR #373](https://github.com/Patricked-code/MCP/pull/373), arborescence de continuité conversationnelle. Ce référencement ne modifie ni leur périmètre, ni leurs branches, ni leurs verrouillages de continuité.
+
+**Règle de reprise GLOBAL WORK** : désigner explicitement le chantier concerné, relever ses identifiants et preuves existants, distinguer état historique et observation courante, vérifier le runtime lorsque nécessaire, puis consigner le checkpoint dans l'autorité déjà prévue. Aucun `GWC-PRE-*`, `UAC-*`, blueprint `TB-*` ou statut documentaire n'est promu artificiellement en `TASK-*`, Continuity ID, UTL canonique ou autorisation. Aucune clôture automatique par simple CI verte.
+
+---
+
 ## Point d'entrée commun — INTAKE et reprise à froid (16 octobre 2026)
 
 **Directive de coordination immédiatement disponible : [issue maîtresse #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094).** Elle complète, sans remplacer, les autorités déjà en place et le [protocole d'entrée de AGENTS.md](../../AGENTS.md). Un agent nouvellement connecté reconstruit l'état depuis GitHub, vérifie le HEAD, les PR et la CI/deploy, puis seulement les autorités runtime nécessaires. Ne jamais déduire la présence active d'un agent, son ownership ou ses permissions d'un commentaire ou d'un snapshot.
