@@ -173,3 +173,22 @@ Rester strictement compatible avec les documents propriétaires `reference/MCP_U
 - **Source d'information insuffisante** : les 94 blueprints, PR et issues sont des références GitHub, pas une réponse définitive sur l'ownership S1 à cet instant. Les champs non observés restent volontairement vides.
 - **Interdiction d'action non autorisée** : aucun merge sur `main` sans accord du propriétaire ; aucune mutation S1/S2, Task/Session/Claim/Lock ni déploiement par ce registre.
 - **NEXT_ACTION** : audit de l'attribution réelle, dans l'ordre `OBSERVE → RECONCILE → RESUME_OWNED_FIRST → SELECT_FIRST_COLLISION_FREE → VERIFY_LIVE_ADMISSION`, puis mise à jour des preuves et du registre avant toute exécution.
+
+## 7. Registre de déploiements — état probant V0.1 (2026-11-05)
+
+**IMP-372-001 / IMP-372-002 / IMP-372-003 / IMP-372-004 / IMP-372-006 / IMP-372-007 / IMP-372-008 / IMP-372-010 / IMP-372-011** : **REALISE_PREUVE pour la tranche analytique** (couverture historique / clés / classification / test et builder), **NON TERMINE pour l'attestation indépendante S1, l'exhaustivité des runs et l'effet production réel**. Les ID IMP originaux et leurs statuts initiaux ne sont ni effacés ni remplacés. **IMP-372-005** reste **BLOQUE** pour lecture allowlistée S1, **IMP-372-012** reste à requalifier selon l'accès de contrôle MCP actuel.
+
+Artefacts :
+- `PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json` : 186 PR fusionnées couvertes par la source PR #371 ; 171 observations de workflow Deploy (165 SUCCESS, 6 FAILURE), 15 PR sans observation Deploy ; clé *par run* et non par SHA.
+- `scripts/build_utl_deploy_event_registry.py` et `tests/test_utl_deploy_event_registry.py` : relecture de la source SQL figée, base SQLite analytique, contraintes d'unicité d'événement, classement strict des preuves, non-régression des counts et contrôle des contradictions.
+- Workflows GH relus et preuve terminale de SHA exact **uniquement pour 7 événements** (PR #58, #95, #261, #300, #350, #365, #367), journaux liés dans chaque ligne du registre, sans preuve de relecture S1 indépendante.
+- CI PR #372 : tests du nouveau registre et deux artefacts de preuve ajoutés à `mcp-utl-reconciliation` ; ne considérer cette tranche comme validée que lorsque la CI du HEAD exact termine SUCCESS.
+
+**Gaps persistants** :
+1. 158 workflows historiques marqués SUCCESS sans vérification individuelle du log terminal (ce qui inclut les runs potentiellement SKIPPED/no-op).
+2. `attestation.json`, `status.state`, native `attestation_id`, `run_attempt`, états avant/après et éventuelles tentatives/redeployments absents.
+3. La production comprend aussi les déploiements applicatifs et mutations manuelles S1/S2 (GitHub App/Plesk/DNS/DB/cron/secrets) : **hors périmètre source** ; leur registre ne doit pas être inféré depuis le seul MCP Governed Deploy.
+4. Six échecs et quinze absences de run explicitement conservés ; aucun résultat négatif présumé pour les absences.
+5. Aucune auto-conversion de `L_OUT` workflow en `UTL_OUT` ou `T_OUT`, aucune autorisation de merge sur main.
+
+**NEXT_ACTION** : vérifier la couverture des tentatives GH et récolter des lectures S1 bornées quand un outil officiel le permet ; relier des preuves d'attestation et versions avant/après sans fusionner les catégories. Reprise Global Work depuis la PR #374 et la continuité documentaire de la PR #373, mais **source propriétaire des preuves = cette PR #372**, toujours Draft.
