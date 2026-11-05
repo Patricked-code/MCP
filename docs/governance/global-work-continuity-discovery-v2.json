@@ -1,0 +1,409 @@
+{
+  "schemaVersion": 2,
+  "kind": "GLOBAL_WORK_EXISTING_CONTINUITIES_DISCOVERY_AND_GAP_REGISTER",
+  "ownerPr": 374,
+  "authority": "DOCUMENTARY_NAVIGATION_ONLY",
+  "observedAtDate": "2026-11-05",
+  "sources": [
+    {
+      "kind": "GITHUB_DOCUMENTARY_ARCHIVE",
+      "url": "https://github.com/Patricked-code/MCP/blob/docs/governed-deploy-integral-history-20261029/docs/history/governed-deploy-integral/inventaires/GD_U_CONTINUITY_RELATIONS_20261030.json",
+      "blobSha": "8089432db32a7efd424db2cd82621d65935fcbce",
+      "ownerPr": 356,
+      "scope": "GD_U"
+    },
+    {
+      "kind": "GITHUB_OWNER_ISSUE",
+      "url": "https://github.com/Patricked-code/MCP/issues/349",
+      "commentCountRead": 98,
+      "scope": "GD_U"
+    },
+    {
+      "kind": "GITHUB_OWNER_ISSUE",
+      "url": "https://github.com/Patricked-code/MCP/issues/359",
+      "commentCountRead": 47,
+      "scope": "E1_E2"
+    },
+    {
+      "kind": "GITHUB_MASTER_ISSUE",
+      "url": "https://github.com/Patricked-code/MCP/issues/235",
+      "commentCountRead": 125,
+      "scope": "GLOBAL_MCP"
+    },
+    {
+      "kind": "GITHUB_OWNER_ISSUE",
+      "url": "https://github.com/Patricked-code/MCP/issues/313",
+      "commentCountRead": 48,
+      "scope": "AGENT_BUS"
+    },
+    {
+      "kind": "MCP_E2_EXISTING_DISCOVERY_READ_ONLY",
+      "tool": "mcp_e2_list_continuities",
+      "observation": "Only MCP-PILOT-E2-01-CONT-20261030-ROOT-01 returned",
+      "liveCoverage": "INCOMPLETE_COMPARED_WITH_DOCUMENTED_ISSUE349_ROOT"
+    },
+    {
+      "kind": "GITHUB_LIVE_PR_374",
+      "url": "https://github.com/Patricked-code/MCP/pull/374",
+      "matrix": "docs/governance/global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "kind": "MCP_P2_READONLY_SNAPSHOT",
+      "url": "https://github.com/Patricked-code/MCP/blob/docs/global-work-nomenclature-20261105/docs/governance/global-work-operational-progress-v2.json",
+      "blobSha": "3d66c71a3bdf6755bfa0dabf86bf8521a3601d3d",
+      "unmappedRealTasks": 5
+    }
+  ],
+  "continuityRoots": [
+    {
+      "exactId": "GD-U-CONT-20261030-ROOT-01",
+      "type": "DOCUMENTARY_CONTINUITY_ROOT",
+      "authorityIssue": 349,
+      "originComment": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512613394",
+      "ownerWorkstreamKey": "GD_U",
+      "originNote": "Root published 2026-10-30; not retroactively considered original root for earlier work",
+      "registryDiscoveredViaMcpE2": false,
+      "status": "DOCUMENTED_IN_ISSUE_AND_PR356_REDISCOVERY_GAP"
+    },
+    {
+      "exactId": "MCP-PILOT-E2-01-CONT-20261030-ROOT-01",
+      "type": "E2_CONTINUITY_ROOT",
+      "authorityIssue": 359,
+      "originComment": "https://github.com/Patricked-code/MCP/issues/359#issuecomment-6516188476",
+      "ownerWorkstreamKey": "E1_E2",
+      "registryDiscoveredViaMcpE2": true,
+      "status": "DISCOVERED_HISTORICAL_ISSUE_NOT_OPERATIONAL_COMPLETION"
+    }
+  ],
+  "typedGDURelations": {
+    "root": "GD-U-CONT-20261030-ROOT-01",
+    "canonicalIssue": 349,
+    "identifiers": [
+      {
+        "id": "MCP-GD-UNIVERSAL-CAPABILITIES-BIFURCATION-20261028",
+        "type": "DOCUMENTARY_WORKSTREAM_REGISTRY",
+        "source": "docs/governance/universal-capabilities-bifurcation-20261028.json",
+        "origin": "PR356_VERIFIED_JSON",
+        "notAutomaticallyNewRoot": true
+      },
+      {
+        "id": "GD-U-METHOD-20261028-01",
+        "type": "WORK_METHOD_VERSION",
+        "source": "docs/governance/universal-capabilities-bifurcation-20261028.json#workingMethodology.version",
+        "origin": "PR356_VERIFIED_JSON",
+        "notAutomaticallyNewRoot": true
+      },
+      {
+        "id": "EXTERNAL_GOVERNED_RECOVERY",
+        "type": "SELECTABLE_OPERATING_PROFILE",
+        "source": ".mcp/github-first-operational-policy.json",
+        "origin": "PR356_VERIFIED_JSON",
+        "notAutomaticallyNewRoot": true
+      },
+      {
+        "id": "GD-U-355-P1-BOOTSTRAP-RECEIPT-ATTESTATION",
+        "type": "WORK_ACTION_NOT_RUNTIME_TASK",
+        "source": "issue349#6512084049",
+        "origin": "PR356_VERIFIED_JSON",
+        "notAutomaticallyNewRoot": true
+      },
+      {
+        "id": "GD-U-02D-CONT-20261029-B3I-ROOT-01",
+        "type": "CHILD_OPERATIONAL_CONTINUITY",
+        "source": "docs/governance/gd-u-02d-b3i-authenticated-mcp-web-pairing-20261029.json",
+        "origin": "PR356_VERIFIED_JSON",
+        "notAutomaticallyNewRoot": false
+      }
+    ],
+    "localCheckpoints": [
+      {
+        "exactId": "MCP-GD-U-02D-B3B-B3C-20261028",
+        "kind": "LOCAL_CONTINUITY_ID",
+        "originalField": "continuityId",
+        "sourcePath": "docs/governance/gd-u-02d-b3b-b3c-release-evidence-20261028.json",
+        "sourceBlobSha": "746b5d9739a9558fd4fc340fb8f51544fd249271",
+        "originalStatus": null,
+        "nextActionHistoricallyRecorded": "Verify latest exact PR HEAD CI. Independently review B3b/B3c and PR #355. Then implement single-use E3 consumption and trusted server-side binding in the existing web/SessionService, with RED-GREEN-REGRESSION, before considering merge and governed deploy.",
+        "sourcePr": 355,
+        "approvalOrClaimFromThisIndex": false
+      },
+      {
+        "exactId": "GD-U-02D-B3D-E3-SINGLE-USE-20261028",
+        "kind": "LOCAL_CONTINUATION_ID",
+        "originalField": "continuationId",
+        "sourcePath": "docs/governance/gd-u-02d-b3d-e3-single-use-20261028.json",
+        "sourceBlobSha": "136114c31854415a6fdb68b9b2b98165770d50bf",
+        "originalStatus": "CODED_PENDING_EXACT_HEAD_CI_AND_SECURITY_REVIEW",
+        "nextActionHistoricallyRecorded": "Verify latest CI HEAD and fix all tests; obtain independent security review. Then wire this bounded consumption to the existing Plesk web E3 path and governed runtime stores, without weakening fail-closed authorizeRuntimeWrite or adding a second orchestration engine.",
+        "sourcePr": 355,
+        "approvalOrClaimFromThisIndex": false
+      },
+      {
+        "exactId": "GD-U-02D-B3F-HTTP-MCP-ADMISSION-20261028",
+        "kind": "LOCAL_CONTINUATION_ID",
+        "originalField": "continuationId",
+        "sourcePath": "docs/governance/gd-u-02d-b3f-http-mcp-admission-20261028.json",
+        "sourceBlobSha": "b548fb0fabfc3bff00d5a10a3be912f144d48edf",
+        "originalStatus": "READ_ONLY_RUNTIME_BRIDGE_CODED_AND_CI_VERIFIED_NOT_REGISTERED_OR_DEPLOYED",
+        "nextActionHistoricallyRecorded": "Keep production fail-closed. Obtain governed authority and tool allowance to wire trusted HTTP->MCP transport in existing server route without bypassing review or original E3. Re-test RED->GREEN->REGRESSION at exact SHA, then obtain independent review. Do not merge until release gates pass.",
+        "sourcePr": 355,
+        "approvalOrClaimFromThisIndex": false
+      },
+      {
+        "exactId": "GD-U-02D-B3G-TRUSTED-CONSUMPTION-CLOCK-20261028",
+        "kind": "LOCAL_CHECKPOINT_ID",
+        "originalField": "id",
+        "sourcePath": "docs/governance/gd-u-02d-b3g-trusted-consumption-clock-20261028.json",
+        "sourceBlobSha": "b7f7b8763dbd2c52bb617cf500b3a5d4f3a7892d",
+        "originalStatus": "IMPLEMENTED_GREEN_EXACT_CODE_SHA_PENDING_FINAL_DOCUMENTATION_HEAD_CI",
+        "nextActionHistoricallyRecorded": "GD-U-02D-B3h: separately test and harden independent review/CI observation semantics and add a real trusted web↔MCP transport correlation design within existing session authority. Preserve production fail-closed, do not bypass blocked router editing or use Codex/Copilot. Reconcile doc drift, obtain independent review, only then consider governed merge/deploy.",
+        "sourcePr": 355,
+        "approvalOrClaimFromThisIndex": false
+      },
+      {
+        "exactId": "GD-U-02D-B3H-GITHUB-INDEPENDENT-REVIEW-20261028",
+        "kind": "LOCAL_CONTINUITY_ID",
+        "originalField": "continuityId",
+        "sourcePath": "docs/governance/gd-u-02d-b3h-review-integrity-20261028.json",
+        "sourceBlobSha": "58f3ecf3d5f225a29650dbf7c8e4d32553b2aeaf",
+        "originalStatus": "CODED_CI_GREEN_PENDING_DOCUMENTATION_HEAD_CI",
+        "nextActionHistoricallyRecorded": null,
+        "sourcePr": 355,
+        "approvalOrClaimFromThisIndex": false
+      },
+      {
+        "exactId": "GD-U-02D-CONT-20261029-B3I-ROOT-01",
+        "kind": "LOCAL_CONTINUITY_ID",
+        "originalField": "continuityId",
+        "sourcePath": "docs/governance/gd-u-02d-b3i-authenticated-mcp-web-pairing-20261029.json",
+        "sourceBlobSha": "1655fd535896ae082f3504dfe7b04d1d9ec2e400",
+        "originalStatus": null,
+        "nextActionHistoricallyRecorded": [
+          "Verify final exact HEAD CI after this documentation commit, reconcile PR and comments.",
+          "Under authenticated MCP session, issue and redeem the pairing proof in a scoped real integration test, without attempting Plesk mutation until release gates available.",
+          "Install mandatory B3d E3 single-use admission and revalidate Task/Session/Lock and actual Plesk permission at time of operation.",
+          "Obtain verified repository branch/ruleset policy and an explicitly authorized release decision, without forging an independent reviewer.",
+          "Only then governed merge/deploy S1, post-deploy health check and isolated subdomain preflight/consent/rollback, retaining HOLD_WRITE when any proof is missing."
+        ],
+        "sourcePr": 355,
+        "approvalOrClaimFromThisIndex": false
+      },
+      {
+        "exactId": "GD-U-02D-B3i-GITHUB-REVIEW-TIMESTAMP-AMBIGUITY-20261028",
+        "kind": "LOCAL_CHECKPOINT_ID",
+        "originalField": "id",
+        "sourcePath": "docs/governance/gd-u-02d-b3i-review-timestamp-ambiguity-20261028.json",
+        "sourceBlobSha": "bcc4b1e4fa6bcaf08aaa7bda9634ccc43d94d17d",
+        "originalStatus": null,
+        "nextActionHistoricallyRecorded": "Check exact-head CI, review independence, Task Queue/Session/Claim/Lock through authorized live MCP connection. Continue server-owned web E3 to trusted MCP transport binding in an isolated approved scope; preserve fail-closed Plesk write guard. No merge/deploy before independent approval and runtime authority.",
+        "sourcePr": 355,
+        "approvalOrClaimFromThisIndex": false
+      }
+    ],
+    "ownedPullRequests": [
+      {
+        "number": 350,
+        "relation": "MERGED_PLESK_FOUNDATION",
+        "sourceIssueComment": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512630214",
+        "ownerAuthorityOnlyAtSource": true
+      },
+      {
+        "number": 351,
+        "relation": "GRT_RUNTIME_ADMISSION_DRAFT",
+        "sourceIssueComment": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512631839",
+        "ownerAuthorityOnlyAtSource": true
+      },
+      {
+        "number": 352,
+        "relation": "REGULATORY_SUBPATH_PREFLIGHT_DRAFT",
+        "sourceIssueComment": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512632687",
+        "ownerAuthorityOnlyAtSource": true
+      },
+      {
+        "number": 353,
+        "relation": "REGULATORY_ADMISSION_DRAFT",
+        "sourceIssueComment": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512637024",
+        "ownerAuthorityOnlyAtSource": true
+      },
+      {
+        "number": 355,
+        "relation": "UNIVERSAL_CAPABILITIES_EXECUTION_BRANCH",
+        "sourceIssueComment": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512638033",
+        "ownerAuthorityOnlyAtSource": true
+      },
+      {
+        "number": 356,
+        "relation": "FORENSIC_ARCHIVE_DRAFT",
+        "sourceIssueComment": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6512638973",
+        "ownerAuthorityOnlyAtSource": true
+      }
+    ],
+    "runtimeIdsNotContinuity": [
+      "caa50d12-737c-47f9-9ee0-6cf8b763fdbe",
+      "TASK-20261027-001"
+    ],
+    "methodId": "GD-U-METHOD-20261028-01",
+    "documentaryRegisterId": "MCP-GD-UNIVERSAL-CAPABILITIES-BIFURCATION-20261028",
+    "actionId": "GD-U-355-P1-BOOTSTRAP-RECEIPT-ATTESTATION"
+  },
+  "missingOrPreviouslyUnclassifiedScopes": [
+    {
+      "candidateKey": "LEGACY_S1_RECOVERY_FORENSICS",
+      "classification": "EXISTING_HISTORICAL_ISSUE_NOT_NEW_PROGRAM",
+      "issue": 32,
+      "linkedExistingKeys": [
+        "TRANSPORT_DEPLOY",
+        "GLOBAL_MCP"
+      ],
+      "reason": "Older S1 isolated recovery forensic candidate was not explicit in 20-row Global Work matrix",
+      "governedNextAction": "Reconcile original P0 issue #32 with currently aligned S1; do not execute recovery/rollback based on obsolete baseline"
+    },
+    {
+      "candidateKey": "GITHUB_ORGANIZATION_BOOTSTRAP_PERMISSIONS",
+      "classification": "EXISTING_LEGACY_BLOCKER_NOT_NEW_PROGRAM",
+      "issue": 2,
+      "linkedExistingKeys": [
+        "GITHUB_CONTROL",
+        "GD_U"
+      ],
+      "reason": "Existing org connector permission gate was left UNCLASSIFIED, references legacy Codex/MCP, not authorization to use Codex",
+      "governedNextAction": "Read-only current permissions check; do not install or use Codex/Copilot"
+    },
+    {
+      "candidateKey": "PRIVATE_SERVER_OPERATOR_APPROVAL",
+      "classification": "EXISTING_LEGACY_BLOCKER_NOT_NEW_PROGRAM",
+      "issue": 3,
+      "linkedExistingKeys": [
+        "GD_U",
+        "PROVISIONING",
+        "REGULATORY_PILOT"
+      ],
+      "reason": "S1/S2 inventory, backup, operator approval requirements before production mutations",
+      "governedNextAction": "Check current authorized approval and backup evidence in private authority; no secrets or private inventories in public GitHub"
+    },
+    {
+      "candidateKey": "PROGRAM_AUTO_CONTINUE_NO_FAKE_HUMAN_GATE",
+      "classification": "EXISTING_CLOSED_INTAKE_DERIVED_POLICY",
+      "issue": 221,
+      "linkedExistingKeys": [
+        "DISPATCH",
+        "PROGRAM_BACKLOG_V2"
+      ],
+      "reason": "Owner policy on deducible technical decisions must be preserved",
+      "governedNextAction": "Verify enforcement in current code/test without making arbitrary new Human Gates"
+    },
+    {
+      "candidateKey": "B3_2_SERVER_TARGET_SELECTION",
+      "classification": "EXISTING_CLOSED_OWNER_DECISION",
+      "issue": 220,
+      "linkedExistingKeys": [
+        "PROVISIONING",
+        "PROGRAM_BACKLOG_V2"
+      ],
+      "reason": "Target configuration decision in existing backlog not an independent program",
+      "governedNextAction": "Confirm behavior against current target scopes and mappings before write"
+    },
+    {
+      "candidateKey": "GD_U_165_ADDITIONAL_TOOLS",
+      "classification": "UNFINISHED_OWNER_REQUIREMENT_INSIDE_EXISTING_GD_U",
+      "issue": 349,
+      "linkedExistingKeys": [
+        "GD_U"
+      ],
+      "sourceComment": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6530080412",
+      "targetAdditionalTools": 165,
+      "designTargetDistribution": {
+        "github": 52,
+        "plesk": 45,
+        "server": 46,
+        "intelligence": 22
+      },
+      "registrationAndRuntimeStatus": "REQUIRES_PER_TOOL_READ_ONLY_CODE_CATALOGUE_AND_RUNTIME_ATTESTATION",
+      "governedNextAction": "Reconcile existing capabilities/callability/permissions against each of 165 target IDs; no claim they are already implemented"
+    }
+  ],
+  "criticalNumericalNonEquivalence": {
+    "historicalSuccessfulMcpDeployWorkflowRunCount": 165,
+    "gdUAdditionalToolTargetCount": 165,
+    "sameNumberDifferentConcepts": true,
+    "neverEquateThem": true
+  },
+  "coverageGaps": [
+    "E2 discovery currently enumerates only issue #359 although issue #349 contains a separately documented GD-U root",
+    "Historic GD-U local continuation identifiers and checkpoint types must not be promoted to master runtime Continuity IDs",
+    "Historical PR #356 is Draft and its archive is an evidence source, not a new runtime registry",
+    "Existing Global Work 20 workstreams are categories, not exhaustive inventory of issue-level subwork",
+    "Progress for every workstream requires fresh code + GitHub + applicable runtime evidence; do not use a percentage from historical readiness",
+    "Production deployments and source-code merges belong to separate evidence sets; authoritative S1 history still partially unavailable",
+    "Five previously unmatched historical runtime Tasks are now retained as candidate subscopes with explicit links to existing workstreams; do not make new mandates or assume current owners from intentKey"
+  ],
+  "nextAction": "VERIFY_E2_ROOT_DISCOVERY_GAP_AND_GD_U_165_TOOLS_RUNTIME_COVERAGE_WITHOUT_DUPLICATE_WORKSTREAMS_OR_MERGE",
+  "derivedFromUnmappedRuntimeTasks": [
+    {
+      "taskId": "TASK-20260813-004",
+      "status": "DONE",
+      "intentKey": "operational-memory-hardening-final",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "AGENT_BUS",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "Operational Memory hardening historically COMPLETE in P2; not explicitly indexed under its own foundation",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    },
+    {
+      "taskId": "TASK-20260829-002",
+      "status": "DONE",
+      "intentKey": "bootstrap:auto-governed-connection-session-binding",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "UAC",
+        "DISPATCH",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "Existing bootstrap and Session binding capability, pre-UAC foundational Task; relationship candidate not UAC ownership claim",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    },
+    {
+      "taskId": "TASK-20260901-001",
+      "status": "DONE",
+      "intentKey": "connection:project-context-resolution",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "PROVISIONING",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "ConnectionContext and project resolution foundation; no separate program",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    },
+    {
+      "taskId": "TASK-20260913-001",
+      "status": "SUPERSEDED",
+      "intentKey": "program:reconcile-pending-governed-backlog",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "PROGRAM_BACKLOG_V2",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "Older reconciler Task SUPERSEDED, must not be reactivated from a historical seed",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    },
+    {
+      "taskId": "TASK-20260914-002",
+      "status": "DONE",
+      "intentKey": "client-capability:g3-tool-surface-attestation-v1",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "UAC",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "Client capability tool surface attestation G3, distinct capability requiring explicit compatibility audit",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    }
+  ]
+}
