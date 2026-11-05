@@ -7,25 +7,25 @@
   "generationDate": "2026-11-05",
   "source": {
     "canonicalTree": "canonical-tree.json",
-    "canonicalTreeBlobSha": "e61823e26c1c03abdb429cfab9535318aafff70f",
+    "canonicalTreeBlobSha": "994052a279d1b267a0ba3174268f6143ee2c76ff",
     "continuityContract": "continuity-contract.json",
     "continuityContractBlobSha": "3ea4fde73d4281087a077b32f237dc70e82e3230",
     "conversationEventLog": "conversation-event-log.json",
-    "conversationEventLogBlobSha": "ed251beb0e1be1e294058ebf231995bd640f3f30",
-    "treeVersion": "1.5",
-    "eventCount": 11
+    "conversationEventLogBlobSha": "15da18244dd7b3eb91e2a1506de45197c20516b4",
+    "treeVersion": "1.6",
+    "eventCount": 12
   },
   "counts": {
     "rootRecords": 1,
     "chapterRecords": 8,
-    "existingNodeRecords": 127,
-    "allNodeRecords": 128,
-    "structuralEdges": 127,
-    "crossReferenceEdges": 164,
-    "ancestorClosureRows": 461,
-    "eventNodeLinks": 96,
-    "externalReferenceRecords": 3,
-    "externalNodeLinks": 7,
+    "existingNodeRecords": 131,
+    "allNodeRecords": 132,
+    "structuralEdges": 131,
+    "crossReferenceEdges": 175,
+    "ancestorClosureRows": 480,
+    "eventNodeLinks": 105,
+    "externalReferenceRecords": 4,
+    "externalNodeLinks": 11,
     "maxDepth": 4
   },
   "tables": {
@@ -53,7 +53,7 @@
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/8"
         ],
         "directChildCount": 8,
-        "descendantCount": 127,
+        "descendantCount": 131,
         "crossReferenceIds": [],
         "nextDiscussionAction": null,
         "operationalAuthority": false
@@ -2739,7 +2739,7 @@
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
         ],
         "directChildCount": 8,
-        "descendantCount": 11,
+        "descendantCount": 15,
         "crossReferenceIds": [],
         "nextDiscussionAction": null,
         "operationalAuthority": false
@@ -3001,15 +3001,131 @@
           "MCP-CONV-CONT-20261104-ROOT-01",
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/6"
         ],
-        "childIds": [],
-        "directChildCount": 0,
-        "descendantCount": 0,
+        "childIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW"
+        ],
+        "directChildCount": 1,
+        "descendantCount": 4,
         "crossReferenceIds": [
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6"
         ],
         "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "path": "6.8.GW",
+        "title": "Global Work — continuité de tous les chantiers, preuves et blocages",
+        "depth": 3,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "siblingOrder": 1,
+        "kind": "child",
+        "status": "established",
+        "provenance": "owner-mandated-global-work-reconciliation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+        ],
+        "childIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3"
+        ],
+        "directChildCount": 3,
+        "descendantCount": 3,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.3"
+        ],
+        "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "path": "6.8.GW.1",
+        "title": "PR #374 — matrice des chantiers et des 94 blueprints",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "siblingOrder": 1,
+        "kind": "child",
+        "status": "established",
+        "provenance": "owner-mandated-global-work-reconciliation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.10"
+        ],
+        "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "path": "6.8.GW.2",
+        "title": "PR #372 — attribution, UTL et preuves T_IN à T_OUT",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "siblingOrder": 2,
+        "kind": "child",
+        "status": "established",
+        "provenance": "owner-mandated-global-work-reconciliation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7"
+        ],
+        "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "path": "6.8.GW.3",
+        "title": "PR #373 — journal, décisions et reprise sans omission",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "siblingOrder": 3,
+        "kind": "child",
+        "status": "established",
+        "provenance": "owner-mandated-global-work-reconciliation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.1"
+        ],
+        "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
         "operationalAuthority": false
       },
       {
@@ -5467,6 +5583,126 @@
         "type": "CROSS_REFERENCE",
         "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
         "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/6.8.GW",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW/6.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW/6.6",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW/3.6",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW/2.3",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.3",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/6.8.GW.1",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW.1/6.3",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.3",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW.1/2.10",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.10",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/6.8.GW.2",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW.2/6.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW.2/6.6",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW.2/6.7",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/6.8.GW.3",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW.3/6.8",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/6.8.GW.3/3.6.1",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.1",
         "structural": false,
         "source": "canonical-tree.json"
       },
@@ -8161,6 +8397,120 @@
         "relation": "ANCESTOR"
       },
       {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
         "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7",
         "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7",
         "distance": 0,
@@ -8495,6 +8845,14 @@
         "status": "SOURCE_VERIFIED_DESIGN_AND_DECLARED_WORKFLOWS_NOT_LIVE_EXECUTION",
         "source": "Question utilisateur sur articulation gouvernance et GitHub Actions; vérification directe du dépôt main, AGENTS.md, politiques .mcp et trois workflows Actions.",
         "nextDiscussionAction": "Deepen the actual governance gates and Action-to-action dependencies only if owner asks, distinguishing source configuration from actual execution and ruleset enforcement."
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "sequence": 12,
+        "kind": "OWNER_GLOBAL_WORK_MULTI_PR_RECONCILIATION_MANDATE",
+        "status": "DOCUMENTARY_SOURCE_BACKED_NOT_RUNTIME_ATTESTATION",
+        "source": "conversation on 2026-11-05: enrich PR #374, #373 and #372, cover all known workstreams, tasks and blockers without omission",
+        "nextDiscussionAction": "Rebuild derived relational matrices, verify exact-head CI for three PRs, retain Draft, require owner approval for any merge."
       }
     ],
     "eventNodeLinks": [
@@ -8977,6 +9335,51 @@
         "eventId": "MCP-CONV-EVT-20261105-011",
         "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
         "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "role": "PRIMARY"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.3",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.3",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-012",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "role": "RELATED"
       }
     ],
     "externalReferences": [
@@ -8996,6 +9399,12 @@
         "id": "MCP-CONV-CONT-20261104-ROOT-01/EXTERNAL/003",
         "name": "Global coordination issue #235",
         "url": "https://github.com/Patricked-code/MCP/issues/235",
+        "classification": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/EXTERNAL/004",
+        "name": "Global Work PR #374 — evidence and cross-workstream tracking",
+        "url": "https://github.com/Patricked-code/MCP/pull/374",
         "classification": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
       }
     ],
@@ -9033,6 +9442,26 @@
       {
         "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
         "externalRefId": "MCP-CONV-CONT-20261104-ROOT-01/EXTERNAL/003",
+        "relation": "DOCUMENTARY_POINTER_ONLY"
+      },
+      {
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+        "externalRefId": "MCP-CONV-CONT-20261104-ROOT-01/EXTERNAL/004",
+        "relation": "DOCUMENTARY_POINTER_ONLY"
+      },
+      {
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "externalRefId": "MCP-CONV-CONT-20261104-ROOT-01/EXTERNAL/004",
+        "relation": "DOCUMENTARY_POINTER_ONLY"
+      },
+      {
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "externalRefId": "MCP-CONV-CONT-20261104-ROOT-01/EXTERNAL/004",
+        "relation": "DOCUMENTARY_POINTER_ONLY"
+      },
+      {
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "externalRefId": "MCP-CONV-CONT-20261104-ROOT-01/EXTERNAL/004",
         "relation": "DOCUMENTARY_POINTER_ONLY"
       }
     ]
@@ -9157,6 +9586,10 @@
       "6.6": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
       "6.7": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7",
       "6.8": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+      "6.8.GW": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "6.8.GW.1": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+      "6.8.GW.2": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+      "6.8.GW.3": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
       "7.1": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.1",
       "7.2": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.2",
       "7.3": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.3",
@@ -9285,6 +9718,10 @@
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6": "6.6",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7": "6.7",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8": "6.8",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW": "6.8.GW",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1": "6.8.GW.1",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2": "6.8.GW.2",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3": "6.8.GW.3",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/7": "7",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.1": "7.1",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.2": "7.2",
