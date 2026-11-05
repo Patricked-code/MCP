@@ -47,3 +47,89 @@ Rester strictement compatible avec les documents propriétaires `reference/MCP_U
 3. **Aucune fausse complétude** : distinguer source vérifiée, schéma proposé, constat historique et contrôle runtime actuel.
 4. **Interdits explicites** : pas de nouvelle PR pour ce programme, pas de push direct main, pas de modification S1, pas de Codex/Copilot, pas de fusion de la PR #372 à ce stade.
 5. **Poursuite** : enrichir ce fichier au fil des nouveaux constats relatifs au même travail, sur la même branche de PR #372, après vérification de l'état réel et des droits d'écriture.
+
+## 5. Complément d'audit — raccordement du développement GWC (2026-11-05)
+
+> **Statut du présent ajout : VERIFIE pour les observations explicitement sourcées ; PROPOSE / A_TESTER / BLOQUE pour les travaux et critères non réalisés.** Audit GitHub + MCP/S1 en lecture seule. Aucun nouvel identifiant officiel de Task, Work Item, Blueprint, UTL, Continuity ID, incident ou attestation n'est créé ici. Les intitulés ci-dessous sont des sujets à qualifier au sein des propriétaires canoniques existants, **pas** des tâches runtime ni une admission de travail.
+>
+> **Périmètre précis :** gouvernance du développement MCP, famille E du graphe GWC (GW-21 à GW-33), GWC-2 (orchestration) et GWC-13 (développement), avec limites GWC-11/GWC-12 en amont et GWC-14 (PR/revue) en aval. Ne pas élargir cet audit aux circuits de déploiement applicatif, ni modifier l'architecture E1/E2, P1/P2 ou les contrats propriétaire V0.2/V0.3.
+>
+> **Observation datée 2026-11-05 :** réconciliation MCP en lecture seule : GitHub main, S1, runtime et documentation classés FULLY_ALIGNED au SHA 05dbb66ed81aa4e7443655c89d10c0c390ff0f10 ; Live State version 1202, Task Store révision 244. Présence des modules GWC vérifiée dans GitHub main et lecture sur S1 (la lecture S1 du module de développement est bornée aux premières 420 lignes). **L'alignement SHA n'atteste ni l'activation du dispatch GWC ni l'autorisation d'écrire.** Le contexte de session observé avait un Bootstrap Receipt expiré et mayMutate=false ; cela ne qualifie pas globalement toutes les sessions.
+>
+> **Sources de code et de preuve :** [contrats GWC](https://github.com/Patricked-code/MCP/blob/main/.mcp/gwc-contracts.json), [graphe GWC](https://github.com/Patricked-code/MCP/blob/main/.mcp/gwc-workflow-graph.json), [substrate](https://github.com/Patricked-code/MCP/blob/main/src/governedWorkflow/contractSubstrate.ts), [moteur shadow](https://github.com/Patricked-code/MCP/blob/main/src/governedWorkflow/executionEngine.ts), [développement](https://github.com/Patricked-code/MCP/blob/main/src/governedWorkflow/development/index.ts), [tests développement](https://github.com/Patricked-code/MCP/blob/main/tests/governedWorkflowDevelopment.test.ts), [tests moteur](https://github.com/Patricked-code/MCP/blob/main/tests/governedWorkflowExecutionEngine.test.ts), [outils GitHub](https://github.com/Patricked-code/MCP/blob/main/src/tools/githubLifecycle.ts), [enregistrement serveur](https://github.com/Patricked-code/MCP/blob/main/src/server.ts), [CI](https://github.com/Patricked-code/MCP/blob/main/.github/workflows/mcp-ci.yml), [profil de validation](https://github.com/Patricked-code/MCP/blob/main/package.json), [discovery des tests](https://github.com/Patricked-code/MCP/blob/main/scripts/run-validation-tests.mjs), [GWC-2 et GWC-13](https://github.com/Patricked-code/MCP/blob/main/docs/gwc/BLUEPRINTS.md), [Program Backlog V2](https://github.com/Patricked-code/MCP/blob/main/docs/governance/program-backlog-convergence.json). Les liens vers main sont des sources évolutives : l'observation ci-dessus est rattachée au SHA exact indiqué, pas aux futures modifications de main.
+
+### 5.1. État vérifié : opérationnel, préparé et non démontré
+
+| Statut | Constat vérifié | Limite à préserver |
+|---|---|---|
+| VERIFIE | Contrats GW-01..GW-73 et 91 arêtes de graphe ; transitions FORWARD/BACKWARD/SKIP et préconditions ; famille E = GW-21..GW-33. | Les contrats décrivent des obligations et relations ; ils ne prouvent pas leur invocation runtime. |
+| VERIFIE | contractSubstrate.ts charge/valide les registres, les empreintes et les sorties du graphe. | Lecteur/validateur, pas moteur d'effets. |
+| VERIFIE | executionEngine.ts expose createShadowExecutionEngine ; résultats dispatchMode=DISABLED et effectDispatched=false. | **Aucun dispatch automatique d'effets par ce moteur.** Ne pas activer en changeant un simple drapeau. |
+| VERIFIE | development/index.ts prépare des EffectPlans pour GW-24/25/27/31/33 et évalue les preuves GW-26/28/29/30/32 ; retourne authorizationInferred=false et mutationPerformed=false. | READY/SUCCESS ne sont ni autorisation, ni mutation, ni preuve de livraison. |
+| VERIFIE | Contrôles RED : signature d'échec attendue, étapes/tests/codes de raison, profil CI et SHA exact ; GREEN : run terminé, success, absence d'étapes en échec, SHA exact. | Refuser les échecs de CI sans rapport et les validations sur SHA décalé. |
+| VERIFIE | GW-29 bifurque vers GW-30 puis GW-31 si finding, ou saute directement à GW-32 sans finding ; le moteur générique attend une preuve pour départager les routes multiples. | Ne pas choisir une branche arbitrairement. |
+| VERIFIE | github_create_branch et github_create_commit existent dans githubLifecycle.ts, enregistrés par registerGithubLifecycleWriteTools via registerScopedWriteTools et sous ENABLE_WRITE_TOOLS + contrôles de gouvernance. | Ne pas recréer d'outil GitHub ni court-circuiter les droits, HEAD attendu, branche et anti-force. |
+| VERIFIE | buildMcpServer dans server.ts enregistre les outils réels de tâches, sessions, E2 et écritures conditionnelles. Aucune invocation directe de createShadowExecutionEngine, createGovernedContractSubstrate ou des planGw/observeGw de développement n'a été identifiée dans ce point d'entrée. | L'absence d'appel dans server.ts ne prouve pas l'absence d'autres consommateurs : graphe d'appels global restant à établir. |
+| VERIFIE | MCP CI et mcpValidationProfile dans package.json existent ; run-validation-tests.mjs découvre les tests et les lance sous les contrôles configurés. | La CI exécute des tests ; elle ne fait pas évoluer spontanément les contrats GWC. |
+| VERIFIE | Task Queue / Sessions / Bootstrap / Locks et adaptateurs GWC session/task existent ; PB-DISPATCH est marqué DONE pour matérialisation/reprise/projection de tâches. | PB-DISPATCH ≠ dispatch du développement GW-21..33 ; ne pas rouvrir ce travail par confusion ni créer de seconde queue. |
+| A_TESTER | Aucune chaîne complète, automatiquement déclenchée, persistée et reprise GW-21 → GW-33 n'est attestée par les observations de cet audit. | Ne pas conclure qu'elle est impossible ; chercher aussi les consommateurs hors server.ts et les chemins déjà exploités par les agents. |
+| BLOQUE (admission de la session observée uniquement) | Contexte gouverné lu pendant l'audit : mayMutate=false, reçu bootstrap expiré, preuves d'autorisation/callability insuffisantes. | Aucune écriture runtime implicite ; une nouvelle admission valide est nécessaire avant toute mutation relevant de cette session. |
+
+### 5.2. Matrice des raccordements de la famille E — sans création de tâches
+
+| Étape | Propriétaire / fonction existante | Raccordement et preuve encore à vérifier |
+|---|---|---|
+| GW-21 Authority Document Read | Documents d'autorité, lectures GitHub existantes (GWC-11) | Lecture effectivement exécutée, versionnée et associée au travail courant. |
+| GW-22 Integration Slot Resolution | Contrat GWC-11 ; analyse d'intégration pratiquée | Résolveur/évaluateur réellement invoqué et preuve du slot choisi, sans duplication d'architecture. |
+| GW-23 Exact GitHub Baseline | GitHub/Live State/observations disponibles (GWC-11) | Réconciliation du HEAD, de la branche et des droits juste avant mutation. |
+| GW-24 Governed Branch Creation | planGw24BranchCreation + github_create_branch | Admission, appel réel de l'outil, réponse et vérification du nouveau HEAD. |
+| GW-25 TDD Red Authoring | planGw25RedAuthoring + github_create_commit | Commit test RED exact-head, signature attendue avant soumission. |
+| GW-26 TDD Red Observation | observeGw26TddRed + MCP CI | Collecte fiable du run exact, failedSteps, reasonCodes, noms de tests, identité du profil et SHA. |
+| GW-27 TDD Green Minimal Implementation | planGw27GreenImplementation + github_create_commit | Preuve RED valide, autorisation, commit GREEN et réobservation du HEAD. |
+| GW-28 Green CI | observeGw28GreenCi + MCP CI | Lecture du run sur le SHA GREEN et décision fondée sur la conclusion observée. |
+| GW-29 Self Review | evaluateGw29SelfReview | Findings et auteur de revue explicites, justification du routage vers GW-30 ou GW-32. |
+| GW-30 Regression Red If Finding | observeGw30RegressionRed | Défaut réel et échec RED ciblé, refus d'une signature étrangère. |
+| GW-31 Regression Green | planGw31RegressionGreen + github_create_commit | Correctif, gate d'autorisation, nouveau SHA et revalidation. |
+| GW-32 Full Regression | observeGw32FullRegression + profil MCP CI | Résultat complet sur le HEAD final, couverture réelle et non-régression. |
+| GW-33 Non-terminal Documentation | planGw33Documentation + github_create_commit | Documentation seulement si requise ; checkpoint non terminal ; SHA exact et preuve de modification. |
+| Sortie GW-33 → GW-34 | GWC-14, PR Draft, règles GitHub | Transmission des preuves exactes à la revue/fusion, sans marquer le travail DONE avant les gates aval. |
+
+### 5.3. Travaux à qualifier et à exécuter après admission gouvernée — libellés descriptifs, aucun nouvel ID officiel
+
+| Statut initial | Travail concret à inscrire | Critère de fermeture / preuve attendue |
+|---|---|---|
+| PROPOSE | **Cartographier le graphe d'appels effectif** : qui importe/invoque contractSubstrate, executionEngine, development/index.ts, adaptateurs session/task, GitHub lifecycle et consommateurs CI ; inclure scripts/tests, routes MCP, voie E1 et voie E2. | Matrice caller → fonction → autorité → effet → preuve → prochain état ; distinguer invocation runtime, test isolé, composant candidat et non-appel ; prouver les chemins négatifs. |
+| PROPOSE | **Qualifier le propriétaire du raccordement**, à partir de GWC-2 et GWC-13 et des surfaces existantes, avec GWC-11/12 en amont et GWC-14 en aval ; analyser les dépendances, les work items/blueprints existants et les domaines de collision. | Décision REUSE → WRAP → GENERALIZE → EXTEND → NEW documentée, aucun nouveau dispatcher concurrent, aucun ID Work Queue créé par le présent registre. |
+| PROPOSE | **Raccorder les préconditions GW-21..23** aux lectures d'autorité et à la baseline GitHub fraîche, sans contourner la réconciliation ni l'identification du travail. | Preuve de source/révision, SHA du HEAD, ownership et capacité vérifiés juste avant action ; STALE/UNKNOWN/BLOCKED conduisent à attente ou refus. |
+| PROPOSE | **Raccorder les EffectPlans GW-24/25/27/31/33** aux outils GitHub déjà enregistrés, via une vraie admission et un contrôle post-mutation ; conserver le mode shadow initial pour la comparaison. | Test d'une mutation réellement autorisée, réponse native, HEAD réobservé, postcondition vérifiée, idempotence ou refus d'un rejeu dangereux ; aucun appel si non autorisé. |
+| PROPOSE | **Créer ou réutiliser un collecteur de preuves CI**, capable de fournir au bon évaluateur GW-26/28/30/32 le runId, le workflow/job, le profil/digest, le SHA, les étapes et signaux d'échec ; utiliser les outils GitHub existants. | RED attendu distingué d'une panne d'infrastructure ; GREEN exact-head ; CI absente/pending/stale/mismatch bloquante ; aucune interprétation d'une simple absence d'erreur comme SUCCESS. |
+| PROPOSE | **Raccorder GW-29 et la boucle de correction** : findings explicitement déclarés et traçables, sélection conditionnelle GW-30/31 ou SKIP vers GW-32, puis retour au contrôle exact-head. | Tests avec zéro finding, findings multiples, preuve RED non pertinente, nouveau SHA, réexécution et non-régression ; pas d'auto-revue présentée comme revue indépendante. |
+| PROPOSE | **Raccorder les postconditions, transitions et points de reprise**, en réutilisant Operational Memory, Task Queue/Session/Lock quand applicables et les checkpoints GitHub-first pour E2 ; préserver les propriétaires des données. | Réentrée déterministe depuis preuves fraîches ; pas de second store de workflow autoritatif, pas de tâche E1 fictive en E2, pas de double claim/lock/commit ; récupération après interruption prouvée. |
+| PROPOSE | **Étendre progressivement la parité shadow → exécution admissible** seulement après preuve d'absence de régression, avec frontière authorize/act explicite et rollback logique. | Comparaison décisions shadow / comportement réel, blocage sur UNKNOWN, autorisation effective et safeNow, anti-TOCTOU, journal des raisons, point d'arrêt activable sans toucher à Task Queue ou gouvernance existantes. |
+| A_TESTER | **Parcours complet borné** : admission réelle, lecture d'autorité, branche, RED ciblé, GREEN, CI, auto-revue, finding/absence de finding, régression, documentation, sortie vers PR Draft puis revue/fusion selon autorisations. | IDs et SHA réels reliés aux preuves GitHub ; tests négatifs et reprise ; aucune déclaration de bout en bout si une étape n'a pas été exécutée/attestée ; ne pas exiger de déploiement S1 pour valider uniquement la phase E. |
+| PROPOSE | **Non-régression et documentation de la clôture du raccordement** : validation typecheck/build/tests gouvernance/GWC/secrets/readonly/docs, gate CI exact-head, revue et checkpoint. | CI complète sur le HEAD livré, diff limité, compatibilité anciennes voies E1/E2, contrat de preuve et NEXT_ACTION maintenus ; clôture uniquement après intégration autorisée et observation réelle. |
+
+### 5.4. Scénarios obligatoires pour qualifier le raccordement (non exécutés par cet audit)
+
+| Statut initial | Scénario | Résultat attendu |
+|---|---|---|
+| A_TESTER | HEAD déplacé entre observation et mutation ; commit concurrent ; rejeu d'un effectId | Arrêt d'écriture/relecture ; aucune mutation forcée ou dupliquée. |
+| A_TESTER | ENABLE_WRITE_TOOLS désactivé, permission absente, session/receipt périmé, conflit de lock/ownership | Refus explicite, aucune autorisation inférée. |
+| A_TESTER | RED échoue pour une cause différente de la signature attendue | UNVERIFIED, pas de passage à GREEN. |
+| A_TESTER | RED attendu et vérifiable sur run/HEAD exact | SUCCESS du contrôle RED, pas de mutation implicite. |
+| A_TESTER | GREEN réussie sur mauvais SHA, mauvais job/profil, run non terminé ou preuve absente | CONFLICT/UNVERIFIED/WAIT selon contrat ; pas de progression. |
+| A_TESTER | Auto-revue sans finding ; auto-revue avec finding réel | Route SKIP vers GW-32 ou RED/GREEN de régression GW-30/31, sur preuve. |
+| A_TESTER | Incident au milieu du plan, après l'appel de l'outil ou avant postcondition ; reprise nouvelle conversation | Réobservation propriétaire ; état de la mutation connu avant rejeu ; récupération sûre. |
+| A_TESTER | Couverture de tests insuffisante, régression sécurité/OAuth, docs ou secret scan rouge | Blocage de validation ; aucune déclaration de phase E complète. |
+| A_TESTER | Travail GitHub-only E2 sans Task Queue E1 ; travail E1 avec vraie tâche/claim | Autorités propres à chaque entrée respectées ; cycle technique commun sans fausse attribution. |
+| A_TESTER | Fin de GW-33 et transmission à GW-34, revue ou CI retardée/échouée | Checkpoint non terminal ; aucune fusion/déploiement/clôture affirmée sans preuves séparées. |
+
+### 5.5. Frontières, dépendances et interdictions de régression
+
+1. **Conserver GWC-2/GWC-13 comme propriétaires de conception existants.** GWC-2 décrit une montée progressive depuis le moteur shadow ; GWC-13 couvre précisément GW-24..33 ; GW-21..23 relèvent de GWC-11. Les statuts anciens BLUEPRINT_ONLY, DONE ou DETAILED_DESIGN_COMPLETE ne sont pas des preuves d'exécution automatique.
+2. **Ne pas confondre PB-DISPATCH avec le dispatch de développement.** PB-DISPATCH est DONE pour matérialisation/reprise/projection de tâches existantes ; cela n'atteste pas la chaîne de mutation et de postconditions des étapes GWC.
+3. **Aucune nouvelle autorité concurrente.** Réutiliser GitHub/CI, Task Queue/Session/Lock/Live State, Governance Decision, permissions GitHub et outils existants ; ne créer ni seconde file, ni moteur parallèle de tâches, ni registre de claims, ni transfert de propriété implicite.
+4. **Aucun effet sans admission actuelle.** Le retour READY d'un plan ou ROUTE du shadow engine ne donne aucun droit GitHub, S1 ou runtime ; vérification par l'outil propriétaire à l'instant de la mutation ; échec fermé sur UNKNOWN et preuve périmée.
+5. **Aucun raccourci de livraison.** La sortie du développement mène à une PR et ses gates propres ; MCP CI, revue, fusion protégée, MCP Governed Deploy et attestation S1 restent distincts. Une CI GREEN n'est ni merge, ni déploiement, ni clôture.
+6. **Étude préalable à toute écriture supplémentaire** : confronter le graphe d'appels et l'état actuel au registre/backlog existant ; qualifier les écarts avant de choisir les modifications ; exécuter TDD RED/GREEN et tests avant revue ; ne pas produire de nouvelle PR pour cette seule inscription au registre.
+7. **Aucune opération réalisée dans le présent ajout sauf la documentation du constat.** Aucun test de mutation/GWC E2E, aucune nouvelle session, Task, lock, autorisation ou attestation n'a été créé par cet audit. Le présent registre n'autorise pas leur exécution.
