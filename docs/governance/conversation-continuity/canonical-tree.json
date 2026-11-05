@@ -709,7 +709,9 @@
       "kind": "child",
       "source": "conversation-first-eight-part-answer",
       "status": "established",
-      "children": [],
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1"
+      ],
       "crossReferences": [],
       "nextDiscussionAction": null,
       "operationalAuthority": false
@@ -1709,6 +1711,168 @@
       "nextDiscussionAction": null,
       "operationalAuthority": false,
       "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "5.6.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+      "title": "Workflows issus des instructions fondatrices",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.8"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Workflow historique en neuf phases de ROADMAP.md",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Contrôle historique des règles de gouvernance",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Observation historique du serveur MCP",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Synchronisation contrôlée historique GitHub vers S1",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "GitHub Actions — MCP CI",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "GitHub Actions — MCP Governed Deploy",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "GitHub Actions — MCP Read-only Evidence",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.8",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.8",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Checkpoint et continuité inter-agents",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
     }
   ],
   "versionLog": [
@@ -1729,6 +1893,12 @@
       "date": "2026-11-04",
       "kind": "ADDITIVE_RELATIONAL_CONTINUITY_MATRIX",
       "note": "Five user-requested descendants under original continuity rule 7.5; 99 original node identities and all original titles maintained. Derived node/relation/ancestry/event/external tables generated from this source."
+    },
+    {
+      "version": "1.3",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_HISTORICAL_WORKFLOW_MATERIALIZATION",
+      "note": "9 source-discussed workflow nodes added under 5.6.1. Historical July scripts distinguished from contemporary CI, deploy and read-only evidence. Previous 104 node IDs, titles and parents preserved."
     }
   ]
 }
