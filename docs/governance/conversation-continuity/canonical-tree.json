@@ -1965,7 +1965,16 @@
       "kind": "child",
       "source": "user-question-workflow-hierarchy-2026-11-05",
       "status": "established",
-      "children": [],
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8"
+      ],
       "crossReferences": [
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
@@ -1993,6 +2002,146 @@
       "nextDiscussionAction": null,
       "operationalAuthority": false,
       "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.4.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Règles de gouvernance et admissibilité des opérations GitHub Actions",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Observation et collecte de preuves via MCP Read-only Evidence",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Déclenchement des contrôles MCP CI sur branche et PR",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Revue, protection de branche et fusion gouvernée hors CI",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "CI sur main et admission du déploiement sur SHA exact",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "MCP Governed Deploy, OIDC et contrôle serveur",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Attestation runtime distincte du résultat GitHub Actions",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.8",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Gestion fail-closed, checkpoints et continuité",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
     }
   ],
   "versionLog": [
@@ -2025,6 +2174,12 @@
       "date": "2026-11-05",
       "kind": "ADDITIVE_ENGINEERING_WORKFLOW_HIERARCHY",
       "note": "Six nodes under 3.7: top governance layer, common lifecycle, six existing stages via cross references, controls, proofs. No new runtime engines. All 113 prior IDs, parents and titles retained."
+    },
+    {
+      "version": "1.5",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_GOVERNANCE_GITHUB_ACTIONS_ARTICULATION",
+      "note": "Eight discussed source-backed children of 3.7.4. Governance gates contrasted with GitHub Actions CI/read-only/OIDC deploy. Existing 119 node identities, titles and parent links unchanged; no runtime workflow created."
     }
   ]
 }
