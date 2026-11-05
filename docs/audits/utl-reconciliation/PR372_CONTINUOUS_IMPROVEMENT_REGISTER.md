@@ -173,4 +173,3 @@ Rester strictement compatible avec les documents propriétaires `reference/MCP_U
 - **Source d'information insuffisante** : les 94 blueprints, PR et issues sont des références GitHub, pas une réponse définitive sur l'ownership S1 à cet instant. Les champs non observés restent volontairement vides.
 - **Interdiction d'action non autorisée** : aucun merge sur `main` sans accord du propriétaire ; aucune mutation S1/S2, Task/Session/Claim/Lock ni déploiement par ce registre.
 - **NEXT_ACTION** : audit de l'attribution réelle, dans l'ordre `OBSERVE → RECONCILE → RESUME_OWNED_FIRST → SELECT_FIRST_COLLISION_FREE → VERIFY_LIVE_ADMISSION`, puis mise à jour des preuves et du registre avant toute exécution.
-
