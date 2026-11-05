@@ -46,6 +46,12 @@
       "kind": "GITHUB_LIVE_PR_374",
       "url": "https://github.com/Patricked-code/MCP/pull/374",
       "matrix": "docs/governance/global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "kind": "MCP_P2_READONLY_SNAPSHOT",
+      "url": "https://github.com/Patricked-code/MCP/blob/docs/global-work-nomenclature-20261105/docs/governance/global-work-operational-progress-v2.json",
+      "blobSha": "3d66c71a3bdf6755bfa0dabf86bf8521a3601d3d",
+      "unmappedRealTasks": 5
     }
   ],
   "continuityRoots": [
@@ -328,7 +334,76 @@
     "Historical PR #356 is Draft and its archive is an evidence source, not a new runtime registry",
     "Existing Global Work 20 workstreams are categories, not exhaustive inventory of issue-level subwork",
     "Progress for every workstream requires fresh code + GitHub + applicable runtime evidence; do not use a percentage from historical readiness",
-    "Production deployments and source-code merges belong to separate evidence sets; authoritative S1 history still partially unavailable"
+    "Production deployments and source-code merges belong to separate evidence sets; authoritative S1 history still partially unavailable",
+    "Five previously unmatched historical runtime Tasks are now retained as candidate subscopes with explicit links to existing workstreams; do not make new mandates or assume current owners from intentKey"
   ],
-  "nextAction": "VERIFY_E2_ROOT_DISCOVERY_GAP_AND_GD_U_165_TOOLS_RUNTIME_COVERAGE_WITHOUT_DUPLICATE_WORKSTREAMS_OR_MERGE"
+  "nextAction": "VERIFY_E2_ROOT_DISCOVERY_GAP_AND_GD_U_165_TOOLS_RUNTIME_COVERAGE_WITHOUT_DUPLICATE_WORKSTREAMS_OR_MERGE",
+  "derivedFromUnmappedRuntimeTasks": [
+    {
+      "taskId": "TASK-20260813-004",
+      "status": "DONE",
+      "intentKey": "operational-memory-hardening-final",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "AGENT_BUS",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "Operational Memory hardening historically COMPLETE in P2; not explicitly indexed under its own foundation",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    },
+    {
+      "taskId": "TASK-20260829-002",
+      "status": "DONE",
+      "intentKey": "bootstrap:auto-governed-connection-session-binding",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "UAC",
+        "DISPATCH",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "Existing bootstrap and Session binding capability, pre-UAC foundational Task; relationship candidate not UAC ownership claim",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    },
+    {
+      "taskId": "TASK-20260901-001",
+      "status": "DONE",
+      "intentKey": "connection:project-context-resolution",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "PROVISIONING",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "ConnectionContext and project resolution foundation; no separate program",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    },
+    {
+      "taskId": "TASK-20260913-001",
+      "status": "SUPERSEDED",
+      "intentKey": "program:reconcile-pending-governed-backlog",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "PROGRAM_BACKLOG_V2",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "Older reconciler Task SUPERSEDED, must not be reactivated from a historical seed",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    },
+    {
+      "taskId": "TASK-20260914-002",
+      "status": "DONE",
+      "intentKey": "client-capability:g3-tool-surface-attestation-v1",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM",
+      "documentaryCandidateWorkstreams": [
+        "UAC",
+        "GLOBAL_MCP"
+      ],
+      "historicReconciliationNote": "Client capability tool surface attestation G3, distinct capability requiring explicit compatibility audit",
+      "runtimeTaskIsAuthoritativeOnlyAtSnapshot": true,
+      "authorizesNewTaskOrOwnerTransfer": false
+    }
+  ]
 }
