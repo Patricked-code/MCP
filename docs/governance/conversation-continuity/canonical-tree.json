@@ -48,6 +48,17 @@
         "6.8"
       ],
       "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    },
+    {
+      "name": "Global Work PR #374 — evidence and cross-workstream tracking",
+      "url": "https://github.com/Patricked-code/MCP/pull/374",
+      "relatedPaths": [
+        "6.8.GW",
+        "6.8.GW.1",
+        "6.8.GW.2",
+        "6.8.GW.3"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
     }
   ],
   "nodes": [
@@ -857,7 +868,9 @@
       "kind": "child",
       "source": "conversation-first-eight-part-answer",
       "status": "established",
-      "children": [],
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW"
+      ],
       "crossReferences": [
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
@@ -2142,6 +2155,81 @@
       "nextDiscussionAction": null,
       "operationalAuthority": false,
       "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "6.8.GW",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+      "title": "Global Work — continuité de tous les chantiers, preuves et blocages",
+      "kind": "child",
+      "source": "owner-mandated-global-work-reconciliation-2026-11-05",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.3"
+      ],
+      "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
+    },
+    {
+      "path": "6.8.GW.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "PR #374 — matrice des chantiers et des 94 blueprints",
+      "kind": "child",
+      "source": "owner-mandated-global-work-reconciliation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.10"
+      ],
+      "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
+    },
+    {
+      "path": "6.8.GW.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "PR #372 — attribution, UTL et preuves T_IN à T_OUT",
+      "kind": "child",
+      "source": "owner-mandated-global-work-reconciliation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7"
+      ],
+      "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
+    },
+    {
+      "path": "6.8.GW.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "PR #373 — journal, décisions et reprise sans omission",
+      "kind": "child",
+      "source": "owner-mandated-global-work-reconciliation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.1"
+      ],
+      "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
     }
   ],
   "versionLog": [
@@ -2180,6 +2268,12 @@
       "date": "2026-11-05",
       "kind": "ADDITIVE_GOVERNANCE_GITHUB_ACTIONS_ARTICULATION",
       "note": "Eight discussed source-backed children of 3.7.4. Governance gates contrasted with GitHub Actions CI/read-only/OIDC deploy. Existing 119 node identities, titles and parent links unchanged; no runtime workflow created."
+    },
+    {
+      "version": "1.6",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_GLOBAL_WORK_CROSS_PR_CONTINUITY",
+      "note": "Four additional documentary nodes under 6.8; preserves 127 historical nodes, eight chapter titles, IDs and existing links. Owner prohibits merging #372/#373/#374 absent explicit agreement."
     }
   ]
 }
