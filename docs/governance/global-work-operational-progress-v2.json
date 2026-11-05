@@ -1,0 +1,1181 @@
+{
+  "schemaVersion": 2,
+  "kind": "GLOBAL_WORK_OPERATIONAL_PROGRESS_READ_ONLY_SNAPSHOT",
+  "ownerPr": 374,
+  "source": {
+    "githubMasterMatrixBlobSha": "82b0816808604f4cf1201d081b4eee3ea48f7b10",
+    "mcpInventoryGeneratedAt": "2026-11-05T03:10:46.481Z",
+    "taskStoreRevision": 244,
+    "githubMainSha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+    "s1HeadSha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+    "runtimeRevision": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+    "health": "healthy",
+    "allEqual": true
+  },
+  "counts": {
+    "workstreams": 20,
+    "runtimeTasksInObservedQueue": 21,
+    "readyTasks": 3,
+    "taskRowsMatchedToOneOrMoreWorkstreams": 16,
+    "taskRowsUnmatchedToAnyWorkstream": 5
+  },
+  "rows": [
+    {
+      "key": "GWC",
+      "classification": "architecture",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/pull/95",
+        "https://github.com/Patricked-code/MCP/pull/354"
+      ],
+      "historicalBlueprintCounts": {
+        "DONE": 4
+      },
+      "githubOpenPrCandidatesAtV1": [
+        354
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXACT_HISTORIC_INTENT_PREFIX",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20260918-001",
+            "status": "SUPERSEDED",
+            "intentKey": "gwc:autonomous-continuation-hardening-v1",
+            "prNumber": 95,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          },
+          {
+            "taskId": "TASK-20260920-001",
+            "status": "DONE",
+            "intentKey": "gwc:pr95-governed-integration-v1",
+            "prNumber": 96,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          },
+          {
+            "taskId": "TASK-20260920-002",
+            "status": "DONE",
+            "intentKey": "gwc:post-integration-canonical-handoff-v1",
+            "prNumber": 98,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "SUPERSEDED": 1,
+          "DONE": 2
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Vérifier le gate PRECODE et la candidate GWC-PRE-F-02 #354.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "UAC",
+      "classification": "agent_coordination",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/pull/154"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "NO_EXACT_INTENT_MATCH",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Relire observabilité heartbeat, sessions, claims et droits réels.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "PROGRAM_BACKLOG_V2",
+      "classification": "planning",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/222",
+        "https://github.com/Patricked-code/MCP/pull/171",
+        "https://github.com/Patricked-code/MCP/pull/229",
+        "https://github.com/Patricked-code/MCP/pull/231"
+      ],
+      "historicalBlueprintCounts": {
+        "DONE": 36,
+        "READY": 18,
+        "BLOCKED": 28,
+        "DEFERRED": 7,
+        "CONDITIONAL": 5
+      },
+      "githubOpenPrCandidatesAtV1": [],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "BACKLOG_PLAN_NOT_TASK_QUEUE",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Recalculer readiness puis consulter Queue/Session/Locks réels.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "GLOBAL_MCP",
+      "classification": "master_program",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/235",
+        "https://github.com/Patricked-code/MCP/pull/237",
+        "https://github.com/Patricked-code/MCP/pull/273",
+        "https://github.com/Patricked-code/MCP/pull/275",
+        "https://github.com/Patricked-code/MCP/pull/294",
+        "https://github.com/Patricked-code/MCP/pull/374"
+      ],
+      "historicalBlueprintCounts": {
+        "BLOCKED": 1
+      },
+      "githubOpenPrCandidatesAtV1": [
+        374
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "DOCUMENTARY_HISTORICAL_TASK_INTENT_MATCH_NOT_OWNER",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20260822-001",
+            "status": "DONE",
+            "intentKey": "mandatory-agent-bootstrap-work-orchestration-v1",
+            "prNumber": 54,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          },
+          {
+            "taskId": "TASK-20260829-001",
+            "status": "DONE",
+            "intentKey": "mandatory-agent-bootstrap:unified-operational-work-state",
+            "prNumber": 58,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          },
+          {
+            "taskId": "TASK-20260831-001",
+            "status": "DONE",
+            "intentKey": "governance:reconcile-post-roadmap-documentation",
+            "prNumber": 66,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          },
+          {
+            "taskId": "TASK-20260901-002",
+            "status": "DONE",
+            "intentKey": "governance:reconcile-a21-final-documentation",
+            "prNumber": 72,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "DONE": 4
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/235",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Réobserver l'issue #235 et critères de complétude E2E.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "E1_E2",
+      "classification": "entry_and_continuity",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/359",
+        "https://github.com/Patricked-code/MCP/pull/360",
+        "https://github.com/Patricked-code/MCP/pull/365",
+        "https://github.com/Patricked-code/MCP/pull/368",
+        "https://github.com/Patricked-code/MCP/pull/369"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [
+        368,
+        369
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXTERNAL_E2_DOES_NOT_REQUIRE_INTERNAL_TASK",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Vérifier G1/G2/G3, journal E2 et racines disponibles.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "GD_U",
+      "classification": "universal_deployment",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/349",
+        "https://github.com/Patricked-code/MCP/pull/350",
+        "https://github.com/Patricked-code/MCP/pull/355",
+        "https://github.com/Patricked-code/MCP/pull/357",
+        "https://github.com/Patricked-code/MCP/pull/362",
+        "https://github.com/Patricked-code/MCP/pull/364"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [
+        362,
+        364
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "GITHUB_FIRST_CONTINUITY_ISSUE349_NOT_TASK_QUEUE_ASSIGNMENT",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/349",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Vérifier droits Plesk/GitHub App, consentement et runtime S1/S2.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "GITHUB_CONTROL",
+      "classification": "github_control_plane",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/177",
+        "https://github.com/Patricked-code/MCP/pull/88",
+        "https://github.com/Patricked-code/MCP/pull/89",
+        "https://github.com/Patricked-code/MCP/pull/90"
+      ],
+      "historicalBlueprintCounts": {
+        "DONE": 3,
+        "READY": 14,
+        "DEFERRED": 4,
+        "BLOCKED": 6,
+        "CONDITIONAL": 2
+      },
+      "githubOpenPrCandidatesAtV1": [
+        88,
+        89,
+        90
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXACT_HISTORIC_INTENT_PREFIX",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20260907-001",
+            "status": "DONE",
+            "intentKey": "connection:github-identity-resolution-b1",
+            "prNumber": 74,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          },
+          {
+            "taskId": "TASK-20260909-001",
+            "status": "DONE",
+            "intentKey": "connection:github-repository-resolution-b2",
+            "prNumber": 77,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "DONE": 2
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/177",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Comparer #88/#89/#90 à main sans fusion aveugle.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "OAUTH_OIDC",
+      "classification": "authentication",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/341",
+        "https://github.com/Patricked-code/MCP/issues/346",
+        "https://github.com/Patricked-code/MCP/pull/207",
+        "https://github.com/Patricked-code/MCP/pull/330"
+      ],
+      "historicalBlueprintCounts": {
+        "DONE": 2,
+        "READY": 1,
+        "BLOCKED": 1
+      },
+      "githubOpenPrCandidatesAtV1": [
+        207,
+        330
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXACT_HISTORIC_INTENT_PREFIX",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20260929-001",
+            "status": "READY",
+            "intentKey": "connection:oauth-attempt-correlation-a3-2",
+            "prNumber": null,
+            "ownerSessionRecorded": false,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "READY": 1
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/341",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/346",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Revérifier POST OAuth, PKCE, CSRF, persistance, refresh et PR propriétaire.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "DISPATCH",
+      "classification": "task_admission",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/222",
+        "https://github.com/Patricked-code/MCP/issues/221",
+        "https://github.com/Patricked-code/MCP/pull/229",
+        "https://github.com/Patricked-code/MCP/pull/231"
+      ],
+      "historicalBlueprintCounts": {
+        "DONE": 3
+      },
+      "githubOpenPrCandidatesAtV1": [],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXACT_HISTORIC_INTENT_NOT_GLOBAL_DISPATCH_COMPLETION",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20260822-001",
+            "status": "DONE",
+            "intentKey": "mandatory-agent-bootstrap-work-orchestration-v1",
+            "prNumber": 54,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "DONE": 1
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Établir READY→Task→Session/Claim/Lock→Checkpoint sur preuves live.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "AGENT_BUS",
+      "classification": "agent_communication",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/313",
+        "https://github.com/Patricked-code/MCP/pull/319",
+        "https://github.com/Patricked-code/MCP/pull/320",
+        "https://github.com/Patricked-code/MCP/pull/321"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [
+        319,
+        320,
+        321
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "NO_EXACT_INTENT_MATCH",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/313",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Vérifier journal canonique, replay borné et checkpoint.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "SUPER_ADMIN",
+      "classification": "admin_cockpit",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/236",
+        "https://github.com/Patricked-code/MCP/pull/237"
+      ],
+      "historicalBlueprintCounts": {
+        "READY": 1,
+        "BLOCKED": 11
+      },
+      "githubOpenPrCandidatesAtV1": [],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "NO_EXACT_INTENT_MATCH",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/236",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Réobserver lots W4 K et gates UI/scoped permissions.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "PROVISIONING",
+      "classification": "project_binding",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/262",
+        "https://github.com/Patricked-code/MCP/issues/268",
+        "https://github.com/Patricked-code/MCP/issues/349",
+        "https://github.com/Patricked-code/MCP/pull/261",
+        "https://github.com/Patricked-code/MCP/pull/267"
+      ],
+      "historicalBlueprintCounts": {
+        "DONE": 9,
+        "BLOCKED": 2,
+        "READY": 1,
+        "CONDITIONAL": 1
+      },
+      "githubOpenPrCandidatesAtV1": [],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXACT_HISTORIC_INTENT_PREFIX",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20260910-001",
+            "status": "DONE",
+            "intentKey": "projects:africafunds-project-aware-s2",
+            "prNumber": 82,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          },
+          {
+            "taskId": "TASK-20260913-002",
+            "status": "SUPERSEDED",
+            "intentKey": "project-binding:c1-gitregistry-v2-verification-design",
+            "prNumber": 84,
+            "ownerSessionRecorded": true,
+            "hasBlockers": true,
+            "taskStoreRevision": 244
+          },
+          {
+            "taskId": "TASK-20260915-001",
+            "status": "DONE",
+            "intentKey": "project-binding:c2-repository-project-resolution",
+            "prNumber": 92,
+            "ownerSessionRecorded": true,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "DONE": 2,
+          "SUPERSEDED": 1
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/262",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/268",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/349",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Revalider limitations F-03/F-04, realPath et targets.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "TRANSPORT_DEPLOY",
+      "classification": "transport",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/190",
+        "https://github.com/Patricked-code/MCP/issues/192",
+        "https://github.com/Patricked-code/MCP/issues/201",
+        "https://github.com/Patricked-code/MCP/pull/85"
+      ],
+      "historicalBlueprintCounts": {
+        "DEFERRED": 1,
+        "DONE": 1
+      },
+      "githubOpenPrCandidatesAtV1": [
+        85
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXACT_HISTORIC_INTENT_PREFIX",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20260914-001",
+            "status": "SUPERSEDED",
+            "intentKey": "deployment-transport:github-actions-ssh-v1-mcp-s1",
+            "prNumber": 85,
+            "ownerSessionRecorded": true,
+            "hasBlockers": true,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "SUPERSEDED": 1
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/190",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Vérifier OIDC, TLS, SSH et voies déploiement existantes.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "GRT_PILOT",
+      "classification": "consumer_pilot",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/192",
+        "https://github.com/Patricked-code/MCP/issues/201",
+        "https://github.com/Patricked-code/MCP/pull/351"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [
+        351
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "NO_EXACT_INTENT_MATCH",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Réobserver admission runtime GRT, aucun WRITE présumé.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "REGULATORY_PILOT",
+      "classification": "consumer_pilot",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/349",
+        "https://github.com/Patricked-code/MCP/pull/352",
+        "https://github.com/Patricked-code/MCP/pull/353"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [
+        352,
+        353
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXACT_HISTORIC_INTENT_PREFIX",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20261027-001",
+            "status": "READY",
+            "intentKey": "regulatory:s1:pr353-governed-admission",
+            "prNumber": null,
+            "ownerSessionRecorded": false,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "READY": 1
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/349",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Réexaminer preflight /regulatory sans déploiement présumé.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "STABLECOIN_PILOT",
+      "classification": "consumer_pilot",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/pull/86"
+      ],
+      "historicalBlueprintCounts": {
+        "CONDITIONAL": 1
+      },
+      "githubOpenPrCandidatesAtV1": [
+        86
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "EXACT_HISTORIC_INTENT_PREFIX",
+        "observedTasks": [
+          {
+            "taskId": "TASK-20260920-003",
+            "status": "READY",
+            "intentKey": "stablecoin:project-aware-s2-reconciliation-v2",
+            "prNumber": 99,
+            "ownerSessionRecorded": false,
+            "hasBlockers": false,
+            "taskStoreRevision": 244
+          }
+        ],
+        "observedTaskStatusCounts": {
+          "READY": 1
+        },
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Vérifier portée du pilote S2/Stablecoin, SHA, identité.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "GWB_PCM",
+      "classification": "documentary_audit",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/235",
+        "https://github.com/Patricked-code/MCP/pull/273",
+        "https://github.com/Patricked-code/MCP/pull/275",
+        "https://github.com/Patricked-code/MCP/pull/294",
+        "https://github.com/Patricked-code/MCP/pull/305",
+        "https://github.com/Patricked-code/MCP/pull/348"
+      ],
+      "historicalBlueprintCounts": {
+        "READY": 1,
+        "BLOCKED": 2
+      },
+      "githubOpenPrCandidatesAtV1": [
+        305,
+        348
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "DOCUMENTARY_AUDIT_NOT_RUNTIME_TASK",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/235",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Confronter constats GWB/PCM avec code et preuves actuels.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "UTL_EVIDENCE",
+      "classification": "analytical_evidence",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/pull/371",
+        "https://github.com/Patricked-code/MCP/pull/372"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [
+        371,
+        372
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "DOCUMENTARY_ANALYTICAL_NOT_RUNTIME_TASK",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Protéger snapshots de #372 et rechercher UTL/T_IN/T_OUT attestés.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "CONVERSATION_CONTINUITY",
+      "classification": "documentary_continuity",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/pull/373"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [
+        373
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "DOCUMENTARY_NAVIGATION_NOT_RUNTIME_TASK",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Rebâtir liaisons et journal sur sources sans autorité runtime.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    },
+    {
+      "key": "DEPLOY_ARCHIVE",
+      "classification": "historical_archive",
+      "primaryEvidenceRefs": [
+        "https://github.com/Patricked-code/MCP/issues/349",
+        "https://github.com/Patricked-code/MCP/pull/356"
+      ],
+      "historicalBlueprintCounts": {},
+      "githubOpenPrCandidatesAtV1": [
+        356
+      ],
+      "liveRuntimeTaskEvidence": {
+        "observedAt": "2026-11-05T03:10:46.481Z",
+        "origin": "MCP_CURRENT_STATE_INVENTORY_READ_ONLY",
+        "matchRule": "DOCUMENTARY_ARCHIVE_NOT_RUNTIME_TASK",
+        "observedTasks": [],
+        "observedTaskStatusCounts": {},
+        "NO_MATCH_DOES_NOT_MEAN_NO_WORK": true,
+        "NO_MATCH_DOES_NOT_PROVE_COMPLETION": true,
+        "NO_OWNER_TRANSFER": true
+      },
+      "operationalProgressVerdict": "NOT_GLOBALLY_ATTESTED_FROM_GITHUB_AND_ONE_READ_ONLY_QUEUE_SNAPSHOT",
+      "blockingEvidenceClassification": "ONLY_TASK_QUEUE_RECORDED_BLOCKERS_AND_ISSUE_DOCUMENTARY_CANDIDATES",
+      "historicalBlockerCandidates": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/349",
+          "status": "OPEN_ISSUE_TO_REOBSERVE_NOT_LIVE_BLOCKER"
+        }
+      ],
+      "nextGovernedObservation": {
+        "type": "READ_ONLY_RECONCILIATION",
+        "detail": "Préserver archives historiques et niveaux de preuve.",
+        "runtimeAdmissibility": "NOT_DETERMINED"
+      },
+      "requiredFurtherProof": [
+        "EXACT_GITHUB_CODE_AND_CURRENT_PR_HEAD",
+        "CURRENT_CI_REVIEW_STATUS",
+        "CROSS_WORKSTREAM_DEPENDENCIES_AND_COLLISION",
+        "LIVE_TASK_SESSION_CLAIM_LOCK_IF_RUNTIME_EXECUTION",
+        "APPLICABLE_MAIN_DEPLOY_AND_SERVER_ATTESTATION",
+        "CANONICAL_CHECKPOINT_AND_OWNER_ACCEPTANCE"
+      ],
+      "deploymentRegistrySource": "https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json",
+      "globalWorkSourceVersion": "global-work-reconciliation-matrix-v1.json"
+    }
+  ],
+  "unmappedTasksNotIgnored": [
+    {
+      "taskId": "TASK-20260813-004",
+      "status": "DONE",
+      "intentKey": "operational-memory-hardening-final",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM"
+    },
+    {
+      "taskId": "TASK-20260829-002",
+      "status": "DONE",
+      "intentKey": "bootstrap:auto-governed-connection-session-binding",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM"
+    },
+    {
+      "taskId": "TASK-20260901-001",
+      "status": "DONE",
+      "intentKey": "connection:project-context-resolution",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM"
+    },
+    {
+      "taskId": "TASK-20260913-001",
+      "status": "SUPERSEDED",
+      "intentKey": "program:reconcile-pending-governed-backlog",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM"
+    },
+    {
+      "taskId": "TASK-20260914-002",
+      "status": "DONE",
+      "intentKey": "client-capability:g3-tool-surface-attestation-v1",
+      "scope": "LIVE_QUEUE_ROW_NOT_FORCED_INTO_WORKSTREAM"
+    }
+  ],
+  "semanticRules": [
+    "Statuses in task queue are authoritative only at observed moment and for task identity; workstream overall acceptance is separate",
+    "NO_MATCH is NOT DONE and not proof of inactivity",
+    "GWC/UAC/Program Backlog V2 are not 1:1 runtime task clusters",
+    "E2 GitHub-only work must not be fabricated as E1 Task",
+    "Every PR and deployment needs exact SHA and evidence; GitHub success is not production change proof",
+    "Registry revision can change after read, so no claim/assignment from this document"
+  ],
+  "nextAction": "PER_WORKSTREAM_FRESH_RECONCILIATION_AND_ATTESTED_COMPLETION_CRITERIA_REVIEW"
+}
