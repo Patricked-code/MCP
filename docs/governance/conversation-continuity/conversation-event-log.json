@@ -6,7 +6,7 @@
   "provenance": "Discussion-backed extracts, not verbatim complete chat transcript",
   "initialCoverage": "RECENT_RELEVANT_DIALOGUE_ONLY",
   "disclaimer": "No automated background collection. Historical earlier turns are not exhaustively included. Unknown details remain unknown.",
-  "nextSequence": 13,
+  "nextSequence": 14,
   "events": [
     {
       "eventId": "MCP-CONV-EVT-20261104-001",
@@ -458,6 +458,54 @@
       "ownerExplicitNoMergeWithoutApproval": true,
       "unresolvedTail": "Owner clause 'Note aussi que tu peux aussi' is unfinished; no added authorization inferred.",
       "nextDiscussionAction": "Rebuild derived relational matrices, verify exact-head CI for three PRs, retain Draft, require owner approval for any merge."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-013",
+      "sequence": 13,
+      "kind": "HISTORICAL_DEPLOYMENT_REGISTER_AND_EXISTING_CONTINUITIES_RECONCILED",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.4",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "source": "User 2026-11-05 request to inspect missing existing MCP continuities and all successful production deployment evidence; direct GitHub PR371 SQL and seven GitHub job logs plus MCP E2 inventory and PR356 archival relations",
+      "userIntent": "Preserve every existing chantier and continuity, track true operational status, build a production modification evidence register distinguishing workflow success from server attestation and real change.",
+      "assistantOutcome": "PR372: 171 archived MCP S1 Deploy workflow observations (165 success, 6 failure), 15 PR without deploy record, 7 directly corroborated exact-SHA terminal job logs; 11 production-change channels tracked with unknowns. PR374: GD-U root #349 and pilot E2 root #359, seven historical local checkpoints, E2 discovery returns only #359; operational progress uses live task snapshot without ownership inference.",
+      "sources": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/372",
+          "classification": "PR_DRAFT_SOURCE_BACKED_DEPLOYMENT_LEDGER"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/374",
+          "classification": "PR_DRAFT_NON_AUTHORITATIVE_CONTINUITY_AUDIT"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/356",
+          "classification": "PR_DRAFT_GD_U_HISTORICAL_ARCHIVE"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/349",
+          "classification": "OWNER_DOCUMENTARY_GD_U_ROOT"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/359",
+          "classification": "OWNER_E2_PILOT_ROOT"
+        }
+      ],
+      "status": "SOURCE_BACKED_HISTORICAL_AUDIT_NOT_EXHAUSTIVE_PRODUCTION_ATTESTATION",
+      "ownershipBoundary": "No Task/Session/Claim/Lock created; no native Continuity ID from document; no main merge without explicit agreement",
+      "unresolvedCoverage": [
+        "158 successful GH workflows without individually checked terminal server log",
+        "Original S1 status.state/attestation.json not independently read for historical jobs",
+        "Applications S1/S2/manual/database/Plesk production mutation history not available in archived PR371",
+        "GD-U issue #349 root absent from current E2 discovery despite owner evidence"
+      ],
+      "nextDiscussionAction": "Rebuild exact derived documentary matrices, inspect CI and maintain strict Draft, then resume evidence collection read-only."
     }
   ]
 }
