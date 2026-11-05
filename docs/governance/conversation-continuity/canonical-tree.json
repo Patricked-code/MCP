@@ -59,6 +59,22 @@
         "6.8.GW.3"
       ],
       "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    },
+    {
+      "name": "PR372 deployment event register and production source coverage",
+      "url": "https://github.com/Patricked-code/MCP/pull/372",
+      "relatedPaths": [
+        "6.8.GW.4"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    },
+    {
+      "name": "PR374 continuity discovery audit and operational progress",
+      "url": "https://github.com/Patricked-code/MCP/pull/374",
+      "relatedPaths": [
+        "6.8.GW.5"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
     }
   ],
   "nodes": [
@@ -2167,7 +2183,9 @@
       "children": [
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
-        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3"
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.5"
       ],
       "crossReferences": [
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
@@ -2230,6 +2248,45 @@
       "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
       "operationalAuthority": false,
       "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
+    },
+    {
+      "path": "6.8.GW.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "Preuves de déploiement MCP et traçabilité des changements de production",
+      "kind": "child",
+      "source": "verified-github-and-mcp-read-only-audit-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": "Reobserve current GitHub and authorized MCP evidence; never infer production effects or admission from docs.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_VERIFIED_POINTER_NOT_RUNTIME_AUTHORIZATION"
+    },
+    {
+      "path": "6.8.GW.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "Continuités historiques retrouvées, filiation GD-U et écarts E2",
+      "kind": "child",
+      "source": "verified-github-and-mcp-read-only-audit-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": "Reobserve current GitHub and authorized MCP evidence; never infer production effects or admission from docs.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_VERIFIED_POINTER_NOT_RUNTIME_AUTHORIZATION"
     }
   ],
   "versionLog": [
@@ -2274,6 +2331,12 @@
       "date": "2026-11-05",
       "kind": "ADDITIVE_GLOBAL_WORK_CROSS_PR_CONTINUITY",
       "note": "Four additional documentary nodes under 6.8; preserves 127 historical nodes, eight chapter titles, IDs and existing links. Owner prohibits merging #372/#373/#374 absent explicit agreement."
+    },
+    {
+      "version": "1.7",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_DEPLOYMENT_EVIDENCE_AND_CONTINUITY_DISCOVERY",
+      "note": "Two new nodes under 6.8.GW, preserving previous 131 nodes, eight root headings and old parent/IDs. PR372 owns evidence; PR374 indexes work; PR373 links discussion history. Never merge without owner approval."
     }
   ]
 }
