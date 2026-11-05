@@ -51,6 +51,35 @@
 
 ---
 
+## GLOBAL WORK — Réconciliation approfondie des continuités et registre Deploy (2026-11-05)
+
+Les trois projections sont **documentaires, horodatées, non exécutables** et réutilisent les sources propriétaires. Elles servent à ne plus perdre les chantiers, leurs références, ni leurs lacunes de preuve :
+
+- [global-work-continuity-discovery-v2.json](global-work-continuity-discovery-v2.json) — racines de continuité issues de [#349](https://github.com/Patricked-code/MCP/issues/349) et [#359](https://github.com/Patricked-code/MCP/issues/359), **7 checkpoints locaux** originaux du dossier [PR #356](https://github.com/Patricked-code/MCP/pull/356), provenance des IDs et écart d'observation avec la découverte E2.
+- [global-work-operational-progress-v2.json](global-work-operational-progress-v2.json) — **20 chantiers** rapprochés de la Task Queue MCP réelle, **21 Tasks** à une observation (14 DONE / 4 SUPERSEDED / 3 READY), 16 tâches rapprochées de 9 rubriques et **5 conservées non mappées**. Le rapprochement par intentKey reste un lien documentaire, pas l'ownership runtime.
+- [PR #372 — registre historique des événements de déploiement](https://github.com/Patricked-code/MCP/blob/audit/mcp-historical-merge-traceability-20261103/docs/audits/utl-reconciliation/PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json) — **186 PR fusionnées**, 171 workflows Deploy observés (**165 SUCCESS, 6 FAILURE**) et 15 PR sans Deploy trouvé ; 7 jobs de ces 165 ont une preuve de message terminal exact SHA directement lue dans GitHub Actions ; aucune preuve indépendante des anciens fichiers d'attestation S1 ni de la différence de production avant/après. **Seule PR #372 porte les preuves de déploiement et leur base SQLite analytique**, PR #374 n'en duplique pas l'autorité.
+
+### Périmètres découverts qui n'étaient pas explicites dans les 20 rubriques
+
+| Sujet retrouvé | Source originale | Classement préservé |
+|---|---|---|
+| **S1 recovery / forensics ancien** | [Issue #32](https://github.com/Patricked-code/MCP/issues/32) | Sous-chantier historique à réconcilier avec l'état actuel, **pas** nouvel incident ni permission de recovery |
+| **Accès organisation GitHub** | [Issue #2](https://github.com/Patricked-code/MCP/issues/2) | Blocage historique GitHub ; les anciennes mentions Codex ne justifient ni l'utiliser ni le réactiver |
+| **Inventaire privé et approbation opérateur** | [Issue #3](https://github.com/Patricked-code/MCP/issues/3) | Gate historique S1/S2 et déploiement applications ; preuves sensibles uniquement hors Git |
+| **Décision B3.2 sur la cible serveur** | [Issue #220](https://github.com/Patricked-code/MCP/issues/220) | Intake propriétaire existant intégré au Backlog, pas nouveau programme |
+| **Politique PROGRAM_AUTO_CONTINUE sans Human Gate arbitraire** | [Issue #221](https://github.com/Patricked-code/MCP/issues/221) | Politique existante sous Dispatch et Program Backlog V2 |
+| **165 outils MCP additionnels GD-U** | [Issue #349, décision propriétaire](https://github.com/Patricked-code/MCP/issues/349#issuecomment-6530080412) | Exigence propre au chantier GD-U ; à comparer par outil aux capacités réellement enregistrées et appelables, **sans confondre avec les 165 workflows Deploy historiques SUCCESS** |
+
+L'issue [#349](https://github.com/Patricked-code/MCP/issues/349) porte la racine documentaire existante `GD-U-CONT-20261030-ROOT-01`; la continuité `GD-U-02D-CONT-20261029-B3I-ROOT-01` reste **fille**, tandis que le registre `MCP-GD-UNIVERSAL-CAPABILITIES-BIFURCATION-20261028`, la méthode `GD-U-METHOD-20261028-01` et l'action `GD-U-355-P1-BOOTSTRAP-RECEIPT-ATTESTATION` ne deviennent **ni racines nouvelles, ni TASK-\* runtime**.
+
+**Écart de découverte à vérifier** : l'outil E2 `mcp_e2_list_continuities` a renvoyé seulement l'ancrage historique de l'issue #359, alors que l'issue #349 et la PR #356 établissent l'autre racine. Le statut technique de la découverte E2 est donc **PARTIAL / TO_RECONCILE**, pas « root supprimé ».
+
+**Production** : l'existence d'un merge et d'une CI réussie ne prouve pas une modification de production. Les canaux applicatifs S1/S2, Plesk, DNS, bases, tâches de maintenance et opérations manuelles ne sont **pas inclus** dans les 171 observations MCP issues de PR #371 ; un audit dédié doit préserver leurs preuves réelles et ne jamais les inventer.
+
+**Interdiction de fusion** : PR #372, #373 et #374 restent Draft jusqu'à un **nouvel accord explicite du propriétaire**, indépendamment de la réussite des tests ou des demandes d'autres agents.
+
+---
+
 ## GLOBAL WORK — Observation MCP runtime en lecture seule (2026-11-05)
 
 **Source vérifiée par le MCP connecté** : [global-work-live-observation-20261105.json](global-work-live-observation-20261105.json). Lecture de `mcp_get_current_state_inventory` au **2026-11-05T02:35:28Z**. Ce fichier est une **observation horodatée, non une autorité durable ni un verdict présent à toute date future**.
