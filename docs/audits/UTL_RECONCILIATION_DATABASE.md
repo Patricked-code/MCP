@@ -102,6 +102,38 @@ SELECT * FROM v_production_modification_independently_proven;
 
 L'index `deploy_run_id` est unique dans le snapshot, `merged_sha` est délibérément **non unique**, et l'ID d'attestation natif ainsi que `run_attempt` restent `NULL` lorsqu'ils sont inconnus. La base reconstruit une **projection documentaire analytique**, jamais un registre runtime autoritatif. Le build effectue réconciliation exacte avec le SQL historique, vérifications de cardinalité, intégrité SQLite et clés étrangères ; une altération du source SHA ou des preuves est refusée. Le workflow de la PR #372 fabrique et publie l'artefact SQLite + JSON de contrôle **uniquement en CI**, sans écriture sur la production.
 
+### Index détaillé des 172 identifiants de déploiement et des fichiers d'attestation S1
+
+**Le scan GitHub Actions du 5 novembre 2026 identifie 172 exécutions** du workflow `MCP Governed Deploy` (workflow ID `331795160`) : **171 événements `push`** et **1 événement `workflow_dispatch`**. Il y a **166 workflows SUCCESS** et **6 FAILURE**. La source PR #371/ce registre historique documentait **171 runs PR-liés** ; le run manuel [#31655087215](https://github.com/Patricked-code/MCP/actions/runs/31655087215), sur SHA `8fb075dd55a3b94ed620527f11b2a77f88627188`, complète l'ensemble. Son job [#94307689798](https://github.com/Patricked-code/MCP/actions/runs/31655087215/job/94307689798) a réellement émis le message terminal `Deployment attested for exact SHA`.
+
+**Nouveau registre exhaustif d'identifiants GitHub**, sans inventer de fichiers matériels :
+
+[PR372_S1_ATTESTATION_FILE_ID_CROSSWALK_172_V01.json](utl-reconciliation/PR372_S1_ATTESTATION_FILE_ID_CROSSWALK_172_V01.json) — **172 lignes identifiées séparément** ; chacune relie :
+
+`indexId` (clé documentaire unique) → `githubRunId` (ID natif GitHub, vérifié) → `githubJobId` (seulement si vérifié) → `s1JobId` (constat direct ou contrat de construction) → `expectedAttestationPath` → `expectedAttestationIdIfSchemaV2` → SHA exact / PR / CI main connus → `nativeAttestationIdReadFromFile` (NULL tant que non lu).
+
+Le contrat actuel `src/deploy/s1Deploy.ts` construit le **job S1** `mcp-s1-<run_id>-<sha12>`, écrit `/opt/apps/wealthtech-mcp-deploy/jobs/<job_id>/attestation.json`, et en **schéma v2** attribue au fichier `attestation_id = s1-deploy-<job_id>`. L'ancien schéma v1 peut ne pas comporter cet ID natif : **ne pas le rétro-inventer**. Pour chaque ligne, l'ID GitHub du run est **réel**, tandis que le chemin/fichier attendu et l'ID v2 restent des **candidats** avant une lecture S1 autorisée.
+
+Exemple de chaîne constatée pour [run #37817792904](https://github.com/Patricked-code/MCP/actions/runs/37817792904) :
+`S1-ATTESTATION-CANDIDATE-RUN-37817792904` → `mcp-s1-37817792904-6576b5287f23` → `.../attestation.json` → `6576b5287f23566684005adf6032734e2ecdea50` → PR #261 → CI #37817792888. Le job GitHub #113450762668 a effectivement un message terminal attestant ce SHA, **mais le fichier S1 n'a pas été relu**.
+
+**Ce que GitHub ne prouve pas encore** : dans quatre échantillons de runs (#33257524744, #35515690831, #37817792904, #41171370599), aucun artefact GitHub Actions téléchargeable n'était exposé. Le code de production écrit le fichier sur **S1**, pas dans le dépôt GitHub. Le scan montre 172 *exécutions*, pas 172 fichiers d'attestation indépendamment listés sur S1. Le compteur physique des fichiers reste `UNKNOWN`. Les 172 clés sont donc **des références de fichiers candidats**, pas des déclarations d'existence.
+
+La base SQLite analytique de PR #372 contient désormais une table `s1_attestation_file_candidates` et la vue `v_attestation_file_id_to_github_deploy` : **172 lignes** jointes aux **171 événements PR-liés** de `production_deploy_event` ; le run manuel conserve `historic_event_key=NULL` et aucun faux PR/CI. La vue `v_independently_verified_attestation_files` reste vide tant qu'une preuve S1 native et un hash de fichier ne sont pas relevés.
+
+```sql
+SELECT file_index_id,github_run_id,github_job_id,s1_job_id,
+       expected_schema_v2_attestation_id,native_attestation_id,
+       expected_attestation_path,file_exists_verified,pr_number,ci_main_run_id
+FROM v_attestation_file_id_to_github_deploy
+ORDER BY github_run_id;
+
+SELECT COUNT(*) FROM s1_attestation_file_candidates; -- 172
+SELECT COUNT(*) FROM v_independently_verified_attestation_files; -- 0 avant accès S1 autorisé
+```
+
+**Prochaine action de conformité** : un lecteur S1 autorisé et borné doit lister réellement les répertoires jobs et lire les champs validés des `attestation.json` ; faire une comparaison stricte `job_id`, `attestation_id` (v2), SHA, résultat, horodatage, chemin et hash du fichier ; gérer les fichiers orphelins, les retries et les no-op. Le lecteur `read_mcp_code_file_s1` ne permet pas cette lecture hors code source, et il ne faut pas contourner son allowlist.
+
 **Observation indépendante courante S1 — 5 novembre 2026** : [PR372_S1_CURRENT_RUNTIME_IMAGE_SNAPSHOT_20261105.json](utl-reconciliation/PR372_S1_CURRENT_RUNTIME_IMAGE_SNAPSHOT_20261105.json). `mcp_runtime_image_attestation_s1` + `mcp_git_status_s1` établissent à la date de lecture un runtime `healthy`, l'image `sha256:2e949ce3998a2316064f28b23c94c33914e6d441792226870ddc98ebf11e0059` créée le 31 octobre, et le SHA `05dbb66ed81aa4e7443655c89d10c0c390ff0f10` présent sur GitHub main, checkout S1 et label de l'image. Ce SHA est celui de la PR #367 / Deploy #41171370599. Ce constat prouve **l'état S1 actuel** mais n'est **pas** une relecture des anciennes attestations de job, ni la preuve d'une différence de production avant/après chaque deploy.
 
 **Prochaine preuve à acquérir** : relecture S1 strictement allowlistée des attestations historiques lorsque le canal officiel existe ; réindexation des `run_attempt` et déploiements hors PR #371 ; corrélation `avant/après` pour identifier les *modifications* effectives, et intégration séparée de Governed Deploy Applications. Aucune action d'écriture, aucun merge sur `main` sans accord propriétaire.
