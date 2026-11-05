@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "docs/audits/utl-reconciliation"
 ARCHIVE = BASE / "sources/PR371_MERGED_PRS_20261103.sql"
 LEDGER = BASE / "PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json"
+FILE_CROSSWALK = BASE / "PR372_S1_ATTESTATION_FILE_ID_CROSSWALK_172_V01.json"
 REQUIRED = {"merged": 186, "deploy": 171, "success": 165, "failure": 6,
             "verified_logs": 7, "missing": 15}
 SCHEMA = """
@@ -43,6 +44,105 @@ CREATE VIEW v_deploy_terminal_log_correlated AS SELECT * FROM production_deploy_
 CREATE VIEW v_production_modification_independently_proven AS
  SELECT * FROM production_deploy_event WHERE production_modification_proven=1;
 """
+
+ATTESTATION_FILE_SCHEMA = """
+CREATE TABLE s1_attestation_file_candidates (
+ file_index_id TEXT PRIMARY KEY,
+ github_run_id INTEGER NOT NULL UNIQUE,
+ github_run_url TEXT NOT NULL,
+ github_run_event TEXT NOT NULL CHECK(github_run_event IN ('push','workflow_dispatch')),
+ github_run_conclusion TEXT NOT NULL CHECK(github_run_conclusion IN ('success','failure')),
+ github_job_id INTEGER,
+ s1_job_id TEXT NOT NULL UNIQUE,
+ expected_attestation_path TEXT NOT NULL UNIQUE,
+ expected_status_path TEXT NOT NULL UNIQUE,
+ expected_schema_v2_attestation_id TEXT NOT NULL UNIQUE,
+ native_attestation_id TEXT,
+ native_file_sha256 TEXT,
+ github_artifact_id INTEGER,
+ historic_event_key TEXT REFERENCES production_deploy_event(event_key),
+ merge_sha TEXT NOT NULL CHECK(length(merge_sha)=40),
+ file_exists_verified INTEGER,
+ file_schema_version INTEGER,
+ job_terminal_log_verified INTEGER NOT NULL CHECK(job_terminal_log_verified IN (0,1)),
+ run_attempt INTEGER,
+ CHECK (file_exists_verified IS NULL OR file_exists_verified IN (0,1)),
+ CHECK (file_schema_version IS NULL OR file_schema_version IN (1,2)),
+ CHECK (github_artifact_id IS NULL OR github_artifact_id>0)
+);
+CREATE VIEW v_attestation_file_id_to_github_deploy AS
+ SELECT a.file_index_id,a.github_run_id,a.github_job_id,a.s1_job_id,
+        a.expected_schema_v2_attestation_id,a.native_attestation_id,
+        a.expected_attestation_path,a.file_exists_verified,
+        a.historic_event_key,e.pr_number,e.ci_main_run_id,
+        a.github_run_conclusion,a.job_terminal_log_verified
+ FROM s1_attestation_file_candidates a
+ LEFT JOIN production_deploy_event e ON e.event_key=a.historic_event_key;
+CREATE VIEW v_independently_verified_attestation_files AS
+ SELECT * FROM s1_attestation_file_candidates WHERE file_exists_verified=1 AND native_file_sha256 IS NOT NULL;
+"""
+
+def register_attestation_file_candidates(db: sqlite3.Connection, historical_ledger: dict) -> dict:
+    """Join the 172 GitHub run identities; candidate paths never certify physical files."""
+    crosswalk = json.loads(FILE_CROSSWALK.read_text(encoding="utf-8"))
+    assert crosswalk["ownerPr"] == 372 and crosswalk["schemaVersion"] == 1
+    assert crosswalk["source"]["historicalRegistryBlobSha"] == git_blob_sha(LEDGER)
+    entries = crosswalk["entries"]
+    assert len(entries) == 172
+    db.executescript(ATTESTATION_FILE_SCHEMA)
+    seen = set()
+    for record in entries:
+        run_id = record["githubRunId"]
+        sha = record["linkedMergeSha"]
+        job = f"mcp-s1-{run_id}-{sha[:12]}"
+        assert record["indexId"] == f"S1-ATTESTATION-CANDIDATE-RUN-{run_id}"
+        assert record["s1JobId"] == job
+        assert record["expectedAttestationIdIfSchemaV2"] == "s1-deploy-" + job
+        assert record["expectedAttestationPath"] == f"/opt/apps/wealthtech-mcp-deploy/jobs/{job}/attestation.json"
+        assert record["expectedStatusPath"] == f"/opt/apps/wealthtech-mcp-deploy/jobs/{job}/status.state"
+        assert record["nativeAttestationIdReadFromFile"] is None
+        assert record["s1FileExistsIndependentlyVerified"] is None
+        assert record["nativeFileContentSha256"] is None
+        assert record["githubActionsArtifactId"] is None
+        assert record["githubRunConclusion"] in ("success", "failure")
+        assert record["githubRunEvent"] in ("push", "workflow_dispatch")
+        assert run_id not in seen
+        seen.add(run_id)
+        event_key = record["historicRegistryEventKey"]
+        if event_key is None:
+            assert run_id == 31655087215 and record["githubRunEvent"] == "workflow_dispatch"
+            assert record["githubRunConclusion"] == "success" and record["linkedHistoricalPrNumber"] is None
+        else:
+            assert record["githubRunEvent"] == "push"
+            match = db.execute("SELECT pr_number,merged_sha,deploy_run_id FROM production_deploy_event WHERE event_key=?", (event_key,)).fetchone()
+            assert match is not None and match == (record["linkedHistoricalPrNumber"], sha, run_id)
+        db.execute("""INSERT INTO s1_attestation_file_candidates
+           (file_index_id,github_run_id,github_run_url,github_run_event,github_run_conclusion,
+            github_job_id,s1_job_id,expected_attestation_path,expected_status_path,
+            expected_schema_v2_attestation_id,native_attestation_id,native_file_sha256,
+            github_artifact_id,historic_event_key,merge_sha,file_exists_verified,
+            file_schema_version,job_terminal_log_verified,run_attempt)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+           (record["indexId"],run_id,record["githubRunUrl"],record["githubRunEvent"],
+            record["githubRunConclusion"],record["githubJobId"],job,
+            record["expectedAttestationPath"],record["expectedStatusPath"],
+            record["expectedAttestationIdIfSchemaV2"],None,None,None,
+            event_key,sha,None,None,int(record["githubWorkflowTerminalLogVerified"]),
+            record["githubRunAttempt"]))
+    actual = {
+      "github_runs": scalar(db, "SELECT COUNT(*) FROM s1_attestation_file_candidates"),
+      "push": scalar(db, "SELECT COUNT(*) FROM s1_attestation_file_candidates WHERE github_run_event='push'"),
+      "manual": scalar(db, "SELECT COUNT(*) FROM s1_attestation_file_candidates WHERE github_run_event='workflow_dispatch'"),
+      "success": scalar(db, "SELECT COUNT(*) FROM s1_attestation_file_candidates WHERE github_run_conclusion='success'"),
+      "failure": scalar(db, "SELECT COUNT(*) FROM s1_attestation_file_candidates WHERE github_run_conclusion='failure'"),
+      "server_log_terminal_verified": scalar(db, "SELECT COUNT(*) FROM s1_attestation_file_candidates WHERE job_terminal_log_verified=1"),
+      "files_physically_verified": scalar(db, "SELECT COUNT(*) FROM v_independently_verified_attestation_files"),
+      "source_archive_join_count": scalar(db, "SELECT COUNT(*) FROM s1_attestation_file_candidates WHERE historic_event_key IS NOT NULL")
+    }
+    expected = {"github_runs":172,"push":171,"manual":1,"success":166,"failure":6,
+                "server_log_terminal_verified":8,"files_physically_verified":0,"source_archive_join_count":171}
+    assert actual == expected, f"Run / attestation path crosswalk mismatch: {actual}"
+    return actual
 
 def git_blob_sha(path: Path) -> str:
     content = path.read_bytes()
@@ -117,11 +217,13 @@ def build() -> tuple[sqlite3.Connection, dict]:
        WHERE NOT EXISTS(SELECT 1 FROM production_deploy_event d WHERE d.pr_number=p.pr_number)
        ORDER BY p.pr_number""")]
     assert scalar(db, "SELECT COUNT(*) FROM v_production_modification_independently_proven") == 0
+    file_index_counts = register_attestation_file_candidates(db, ledger)
     assert db.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
     assert db.execute("PRAGMA foreign_key_check").fetchall() == []
     db.commit()  # close the source transaction before sqlite3.Connection.backup()
     return db, {"schemaVersion": 1, "sourceBlobSha": ledger["source"]["blobSha"],
                 "observed": observed,
+                "s1AttestationFileCandidateIndex": file_index_counts,
                 "proofStatus": "7_GITHUB_JOB_TERMINAL_LOGS_NOT_INDEPENDENT_S1",
                 "attestedProductionChanges": 0,
                 "scope": "S1_MCP_ARCHIVED_WORKFLOW_RUNS_ONLY"}
