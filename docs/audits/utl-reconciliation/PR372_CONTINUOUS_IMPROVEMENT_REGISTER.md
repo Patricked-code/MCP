@@ -133,3 +133,44 @@ Rester strictement compatible avec les documents propriétaires `reference/MCP_U
 5. **Aucun raccourci de livraison.** La sortie du développement mène à une PR et ses gates propres ; MCP CI, revue, fusion protégée, MCP Governed Deploy et attestation S1 restent distincts. Une CI GREEN n'est ni merge, ni déploiement, ni clôture.
 6. **Étude préalable à toute écriture supplémentaire** : confronter le graphe d'appels et l'état actuel au registre/backlog existant ; qualifier les écarts avant de choisir les modifications ; exécuter TDD RED/GREEN et tests avant revue ; ne pas produire de nouvelle PR pour cette seule inscription au registre.
 7. **Aucune opération réalisée dans le présent ajout sauf la documentation du constat.** Aucun test de mutation/GWC E2E, aucune nouvelle session, Task, lock, autorisation ou attestation n'a été créé par cet audit. Le présent registre n'autorise pas leur exécution.
+
+
+## 6. Rapprochement Global Work et 94 Task Blueprints — 2026-11-05 (extension documentaire, sans nouveau numéro IMP)
+
+**Mandat confirmé par le propriétaire** : enrichir les PR [#374](https://github.com/Patricked-code/MCP/pull/374), [#373](https://github.com/Patricked-code/MCP/pull/373) et **cette PR #372** de façon coordonnée, **sans aucune fusion dans `main` avant un nouvel accord explicite**. « Rien ne sera ignoré » signifie conserver la couverture des éléments observés, y compris les cas sans preuve, à requalifier ou contradictoires ; cela ne permet ni de certifier un état inconnu, ni de créer une nouvelle autorité.
+
+**Matrice technique V0.1 (sous le verrou de continuité #372)** : [PR372_GLOBAL_WORK_TASK_ADMISSION_CROSSWALK_V01.json](PR372_GLOBAL_WORK_TASK_ADMISSION_CROSSWALK_V01.json). Elle reprend par ID les **94** blueprints de `docs/governance/program-backlog-convergence.json` (`blob fc1ec980c8ec82278acd889796afc34e0b70647e`, snapshot source historique), avec Work Item parent, Wave/Lot, dependencies, collision scopes et readiness **telle que déclarée dans la source** : **36 DONE, 18 READY, 28 BLOCKED, 7 DEFERRED, 5 CONDITIONAL**. Les états ne sont **pas** des observations runtime du 5 novembre.
+
+### 6.1. Autorités et mécanismes d'attribution — matrice de preuve
+
+| Étape | Autorité préexistante à vérifier | Critères / preuves requises | Statut du présent rapprochement |
+|---|---|---|---|
+| **PLAN** | Program Backlog V2, programmes et intakes réconciliés | ID Blueprint, Work Item, dépendances, collisions, `program:readiness` et `program:next` recomputés | **VERIFIE** pour les 94 lignes du snapshot Git ; **A_TESTER** pour la readiness courante |
+| **T_IN — parent admissible** | E1 : Task Queue/Session/Claim/Lock réels ; E2 : mandat propriétaire explicite et continuité réelle | Origine, consentement/périmètre, work entry, sélection admissible, absence de collision ; aucun `TASK-*` E1 inventé en E2 | **A_TESTER** : admission runtime non observée par cette matrice |
+| **UTL_PLAN — 1..n unités** | Autorité de travail existante, références UTL attestées | Parent réel, identités UTL réellement émises, critères, dépendances, versions, scopes, plan RED/GREEN, portes d'autorisation | **A_TESTER** : zéro référence UTL déduite du backlog |
+| **D_IN → D_OUT** | GitHub/exécuteur autorisé, gouvernance de branche et tests | SHA exact, permissions, TDD RED/GREEN, régression, PR, CI de PR, revue requise et findings | **A_TESTER** : résultats historiques des PR ne sont pas automatiquement des receipts UTL |
+| **L_IN → L_OUT** | Circuit de livraison existant, GitHub Actions, serveur S1/S2 selon cible | Merge, CI main, admission Governed Deploy applicable, job S1, postconditions et attestation réelle si nécessaire | **A_TESTER** : CI success ≠ attestation runtime |
+| **UTL_OUT** | Propriétaire de l'unité et validation de critères | Couverture individuelle, non-régression, preuve D/L et acceptation | **A_TESTER** : aucune nouvelle UTL déclarée terminée |
+| **T_OUT** | Parent et critères d'acceptation globaux | Toutes les UTL requises attestées + acceptation globale + checkpoint, puis recompute | **A_TESTER** : aucun parent artificiellement clôturé |
+
+### 6.2. Registre des manques — rien à masquer
+
+| Statut | Manque ou blocage à qualifier | Action admissible et preuve de sortie |
+|---|---|---|
+| **A_TESTER** | Écart entre Blueprint `READY` et une vraie tâche runtime admise | Lecture fraîche Task Queue/Session/Claim/Lock ; lier l'identité d'origine, sinon rester `UNKNOWN` |
+| **A_TESTER** | Attribution d'un travail E2 GitHub-only sans fausse Task E1 | Vérifier issue/mandat/Continuity ID et trail PR/exact SHA, puis distinguer explicitement `OWNER_DIRECTLY_REQUESTED_WORK` du claim |
+| **A_TESTER** | Rupture de continuité après PR/merge/checkpoint | Observer la prochaine readiness actuelle, l'état owned-first et le prochain travail collision-free, sans déclenchement implicite |
+| **A_TESTER** | Risque de doublon PR/UTL/tâche dans plusieurs chantiers de Global Work | Identifiant canonique et source unique, relations multiples documentaires seulement ; vérifier owner et collision domains live |
+| **A_TESTER** | Stale `DONE` historique, CI verte sans preuve S1 indépendante, issue ouverte sans blocker live | Réobservation S1/authorités exactes selon nécessité ; conserver séparées les classes de preuves et les dates |
+| **A_TESTER** | Entrées historiques non classées, preuve absente, contradiction entre registres | Ligne explicite `UNCLASSIFIED`/`UNKNOWN`, référence source, responsable d'analyse existant, prochaine preuve à obtenir ; aucune suppression silencieuse |
+| **PROPOSE** | Alignement de la projection Global Work #374 avec le modèle causal PR #372 et l'arborescence PR #373 | Contrôles de couverture des 94 blueprints, index PR/issues, journal documentaire, 3 liens de PR sans transfert d'autorité ni fusion |
+
+### 6.3. Frontières et prochaines actions
+
+- **PR #374** : source d'indexation transversale, de suivi documentaire et de couverture des PR/issues ; ses champs `owner`, `progress`, `blocker` ne deviennent *opérationnels* qu'après réobservation des autorités compétentes.
+- **PR #373** : continuité et liens de discussions ; n'est ni la Task Queue, ni un Continuity ID runtime, ni le registre de déploiement.
+- **PR #372** : matrices historiques, contrats `T_IN/UTL_PLAN/D_IN/D_OUT/L_IN/L_OUT/UTL_OUT/T_OUT` et preuves ; ne fournit **aucune permission** ni un nouveau mécanisme d'assignation.
+- **Source d'information insuffisante** : les 94 blueprints, PR et issues sont des références GitHub, pas une réponse définitive sur l'ownership S1 à cet instant. Les champs non observés restent volontairement vides.
+- **Interdiction d'action non autorisée** : aucun merge sur `main` sans accord du propriétaire ; aucune mutation S1/S2, Task/Session/Claim/Lock ni déploiement par ce registre.
+- **NEXT_ACTION** : audit de l'attribution réelle, dans l'ordre `OBSERVE → RECONCILE → RESUME_OWNED_FIRST → SELECT_FIRST_COLLISION_FREE → VERIFY_LIVE_ADMISSION`, puis mise à jour des preuves et du registre avant toute exécution.
+
