@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "kind": "PR372_INDEPENDENT_CURRENT_S1_RUNTIME_REVISION_SNAPSHOT",
+  "repo": "Patricked-code/MCP",
+  "ownerPr": 372,
+  "observationDate": "2026-11-05",
+  "evidenceSourceTools": [
+    "mcp_reconcile_governed_context",
+    "mcp_get_current_state_inventory",
+    "mcp_runtime_image_attestation_s1",
+    "mcp_git_status_s1"
+  ],
+  "mode": "AUTHORIZED_READ_ONLY",
+  "githubMainSha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "s1GitSha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "s1CleanWorktree": true,
+  "runtimeRevision": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "runtimeStatus": "running",
+  "runtimeHealth": "healthy",
+  "containerCreatedUtc": "2026-10-31T05:10:37.959859621Z",
+  "containerStartedUtc": "2026-10-31T05:10:38.477979939Z",
+  "imageCreatedUtc": "2026-10-31T05:10:35.673957501Z",
+  "imageId": "sha256:2e949ce3998a2316064f28b23c94c33914e6d441792226870ddc98ebf11e0059",
+  "containerImageRef": "wealthtech-mcp-ssh-bridge:deploy-05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "imageRevisionLabel": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "correlatedArchivedPR": 367,
+  "correlatedMergeSha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "correlatedCiMainRunId": 41171370591,
+  "correlatedDeployRunId": 41171370599,
+  "correlatedGithubJobId": 124449834987,
+  "correlatedServerJobId": "mcp-s1-41171370599-05dbb66ed81a",
+  "correlatedGithubJobLogUrl": "https://github.com/Patricked-code/MCP/actions/runs/41171370599/job/124449834987",
+  "proofClassification": "INDEPENDENT_CURRENT_S1_RUNTIME_REVISION_AND_IMAGE_MATCH_AT_OBSERVATION_TIME",
+  "sourceLimitations": [
+    "Current revision state is independently observed, not full old job attestation.json or status.state",
+    "Container creation is not automatically proof that source code or database was modified relative to previous runtime",
+    "No earlier image/sha in this snapshot; previous-to-current production change not attested",
+    "Current S1 image snapshot does not independently attest all 165 historical workflows",
+    "Only MCP service S1, not application services S1/S2, Plesk, DB, DNS, secret/config or manual operations"
+  ],
+  "scope": "READ_ONLY_STATE_SNAPSHOT_NO_RUNTIME_MUTATION",
+  "nextAction": "Acquire exact native historical S1 job attestations and before/after revision for each deployment event using permitted reader only."
+}
