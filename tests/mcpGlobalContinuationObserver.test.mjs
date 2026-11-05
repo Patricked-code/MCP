@@ -100,3 +100,13 @@ test('no GitHub issue, PR, or workflow event claims the agent or selects a task'
     event:{...event,name:'issue_comment'},map,program,observedAt:at
   }),/EVENT_NOT_AUTHORIZED_FOR_MAIN_OBSERVATION/);
 });
+
+test('the existing intake workflow observes every main push without broadening its issue-write job', () => {
+  const workflow=readFileSync('.github/workflows/mcp-auto-intake-discovery.yml','utf8');
+  assert.match(workflow,/  push:\n    branches: \[main\]/);
+  assert.match(workflow,/  observe-main:\n/);
+  assert.match(workflow,/      contents: read/);
+  assert.match(workflow,/github.event_name == 'issues' \|\| github.event_name == 'issue_comment'/);
+  assert.match(workflow,/tests\/mcpGlobalContinuationObserver\.test\.mjs/);
+  assert.doesNotMatch(workflow,/mcp_claim_next_governed_task|mcp_materialize_program_blueprint|secrets\.MCP_AUTH_TOKEN/);
+});
