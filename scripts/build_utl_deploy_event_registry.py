@@ -119,6 +119,7 @@ def build() -> tuple[sqlite3.Connection, dict]:
     assert scalar(db, "SELECT COUNT(*) FROM v_production_modification_independently_proven") == 0
     assert db.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
     assert db.execute("PRAGMA foreign_key_check").fetchall() == []
+    db.commit()  # close the source transaction before sqlite3.Connection.backup()
     return db, {"schemaVersion": 1, "sourceBlobSha": ledger["source"]["blobSha"],
                 "observed": observed,
                 "proofStatus": "7_GITHUB_JOB_TERMINAL_LOGS_NOT_INDEPENDENT_S1",
