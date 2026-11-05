@@ -1,0 +1,511 @@
+{
+  "schemaVersion": 1,
+  "artifactType": "conversation_technical_continuity_journal",
+  "rootId": "MCP-CONV-CONT-20261104-ROOT-01",
+  "scope": "TECHNICAL_SUMMARIES_ONLY_PUBLIC_GITHUB_REPO",
+  "provenance": "Discussion-backed extracts, not verbatim complete chat transcript",
+  "initialCoverage": "RECENT_RELEVANT_DIALOGUE_ONLY",
+  "disclaimer": "No automated background collection. Historical earlier turns are not exhaustively included. Unknown details remain unknown.",
+  "nextSequence": 14,
+  "events": [
+    {
+      "eventId": "MCP-CONV-EVT-20261104-001",
+      "sequence": 1,
+      "kind": "QUESTION_AND_EXPLANATION",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6"
+      ],
+      "source": "conversation: user question on 6 stages; assistant explanation",
+      "userIntent": "Explain six established chronological development steps in relation to existing MCP discipline.",
+      "assistantOutcome": "Detailed stages 3.1..3.6, existing AGENTS/CLAUDE/policies, governance gates, CI, Governed Deploy, runtime attestation and continuity; expanded each stage with actual subheadings.",
+      "status": "SOURCE_BACKED_ASSISTANT_EXPLANATION",
+      "sources": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "NO_REGRESSION_POLICY.md",
+        ".mcp/github-first-operational-policy.json",
+        "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
+        ".github/workflows/mcp-ci.yml",
+        ".github/workflows/mcp-deploy.yml"
+      ],
+      "nextDiscussionAction": "Map user-provided MGEF to existing cycle without altering original six headings."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261104-002",
+      "sequence": 2,
+      "kind": "USER_SUPPLIED_TECHNICAL_FRAMEWORK",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6"
+      ],
+      "source": "conversation: user supplied MGEF diagrams, lists and English purpose statement",
+      "userIntent": "Provide a candidate integrated doctrine and a Reality Reconciliation Gate for governed MCP evolution.",
+      "sourceMaterial": {
+        "frameworkTitle": "MCP Governed Evolution Framework — MGEF",
+        "fourLayers": [
+          {
+            "title": "DOCTRINE",
+            "items": [
+              "NO_REGRESSION_POLICY.md",
+              "MCP_ANTI_DISPERSION_GOVERNANCE.md",
+              "MCP_AGENT_RULES.md",
+              "AGENTS.md",
+              "CLAUDE.md"
+            ]
+          },
+          {
+            "title": "POLICIES MACHINE-READABLE",
+            "items": [
+              ".mcp/branch-governance.json",
+              ".mcp/github-first-operational-policy.json",
+              "autres projections .mcp/*"
+            ]
+          },
+          {
+            "title": "ENGINEERING LIFECYCLE",
+            "steps": [
+              "observe",
+              "reconcile",
+              "scope",
+              "Task",
+              "RED",
+              "GREEN",
+              "regression",
+              "CI",
+              "review",
+              "merge",
+              "deploy",
+              "attestation",
+              "checkpoint"
+            ]
+          },
+          {
+            "title": "AUTORITÉS RUNTIME",
+            "items": [
+              "Governed Task Queue",
+              "Governed Session",
+              "Bootstrap Receipt",
+              "Locks",
+              "Operational Memory",
+              "Live State",
+              "GitHub exact-head evidence"
+            ]
+          }
+        ],
+        "reconciliationGate": "Reality Reconciliation Gate",
+        "realityComparison": "GitHub ↔ S1/S2 ↔ Runtime ↔ Documentation",
+        "entries": [
+          "E1 — Internal Governed Admission",
+          "E2 — External Governed Recovery"
+        ],
+        "proposedCommonLifecycle": [
+          "Observe",
+          "Reconcile",
+          "Admit",
+          "Scope",
+          "Design",
+          "RED",
+          "GREEN",
+          "Regression",
+          "CI",
+          "Review",
+          "Merge",
+          "Deploy",
+          "Attest",
+          "Checkpoint",
+          "Continue"
+        ],
+        "workProgramRelationship": "Roadmap/Program Backlog determine WHAT; MGEF determines HOW.",
+        "runtimeRelationship": "Task/Session/Receipt/Locks authorize and bind execution. MGEF does not replace them.",
+        "corePrinciples": [
+          "additive changes",
+          "reuse existing authorities",
+          "preserve validated behavior",
+          "fail closed on missing evidence",
+          "RED/GREEN where applicable",
+          "regression/security validation",
+          "review exact SHA",
+          "governed merge",
+          "existing governed deployment",
+          "runtime-attested before acquired"
+        ],
+        "continuity": "Never replay proven work. Resume from first open gate.",
+        "diagramNotes": "Presented diagrams place Governed Task, Governed Session, Receipt and Locks after E1/E2 and before RED; another diagram includes reconciliation again after runtime attestation.",
+        "interpretationRisk": "Existing GitHub-first runbook currently distinguishes E2 GitHub-only bounded work from runtime-admitted Task/Session/Lock operations. The universal task gate represented in user diagrams is not automatically a live rule."
+      },
+      "status": "USER_PROPOSAL_NOT_YET_RECONCILED_AS_GOVERNANCE_STANDARD",
+      "nextDiscussionAction": "Analyse correspondence and tensions within chapters 3, 5, 6 only; no implicit runtime change."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261104-003",
+      "sequence": 3,
+      "kind": "PERSISTENCE_AUDIT",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/8"
+      ],
+      "source": "conversation: user asked whether every new response was already committed in PR373; assistant answered no",
+      "userIntent": "Verify actual systematic per-exchange Github persistence.",
+      "assistantOutcome": "Confirmed initial 63-node index existed, but deeper discussion and responses had not been committed automatically.",
+      "status": "HISTORICAL_GAP_ACKNOWLEDGED",
+      "nextDiscussionAction": "Introduce actual governed progressive interactive writes and audit against original 63."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261104-004",
+      "sequence": 4,
+      "kind": "EXPLICIT_OWNER_CONTINUITY_INSTRUCTION",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/8"
+      ],
+      "source": "current user instruction in conversation",
+      "userIntent": "Continuously enrich the same PR373, deepen child/grandchild nodes at the correct canonical level, preserve the same book without inventing new material.",
+      "assistantOutcome": "PR373 tree extended to 99 nodes; 36 source-backed nodes added; contract 1.1 created for interactive persistence, stable IDs, provenance and safety.",
+      "status": "DOCUMENTARY_MUTATIONS_COMMITTED_PENDING_FINAL_VERIFICATION",
+      "nextDiscussionAction": "Verify committed files exact SHA and continue next turn through established ledger protocol."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261104-005",
+      "sequence": 5,
+      "kind": "EXPLICIT_OWNER_RELATIONAL_MATRIX_INSTRUCTION",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "source": "user request for IDs of every child at every depth and an evolving relational tracking/ID-link matrix",
+      "userIntent": "Preserve an ID for every existing node, build a verifiable parent/child/ancestor/descendant/cross-reference relationship matrix, support indefinite additive deepening in PR373.",
+      "assistantOutcome": "Added five real descendants under rule 7.5; generated node and relation CSV plus derived relational JSON and rebuild script; extended the contract for source-first reconstruction and checks.",
+      "status": "DOCUMENTARY_ACTION_IN_PROGRESS_VALIDATION_PENDING",
+      "nextDiscussionAction": "Rebuild derived matrices against tree 1.2, event sequence 5 and contract 1.2; check exact SHA and zero regression; do not merge without review."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-006",
+      "sequence": 6,
+      "kind": "USER_SOURCE_AND_DISCIPLINE_COMPREHENSION",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "source": "user-provided detailed 11-point analysis of existing MCP discipline, followed by assistant's explicit understanding",
+      "userIntent": "Confirm understanding of discipline distributed across existing doctrine, machine policies, engineering lifecycle and runtime authorities, without inventing new parallel method.",
+      "assistantOutcome": "Confirmed four complementary levels; doctrine sets invariants, policies encode restrictions, lifecycle orders work, runtime authorities establish admissibility; Programme WHAT/MGEF HOW, E1/E2 share lifecycle, merge/deploy/runtime attestation distinct; E2 GitHub-only exception preserved.",
+      "sourceClassification": "USER_SUPPLIED_ANALYSIS_NOT_INDEPENDENTLY_REVERIFIED_PER_INDIVIDUAL_CLAIM",
+      "status": "CONVERSATION_UNDERSTANDING_RECORDED_NO_RUNTIME_CLAIM",
+      "nextDiscussionAction": "On further exploration, verify exact source paths and relevant passages before promoting specific claims; preserve chapter 5 hierarchy."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-007",
+      "sequence": 7,
+      "kind": "HISTORICAL_FOUNDING_INSTRUCTIONS_RECONSTRUCTION",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.A",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.B",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "source": "Historical user instructions recovered from previous conversations, checked against original Github PR #6 and historical repository documents",
+      "userIntent": "Identify original instructions that created historical MCP discipline, not merely restate current policies.",
+      "assistantOutcome": "Rooted discipline in July 2026 requirements: preserve existing behavior; additive change; agent anti-dispersion; protected main, dedicated branches and PR; GitHub↔server reconciliation; DirtyCount gate; documented evidence and continuation without replay. Verified PR #6 created 2026-07-09 and merged to 4ae11249a6ec129cbf7289e361416bc248311bca, introducing anti-dispersion/manual/machine-readable footprint. Early July 4 onboarding planning in PR #1 is historical context, not proof that PR #1 was merged. Subsequent refinements are not retroactively original July 9 instructions.",
+      "evidence": [
+        {
+          "type": "GITHUB_PR",
+          "url": "https://github.com/Patricked-code/MCP/pull/6",
+          "state": "MERGED",
+          "createdAt": "2026-07-09T20:21:44Z"
+        },
+        {
+          "type": "GITHUB_MERGE_COMMIT",
+          "url": "https://github.com/Patricked-code/MCP/commit/4ae11249a6ec129cbf7289e361416bc248311bca",
+          "sha": "4ae11249a6ec129cbf7289e361416bc248311bca"
+        },
+        {
+          "type": "GITHUB_PR_HISTORICAL_CONTEXT",
+          "url": "https://github.com/Patricked-code/MCP/pull/1",
+          "state": "NOT_MERGED",
+          "createdAt": "2026-07-04T11:10:51Z"
+        },
+        {
+          "type": "HISTORICAL_USER_MESSAGES",
+          "date": "2026-07-09",
+          "note": "Personal conversation history corroborates initial instructions; full exact master prompt not available in this register."
+        }
+      ],
+      "status": "HISTORICAL_RECONSTRUCTION_WITH_SOURCE_BOUNDARIES",
+      "nextDiscussionAction": "If the owner requests verbatim original master prompt, locate full historical text instead of inventing quotation; preserve four conceptual layers and no drift."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-008",
+      "sequence": 8,
+      "kind": "HISTORICAL_WORKFLOW_LINEAGE_AND_CURRENT_ACTIONS",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "source": "user asks which workflows historically followed founding discipline. Github PR#6, commit a647c46 and current main repository files examined.",
+      "userIntent": "Recover the work sequences and concrete technical workflows that followed the founding July MCP governance instructions.",
+      "assistantOutcome": "Distinguished original nine-phase ROADMAP workflow, three early scripts for governance, server observation and controlled GitHub sync, and later GitHub Actions MCP CI / MCP Governed Deploy / MCP Read-only Evidence. Clearly differentiated documentary methodology, shell scripts and GitHub Actions. Historical sync script does not authorize execution today.",
+      "historicalArtifacts": [
+        {
+          "kind": "HISTORICAL_BASE_COMMIT",
+          "sha": "a647c46ab9759bf98b9de3f4b972ca0c944a378f",
+          "url": "https://github.com/Patricked-code/MCP/commit/a647c46ab9759bf98b9de3f4b972ca0c944a378f",
+          "files": [
+            "ROADMAP.md",
+            "scripts/check-governance-rules.sh",
+            "scripts/check-mcp-server.sh",
+            "scripts/sync-mcp-from-github.sh"
+          ]
+        },
+        {
+          "kind": "MCP_GOVERNANCE_PR",
+          "number": 6,
+          "url": "https://github.com/Patricked-code/MCP/pull/6",
+          "mergeSha": "4ae11249a6ec129cbf7289e361416bc248311bca"
+        },
+        {
+          "kind": "CURRENT_WORKFLOW_FILES_OBSERVED",
+          "files": [
+            ".github/workflows/mcp-ci.yml",
+            ".github/workflows/mcp-deploy.yml",
+            ".github/workflows/mcp-readonly-evidence.yml"
+          ]
+        }
+      ],
+      "sourceLimitations": "Scripts' presence in historical commit establishes code provenance, not proof that they were executed. Present GitHub Actions content establishes current definitions, not exact initial creation dates, full execution history, or all workflows. No actions on S1 or GitHub runtime authorized by this historical study.",
+      "status": "SOURCE_VERIFIED_HISTORICAL_RECONSTRUCTION_NOT_EXECUTION",
+      "nextDiscussionAction": "If asked, reconstruct date-by-date appearance of each workflow and test each historical stage against PR/commit evidence without running legacy scripts."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-009",
+      "sequence": 9,
+      "kind": "WORKFLOW_ENGINEERING_SEQUENCE_EXPLAINED",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "source": "User asks how the engineering workflows follow each other; assistant explains from previously verified GitHub policy, CI/deploy and roadmap sources.",
+      "userIntent": "Clarify the precise chaining of engineering workflows that developed after founding non-regression instructions, confined to engineering discipline alone.",
+      "assistantOutcome": "Connected six pedagogical phases as observe/reconcile → scope and governance → design/RED/GREEN/regression → PR/CI exact SHA/review/merge → CI main and authorized governed deploy/runtime attestation (when applicable) → checkpoint and continue; emphasized required gates, separate PR and main CI, no fake runtime certification and no E1/E2 discussion.",
+      "sourceClassification": "ASSISTANT_EXPLANATION_GROUNDED_IN_VERIFIED_REPO_FILES",
+      "status": "CONVERSATION_EXPLANATION_NOT_RUNTIME_EXECUTION",
+      "nextDiscussionAction": "Deepen one existing workflow at a time, retaining exact authorizations and source evidence; do not introduce unrelated intake architecture."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-010",
+      "sequence": 10,
+      "kind": "ENGINEERING_WORKFLOW_HIERARCHY",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "source": "user requests hierarchy of workflows after foundational instructions; answer derives hierarchy from existing six explanatory phases and observed project doctrine/policy/workflow definitions",
+      "userIntent": "Explain hierarchy of workflows, distinguishing higher-level governance, common engineering lifecycle, six stages, subordinate operations, and evidence; do not discuss unrelated intake architecture.",
+      "assistantOutcome": "Formalized five-level hierarchy and ordered six existing WF-1..WF-6 explanatory stages; added six chapter-3 nodes as taxonomy, linked to existing 3.1..3.6 rather than spawning separate engines. No runtime implementation claim.",
+      "sourceClassification": "CONVERSATION_TAXONOMY_CORRELATED_WITH_REPO_POLICIES",
+      "status": "DOCUMENTARY_TAXONOMY_NOT_OPERATIONAL_AUTHORIZATION",
+      "nextDiscussionAction": "Detail specific workflow under its established chapter 3 node only when user asks, and preserve historical workflow distinctions."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-011",
+      "sequence": 11,
+      "kind": "GOVERNANCE_GITHUB_ACTIONS_INTEGRATION_EXPLAINED",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7"
+      ],
+      "source": "Question utilisateur sur articulation gouvernance et GitHub Actions; vérification directe du dépôt main, AGENTS.md, politiques .mcp et trois workflows Actions.",
+      "userIntent": "Comprendre précisément comment les garde-fous de gouvernance structurent, déclenchent et encadrent GitHub Actions; distinguer décision/autorisation, exécution, revue, déploiement et preuves sans aborder les entrées de travail.",
+      "assistantOutcome": "Governance policy/authority determines admissibility; GitHub CI executes tests on PR/branch and main; GitHub review and merge controls remain distinct from Actions jobs; autodeploy policy sets pushEnabled true (observed file, not claim of specific run); deploy workflow push/main requires matching successful main CI and OIDC S1 gate, or manually invoked route still subject to server controls; read-only evidence is optional targeted side-flow with allowlisted probes and OIDC, not server-write authority; runtime attestation and checkpoints remain required to claim runtime success. Eight additive nodes attached to existing 3.7.4.",
+      "sources": [
+        {
+          "path": ".mcp/branch-governance.json",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".mcp/github-first-operational-policy.json",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".mcp/autodeploy-policy.json",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": "AGENTS.md",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".github/workflows/mcp-ci.yml",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".github/workflows/mcp-deploy.yml",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".github/workflows/mcp-readonly-evidence.yml",
+          "classification": "GITHUB_VERIFIED_FILE"
+        }
+      ],
+      "status": "SOURCE_VERIFIED_DESIGN_AND_DECLARED_WORKFLOWS_NOT_LIVE_EXECUTION",
+      "nextDiscussionAction": "Deepen the actual governance gates and Action-to-action dependencies only if owner asks, distinguishing source configuration from actual execution and ruleset enforcement."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-012",
+      "sequence": 12,
+      "kind": "OWNER_GLOBAL_WORK_MULTI_PR_RECONCILIATION_MANDATE",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6"
+      ],
+      "source": "conversation on 2026-11-05: enrich PR #374, #373 and #372, cover all known workstreams, tasks and blockers without omission",
+      "userIntent": "Build a verifiable current-first workstream task admission and blocker tracking mechanism, independently enriching three PRs and withholding every merge until explicit owner agreement.",
+      "assistantOutcome": "PR #374 has source-backed 20-workstream, 94-blueprint, 25-open-PR and 77-open-issue matrix; PR #372 has a separate 94-blueprint admission/UTL evidence crosswalk; PR #373 records documentary continuity and no-merge mandate.",
+      "sources": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/374",
+          "classification": "GITHUB_DRAFT_DOCUMENTARY"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/372",
+          "classification": "GITHUB_DRAFT_ANALYTICAL"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/373",
+          "classification": "GITHUB_DRAFT_CONVERSATION"
+        }
+      ],
+      "status": "DOCUMENTARY_SOURCE_BACKED_NOT_RUNTIME_ATTESTATION",
+      "ownerExplicitNoMergeWithoutApproval": true,
+      "unresolvedTail": "Owner clause 'Note aussi que tu peux aussi' is unfinished; no added authorization inferred.",
+      "nextDiscussionAction": "Rebuild derived relational matrices, verify exact-head CI for three PRs, retain Draft, require owner approval for any merge."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-013",
+      "sequence": 13,
+      "kind": "HISTORICAL_DEPLOYMENT_REGISTER_AND_EXISTING_CONTINUITIES_RECONCILED",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.4",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "source": "User 2026-11-05 request to inspect missing existing MCP continuities and all successful production deployment evidence; direct GitHub PR371 SQL and seven GitHub job logs plus MCP E2 inventory and PR356 archival relations",
+      "userIntent": "Preserve every existing chantier and continuity, track true operational status, build a production modification evidence register distinguishing workflow success from server attestation and real change.",
+      "assistantOutcome": "PR372: 171 archived MCP S1 Deploy workflow observations (165 success, 6 failure), 15 PR without deploy record, 7 directly corroborated exact-SHA terminal job logs; 11 production-change channels tracked with unknowns. PR374: GD-U root #349 and pilot E2 root #359, seven historical local checkpoints, E2 discovery returns only #359; operational progress uses live task snapshot without ownership inference.",
+      "sources": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/372",
+          "classification": "PR_DRAFT_SOURCE_BACKED_DEPLOYMENT_LEDGER"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/374",
+          "classification": "PR_DRAFT_NON_AUTHORITATIVE_CONTINUITY_AUDIT"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/356",
+          "classification": "PR_DRAFT_GD_U_HISTORICAL_ARCHIVE"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/349",
+          "classification": "OWNER_DOCUMENTARY_GD_U_ROOT"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/359",
+          "classification": "OWNER_E2_PILOT_ROOT"
+        }
+      ],
+      "status": "SOURCE_BACKED_HISTORICAL_AUDIT_NOT_EXHAUSTIVE_PRODUCTION_ATTESTATION",
+      "ownershipBoundary": "No Task/Session/Claim/Lock created; no native Continuity ID from document; no main merge without explicit agreement",
+      "unresolvedCoverage": [
+        "158 successful GH workflows without individually checked terminal server log",
+        "Original S1 status.state/attestation.json not independently read for historical jobs",
+        "Applications S1/S2/manual/database/Plesk production mutation history not available in archived PR371",
+        "GD-U issue #349 root absent from current E2 discovery despite owner evidence"
+      ],
+      "nextDiscussionAction": "Rebuild exact derived documentary matrices, inspect CI and maintain strict Draft, then resume evidence collection read-only."
+    }
+  ]
+}

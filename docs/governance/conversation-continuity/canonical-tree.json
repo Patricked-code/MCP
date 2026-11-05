@@ -1,0 +1,2342 @@
+{
+  "schemaVersion": 1,
+  "artifactType": "conversation_hierarchical_continuity_index",
+  "rootId": "MCP-CONV-CONT-20261104-ROOT-01",
+  "authorityClassification": "DOCUMENTARY_NAVIGATION_ONLY_NOT_A_RUNTIME_CONTINUITY_ID",
+  "repository": "Patricked-code/MCP",
+  "initialDate": "2026-11-04",
+  "sourceDocument": "Arborescence_reference_discipline_MCP_v1_0.md (conversation attachment, not reproduced verbatim)",
+  "sourceRootHead": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "branch": "mcp/canonical-conversation-continuity-20261104",
+  "governance": {
+    "rootChapterCount": 8,
+    "rootTitlesImmutableWithoutExplicitAmendment": true,
+    "unlimitedDepth": true,
+    "idDerivation": "append a dot-delimited child segment to the parent path; nodeId = rootId + '/NODE/' + path",
+    "identifierStability": "never reuse a retired node id, never change an established id; append children",
+    "nodeParent": "exactly one primary parent; other links stored in crossReferences",
+    "provenance": "do not claim these IDs are issued by MCP Task Queue, E2 registry or Governed Session",
+    "deeperNodes": "add only when genuinely developed; record chronology and evidence",
+    "ordering": "original eight titles and established children preserved",
+    "collisions": "PR #372 scope remains separate; no modification of its branch, scope or shared docs inventory"
+  },
+  "existingAuthoritativeReferences": [
+    {
+      "name": "PR #372 — UTL history and contracts",
+      "url": "https://github.com/Patricked-code/MCP/pull/372",
+      "relatedPaths": [
+        "6.6",
+        "6.7",
+        "6.8"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    },
+    {
+      "name": "E2 pilot issue #359",
+      "url": "https://github.com/Patricked-code/MCP/issues/359",
+      "relatedPaths": [
+        "6.1"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    },
+    {
+      "name": "Global coordination issue #235",
+      "url": "https://github.com/Patricked-code/MCP/issues/235",
+      "relatedPaths": [
+        "2",
+        "3",
+        "6.8"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    },
+    {
+      "name": "Global Work PR #374 — evidence and cross-workstream tracking",
+      "url": "https://github.com/Patricked-code/MCP/pull/374",
+      "relatedPaths": [
+        "6.8.GW",
+        "6.8.GW.1",
+        "6.8.GW.2",
+        "6.8.GW.3"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    },
+    {
+      "name": "PR372 deployment event register and production source coverage",
+      "url": "https://github.com/Patricked-code/MCP/pull/372",
+      "relatedPaths": [
+        "6.8.GW.4"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    },
+    {
+      "name": "PR374 continuity discovery audit and operational progress",
+      "url": "https://github.com/Patricked-code/MCP/pull/374",
+      "relatedPaths": [
+        "6.8.GW.5"
+      ],
+      "relationship": "CROSS_REFERENCE_ONLY_NOT_OWNERSHIP"
+    }
+  ],
+  "nodes": [
+    {
+      "path": "1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01",
+      "title": "Les principes fondamentaux de ta discipline",
+      "kind": "chapter",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.A",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.B",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "1.A",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.A",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1",
+      "title": "Préserver l'existant et enrichir, jamais reconstruire inutilement",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "1.B",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.B",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1",
+      "title": "Ne jamais travailler à partir d'un état supposé",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.2"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "1.C",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1",
+      "title": "Séparer quatre notions essentielles",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C.4"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "1.C.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C",
+      "title": "Intention",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "1.C.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C",
+      "title": "Autorisation",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "1.C.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C",
+      "title": "Exécution",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "1.C.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.C",
+      "title": "Preuve",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01",
+      "title": "Une organisation du travail fondée sur des autorités distinctes",
+      "kind": "chapter",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.9",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.10"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "GitHub",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Live State",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Governed Task Queue",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Governed Session",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Bootstrap Receipt",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Locks",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Checkpoints",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.8",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.8",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Operational Event Journal",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.9",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.9",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Runtime S1/S2",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "2.10",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.10",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+      "title": "Documentation canonique",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01",
+      "title": "Le cycle chronologique du développement gouverné",
+      "kind": "chapter",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "3.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "ÉTAPE 1 — RECONNAÎTRE LA RÉALITÉ",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1.4"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "3.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "ÉTAPE 2 — GOUVERNER LE TRAVAIL",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2.4"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "3.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "ÉTAPE 3 — CONSTRUIRE SANS RÉGRESSION",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.5"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "3.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "ÉTAPE 4 — VALIDER LE CODE",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.5"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "3.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "ÉTAPE 5 — VALIDER LA PRODUCTION",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.5"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "3.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "ÉTAPE 6 — CAPITALISER",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.5"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01",
+      "title": "La non-régression est une obligation de preuve",
+      "kind": "chapter",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.9",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.10"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Ce qui fonctionnait avant.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Ce qui devait être ajouté ou corrigé.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Ce qui ne devait surtout pas changer.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Ce qui a effectivement été modifié.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Quels tests prouvent la correction.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Quels tests prouvent la conservation des comportements historiques.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Quelle CI a validé le SHA exact.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.8",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.8",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Quelle revue a été réalisée lorsque requise.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.9",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.9",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Quelle version a été fusionnée et déployée.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "4.10",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.10",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+      "title": "Ce qui fonctionne réellement après déploiement.",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01",
+      "title": "Cette discipline existe déjà à plusieurs niveaux du MCP",
+      "kind": "chapter",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "5.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+      "title": "Doctrine",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "5.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+      "title": "Instructions des agents",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "5.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+      "title": "Configuration exécutable",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "5.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+      "title": "Organisation du programme",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "5.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+      "title": "Autorités opérationnelles",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "5.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+      "title": "Validation",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01",
+      "title": "Ce que tu veux réellement obtenir à terme",
+      "kind": "chapter",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "title": "E2 — BLOC 1",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G3"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/1.B",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.2"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "title": "N — Mandat canonique",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "title": "P1 — Programme",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "title": "P2 — Prise en charge",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "title": "Tâche admissible",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "title": "UTL 1 … UTL n",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "title": "Circuits gouvernés",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.8",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6",
+      "title": "Preuves et continuité",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.1.G1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1",
+      "title": "G1 — réconciliation",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.1.G2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1",
+      "title": "G2 — registre et continuités",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "6.1.G3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1",
+      "title": "G3 — NEW/RESUME",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01",
+      "title": "Les cinq règles qui doivent rester permanentes",
+      "kind": "chapter",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "7.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7",
+      "title": "Règle de conservation",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "7.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7",
+      "title": "Règle de vérité opérationnelle",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "7.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7",
+      "title": "Règle d'autorisation",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "7.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7",
+      "title": "Règle de preuve",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "7.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7",
+      "title": "Règle de continuité",
+      "kind": "child",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.3"
+      ],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "8",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/8",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01",
+      "title": "La formulation canonique de ta discipline",
+      "kind": "chapter",
+      "source": "conversation-first-eight-part-answer",
+      "status": "established",
+      "children": [],
+      "crossReferences": [],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false
+    },
+    {
+      "path": "3.1.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+      "title": "Reconnecter et retrouver la continuité",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.1.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+      "title": "Réobserver les autorités pertinentes",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.1.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+      "title": "Réconcilier les observations",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.1.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+      "title": "Condition de sortie",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.2.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+      "title": "Retrouver l'origine du travail",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.2.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+      "title": "Vérifier l'admissibilité",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.2.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+      "title": "Vérifier les objets de gouvernance",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.2.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+      "title": "Condition de sortie",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.3.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+      "title": "Établir la baseline",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.3.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+      "title": "Construire sur une branche isolée",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.3.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+      "title": "Appliquer RED / GREEN quand c'est pertinent",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.3.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+      "title": "Préserver les mécanismes existants",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.3.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+      "title": "Condition de sortie",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.4.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+      "title": "Ouvrir ou poursuivre la PR propriétaire",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.4.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+      "title": "Exécuter la CI sur la révision exacte",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.4.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+      "title": "Effectuer la revue requise",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.4.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+      "title": "Fusionner sous gouvernance",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.4.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+      "title": "Condition de sortie",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.5.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+      "title": "Identifier le circuit de déploiement existant",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.5.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+      "title": "Vérifier l'identité et le SHA à déployer",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.5.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+      "title": "Attester le résultat réel",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.5.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+      "title": "Distinguer les circuits de déploiement",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.5.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+      "title": "Condition de sortie",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.6.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+      "title": "Enregistrer les faits et preuves",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.6.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+      "title": "Actualiser le programme si nécessaire",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.6.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+      "title": "Conserver un seul prochain point de reprise",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.6.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+      "title": "Ne pas confondre checkpoint et fin du programme",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.6.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+      "title": "Condition de sortie",
+      "kind": "child",
+      "source": "assistant-six-stage-explanation-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.MGEF",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "MCP Governed Evolution Framework — MGEF",
+      "kind": "child",
+      "source": "user-MGEF-proposal-2026-11-04",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.7"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.MGEF.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "title": "Doctrine et policies machine-readable",
+      "kind": "child",
+      "source": "user-MGEF-proposal-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.MGEF.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "title": "Reality Reconciliation Gate — S1/S2, GitHub, runtime et documentation",
+      "kind": "child",
+      "source": "user-MGEF-proposal-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.MGEF.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "title": "E1 et E2 — deux entrées et un cycle commun",
+      "kind": "child",
+      "source": "user-MGEF-proposal-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.MGEF.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "title": "Engineering Lifecycle — séquence proposée Observe à Continue",
+      "kind": "child",
+      "source": "user-MGEF-proposal-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.MGEF.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "title": "Autorités runtime — Task, Session, Receipt, Locks, Operational Memory, Live State",
+      "kind": "child",
+      "source": "user-MGEF-proposal-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.MGEF.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "title": "Fail-closed, preuves, non-régression et continuité",
+      "kind": "child",
+      "source": "user-MGEF-proposal-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "3.MGEF.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+      "title": "Point à réconcilier — Task universelle des diagrammes versus E2 GitHub-only",
+      "kind": "child",
+      "source": "user-MGEF-proposal-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY"
+    },
+    {
+      "path": "7.5.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+      "title": "Identité stable de chaque nœud et de chaque descendant",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "7.5.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+      "title": "Matrice relationnelle évolutive de l'arborescence",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.2"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "7.5.2.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+      "title": "Relations parent-enfant, ancêtres et descendants",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "7.5.2.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.2",
+      "title": "Relations transversales, événements et références externes",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "7.5.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+      "title": "Reconstruction, contrôles d'intégrité et points de reprise",
+      "kind": "child",
+      "source": "user-request-relational-continuity-matrix-2026-11-04",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_USER_REQUEST"
+    },
+    {
+      "path": "5.6.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+      "title": "Workflows issus des instructions fondatrices",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.8"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Workflow historique en neuf phases de ROADMAP.md",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Contrôle historique des règles de gouvernance",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Observation historique du serveur MCP",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Synchronisation contrôlée historique GitHub vers S1",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "GitHub Actions — MCP CI",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "GitHub Actions — MCP Governed Deploy",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "GitHub Actions — MCP Read-only Evidence",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "5.6.1.8",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.8",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "title": "Checkpoint et continuité inter-agents",
+      "kind": "child",
+      "source": "user-historical-workflow-question-2026-11-05; verified historical GitHub files",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "3.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "Hiérarchie des workflows d'ingénierie",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 0 — doctrine et politiques de gouvernance",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 1 — cycle commun Engineering Lifecycle",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 2 — six phases fonctionnelles du cycle",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 3 — sous-workflows, opérations et contrôles",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 4 — résultats, preuves et continuité",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.4.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Règles de gouvernance et admissibilité des opérations GitHub Actions",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Observation et collecte de preuves via MCP Read-only Evidence",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Déclenchement des contrôles MCP CI sur branche et PR",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Revue, protection de branche et fusion gouvernée hors CI",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "CI sur main et admission du déploiement sur SHA exact",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.6",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "MCP Governed Deploy, OIDC et contrôle serveur",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Attestation runtime distincte du résultat GitHub Actions",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "3.7.4.8",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "title": "Gestion fail-closed, checkpoints et continuité",
+      "kind": "child",
+      "source": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "REPO_MECHANISM_EXPLANATION_NOT_EXECUTION_CERTIFICATION"
+    },
+    {
+      "path": "6.8.GW",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+      "title": "Global Work — continuité de tous les chantiers, preuves et blocages",
+      "kind": "child",
+      "source": "owner-mandated-global-work-reconciliation-2026-11-05",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.5"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.3"
+      ],
+      "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
+    },
+    {
+      "path": "6.8.GW.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "PR #374 — matrice des chantiers et des 94 blueprints",
+      "kind": "child",
+      "source": "owner-mandated-global-work-reconciliation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/2.10"
+      ],
+      "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
+    },
+    {
+      "path": "6.8.GW.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "PR #372 — attribution, UTL et preuves T_IN à T_OUT",
+      "kind": "child",
+      "source": "owner-mandated-global-work-reconciliation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7"
+      ],
+      "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
+    },
+    {
+      "path": "6.8.GW.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "PR #373 — journal, décisions et reprise sans omission",
+      "kind": "child",
+      "source": "owner-mandated-global-work-reconciliation-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6.1"
+      ],
+      "nextDiscussionAction": "Revoir sources exactes et statut avant toute conclusion; ne pas merger sans accord.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_ONLY_NO_RUNTIME_ADMISSION"
+    },
+    {
+      "path": "6.8.GW.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "Preuves de déploiement MCP et traçabilité des changements de production",
+      "kind": "child",
+      "source": "verified-github-and-mcp-read-only-audit-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": "Reobserve current GitHub and authorized MCP evidence; never infer production effects or admission from docs.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_VERIFIED_POINTER_NOT_RUNTIME_AUTHORIZATION"
+    },
+    {
+      "path": "6.8.GW.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW",
+      "title": "Continuités historiques retrouvées, filiation GD-U et écarts E2",
+      "kind": "child",
+      "source": "verified-github-and-mcp-read-only-audit-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8.GW.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.1.G3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/6.8"
+      ],
+      "nextDiscussionAction": "Reobserve current GitHub and authorized MCP evidence; never infer production effects or admission from docs.",
+      "operationalAuthority": false,
+      "provenanceStatus": "DOCUMENTARY_VERIFIED_POINTER_NOT_RUNTIME_AUTHORIZATION"
+    }
+  ],
+  "versionLog": [
+    {
+      "version": "1.0",
+      "date": "2026-11-04",
+      "kind": "INITIAL_GITHUB_DOCUMENTARY_REGISTRATION",
+      "note": "Source conversation eight-chapter structure; no runtime authority implied"
+    },
+    {
+      "version": "1.1",
+      "date": "2026-11-04",
+      "kind": "ADDITIVE_DEEPENING",
+      "note": "28 descendants of original six stages and 8 MGEF proposal nodes; all 63 original nodes and titles unchanged."
+    },
+    {
+      "version": "1.2",
+      "date": "2026-11-04",
+      "kind": "ADDITIVE_RELATIONAL_CONTINUITY_MATRIX",
+      "note": "Five user-requested descendants under original continuity rule 7.5; 99 original node identities and all original titles maintained. Derived node/relation/ancestry/event/external tables generated from this source."
+    },
+    {
+      "version": "1.3",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_HISTORICAL_WORKFLOW_MATERIALIZATION",
+      "note": "9 source-discussed workflow nodes added under 5.6.1. Historical July scripts distinguished from contemporary CI, deploy and read-only evidence. Previous 104 node IDs, titles and parents preserved."
+    },
+    {
+      "version": "1.4",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_ENGINEERING_WORKFLOW_HIERARCHY",
+      "note": "Six nodes under 3.7: top governance layer, common lifecycle, six existing stages via cross references, controls, proofs. No new runtime engines. All 113 prior IDs, parents and titles retained."
+    },
+    {
+      "version": "1.5",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_GOVERNANCE_GITHUB_ACTIONS_ARTICULATION",
+      "note": "Eight discussed source-backed children of 3.7.4. Governance gates contrasted with GitHub Actions CI/read-only/OIDC deploy. Existing 119 node identities, titles and parent links unchanged; no runtime workflow created."
+    },
+    {
+      "version": "1.6",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_GLOBAL_WORK_CROSS_PR_CONTINUITY",
+      "note": "Four additional documentary nodes under 6.8; preserves 127 historical nodes, eight chapter titles, IDs and existing links. Owner prohibits merging #372/#373/#374 absent explicit agreement."
+    },
+    {
+      "version": "1.7",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_DEPLOYMENT_EVIDENCE_AND_CONTINUITY_DISCOVERY",
+      "note": "Two new nodes under 6.8.GW, preserving previous 131 nodes, eight root headings and old parent/IDs. PR372 owns evidence; PR374 indexes work; PR373 links discussion history. Never merge without owner approval."
+    }
+  ]
+}
