@@ -1,4 +1,14 @@
 # SUIVI.md
+
+## 2026-10-23 — Regulatory S1 /regulatory : première tranche RED/GREEN, non déployée
+
+- Mandat explicite issue #349 commentaire #6355773248 : raccorder `chainsolutions-wealthtech/Regulatory` à `https://wealthtechinnovations.com/regulatory` via MCP gouverné, en réutilisant GitRegistry et PROJECT_RUNTIME et sans régression. **Ne pas confondre** avec la PR #351/GRT.
+- Baseline vérifiée `Patricked-code/MCP main@48a529889517aa1c11974802d23acc3f35e0f187`, S1 main propre ; `Regulatory main@846f5f2e8cfd89231ea3104a2872290fc7146973` observé. Regulatory interdit les nouvelles branches ; aucune modification de son dépôt.
+- Branche MCP spécifique `mcp/regulatory-s1-subpath-20261023`. Contrat ajouté : `src/provisioning/regulatorySubpath.ts` et tests `tests/regulatorySubpath.test.ts` ; cible S1 exacte, source GitHub exacte, répertoire privé proposé `/opt/apps/regulatory`, chemin web `/regulatory`, révision SHA épinglée ; refuse les chemins/sources étrangers, les collisions et tout prérequis non attesté. Contrat **sans écriture ni autorisation implicite**.
+- Next.js Regulatory 16 (`apps/web`) ne définit pas actuellement `basePath: /regulatory` ; le déploiement reste BLOQUÉ jusqu'à adaptation et tests de liens, assets et API. Le mapping GitRegistry, les droits réels Plesk/vhost et l'autorité runtime d'écriture ne sont pas attestés.
+- RED attendu CI GitHub Actions #39889071375 (contrat absent) ; GREEN CI et revue indépendantes à attester sur HEAD final avant fusion.
+- NEXT_ACTION : associer le plan à des lecteurs de preuves réelles GitRegistry/Plesk/ingress, configurer basePath dans Regulatory sans nouvelle branche, implémenter l'admission runtime et l'exécuteur borné réutilisant PROJECT_RUNTIME, tester rollback, revue/CI, puis déploiement gouverné et recette HTTPS. Aucun répertoire ni application Regulatory créé sur S1 à cette étape.
+
 ## 2026-10-23 — PR #350 : pilote GRT /gouvern et provisioning S1/S2, non fusionnés
 
 - Mandat : étendre sans migration le MCP existant, point d'ancrage issue #349 et PR #350. Baseline main/S1 `a3df3b0`, GRT `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Aucun déploiement S1 effectué.
