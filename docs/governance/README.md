@@ -51,6 +51,24 @@
 
 ---
 
+## GLOBAL WORK — Observation MCP runtime en lecture seule (2026-11-05)
+
+**Source vérifiée par le MCP connecté** : [global-work-live-observation-20261105.json](global-work-live-observation-20261105.json). Lecture de `mcp_get_current_state_inventory` au **2026-11-05T02:35:28Z**. Ce fichier est une **observation horodatée, non une autorité durable ni un verdict présent à toute date future**.
+
+| Objet | Observation directe, bornée | Limite d'interprétation |
+|---|---|---|
+| GitHub main, dépôt S1 et runtime MCP | SHA identique `05dbb66ed81aa4e7443655c89d10c0c390ff0f10`, worktree S1 clean, conteneur healthy | Ne valide aucune PR Draft ni déploiement futur. |
+| Governed Task Queue | Révision `244`, **21 Tasks** : **14 DONE, 4 SUPERSEDED, 3 READY** | Différent des 94 Blueprints planning. Un `READY` runtime ne constitue pas un claim. |
+| Première tâche exécutable signalée | `TASK-20260929-001`, `READY`, OAuth attempt correlation A3.2 | Référence réelle existante ; **aucun claim ni écriture effectué ici**. |
+| Governed Sessions visibles dans l'inventaire | 31 enregistrements : 28 CLOSED, 2 EXPIRED, 1 ACTIVE | Session ACTIVE ne prouve pas à elle seule liveness, propriété d'une tâche ou WRITE permission. |
+| Coordination de la session courante | Liveness `STALE` ; aucun lock dans **cette projection de coordination** | N'implique ni libération/vol d'un claim, ni absence mondiale de locks ; aucune mutation. |
+
+Trois Task runtime `READY` sont observées dans le snapshot : `TASK-20260920-003` (Stablecoin/S2), `TASK-20260929-001` (OAuth A3.2), `TASK-20261027-001` (Regulatory/S1). Aucune n'a été revendiquée. Le lien de `TASK-20260929-001` avec le blueprint `TB-W3-A3-02` est **un rapprochement par intentKey** à confirmer sous les autorités existantes, pas une attribution nouvelle.
+
+**Règle :** conserver deux colonnes distinctes, `backlogPlanningReadiness` (projection historique) et `runtimeTaskStatusObservedAt` (lecture datée). Avant de décider un travail admissible, relire les autorités live, appliquer owned-first/collision scopes, vérifier source et contrôle de la session concernée, et ne jamais réclamer génériquement une tâche possédée par un autre chantier.
+
+---
+
 ## GLOBAL WORK — Autres chantiers retrouvés et liens de reprise (2026-11-05)
 
 **Nature : inventaire de navigation SOURCÉ, non exécutable, complémentaire aux trois périmètres GWC/UAC/Program Backlog V2 ci-dessus.** Les libellés ci-dessous sont des **regroupements fonctionnels de références existantes**, et non des identifiants officiels, nouveaux programmes, nouvelles Tasks ou nouveaux propriétaires. Les PR et issues sont des ancrages historiques ; leur état doit être réobservé avant tout claim, travail ou décision de merge. Les requêtes ouvertes de type `MCP_READONLY_EVIDENCE_REQUEST` sont des supports de preuve, **pas** autant de chantiers.
