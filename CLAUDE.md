@@ -1,5 +1,10 @@
 # CLAUDE.md — Porte d’entrée Claude Code
 
+## Accueil commun obligatoire avant toute admission de travail
+
+Si l'utilisateur demande de se connecter à `Patricked-code/MCP`, suivre **d'abord** [l'INTAKE global GitHub → MCP d'AGENTS.md](AGENTS.md#intake-global--arrivée-github--mcp--point-de-choix) : connexion GitHub, lecture des instructions, connexion au MCP existant, observation live, correction gouvernée seulement en cas de divergence admissible, réattestation, cartographie des continuités puis arrêt au choix nouveau/reprise. Ce parcours **n'est pas une entrée E2** et ne choisit aucun profil de travail ; les règles particulières ci-dessous n'interviennent qu'après la décision du propriétaire et le contrôle des autorisations.
+
+
 ## Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression
 
 Profil `EXTERNAL_GOVERNED_RECOVERY` : utiliser éventuellement le contexte en lecture seule `get_project_context` lorsque le MCP répond ; sinon emprunter GitHub sans attribution préalable de tâche interne pour les actions GitHub autorisées. L'aperçu ne crée ni task ni droit de déploiement.
