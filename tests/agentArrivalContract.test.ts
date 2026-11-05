@@ -1,96 +1,102 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {assessE2LivePreflight} from '../src/governance/e2LivePreflight.js';
-import {activateE2WithAutomaticReconciliation} from '../src/governance/e2AutoActivation.js';
+import {reconcileLiveState,applyFreshness} from '../src/liveState/reconcile.js';
+import type {LiveStateObservations} from '../src/liveState/types.js';
 
-type Snapshot=Parameters<typeof assessE2LivePreflight>[0];
 const SHA='05dbb66ed81aa4e7443655c89d10c0c390ff0f10';
 const SHA2='7d29ad4212efa0bd343d53f400785e5c9cbf07f4';
+const NOW=new Date('2026-11-05T10:00:00.000Z');
 
-function snapshot(overrides:Record<string,unknown>={}):Snapshot{
- const base={
-  repository:'Patricked-code/MCP',generatedAt:'2026-11-05T10:00:00.000Z',
-  freshness:'CURRENT',ageSeconds:0,maxAgeSeconds:60,stateVersion:1202,
+function observations():LiveStateObservations{
+ return {
+  repository:'Patricked-code/MCP',
   github:{status:'CURRENT',branch:'main',head:SHA},
-  s1:{status:'CURRENT',branch:'main',head:SHA,originMain:SHA,
-   workingTreeClean:true,diffEmpty:true,
+  s1:{status:'CURRENT',path:'/opt/apps/wealthtech-mcp-ssh-bridge',
+   branch:'main',head:SHA,originMain:SHA,workingTreeClean:true,diffEmpty:true,
    fetchRemote:'git@github.com-mcp-patricked-ro:Patricked-code/MCP.git',
    pushRemote:'disabled://mcp-s1-read-only'},
-  runtime:{status:'CURRENT',containerStatus:'running',health:'healthy',revision:SHA},
-  documentation:{status:'CURRENT',drift:false}
+  runtime:{status:'CURRENT',container:'wealthtech_mcp_ssh_bridge',
+   containerStatus:'running',health:'healthy',
+   revision:SHA,imageId:'sha256:fixture'},
+  documentation:{status:'CURRENT',activeTask:null,
+   declaredGithubSha:SHA,declaredS1Sha:SHA,drift:false}
  };
- return {...base,...overrides} as unknown as Snapshot;
 }
 
-test('agent GitHub arrival is instructed to connect to existing MCP before owner choice',()=>{
- const text=readFileSync('AGENTS.md','utf8');
- const section=text.slice(text.indexOf('## Arrivée agent GitHub → MCP'),text.indexOf('## Méthode universelle de bifurcation'));
- assert.ok(section.length>0);
- for(const name of ['IDENTIFY_GITHUB','READ_CANONICAL_INTAKE','CONNECT_EXISTING_MCP',
-  'G1_RECONCILE','G1_GOVERNED_CORRECTION_IF_NEEDED','G2_DISCOVER_AND_MAP','G3_OWNER_CHOICE']){
-  assert.ok(section.includes(name),name);
+test('universal arrival starts from GitHub, reads instructions and connects to MCP',()=>{
+ const agents=readFileSync('AGENTS.md','utf8');
+ const start=agents.indexOf('## INTAKE global — arrivée GitHub → MCP → point de choix');
+ const end=agents.indexOf('## Méthode universelle de bifurcation',start);
+ assert.ok(start>=0 && end>start,'universal INTAKE must precede work modes');
+ const section=agents.slice(start,end);
+ const steps=[
+  'CONNECT_GITHUB','READ_INSTRUCTIONS','CONNECT_MCP',
+  'G1_VERIFY_ALIGNMENT','G1_CORRECT_IF_REQUIRED','G1_REATTEST',
+  'G2_DISCOVER_AND_MAP','G3_STOP_FOR_OWNER_CHOICE'
+ ];
+ let previous=-1;
+ for(const step of steps){
+  const at=section.indexOf('**'+step+'**');
+  assert.ok(at>previous,step+' must appear in order');
+  previous=at;
  }
  assert.ok(section.indexOf('ping')<section.indexOf('mcp_reconcile_governed_context'));
  assert.ok(section.indexOf('mcp_reconcile_governed_context')<section.indexOf('mcp_get_current_state_inventory'));
- assert.ok(section.indexOf('G1_RECONCILE')<section.indexOf('G2_DISCOVER_AND_MAP'));
- assert.ok(section.indexOf('G2_DISCOVER_AND_MAP')<section.indexOf('G3_OWNER_CHOICE'));
- assert.match(section,/E2_JOURNAL_POST_HTTP_403/);
- assert.match(section,/ne crée aucun droit d'écriture/);
- assert.match(section,/aucun événement standard/);
+ assert.doesNotMatch(section,/mcp_e2_|E2_JOURNAL|EXTERNAL_GOVERNED_RECOVERY/);
+ assert.match(section,/ne rien corriger/);
+ assert.match(section,/Nouveau chantier ou reprise/);
+ assert.match(section,/STOP_G1/);
+ assert.match(section,/ne crée ni troisième voie/);
+ assert.match(section,/un agent ou connecter deux applications externes/);
+ for(const file of ['README.md','CLAUDE.md']){
+  assert.match(readFileSync(file,'utf8'),/INTAKE global GitHub/);
+ }
 });
 
-test('same GitHub, S1 and runtime SHA does not bypass documentation reconciliation',()=>{
- const s=snapshot({documentation:{status:'CURRENT',drift:true}});
- const decision=assessE2LivePreflight(s);
- assert.equal(decision.gate,'BLOCKED');
- assert.ok(decision.blockers.includes('E2_DOCUMENTATION_DRIFT'));
+test('common Live State returns FULLY_ALIGNED without requiring an E2 profile',()=>{
+ const s=reconcileLiveState(observations(),null,NOW);
+ assert.equal(s.alignment.global,'FULLY_ALIGNED');
+ assert.equal(s.nextAction,null);
+ assert.deepEqual(s.contradictions,[]);
 });
 
-test('GitHub/S1 mismatch never reaches owner choice',()=>{
- const s=snapshot({s1:{...snapshot().s1,head:SHA2}});
- const decision=assessE2LivePreflight(s);
- assert.equal(decision.canStartOrdinaryWork,false);
- assert.ok(decision.blockers.includes('E2_GITHUB_S1_RUNTIME_DIVERGENCE'));
+test('common Live State blocks choice on documentation drift despite equal commits',()=>{
+ const o=observations();
+ o.documentation.drift=true;
+ const s=reconcileLiveState(o,null,NOW);
+ assert.equal(s.alignment.global,'RECONCILIATION_REQUIRED');
+ assert.equal(s.nextAction,'reconcile_canonical_documentation');
+ assert.ok(s.contradictions.includes('DOCUMENTATION_DRIFT'));
 });
 
-test('aligned explicit E2 activation skips correction and can discover',async()=>{
- let observations=0,repairs=0;
- const result=await activateE2WithAutomaticReconciliation(
-  {entryProfile:'EXTERNAL_GOVERNED_RECOVERY',explicitlySelected:true},
-  {observe:async()=>{observations++;return snapshot();},
-   reconcile:async()=>{repairs++;return{outcome:'BLOCKED',reason:'SHOULD_NOT_RUN'};}}
- );
- assert.equal(result.status,'CONTINUE_E2');
- assert.equal(result.nextStep,'DISCOVER_EXISTING_WORK');
- assert.equal(observations,1);
- assert.equal(repairs,0);
- assert.equal(result.grantsPermission,false);
+test('common Live State identifies GitHub main ahead of S1, not as aligned',()=>{
+ const o=observations();
+ o.github.head=SHA2;
+ const s=reconcileLiveState(o,null,NOW);
+ assert.equal(s.alignment.global,'DEPLOYMENT_PENDING');
+ assert.equal(s.nextAction,'governed_sync_github_main_to_s1');
 });
 
-test('a plain connection is not an implicit permission to activate E2',async()=>{
- let observed=false;
- await assert.rejects(
-  activateE2WithAutomaticReconciliation(
-   {entryProfile:'EXTERNAL_GOVERNED_RECOVERY',explicitlySelected:false},
-   {observe:async()=>{observed=true;return snapshot();},
-    reconcile:async()=>({outcome:'BLOCKED',reason:'UNAUTHORIZED'})}
-  ),/E2_EXPLICIT_SELECTION_REQUIRED/
- );
- assert.equal(observed,false);
+test('common Live State detects local S1 modifications and preserves stop gate',()=>{
+ const o=observations();
+ o.s1.workingTreeClean=false;
+ o.s1.diffEmpty=false;
+ const s=reconcileLiveState(o,null,NOW);
+ assert.equal(s.alignment.global,'RECONCILIATION_REQUIRED');
+ assert.equal(s.nextAction,'reconcile_s1_working_tree_before_mutation');
 });
 
-test('a correction that cannot reattest full alignment cannot reach work choice',async()=>{
- let observations=0,repairs=0;
- const dirty=snapshot({documentation:{status:'CURRENT',drift:true}});
- const result=await activateE2WithAutomaticReconciliation(
-  {entryProfile:'EXTERNAL_GOVERNED_RECOVERY',explicitlySelected:true},
-  {observe:async()=>{observations++;return dirty;},
-   reconcile:async()=>{repairs++;return{outcome:'S1_GIT_RECONCILED',reason:'GIT_ONLY'};}}
- );
- assert.equal(result.status,'RECONCILIATION_PENDING');
- assert.equal(result.nextStep,'RECONCILE_BEFORE_WORK');
- assert.equal(repairs,1);
- assert.equal(observations,2);
- assert.equal(result.grantsPermission,false);
+test('unhealthy runtime cannot be accepted as global alignment',()=>{
+ const o=observations();
+ o.runtime.health='unhealthy';
+ const s=reconcileLiveState(o,null,NOW);
+ assert.equal(s.alignment.global,'DEGRADED');
+});
+
+test('a stale observation cannot be a fresh arrival attestation',()=>{
+ const s=reconcileLiveState(observations(),null,NOW);
+ const stale=applyFreshness(s,new Date(NOW.getTime()+61_000));
+ assert.equal(stale.freshness,'STALE');
+ assert.ok(stale.ageSeconds>stale.maxAgeSeconds);
 });
