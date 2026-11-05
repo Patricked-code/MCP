@@ -7,23 +7,23 @@
   "generationDate": "2026-11-05",
   "source": {
     "canonicalTree": "canonical-tree.json",
-    "canonicalTreeBlobSha": "64ff1f4947cc9f4a485687d8e113ebdf700e4a39",
+    "canonicalTreeBlobSha": "e61823e26c1c03abdb429cfab9535318aafff70f",
     "continuityContract": "continuity-contract.json",
     "continuityContractBlobSha": "3ea4fde73d4281087a077b32f237dc70e82e3230",
     "conversationEventLog": "conversation-event-log.json",
-    "conversationEventLogBlobSha": "82d4a2108afd147c55f7e085667cd02106e31c12",
-    "treeVersion": "1.4",
-    "eventCount": 10
+    "conversationEventLogBlobSha": "ed251beb0e1be1e294058ebf231995bd640f3f30",
+    "treeVersion": "1.5",
+    "eventCount": 11
   },
   "counts": {
     "rootRecords": 1,
     "chapterRecords": 8,
-    "existingNodeRecords": 119,
-    "allNodeRecords": 120,
-    "structuralEdges": 119,
-    "crossReferenceEdges": 144,
-    "ancestorClosureRows": 421,
-    "eventNodeLinks": 82,
+    "existingNodeRecords": 127,
+    "allNodeRecords": 128,
+    "structuralEdges": 127,
+    "crossReferenceEdges": 164,
+    "ancestorClosureRows": 461,
+    "eventNodeLinks": 96,
     "externalReferenceRecords": 3,
     "externalNodeLinks": 7,
     "maxDepth": 4
@@ -53,7 +53,7 @@
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/8"
         ],
         "directChildCount": 8,
-        "descendantCount": 119,
+        "descendantCount": 127,
         "crossReferenceIds": [],
         "nextDiscussionAction": null,
         "operationalAuthority": false
@@ -530,7 +530,7 @@
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7"
         ],
         "directChildCount": 8,
-        "descendantCount": 48,
+        "descendantCount": 56,
         "crossReferenceIds": [],
         "nextDiscussionAction": null,
         "operationalAuthority": false
@@ -1667,7 +1667,7 @@
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5"
         ],
         "directChildCount": 5,
-        "descendantCount": 5,
+        "descendantCount": 13,
         "crossReferenceIds": [
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
@@ -1777,13 +1777,242 @@
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7"
         ],
-        "childIds": [],
-        "directChildCount": 0,
-        "descendantCount": 0,
+        "childIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8"
+        ],
+        "directChildCount": 8,
+        "descendantCount": 8,
         "crossReferenceIds": [
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
           "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5"
+        ],
+        "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "path": "3.7.4.1",
+        "title": "Règles de gouvernance et admissibilité des opérations GitHub Actions",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "siblingOrder": 1,
+        "kind": "child",
+        "status": "established",
+        "provenance": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+        ],
+        "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "path": "3.7.4.2",
+        "title": "Observation et collecte de preuves via MCP Read-only Evidence",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "siblingOrder": 2,
+        "kind": "child",
+        "status": "established",
+        "provenance": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7"
+        ],
+        "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "path": "3.7.4.3",
+        "title": "Déclenchement des contrôles MCP CI sur branche et PR",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "siblingOrder": 3,
+        "kind": "child",
+        "status": "established",
+        "provenance": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5"
+        ],
+        "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "path": "3.7.4.4",
+        "title": "Revue, protection de branche et fusion gouvernée hors CI",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "siblingOrder": 4,
+        "kind": "child",
+        "status": "established",
+        "provenance": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2"
+        ],
+        "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "path": "3.7.4.5",
+        "title": "CI sur main et admission du déploiement sur SHA exact",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "siblingOrder": 5,
+        "kind": "child",
+        "status": "established",
+        "provenance": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5"
+        ],
+        "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "path": "3.7.4.6",
+        "title": "MCP Governed Deploy, OIDC et contrôle serveur",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "siblingOrder": 6,
+        "kind": "child",
+        "status": "established",
+        "provenance": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6"
+        ],
+        "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "path": "3.7.4.7",
+        "title": "Attestation runtime distincte du résultat GitHub Actions",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "siblingOrder": 7,
+        "kind": "child",
+        "status": "established",
+        "provenance": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+        ],
+        "nextDiscussionAction": null,
+        "operationalAuthority": false
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "path": "3.7.4.8",
+        "title": "Gestion fail-closed, checkpoints et continuité",
+        "depth": 4,
+        "chapterId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "siblingOrder": 8,
+        "kind": "child",
+        "status": "established",
+        "provenance": "source-backed-user-question-governance-actions-articulation-2026-11-05",
+        "ancestorIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4"
+        ],
+        "childIds": [],
+        "directChildCount": 0,
+        "descendantCount": 0,
+        "crossReferenceIds": [
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+          "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
         ],
         "nextDiscussionAction": null,
         "operationalAuthority": false
@@ -4386,6 +4615,230 @@
         "source": "canonical-tree.json"
       },
       {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.4.1",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.1/5.1",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.1/5.2",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.1/5.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.4.2",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.2/3.1",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.2/5.6.1.7",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.4.3",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.3/3.4",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.3/5.6.1.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.4.4",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.4/3.4",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.4/5.2",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.4.5",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.5/3.4",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.5/3.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.5/5.6.1.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.4.6",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.6/3.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.6/5.6.1.6",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.4.7",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.7/3.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.7/3.7.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.7/5.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.4.8",
+        "type": "PARENT_OF",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "structural": true,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.8/3.6",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.8/3.7.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
+        "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/CROSS/3.7.4.8/7.5",
+        "type": "CROSS_REFERENCE",
+        "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "toId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5",
+        "structural": false,
+        "source": "canonical-tree.json"
+      },
+      {
         "id": "MCP-CONV-CONT-20261104-ROOT-01/REL/PARENT/3.7.5",
         "type": "PARENT_OF",
         "fromId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
@@ -6640,6 +7093,246 @@
         "relation": "ANCESTOR"
       },
       {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "distance": 0,
+        "relation": "SELF"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "distance": 1,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "distance": 2,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "distance": 3,
+        "relation": "ANCESTOR"
+      },
+      {
+        "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01",
+        "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "distance": 4,
+        "relation": "ANCESTOR"
+      },
+      {
         "ancestorId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
         "descendantId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
         "distance": 0,
@@ -7794,6 +8487,14 @@
         "status": "DOCUMENTARY_TAXONOMY_NOT_OPERATIONAL_AUTHORIZATION",
         "source": "user requests hierarchy of workflows after foundational instructions; answer derives hierarchy from existing six explanatory phases and observed project doctrine/policy/workflow definitions",
         "nextDiscussionAction": "Detail specific workflow under its established chapter 3 node only when user asks, and preserve historical workflow distinctions."
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "sequence": 11,
+        "kind": "GOVERNANCE_GITHUB_ACTIONS_INTEGRATION_EXPLAINED",
+        "status": "SOURCE_VERIFIED_DESIGN_AND_DECLARED_WORKFLOWS_NOT_LIVE_EXECUTION",
+        "source": "Question utilisateur sur articulation gouvernance et GitHub Actions; vérification directe du dépôt main, AGENTS.md, politiques .mcp et trois workflows Actions.",
+        "nextDiscussionAction": "Deepen the actual governance gates and Action-to-action dependencies only if owner asks, distinguishing source configuration from actual execution and ruleset enforcement."
       }
     ],
     "eventNodeLinks": [
@@ -8206,6 +8907,76 @@
         "eventId": "MCP-CONV-EVT-20261105-010",
         "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
         "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "role": "PRIMARY"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "role": "RELATED"
+      },
+      {
+        "eventId": "MCP-CONV-EVT-20261105-011",
+        "nodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
+        "role": "RELATED"
       }
     ],
     "externalReferences": [
@@ -8341,6 +9112,14 @@
       "3.7.2": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.2",
       "3.7.3": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.3",
       "3.7.4": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "3.7.4.1": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+      "3.7.4.2": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+      "3.7.4.3": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+      "3.7.4.4": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+      "3.7.4.5": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+      "3.7.4.6": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+      "3.7.4.7": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+      "3.7.4.8": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
       "3.7.5": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
       "4.1": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.1",
       "4.2": "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.2",
@@ -8458,6 +9237,14 @@
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.2": "3.7.2",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.3": "3.7.3",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4": "3.7.4",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1": "3.7.4.1",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2": "3.7.4.2",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3": "3.7.4.3",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4": "3.7.4.4",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5": "3.7.4.5",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6": "3.7.4.6",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7": "3.7.4.7",
+      "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8": "3.7.4.8",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5": "3.7.5",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/4": "4",
       "MCP-CONV-CONT-20261104-ROOT-01/NODE/4.1": "4.1",
