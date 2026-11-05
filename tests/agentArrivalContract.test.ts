@@ -36,7 +36,7 @@ test('agent GitHub arrival is instructed to connect to existing MCP before owner
  assert.ok(section.indexOf('G1_RECONCILE')<section.indexOf('G2_DISCOVER_AND_MAP'));
  assert.ok(section.indexOf('G2_DISCOVER_AND_MAP')<section.indexOf('G3_OWNER_CHOICE'));
  assert.match(section,/E2_JOURNAL_POST_HTTP_403/);
- assert.match(section,/sans .*droit d'écriture/);
+ assert.match(section,/ne crée aucun droit d'écriture/);
  assert.match(section,/aucun événement standard/);
 });
 
