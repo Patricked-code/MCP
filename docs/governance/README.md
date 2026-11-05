@@ -22,6 +22,35 @@
 
 ---
 
+## GLOBAL WORK — Matrice de réconciliation et dispositif de suivi V1 (2026-11-05)
+
+**Matrice lisible par machine (non exécutable) :** [global-work-reconciliation-matrix-v1.json](global-work-reconciliation-matrix-v1.json), versionnée dans **cette même PR #374**. Ce document recoupe **20 périmètres**, **94 Task Blueprints** provenant du Program Backlog V2, **25 PR ouvertes** et **77 issues ouvertes** observées lors du recensement GitHub. Parmi les issues, les demandes `MCP_READONLY_EVIDENCE_REQUEST` sont rangées comme **tickets de preuve** et non comme chantiers ; les trois issues historiques #2, #3, #32 restent explicitement `UNCLASSIFIED_LEGACY_TRIAGE` et ne sont pas effacées.
+
+### Colonnes de pilotage et nature des preuves
+
+| Niveau | Champs enregistrés | Ce que ces champs permettent et **ne** permettent **pas** |
+|---|---|---|
+| Chantier | `key` de navigation, ancres officielles, vraies références de continuité lorsqu'elles sont documentées, PR/issues liées | Reprendre le bon périmètre. La clé `key` **n'est pas** un Continuity ID, une Task ou un nouveau programme. |
+| Planification | Work Items, IDs de blueprint, vagues/lots, dépendances, collision domains, readiness et raisons | Reconstruire l'ordre documentaire ; jamais déduire un owner/claim ou une permission de `READY`. |
+| Exécution réelle | `actualTaskRefs`, `runtimeTaskId`, `sessionId`, `claimId`, `lockId`, `lastRuntimeVerification` | Tous les champs inconnus restent vides/`null` à ce stade : aucune introspection runtime live n'est attestée par cette matrice. |
+| Blocages et avancement | Issues ouvertes comme **candidats**, `currentProgress=NOT_VERIFIED_FROM_RUNTIME`, dernier contrôle GitHub, prochaine observation | Ne pas transformer une issue historique, une PR Draft ou une absence de preuve en incident actuellement actif. |
+| Handoff | Règles E1/E2/P2 et admission, CI, revue, déploiement et checkpoint distincts | Préparer une reprise gouvernée, **sans déclencher** de nouvelle Task, nouvelle UTL, PR, mutation S1/S2 ou fusion. |
+
+### Protocole obligatoire de mise à jour
+
+1. **OBSERVE** : comparer `main` exact, GitHub PR/issues, `program:readiness` / `program:next`, documents du programme, puis autorités runtime pertinentes lorsqu'une opération l'exige.
+2. **RECONCILE** : distinguer faits confirmés, snapshots historiques, lacunes, collisions possibles et contradictions. Toute donnée inconnue reste `UNKNOWN`, jamais `DONE` ni `BLOCKED` sans preuve actuelle.
+3. **LINK** : relier les références exactes à une seule autorité source, même lorsqu'elles apparaissent dans plusieurs chantiers ; suivre l'origine des preuves et les dates.
+4. **ADMIT** : une sélection planning ne suffit pas. `RESUME_OWNED_FIRST`, dépendances, réelle Queue/Session/Claim/Lock, permissions, domaine de collision et HEAD exact doivent être vérifiés par les autorités propriétaires avant écriture.
+5. **EXECUTE / VERIFY** seulement par les voies autorisées, puis conserver distincts résultats de tests, CI PR, revue, merge, CI main, Governed Deploy, attestation runtime, `UTL_OUT` et `T_OUT`.
+6. **CHECKPOINT / RECOMPUTE** : enregistrer le nouveau niveau de preuve, les blocages réels, la prochaine action réellement admissible. Ne supprimer aucune source historique ; une correction est tracée comme nouvelle version.
+
+**Périmètre temporel :** le fichier Backlog porte sa propre baseline de septembre, alors que le recensement de PR/issues date du **5 novembre 2026**. Les **36 DONE / 18 READY / 28 BLOCKED / 7 DEFERRED / 5 CONDITIONAL** sont les statuts du snapshot de planification, **pas** une photographie de la Task Queue ni des activités S1/S2 actuelles.
+
+**Interdiction de fusion sans autorisation** : la PR #374 et les PR propriétaires #373 et #372 doivent rester non fusionnées tant que le propriétaire n'a pas expressément donné son accord. Aucune CI verte ni revue n'emporte cet accord à elle seule.
+
+---
+
 ## GLOBAL WORK — Autres chantiers retrouvés et liens de reprise (2026-11-05)
 
 **Nature : inventaire de navigation SOURCÉ, non exécutable, complémentaire aux trois périmètres GWC/UAC/Program Backlog V2 ci-dessus.** Les libellés ci-dessous sont des **regroupements fonctionnels de références existantes**, et non des identifiants officiels, nouveaux programmes, nouvelles Tasks ou nouveaux propriétaires. Les PR et issues sont des ancrages historiques ; leur état doit être réobservé avant tout claim, travail ou décision de merge. Les requêtes ouvertes de type `MCP_READONLY_EVIDENCE_REQUEST` sont des supports de preuve, **pas** autant de chantiers.
