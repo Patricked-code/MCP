@@ -6,7 +6,7 @@
   "provenance": "Discussion-backed extracts, not verbatim complete chat transcript",
   "initialCoverage": "RECENT_RELEVANT_DIALOGUE_ONLY",
   "disclaimer": "No automated background collection. Historical earlier turns are not exhaustively included. Unknown details remain unknown.",
-  "nextSequence": 11,
+  "nextSequence": 12,
   "events": [
     {
       "eventId": "MCP-CONV-EVT-20261104-001",
@@ -365,6 +365,62 @@
       "sourceClassification": "CONVERSATION_TAXONOMY_CORRELATED_WITH_REPO_POLICIES",
       "status": "DOCUMENTARY_TAXONOMY_NOT_OPERATIONAL_AUTHORIZATION",
       "nextDiscussionAction": "Detail specific workflow under its established chapter 3 node only when user asks, and preserve historical workflow distinctions."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-011",
+      "sequence": 11,
+      "kind": "GOVERNANCE_GITHUB_ACTIONS_INTEGRATION_EXPLAINED",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7"
+      ],
+      "source": "Question utilisateur sur articulation gouvernance et GitHub Actions; vérification directe du dépôt main, AGENTS.md, politiques .mcp et trois workflows Actions.",
+      "userIntent": "Comprendre précisément comment les garde-fous de gouvernance structurent, déclenchent et encadrent GitHub Actions; distinguer décision/autorisation, exécution, revue, déploiement et preuves sans aborder les entrées de travail.",
+      "assistantOutcome": "Governance policy/authority determines admissibility; GitHub CI executes tests on PR/branch and main; GitHub review and merge controls remain distinct from Actions jobs; autodeploy policy sets pushEnabled true (observed file, not claim of specific run); deploy workflow push/main requires matching successful main CI and OIDC S1 gate, or manually invoked route still subject to server controls; read-only evidence is optional targeted side-flow with allowlisted probes and OIDC, not server-write authority; runtime attestation and checkpoints remain required to claim runtime success. Eight additive nodes attached to existing 3.7.4.",
+      "sources": [
+        {
+          "path": ".mcp/branch-governance.json",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".mcp/github-first-operational-policy.json",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".mcp/autodeploy-policy.json",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": "AGENTS.md",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".github/workflows/mcp-ci.yml",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".github/workflows/mcp-deploy.yml",
+          "classification": "GITHUB_VERIFIED_FILE"
+        },
+        {
+          "path": ".github/workflows/mcp-readonly-evidence.yml",
+          "classification": "GITHUB_VERIFIED_FILE"
+        }
+      ],
+      "status": "SOURCE_VERIFIED_DESIGN_AND_DECLARED_WORKFLOWS_NOT_LIVE_EXECUTION",
+      "nextDiscussionAction": "Deepen the actual governance gates and Action-to-action dependencies only if owner asks, distinguishing source configuration from actual execution and ruleset enforcement."
     }
   ]
 }
