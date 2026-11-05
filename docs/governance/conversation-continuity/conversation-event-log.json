@@ -6,7 +6,7 @@
   "provenance": "Discussion-backed extracts, not verbatim complete chat transcript",
   "initialCoverage": "RECENT_RELEVANT_DIALOGUE_ONLY",
   "disclaimer": "No automated background collection. Historical earlier turns are not exhaustively included. Unknown details remain unknown.",
-  "nextSequence": 8,
+  "nextSequence": 9,
   "events": [
     {
       "eventId": "MCP-CONV-EVT-20261104-001",
@@ -258,6 +258,59 @@
       ],
       "status": "HISTORICAL_RECONSTRUCTION_WITH_SOURCE_BOUNDARIES",
       "nextDiscussionAction": "If the owner requests verbatim original master prompt, locate full historical text instead of inventing quotation; preserve four conceptual layers and no drift."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-008",
+      "sequence": 8,
+      "kind": "HISTORICAL_WORKFLOW_LINEAGE_AND_CURRENT_ACTIONS",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.7",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6.1.8",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "source": "user asks which workflows historically followed founding discipline. Github PR#6, commit a647c46 and current main repository files examined.",
+      "userIntent": "Recover the work sequences and concrete technical workflows that followed the founding July MCP governance instructions.",
+      "assistantOutcome": "Distinguished original nine-phase ROADMAP workflow, three early scripts for governance, server observation and controlled GitHub sync, and later GitHub Actions MCP CI / MCP Governed Deploy / MCP Read-only Evidence. Clearly differentiated documentary methodology, shell scripts and GitHub Actions. Historical sync script does not authorize execution today.",
+      "historicalArtifacts": [
+        {
+          "kind": "HISTORICAL_BASE_COMMIT",
+          "sha": "a647c46ab9759bf98b9de3f4b972ca0c944a378f",
+          "url": "https://github.com/Patricked-code/MCP/commit/a647c46ab9759bf98b9de3f4b972ca0c944a378f",
+          "files": [
+            "ROADMAP.md",
+            "scripts/check-governance-rules.sh",
+            "scripts/check-mcp-server.sh",
+            "scripts/sync-mcp-from-github.sh"
+          ]
+        },
+        {
+          "kind": "MCP_GOVERNANCE_PR",
+          "number": 6,
+          "url": "https://github.com/Patricked-code/MCP/pull/6",
+          "mergeSha": "4ae11249a6ec129cbf7289e361416bc248311bca"
+        },
+        {
+          "kind": "CURRENT_WORKFLOW_FILES_OBSERVED",
+          "files": [
+            ".github/workflows/mcp-ci.yml",
+            ".github/workflows/mcp-deploy.yml",
+            ".github/workflows/mcp-readonly-evidence.yml"
+          ]
+        }
+      ],
+      "sourceLimitations": "Scripts' presence in historical commit establishes code provenance, not proof that they were executed. Present GitHub Actions content establishes current definitions, not exact initial creation dates, full execution history, or all workflows. No actions on S1 or GitHub runtime authorized by this historical study.",
+      "status": "SOURCE_VERIFIED_HISTORICAL_RECONSTRUCTION_NOT_EXECUTION",
+      "nextDiscussionAction": "If asked, reconstruct date-by-date appearance of each workflow and test each historical stage against PR/commit evidence without running legacy scripts."
     }
   ]
 }
