@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 235,
+  "trackedCount": 236,
   "categories": {
     "canonical": 7,
-    "documentation": 84,
+    "documentation": 85,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -23,11 +23,11 @@
       "category": "root-documentation"
     },
     {
-      "path": "AGENTS.md",
+      "path": "AGENTS_ARCHITECTURE.md",
       "category": "root-documentation"
     },
     {
-      "path": "AGENTS_ARCHITECTURE.md",
+      "path": "AGENTS.md",
       "category": "root-documentation"
     },
     {
@@ -55,15 +55,15 @@
       "category": "root-documentation"
     },
     {
+      "path": "CODE_REVIEW.md",
+      "category": "root-documentation"
+    },
+    {
       "path": "CODESPACES.md",
       "category": "root-documentation"
     },
     {
       "path": "CODEX.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "CODE_REVIEW.md",
       "category": "root-documentation"
     },
     {
@@ -87,190 +87,6 @@
       "category": "root-documentation"
     },
     {
-      "path": "GPT.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "GPT_SKILL_BLOCK.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "KUBERNETES_FUTURE.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "LOOP_ENGINEERING.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_AGENT_ROLES.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_AGENT_RULES.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_ANTI_DISPERSION_GOVERNANCE.md",
-      "category": "canonical"
-    },
-    {
-      "path": "MCP_AUDIT_LOG_POLICY.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_CONNECTION_IDENTITY_MODEL.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_DURABLE_ACCOUNT_MANAGEMENT.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_FUNCTIONAL_CARTOGRAPHY.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_FUNCTIONS_AND_TOOLS_MANUAL.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_GITHUB_GOVERNANCE.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_INTELLIGENT_USAGE_MODE.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_ONBOARDING_ENGINE.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_PERMISSIONS_MODEL.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_PROJECT.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_REPO_BOOTSTRAP.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_REPO_INVENTORY.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_SECURITY_MODEL.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_SERVER_MAPPING.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_SERVER_REGISTRY.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_TOOLS.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MCP_WRITE_TEST.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MIGRATION.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "MONITORING.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "Migration/01_CONTEXTE_CONVERSATIONS.md",
-      "category": "migration-history"
-    },
-    {
-      "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
-      "category": "migration-history"
-    },
-    {
-      "path": "Migration/03_MANIFESTE_SOURCES.md",
-      "category": "migration-history"
-    },
-    {
-      "path": "Migration/04_GITHUB_PUBLICATION_LOG.md",
-      "category": "migration-history"
-    },
-    {
-      "path": "Migration/PDF/README.md",
-      "category": "migration-history"
-    },
-    {
-      "path": "Migration/PDF/UPLOAD_STATUS_2026-07-04.md",
-      "category": "migration-history"
-    },
-    {
-      "path": "Migration/README.md",
-      "category": "migration-history"
-    },
-    {
-      "path": "NO_REGRESSION_POLICY.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "PROJECT_BRIEF.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "PROJECT_RULES.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "PROJECT_SCOPE.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "README.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "README_DEV.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "ROADMAP.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "SECURITY.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "SOURCE_OF_TRUTH.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "SUIVI.md",
-      "category": "canonical"
-    },
-    {
-      "path": "TASKS.md",
-      "category": "canonical"
-    },
-    {
-      "path": "TESTS.md",
-      "category": "root-documentation"
-    },
-    {
-      "path": "TODO.md",
-      "category": "canonical"
-    },
-    {
       "path": "docs/ACCESS_MCP_CLIENTS_GITHUB.md",
       "category": "documentation"
     },
@@ -284,94 +100,6 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/BACKUP_RESTORE.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/CHANGELOG.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/CODE_REVIEW.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/DATABASE.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/DEPLOYMENT_PRODUCTION.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/DOCKER.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/GITHUB_AUTO_DISCOVERY.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/GPT.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/KUBERNETES_FUTURE.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/MCP_GITHUB_GUARDIAN.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/MCP_TOOLS.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/MCP_WRITE_TOOLS.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/MIGRATION.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/MONITORING.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/OAUTH_CHATGPT_CLAUDE_GITHUB.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/README_DEV.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/ROADMAP.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/SECURITY.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/SUIVI.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/SUIVI_MEMOIRE_CONVERSATION_2026-07-01.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/TASKS.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/TODO.md",
       "category": "documentation"
     },
     {
@@ -463,11 +191,47 @@
       "category": "documentation"
     },
     {
+      "path": "docs/audits/utl-reconciliation/PR372_CONTINUOUS_IMPROVEMENT_REGISTER.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v02.md",
       "category": "documentation"
     },
     {
       "path": "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v03.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/BACKUP_RESTORE.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/CODE_REVIEW.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/DATABASE.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/DEPLOYMENT_PRODUCTION.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/DOCKER.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/GITHUB_AUTO_DISCOVERY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
       "category": "documentation"
     },
     {
@@ -479,19 +243,15 @@
       "category": "documentation"
     },
     {
-      "path": "docs/governance/README.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
-      "category": "documentation"
-    },
-    {
       "path": "docs/governance/pilots/E2-MCP-ENTRY-RECONCILIATION-PROTOCOL.md",
       "category": "documentation"
     },
     {
       "path": "docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/README.md",
       "category": "documentation"
     },
     {
@@ -523,11 +283,31 @@
       "category": "documentation"
     },
     {
+      "path": "docs/GPT.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
       "category": "documentation"
     },
     {
+      "path": "docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/gwc/BLUEPRINTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/ded-checkpoint.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/historical-baseline.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/mission-directive.md",
       "category": "documentation"
     },
     {
@@ -547,27 +327,43 @@
       "category": "documentation"
     },
     {
-      "path": "docs/gwc/archive/ARCHITECTURE_R2_NON_CANONICAL.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/gwc/canonical-memory/pr95-ded/sources/ded-checkpoint.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/gwc/canonical-memory/pr95-ded/sources/historical-baseline.md",
-      "category": "documentation"
-    },
-    {
-      "path": "docs/gwc/canonical-memory/pr95-ded/sources/mission-directive.md",
-      "category": "documentation"
-    },
-    {
       "path": "docs/history/SUIVI_PRE_FOUNDATIONS_20260805.md",
       "category": "history"
     },
     {
+      "path": "docs/KUBERNETES_FUTURE.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/MCP_GITHUB_GUARDIAN.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/MCP_TOOLS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/MCP_WRITE_TOOLS.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/migration-wealthtech-2026-07-04/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/MIGRATION.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/MONITORING.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/OAUTH_CHATGPT_CLAUDE_GITHUB.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/README_DEV.md",
       "category": "documentation"
     },
     {
@@ -587,6 +383,10 @@
       "category": "documentation"
     },
     {
+      "path": "docs/ROADMAP.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
       "category": "documentation"
     },
@@ -596,6 +396,18 @@
     },
     {
       "path": "docs/runbooks/S1_GITHUB_READ_ONLY_DEPLOY_IDENTITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/SUIVI_MEMOIRE_CONVERSATION_2026-07-01.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/SUIVI.md",
       "category": "documentation"
     },
     {
@@ -671,6 +483,110 @@
       "category": "engineering-spec"
     },
     {
+      "path": "docs/TASKS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/TODO.md",
+      "category": "documentation"
+    },
+    {
+      "path": "GPT_SKILL_BLOCK.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "GPT.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "KUBERNETES_FUTURE.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "LOOP_ENGINEERING.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_AGENT_ROLES.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_AGENT_RULES.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_ANTI_DISPERSION_GOVERNANCE.md",
+      "category": "canonical"
+    },
+    {
+      "path": "MCP_AUDIT_LOG_POLICY.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_CONNECTION_IDENTITY_MODEL.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_DURABLE_ACCOUNT_MANAGEMENT.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_FUNCTIONAL_CARTOGRAPHY.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_FUNCTIONS_AND_TOOLS_MANUAL.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_GITHUB_GOVERNANCE.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_INTELLIGENT_USAGE_MODE.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_ONBOARDING_ENGINE.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_PERMISSIONS_MODEL.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_PROJECT.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_REPO_BOOTSTRAP.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_REPO_INVENTORY.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_SECURITY_MODEL.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_SERVER_MAPPING.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_SERVER_REGISTRY.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_TOOLS.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "MCP_WRITE_TEST.md",
+      "category": "root-documentation"
+    },
+    {
       "path": "memory/2026-05-05-stablecoin-ewari-conversation-memory.md",
       "category": "memory"
     },
@@ -727,10 +643,6 @@
       "category": "memory"
     },
     {
-      "path": "memory/CONVERSATIONS_POUSSEES_20260701.md",
-      "category": "memory"
-    },
-    {
       "path": "memory/CONVERSATION_20260701_LOOP_ENGINEERING.md",
       "category": "memory"
     },
@@ -755,6 +667,10 @@
       "category": "memory"
     },
     {
+      "path": "memory/CONVERSATIONS_POUSSEES_20260701.md",
+      "category": "memory"
+    },
+    {
       "path": "memory/GPT.md",
       "category": "memory"
     },
@@ -767,19 +683,19 @@
       "category": "memory"
     },
     {
-      "path": "memory/INSTALLATION_MCP_MEMORY.md",
-      "category": "memory"
-    },
-    {
-      "path": "memory/INSTALLATION_MCP_WEALTHTECH.md",
-      "category": "memory"
-    },
-    {
       "path": "memory/INSTALL_MCP_WEALTHTECH_MEMORY.md",
       "category": "memory"
     },
     {
       "path": "memory/INSTALL_ON_WEALTHTECH_SERVER.md",
+      "category": "memory"
+    },
+    {
+      "path": "memory/INSTALLATION_MCP_MEMORY.md",
+      "category": "memory"
+    },
+    {
+      "path": "memory/INSTALLATION_MCP_WEALTHTECH.md",
       "category": "memory"
     },
     {
@@ -827,10 +743,6 @@
       "category": "memory"
     },
     {
-      "path": "memory/LOOPBACK_WEALTHTECH_CURRENT.md",
-      "category": "memory"
-    },
-    {
       "path": "memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
       "category": "memory"
     },
@@ -844,6 +756,10 @@
     },
     {
       "path": "memory/LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md",
+      "category": "memory"
+    },
+    {
+      "path": "memory/LOOPBACK_WEALTHTECH_CURRENT.md",
       "category": "memory"
     },
     {
@@ -895,11 +811,11 @@
       "category": "memory"
     },
     {
-      "path": "memory/SUIVI.md",
+      "path": "memory/SUIVI_MEMORY.md",
       "category": "memory"
     },
     {
-      "path": "memory/SUIVI_MEMORY.md",
+      "path": "memory/SUIVI.md",
       "category": "memory"
     },
     {
@@ -915,8 +831,88 @@
       "category": "memory"
     },
     {
-      "path": "tests/fixtures/current-state-evidence-repo/README.md",
-      "category": "documentation"
+      "path": "MIGRATION.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "Migration/01_CONTEXTE_CONVERSATIONS.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/02_PLAN_MIGRATION_ET_SECURITE.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/03_MANIFESTE_SOURCES.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/04_GITHUB_PUBLICATION_LOG.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/PDF/README.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/PDF/UPLOAD_STATUS_2026-07-04.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/README.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "MONITORING.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "NO_REGRESSION_POLICY.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "PROJECT_BRIEF.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "PROJECT_RULES.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "PROJECT_SCOPE.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "README_DEV.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "README.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "ROADMAP.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "SECURITY.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "SOURCE_OF_TRUTH.md",
+      "category": "root-documentation"
+    },
+    {
+      "path": "SUIVI.md",
+      "category": "canonical"
+    },
+    {
+      "path": "TASKS.md",
+      "category": "canonical"
+    },
+    {
+      "path": "TESTS.md",
+      "category": "root-documentation"
     },
     {
       "path": "tests/fixtures/current-state-evidence-repo/docs/audits/baseline.md",
@@ -925,6 +921,14 @@
     {
       "path": "tests/fixtures/current-state-evidence-repo/docs/history/change.md",
       "category": "documentation"
+    },
+    {
+      "path": "tests/fixtures/current-state-evidence-repo/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "TODO.md",
+      "category": "canonical"
     },
     {
       "path": "wealthtech_project_memory/memory/CONVERSATION_COMPILED_WEALTHTECH_EWARI_MCP.md",
