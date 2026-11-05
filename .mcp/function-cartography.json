@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "16e61572e94fc9559c6af02101460ac0fab31d72f9037d6c5e7a73d9ad650ae1",
+  "catalogueDigest": "0e92eb5d9aa223e668b47836ed3a974664da7cf0e6f299a6f8b14fab2c09660c",
   "registeredToolCount": 145,
   "readOnlyToolCount": 89,
   "writeToolCount": 56,
@@ -3125,7 +3125,7 @@
     {
       "name": "mcp_e2_list_continuities",
       "title": null,
-      "description": "E2 : apres le choix REPRISE du proprietaire, presente les Continuity IDs verifies par le registre GitHub, sans en creer aucun.",
+      "description": "E2 G2 : AVANT la question NEW/RESUME, decouvrir toutes les racines canoniques prouvees par les issues, commentaires et journal GitHub ; PARTIAL si exploration incomplete.",
       "surface": "read",
       "annotations": {
         "readOnlyHint": null,
@@ -3150,7 +3150,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "a30cc34e96b9828764548b14aa8f4d5035eee6f05a1ba29478a13f502b93ea5a"
+      "contractDigest": "debc8d53a83ea70f14268e9f3dc433f5ddb34e901c66141381b081010ac1cbcc"
     },
     {
       "name": "mcp_e2_reconcile_preflight",

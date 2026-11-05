@@ -83,6 +83,11 @@
       "detail": "Governed deploy of the MCP runtime itself on S1."
     },
     {
+      "path": "src/governance/e2CanonicalDiscovery.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2 G2 read-only discovery derives canonical roots exclusively from GitHub issues, trusted adoption comments and the existing MCP E2 journal; strictly scoped to Patricked-code/MCP with no new registry, permission or cross-repository write."
+    },
+    {
       "path": "src/governance/e2EntryFlow.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "E2 external governed recovery reconciles the MCP repository itself against its own S1 runtime before owner orientation; never selects or grants TargetScope or server authority."
