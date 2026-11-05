@@ -340,7 +340,8 @@
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
         "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
-        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF"
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.MGEF",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7"
       ],
       "crossReferences": [],
       "nextDiscussionAction": null,
@@ -1873,6 +1874,125 @@
       "nextDiscussionAction": null,
       "operationalAuthority": false,
       "provenanceStatus": "SOURCE_VERIFIED_NOT_RUNTIME_EXECUTION_ATTESTED"
+    },
+    {
+      "path": "3.7",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+      "title": "Hiérarchie des workflows d'ingénierie",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5"
+      ],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.1",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.1",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 0 — doctrine et politiques de gouvernance",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.2",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.2",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 1 — cycle commun Engineering Lifecycle",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.3",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.3",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 2 — six phases fonctionnelles du cycle",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.4",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 3 — sous-workflows, opérations et contrôles",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
+    },
+    {
+      "path": "3.7.5",
+      "id": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+      "parentId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "title": "Niveau 4 — résultats, preuves et continuité",
+      "kind": "child",
+      "source": "user-question-workflow-hierarchy-2026-11-05",
+      "status": "established",
+      "children": [],
+      "crossReferences": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/7.5"
+      ],
+      "nextDiscussionAction": null,
+      "operationalAuthority": false,
+      "provenanceStatus": "DISCUSSION_HIERARCHY_NOT_SEPARATE_RUNTIME_ENGINES"
     }
   ],
   "versionLog": [
@@ -1899,6 +2019,12 @@
       "date": "2026-11-05",
       "kind": "ADDITIVE_HISTORICAL_WORKFLOW_MATERIALIZATION",
       "note": "9 source-discussed workflow nodes added under 5.6.1. Historical July scripts distinguished from contemporary CI, deploy and read-only evidence. Previous 104 node IDs, titles and parents preserved."
+    },
+    {
+      "version": "1.4",
+      "date": "2026-11-05",
+      "kind": "ADDITIVE_ENGINEERING_WORKFLOW_HIERARCHY",
+      "note": "Six nodes under 3.7: top governance layer, common lifecycle, six existing stages via cross references, controls, proofs. No new runtime engines. All 113 prior IDs, parents and titles retained."
     }
   ]
 }
