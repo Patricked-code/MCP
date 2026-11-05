@@ -6,7 +6,7 @@
   "provenance": "Discussion-backed extracts, not verbatim complete chat transcript",
   "initialCoverage": "RECENT_RELEVANT_DIALOGUE_ONLY",
   "disclaimer": "No automated background collection. Historical earlier turns are not exhaustively included. Unknown details remain unknown.",
-  "nextSequence": 10,
+  "nextSequence": 11,
   "events": [
     {
       "eventId": "MCP-CONV-EVT-20261104-001",
@@ -336,6 +336,35 @@
       "sourceClassification": "ASSISTANT_EXPLANATION_GROUNDED_IN_VERIFIED_REPO_FILES",
       "status": "CONVERSATION_EXPLANATION_NOT_RUNTIME_EXECUTION",
       "nextDiscussionAction": "Deepen one existing workflow at a time, retaining exact authorizations and source evidence; do not introduce unrelated intake architecture."
+    },
+    {
+      "eventId": "MCP-CONV-EVT-20261105-010",
+      "sequence": 10,
+      "kind": "ENGINEERING_WORKFLOW_HIERARCHY",
+      "primaryNodeId": "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7",
+      "relatedNodeIds": [
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.6",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.2",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.4",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/3.7.5",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.1",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.3",
+        "MCP-CONV-CONT-20261104-ROOT-01/NODE/5.5"
+      ],
+      "source": "user requests hierarchy of workflows after foundational instructions; answer derives hierarchy from existing six explanatory phases and observed project doctrine/policy/workflow definitions",
+      "userIntent": "Explain hierarchy of workflows, distinguishing higher-level governance, common engineering lifecycle, six stages, subordinate operations, and evidence; do not discuss unrelated intake architecture.",
+      "assistantOutcome": "Formalized five-level hierarchy and ordered six existing WF-1..WF-6 explanatory stages; added six chapter-3 nodes as taxonomy, linked to existing 3.1..3.6 rather than spawning separate engines. No runtime implementation claim.",
+      "sourceClassification": "CONVERSATION_TAXONOMY_CORRELATED_WITH_REPO_POLICIES",
+      "status": "DOCUMENTARY_TAXONOMY_NOT_OPERATIONAL_AUTHORIZATION",
+      "nextDiscussionAction": "Detail specific workflow under its established chapter 3 node only when user asks, and preserve historical workflow distinctions."
     }
   ]
 }
