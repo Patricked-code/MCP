@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 231,
+  "trackedCount": 232,
   "categories": {
     "canonical": 7,
     "documentation": 80,
@@ -305,6 +305,10 @@
     {
       "path": "docs/gwc/REVISION_HISTORY.md",
       "category": "documentation"
+    },
+    {
+      "path": "docs/history/MCP_MAIN_MERGE_SHA_REGISTRY_20261103.md",
+      "category": "history"
     },
     {
       "path": "docs/history/SUIVI_PRE_FOUNDATIONS_20260805.md",
