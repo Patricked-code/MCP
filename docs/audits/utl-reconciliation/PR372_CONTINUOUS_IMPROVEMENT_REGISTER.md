@@ -192,3 +192,16 @@ Artefacts :
 5. Aucune auto-conversion de `L_OUT` workflow en `UTL_OUT` ou `T_OUT`, aucune autorisation de merge sur main.
 
 **NEXT_ACTION** : vérifier la couverture des tentatives GH et récolter des lectures S1 bornées quand un outil officiel le permet ; relier des preuves d'attestation et versions avant/après sans fusionner les catégories. Reprise Global Work depuis la PR #374 et la continuité documentaire de la PR #373, mais **source propriétaire des preuves = cette PR #372**, toujours Draft.
+
+## 8. Index d'identité des 172 runs GitHub et de leurs attestations S1 attendues — 2026-11-05
+
+**Correction de granularité des IMP-372-001 à IMP-372-004 et IMP-372-011** (sans modifier leurs identifiants d'origine) : une **ligne par exécution GitHub réelle**, pas un simple SHA ni une PR. Scan de l'ensemble `MCP Governed Deploy` : 172 runs distincts (**171 push** déjà couverts par PR #371 et **un dispatch manuel** non couvert, run #31655087215). Résultat : 166 workflow SUCCESS, 6 FAILURE. Un workflow SUCCESS n'est toujours ni un attestation.json lu, ni un changement de production prouvé.
+
+- **Registre des identités et des chemins candidats S1** : `PR372_S1_ATTESTATION_FILE_ID_CROSSWALK_172_V01.json` (172 clés `indexId` uniques, toutes reliées à leur `githubRunId` natif et à leur `s1JobId` attendu ; **8** jobs ont leur message terminal vérifié directement dans GitHub Actions, dont le job manuel #94307689798).
+- **Registre antérieur préservé** : `PR372_DEPLOYMENT_EVENT_REGISTRY_V01.json` contient les 171 runs associés aux PR fusionnées et les 7 jobs dont les logs avaient été relus. Aucun effacement ni réécriture rétroactive.
+- **Base SQLite enrichie sans seconde autorité** : table `s1_attestation_file_candidates` (172 lignes) et vue `v_attestation_file_id_to_github_deploy`, jointure vérifiée aux 171 événements historiques ; 172e entrée manuelle sans fausse PR ni CI.
+- **Identifiants distingués** : `githubRunId` = ID natif GitHub ; `s1JobId` = clé du job serveur (log constaté ou algorithme vérifié) ; `expectedAttestationIdIfSchemaV2=s1-deploy-<jobId>` = **seulement une valeur de contrat tant que le fichier n'est pas lu** ; `indexId` = clé documentaire ; `githubActionsArtifactId` / `nativeAttestationIdReadFromFile` = `null` en absence de preuve.
+- **Écart toujours ouvert** : GitHub Actions stocke des runs et logs ; `src/deploy/s1Deploy.ts` écrit `attestation.json` dans `/opt/apps/wealthtech-mcp-deploy/jobs/<jobId>/` sur S1. Quatre runs échantillonnés ne disposent pas d'artefact GitHub Actions récupérable ; les **172 fichiers physiques S1 n'ont pas été dénombrés ni lus** et les premières versions peuvent ne pas comporter le champ natif `attestation_id`.
+- **Gates restants** : lister les dossiers S1 depuis un lecteur strictement allowlisté, lire chaque attestation, vérifier schéma v1/v2, ID natif, chemins, contenu, hash, SHA avant/après, et les attempts/reruns ; enregistrer séparément les orphelins/absences et les éventuels fichiers non liés à un run.
+
+**Pas de fusion sur main avant consentement explicite du propriétaire.** L'ajout ne vaut ni création de fichier d'attestation sur S1, ni autorisation SSH générique, ni preuve de 172 déploiements effectifs.
