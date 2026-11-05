@@ -5,6 +5,9 @@ on:
     types: [opened, edited, reopened]
   issue_comment:
     types: [created]
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 # The GitHub-only discovery receipt never creates a runtime Task/claim or starts an agent.
 permissions:
@@ -17,7 +20,7 @@ concurrency:
 
 jobs:
   discover:
-    if: github.repository == 'Patricked-code/MCP'
+    if: github.repository == 'Patricked-code/MCP' && (github.event_name == 'issues' || github.event_name == 'issue_comment')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -38,3 +41,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/mcp-auto-intake-discovery.mjs
+
+  observe-main:
+    # Independent read-only observer: no task claim, agent wake or S1 mutation.
+    if: github.repository == 'Patricked-code/MCP' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact main event SHA without persisted credentials
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Prepare Node runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate read-only observer and historical gap-map contracts
+        run: node --test tests/mcpGlobalContinuationObserver.test.mjs
+      - name: Recompute Program Backlog candidates and record continuation gaps
+        env:
+          MCP_CONTINUATION_OUTPUT: /tmp/mcp-auto-continuation/continuation-report.json
+        run: node scripts/mcp-global-continuation-observer.mjs
+      - name: Preserve read-only checkpoint as a bounded GitHub Actions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-continuation-${{ github.sha }}
+          path: /tmp/mcp-auto-continuation/continuation-report.json
+          if-no-files-found: error
+          retention-days: 7
