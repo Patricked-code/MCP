@@ -13,7 +13,7 @@ const REPOSITORY='Patricked-code/MCP';
 const REF='refs/heads/main';
 const SHA=/^[a-f0-9]{40}$/;
 const TASK=/^TASK-[0-9]{8}-[0-9]{3,}$/;
-const MAX_FRESH_MS=120_000;
+const MAX_FRESH_MS=60_000;
 
 function blocked(reason){
   return Object.freeze({
@@ -42,7 +42,8 @@ export function assessC26Handoff(input){
   if(trigger?.repository!==REPOSITORY||trigger?.ref!==REF||!SHA.test(trigger?.sha??'')){
     return blocked('TRIGGER_NOT_EXACT_MAIN');
   }
-  if(!fresh(liveState?.generatedAt,at))return blocked('LIVE_STATE_STALE_OR_UNAVAILABLE');
+  if(liveState?.freshness!=='CURRENT'||!fresh(liveState?.generatedAt,at))
+    return blocked('LIVE_STATE_STALE_OR_UNAVAILABLE');
   const alignment=liveState?.alignment;
   if(alignment?.global!=='FULLY_ALIGNED'||alignment.githubVsS1!=='ALIGNED'
     ||alignment.runtime!=='ALIGNED'||alignment.documentation!=='ALIGNED'){
@@ -68,7 +69,7 @@ export function assessC26Handoff(input){
   // C26 initial scope: an existing executable task only. For an owned task
   // or READY blueprint, defer to the existing P2 materialization/resumption
   // workflow. Never convert those projections into a claim on our own.
-  if(next.mode!=='CLAIM_EXISTING'
+  if(!['CLAIM_EXISTING','RESUME_OWNED'].includes(next.mode)
     ||next.tool!=='mcp_claim_next_governed_task'
     ||!TASK.test(next.taskId??'')){
     return blocked('EXISTING_P2_CLAIM_ADMISSION_REQUIRED');
@@ -81,6 +82,7 @@ export function assessC26Handoff(input){
     status:'ELIGIBLE_FOR_EXISTING_P2_ADMISSION',
     repository:REPOSITORY, headSha:trigger.sha,
     taskId:next.taskId,governedSessionId:next.governedSessionId,
+    selectionMode:next.mode,
     resourceScopes:Object.freeze([...next.resourceScopes]),
     observedAt:liveState.generatedAt,
     runtimeTaskCreatedByAdapter:false,
@@ -97,6 +99,24 @@ export function assessC26Handoff(input){
  *     durable, idempotent task/run binding. NO default implementation.
  * The authenticated P2 tool and the host remain the ONLY authorities.
  */
+function recoveryRequired(reason,preflight,claim){
+  // Once the existing P2 authority has issued a valid claim, an executor
+  // failure must not erase its identity. The next invocation must reobserve
+  // the existing queue and resume owned work, never claim a duplicate task.
+  return Object.freeze({
+    status:'RECOVERY_REQUIRED',reason,
+    nextAction:'RESUME_OWNED_VIA_EXISTING_P2',
+    taskId:preflight.taskId,
+    governedSessionId:preflight.governedSessionId,
+    claimedTaskRevision:claim.revision,
+    headSha:preflight.headSha,
+    executorRunId:null,
+    runtimeTaskCreatedByAdapter:false,
+    parallelQueueCreated:false,
+    programDoneAttested:false
+  });
+}
+
 export async function deliverC26ViaExistingAuthorities(input,ports={}){
   const preflight=assessC26Handoff(input);
   if(preflight.status!=='ELIGIBLE_FOR_EXISTING_P2_ADMISSION')return preflight;
@@ -111,7 +131,8 @@ export async function deliverC26ViaExistingAuthorities(input,ports={}){
   });}
   catch{return blocked('P2_ADMISSION_FAILED');}
   if(!object(claim)||claim.source!=='mcp_claim_next_governed_task'
-    ||claim.status!=='CLAIMED'||claim.taskId!==preflight.taskId
+    ||!(['CLAIMED',...(preflight.selectionMode==='RESUME_OWNED'?['IN_PROGRESS']:[])].includes(claim.status))
+    ||claim.taskId!==preflight.taskId
     ||claim.repository!==preflight.repository
     ||claim.governedSessionId!==preflight.governedSessionId
     ||!Number.isSafeInteger(claim.revision)||claim.revision<=0){
@@ -123,11 +144,11 @@ export async function deliverC26ViaExistingAuthorities(input,ports={}){
     taskId:preflight.taskId,governedSessionId:preflight.governedSessionId,
     claimedTaskRevision:claim.revision,resourceScopes:preflight.resourceScopes
   });}
-  catch{return blocked('EXISTING_CODE_AGENT_EXECUTION_FAILED');}
+  catch{return recoveryRequired('EXISTING_CODE_AGENT_EXECUTION_FAILED',preflight,claim);}
   if(delivered?.accepted!==true
     ||typeof delivered.executorRunId!=='string'
     ||!/^[a-zA-Z0-9][a-zA-Z0-9_.:-]{2,127}$/.test(delivered.executorRunId)){
-    return blocked('EXISTING_CODE_AGENT_DID_NOT_ACCEPT');
+    return recoveryRequired('EXISTING_CODE_AGENT_DID_NOT_ACCEPT',preflight,claim);
   }
   // 'DELEGATED' is not 'DONE': CI, review, merge, deploy, runtime and
   // checkpoint must be observed and admitted by their existing authorities.
