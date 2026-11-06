@@ -110,3 +110,17 @@ test('the existing intake workflow observes every main push without broadening i
   assert.match(workflow,/tests\/mcpGlobalContinuationObserver\.test\.mjs/);
   assert.doesNotMatch(workflow,/mcp_claim_next_governed_task|mcp_materialize_program_blueprint|secrets\.MCP_AUTH_TOKEN/);
 });
+
+
+test('GitHub-only continuity stays available while runtime attestation is unavailable', () => {
+  const report=buildReport({event,map,program,observedAt:at});
+  assert.match(report.nextAction,/GitHub-first/);
+  assert.match(report.nextAction,/repository\/PR\/CI\/review/);
+  assert.doesNotMatch(report.nextAction,/^Authorized agent: reconnect MCP, attest FULLY_ALIGNED/);
+  assert.equal(report.continuationRoutes.githubOnly.requiresRuntimeMcp,false);
+  assert.equal(report.continuationRoutes.githubOnly.permissionSource,'EXISTING_GITHUB_AND_OWNER_AUTHORITY');
+  assert.equal(report.continuationRoutes.githubOnly.authorizedByObserver,false);
+  assert.equal(report.continuationRoutes.runtimeRequired.requiresLiveAttestation,true);
+  assert.equal(report.operationalGates.canExecute,false);
+  assert.equal(report.operationalGates.canClaimTask,false);
+});
