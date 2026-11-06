@@ -156,11 +156,36 @@ export function buildReport({ event, map, program, observedAt }) {
       canDeploy: false,
       noParallelQueueCreated: true
     },
+    // Independent of the runtime gate: GitHub-bounded engineering may proceed
+    // under existing GitHub and owner authority even when S1 is unavailable or
+    // diverged. This report observes candidates only and grants no permission.
+    continuationRoutes: {
+      githubOnly: {
+        requiresRuntimeMcp: false,
+        permissionSource: 'EXISTING_GITHUB_AND_OWNER_AUTHORITY',
+        authorizedByObserver: false,
+        requiredChecks: [
+          'EXACT_HEAD_AND_BRANCH_REOBSERVED',
+          'CANONICAL_ISSUE_AND_EXISTING_PR_REUSED',
+          'OWNERSHIP_COLLISION_DEPENDENCY_CHECKED',
+          'CI_AND_REQUIRED_REVIEWS_ON_EXACT_SHA'
+        ]
+      },
+      runtimeRequired: {
+        requiresLiveAttestation: true,
+        authorizedByObserver: false,
+        requiredChecks: [
+          'LIVE_MCP_S1_RUNTIME_AND_DOCUMENTATION_RECONCILED',
+          'GOVERNED_SESSION_CLAIM_AND_LOCKS_VERIFIED',
+          'EXISTING_P2_RUNTIME_AUTHORITY_REQUIRED'
+        ]
+      }
+    },
     outcome: planConsistency === 'CANONICAL_READINESS_CONSISTENT'
       ? 'CONTINUATION_EVIDENCE_READY_FOR_GOVERNED_AGENT'
       : 'STOP_PROGRAM_PROJECTION_DRIFT',
     nextAction: planConsistency === 'CANONICAL_READINESS_CONSISTENT'
-      ? 'Authorized agent: reconnect MCP, attest FULLY_ALIGNED, recover existing owner and continuity, inspect live sessions/claims/locks and only then invoke existing P2 tools.'
+      ? 'Select the next bounded repository/PR/CI/review operation under the existing GitHub-first policy after verifying mandate, owner, collision domains, permissions and exact HEAD; GitHub-only work must not depend on MCP connectivity or FULLY_ALIGNED. Only when runtime authority is required: reconnect MCP, attest live alignment, inspect governed sessions/claims/locks, and invoke existing P2 tools only if authorized.'
       : 'Reconcile the canonical Program Backlog V2 projection under existing governance before attempting admission.'
   };
 }
