@@ -133,3 +133,37 @@ test('C26 fails closed when the external code agent is absent or rejects the wor
     assert.equal(out.programDoneAttested,false);
   }
 });
+
+
+test('C26 obeys canonical 60-second Live State freshness and explicit stale state',()=>{
+  for(const patch of [
+    x=>{x.liveState.freshness='STALE';},
+    x=>{x.liveState.generatedAt='2026-11-06T19:58:30.000Z';}
+  ]){
+    const x=input();patch(x);
+    assert.equal(assessC26Handoff(x).status,'BLOCKED');
+  }
+});
+
+test('C26 after a successful P2 claim preserves recovery binding and resumes owned work',async()=>{
+  const x=input();const calls=[];
+  const claim={source:'mcp_claim_next_governed_task',status:'CLAIMED',
+    taskId:x.inventory.nextWork.taskId,governedSessionId:SESSION,
+    repository:x.trigger.repository,revision:7};
+  const first=await deliverC26ViaExistingAuthorities(x,{
+    admitExistingP2:async()=>{calls.push('claim');return claim;},
+    executeExistingAgent:async()=>{calls.push('agent-rejected');return {accepted:false};}
+  });
+  assert.equal(first.status,'RECOVERY_REQUIRED');
+  assert.equal(first.taskId,claim.taskId);
+  assert.equal(first.governedSessionId,SESSION);
+  assert.equal(first.claimedTaskRevision,7);
+  assert.equal(first.nextAction,'RESUME_OWNED_VIA_EXISTING_P2');
+  x.inventory.nextWork.mode='RESUME_OWNED';
+  const second=await deliverC26ViaExistingAuthorities(x,{
+    admitExistingP2:async()=>{calls.push('resume');return claim;},
+    executeExistingAgent:async()=>{calls.push('agent-accepted');return {accepted:true,executorRunId:'existing-verified-run-2'};}
+  });
+  assert.equal(second.status,'DELEGATED');
+  assert.deepEqual(calls,['claim','agent-rejected','resume','agent-accepted']);
+});
