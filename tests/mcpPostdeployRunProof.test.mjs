@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {verifyGovernedDeployRun} from '../scripts/mcp-postdeploy-run-proof.mjs';
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {verifyGovernedDeployRun,main} from '../scripts/mcp-postdeploy-run-proof.mjs';
 
 const SHA='7d29ad4212efa0bd343d53f400785e5c9cbf07f4';
 const REPO='Patricked-code/MCP';
@@ -44,4 +47,24 @@ test('C25 refuses absent job evidence and the wrong workflow owner',()=>{
   assert.equal(verifyGovernedDeployRun(x).verified,false);
   x.event.workflow_run.repository.full_name=REPO;
   assert.equal(verifyGovernedDeployRun({...x,jobs:null}).verified,false);
+});
+
+
+test('C25 binds post-deploy proof to upstream run SHA even if current main moved',async()=>{
+  const temp=await mkdtemp(join(tmpdir(),'mcp-postdeploy-'));
+  const file=join(temp,'event.json');
+  const x=input();
+  await writeFile(file,JSON.stringify(x.event));
+  const env={
+    GITHUB_EVENT_NAME:'workflow_run',
+    GITHUB_REPOSITORY:REPO,
+    GITHUB_REF:'refs/heads/main',
+    GITHUB_SHA:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+    MCP_EVENT_SHA:SHA,
+    GITHUB_EVENT_PATH:file,
+    GITHUB_TOKEN:'test-auth-not-a-real-token'
+  };
+  try {
+    await assert.doesNotReject(main(env,async()=>({ok:true,json:async()=>x.jobs})));
+  } finally {await rm(temp,{recursive:true,force:true});}
 });
