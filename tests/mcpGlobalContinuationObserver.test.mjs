@@ -124,3 +124,22 @@ test('GitHub-only continuity stays available while runtime attestation is unavai
   assert.equal(report.operationalGates.canExecute,false);
   assert.equal(report.operationalGates.canClaimTask,false);
 });
+
+
+test('all entry modes require full reconciliation before ordinary continuation while bounded repair remains possible', () => {
+  const report=buildReport({event,map,program,observedAt:at});
+  assert.equal(report.continuationPolicy.appliesToAllIntakes,true);
+  assert.deepEqual(report.continuationPolicy.intakeModes,
+    ['INITIAL_GOVERNED_ENTRY','EXTERNAL_GOVERNED_RECOVERY']);
+  assert.equal(report.continuationPolicy.mcpConnectionAttemptRequired,true);
+  assert.equal(report.continuationPolicy.normalWorkPrerequisite,'FRESH_GLOBAL_FULLY_ALIGNED');
+  assert.equal(report.continuationPolicy.normalContinuationAuthorizedByObserver,false);
+  assert.equal(report.continuationPolicy.whenDivergent,'GOVERNED_RECONCILIATION_REPAIR_ONLY');
+  assert.equal(report.continuationRoutes.githubOnly.normalProgramContinuationAllowedWithoutAlignment,false);
+  assert.equal(report.continuationRoutes.githubOnly.purpose,'BOUNDED_GOVERNED_REPAIR_ONLY');
+  assert.match(report.nextAction,/FULLY_ALIGNED/);
+  assert.match(report.nextAction,/reconciliation/i);
+  assert.equal(report.operationalGates.canExecute,false);
+  assert.equal(report.operationalGates.canClaimTask,false);
+  assert.equal(report.operationalGates.canDeploy,false);
+});
