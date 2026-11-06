@@ -1,5 +1,6 @@
 import './mcpGlobalContinuationObserver.test.mjs';
 import './mcpGlobalAgentHandoff.test.mjs';
+import './mcpPostdeployRunProof.test.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
