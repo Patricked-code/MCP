@@ -77,7 +77,7 @@ test('each main push yields a deterministic read-only continuation plan with no 
   assert.equal(report.operationalGates.canDeploy,false);
   assert.equal(report.operationalGates.noParallelQueueCreated,true);
   assert.ok(report.canonicalProgram.readinessCandidateIds.length>=0);
-  assert.match(report.nextAction,/reconnect MCP|Reconcile the canonical/);
+  assert.match(report.nextAction,/attempt MCP connection|Reconcile the canonical/);
 });
 
 test('a program projection discrepancy prevents readiness from being treated as cleared', () => {
@@ -112,7 +112,7 @@ test('the existing intake workflow observes every main push without broadening i
 });
 
 
-test('GitHub-only continuity stays available while runtime attestation is unavailable', () => {
+test('GitHub-only governed repair stays available while runtime attestation is unavailable', () => {
   const report=buildReport({event,map,program,observedAt:at});
   assert.match(report.nextAction,/GitHub-first/);
   assert.match(report.nextAction,/repository\/PR\/CI\/review/);
