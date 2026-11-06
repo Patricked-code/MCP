@@ -156,12 +156,29 @@ export function buildReport({ event, map, program, observedAt }) {
       canDeploy: false,
       noParallelQueueCreated: true
     },
-    // Independent of the runtime gate: GitHub-bounded engineering may proceed
-    // under existing GitHub and owner authority even when S1 is unavailable or
-    // diverged. This report observes candidates only and grants no permission.
+    // Global arrival rule applies to E1 AND E2. The observer has no live
+    // authority: it cannot certify FULLY_ALIGNED, so ordinary progression
+    // remains blocked until a fresh reconciled snapshot is obtained.
+    // GitHub-only operations while divergent are REPAIR ONLY: an authorized
+    // bounded PR/CI/review needed to fix the detected divergence is permitted,
+    // never a bypass for normal program work or runtime Task admission.
+    continuationPolicy: {
+      appliesToAllIntakes: true,
+      intakeModes: ['INITIAL_GOVERNED_ENTRY', 'EXTERNAL_GOVERNED_RECOVERY'],
+      mcpConnectionAttemptRequired: true,
+      compareSources: ['GITHUB_MAIN', 'S1_GIT', 'S1_RUNTIME', 'CANONICAL_DOCUMENTATION'],
+      normalWorkPrerequisite: 'FRESH_GLOBAL_FULLY_ALIGNED',
+      normalContinuationAuthorizedByObserver: false,
+      whenDivergent: 'GOVERNED_RECONCILIATION_REPAIR_ONLY',
+      repairMustReobserveAllSources: true,
+      e2OnlyReconcilerNotImplicitlyPromotedToGlobalAuthority: true
+    },
     continuationRoutes: {
       githubOnly: {
+        purpose: 'BOUNDED_GOVERNED_REPAIR_ONLY',
         requiresRuntimeMcp: false,
+        requiresGlobalIntakeReconciliationAttempt: true,
+        normalProgramContinuationAllowedWithoutAlignment: false,
         permissionSource: 'EXISTING_GITHUB_AND_OWNER_AUTHORITY',
         authorizedByObserver: false,
         requiredChecks: [
@@ -185,7 +202,7 @@ export function buildReport({ event, map, program, observedAt }) {
       ? 'CONTINUATION_EVIDENCE_READY_FOR_GOVERNED_AGENT'
       : 'STOP_PROGRAM_PROJECTION_DRIFT',
     nextAction: planConsistency === 'CANONICAL_READINESS_CONSISTENT'
-      ? 'Select the next bounded repository/PR/CI/review operation under the existing GitHub-first policy after verifying mandate, owner, collision domains, permissions and exact HEAD; GitHub-only work must not depend on MCP connectivity or FULLY_ALIGNED. Only when runtime authority is required: reconnect MCP, attest live alignment, inspect governed sessions/claims/locks, and invoke existing P2 tools only if authorized.'
+      ? 'Every entry E1/E2: connect GitHub and attempt MCP connection; run fresh GitHub/S1/runtime/documentation reconciliation. Ordinary PROGRAM_AUTO_CONTINUE and dispatch require an attested global FULLY_ALIGNED state plus their own existing ownership/session/claim/lock gates. If divergence or unavailable evidence: STOP ordinary work; use GitHub-first repository/PR/CI/review only when strictly required and authorized for GOVERNED RECONCILIATION REPAIR (or the existing scoped E2 reconciliation process when explicitly selected), then reobserve all sources. This artifact never certifies alignment or grants execution.'
       : 'Reconcile the canonical Program Backlog V2 projection under existing governance before attempting admission.'
   };
 }
