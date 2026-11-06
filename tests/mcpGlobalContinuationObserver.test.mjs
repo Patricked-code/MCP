@@ -143,3 +143,30 @@ test('all entry modes require full reconciliation before ordinary continuation w
   assert.equal(report.operationalGates.canClaimTask,false);
   assert.equal(report.operationalGates.canDeploy,false);
 });
+
+
+test('C25 reobserves successful governed deployments only when source run and SHA are bound', () => {
+  const upstream={
+    ...event,name:'workflow_run',
+    sourceWorkflow:'MCP Governed Deploy',
+    sourceConclusion:'success',
+    sourceRunId:12345678,
+    sourceHeadSha:SHA,
+    sourceHeadBranch:'main',
+    sourceRepository:REPOSITORY
+  };
+  assert.equal(validateTrigger(upstream).accepted,true);
+  for(const change of [
+    {sourceConclusion:'failure'},
+    {sourceWorkflow:'untrusted-workflow'},
+    {sourceHeadSha:'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'},
+    {sourceHeadBranch:'other'},
+    {sourceRepository:'other/repo'},
+    {sourceRunId:0}
+  ]) assert.equal(validateTrigger({...upstream,...change}).accepted,false);
+  const workflow=readFileSync('.github/workflows/mcp-auto-intake-discovery.yml','utf8');
+  assert.match(workflow,/  workflow_run:\n/);
+  assert.match(workflow,/MCP Governed Deploy/);
+  assert.match(workflow,/mcp-postdeploy-run-proof\.mjs/);
+  assert.match(workflow,/github\.event\.workflow_run\.head_sha/);
+});
