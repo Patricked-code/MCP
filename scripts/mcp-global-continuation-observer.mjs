@@ -28,11 +28,20 @@ function fail(code) {
 
 export function validateTrigger(event) {
   if (!event || event.repository !== REPOSITORY || event.ref !== EXPECTED_REF
-    || !['push', 'workflow_dispatch'].includes(event.name)
+    || !['push', 'workflow_dispatch', 'workflow_run'].includes(event.name)
     || typeof event.sha !== 'string' || !SHA_PATTERN.test(event.sha)) {
     return { accepted: false, reason: 'EVENT_NOT_AUTHORIZED_FOR_MAIN_OBSERVATION' };
   }
-  return { accepted: true, reason: 'MAIN_READ_ONLY_OBSERVATION' };
+  if(event.name==='workflow_run' && (
+    event.sourceWorkflow!=='MCP Governed Deploy'
+    || event.sourceConclusion!=='success'
+    || !Number.isSafeInteger(event.sourceRunId) || event.sourceRunId<=0
+    || event.sourceHeadSha!==event.sha
+    || event.sourceHeadBranch!=='main'
+    || event.sourceRepository!==REPOSITORY
+  )) return {accepted:false,reason:'GOVERNED_DEPLOY_SOURCE_NOT_ATTESTED'};
+  return { accepted: true, reason: event.name==='workflow_run'
+    ? 'POST_DEPLOY_READ_ONLY_REOBSERVATION':'MAIN_READ_ONLY_OBSERVATION' };
 }
 
 export function validateGapMap(map) {
@@ -111,6 +120,7 @@ export function buildReport({ event, map, program, observedAt }) {
       type: event.name,
       sourceRef: event.ref,
       sourceSha: event.sha,
+      ...(event.name==='workflow_run' ? { upstreamGovernedDeployRunId:event.sourceRunId } : {}),
       note: 'Source SHA belongs to the trigger. Current S1/runtime and latest main are NOT inferred.'
     },
     canonicalProgram: {
@@ -208,11 +218,26 @@ export function buildReport({ event, map, program, observedAt }) {
 }
 
 export async function main(env = process.env) {
+  let sourceRun = null;
+  if(env.GITHUB_EVENT_NAME==='workflow_run'){
+    const path = env.GITHUB_EVENT_PATH;
+    if(typeof path!=='string'||!path)fail('GITHUB_WORKFLOW_EVENT_MISSING');
+    const payload=JSON.parse(await readFile(path,'utf8'));
+    sourceRun=payload?.workflow_run ?? null;
+  }
   const trigger = {
     name: env.GITHUB_EVENT_NAME,
     repository: env.GITHUB_REPOSITORY,
     ref: env.GITHUB_REF,
-    sha: env.GITHUB_SHA
+    sha: env.MCP_EVENT_SHA || env.GITHUB_SHA,
+    ...(sourceRun?{
+      sourceWorkflow:sourceRun.name,
+      sourceConclusion:sourceRun.conclusion,
+      sourceRunId:sourceRun.id,
+      sourceHeadSha:sourceRun.head_sha,
+      sourceHeadBranch:sourceRun.head_branch,
+      sourceRepository:sourceRun.repository?.full_name
+    }: {})
   };
   if (!validateTrigger(trigger).accepted) fail('EVENT_NOT_AUTHORIZED_FOR_MAIN_OBSERVATION');
   const [mapRaw, programRaw] = await Promise.all([
