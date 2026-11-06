@@ -13,6 +13,7 @@ function input() {
     at: NOW,
     trigger: { repository: 'Patricked-code/MCP', ref: 'refs/heads/main', sha: SHA },
     liveState: {
+      freshness: 'CURRENT',
       generatedAt: NOW,
       alignment: {
         global: 'FULLY_ALIGNED', githubVsS1: 'ALIGNED',
@@ -124,14 +125,18 @@ test('C26 fails closed when the external code agent is absent or rejects the wor
   const receipt={source:'mcp_claim_next_governed_task',status:'CLAIMED',
     taskId:x.inventory.nextWork.taskId,governedSessionId:SESSION,
     repository:x.trigger.repository,revision:1};
-  for(const ports of [
-    {admitExistingP2:async()=>receipt},
-    {admitExistingP2:async()=>receipt,executeExistingAgent:async()=>({accepted:false,reason:'NO_EXECUTOR'})}
-  ]){
-    const out=await deliverC26ViaExistingAuthorities(x,ports);
-    assert.equal(out.status,'BLOCKED');
-    assert.equal(out.programDoneAttested,false);
-  }
+  const missing=await deliverC26ViaExistingAuthorities(x,{
+    admitExistingP2:async()=>receipt
+  });
+  assert.equal(missing.status,'BLOCKED');
+  const rejected=await deliverC26ViaExistingAuthorities(x,{
+    admitExistingP2:async()=>receipt,
+    executeExistingAgent:async()=>({accepted:false,reason:'NO_EXECUTOR'})
+  });
+  assert.equal(rejected.status,'RECOVERY_REQUIRED');
+  assert.equal(rejected.taskId,receipt.taskId);
+  assert.equal(rejected.claimedTaskRevision,receipt.revision);
+  assert.equal(rejected.programDoneAttested,false);
 });
 
 
