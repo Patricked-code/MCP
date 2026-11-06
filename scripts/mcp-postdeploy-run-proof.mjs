@@ -44,7 +44,7 @@ export function verifyGovernedDeployRun({event,repository,githubSha,jobs}){
 export async function main(env=process.env, request=fetch){
   if(env.GITHUB_EVENT_NAME!=='workflow_run'||env.GITHUB_REPOSITORY!==REPOSITORY
     ||typeof env.GITHUB_EVENT_PATH!=='string'||!env.GITHUB_EVENT_PATH
-    ||!SHA.test(env.GITHUB_SHA??'')){
+    ||!SHA.test(env.MCP_EVENT_SHA??'')){
     throw new Error('INVALID_POSTDEPLOY_CONTEXT');
   }
   const event=JSON.parse(await readFile(env.GITHUB_EVENT_PATH,'utf8'));
@@ -68,7 +68,7 @@ export async function main(env=process.env, request=fetch){
   }finally{clearTimeout(timeout);}
   const result=verifyGovernedDeployRun({
     event,repository:env.GITHUB_REPOSITORY,
-    githubSha:env.GITHUB_SHA,jobs
+    githubSha:env.MCP_EVENT_SHA,jobs
   });
   if(!result.verified)throw new Error(result.reason);
   process.stdout.write(JSON.stringify(result)+'\n');
