@@ -35,9 +35,35 @@ function fixture(mode='CLAIM_EXISTING'){
     repository:'Patricked-code/MCP',revision:5};
   return {input,p2,claim};
 }
+function boundSession(f){
+  const {input}=f;
+  const sid=input.inventory.nextWork.governedSessionId;
+  return {
+    source:'GOVERNED_SESSIONS',governedSessionId:sid,
+    repository:'Patricked-code/MCP',status:'ACTIVE',
+    identityAssurance:'oauth_subject',
+    ownerPrincipalId:'oauth:test-agent-principal',
+    sessionRevision:12,lastAcknowledgedStateVersion:1200,
+    currentTransport:{fingerprint:'d'.repeat(64),
+      boundAt:NOW,lastSeenAt:NOW},
+    connectionContext:{
+      governedSessionId:sid,repository:'Patricked-code/MCP',
+      principalId:'oauth:test-agent-principal',
+      identityAssurance:'oauth_subject',evidenceSource:'oauth_auth_info'
+    },
+    bootstrapReceipt:{
+      status:'ACKNOWLEDGED',governedSessionId:sid,
+      repository:'Patricked-code/MCP',githubHead:SHA,
+      runtimeRevision:SHA,stateVersion:1199,
+      createdAt:'2026-11-07T15:09:00.000Z',
+      expiresAt:'2026-11-07T15:15:00.000Z'
+    }
+  };
+}
 function ports(f,overrides={}){
   return {
     atomicIdempotentHost:true,
+    readBoundAgentSession:async()=>boundSession(f),
     readOwnP2State:async()=>f.p2,
     lookupExistingAgentRun:async()=>null,
     admitExistingP2:async()=>f.claim,
@@ -52,6 +78,7 @@ function ports(f,overrides={}){
 test('C26 dispatches through exactly the existing P2 and durable agent host',async()=>{
   const f=fixture();const calls=[];
   const p=ports(f,{
+    readBoundAgentSession:async()=>{calls.push('read-session');return boundSession(f);},
     readOwnP2State:async()=>{calls.push('read-p2');return f.p2;},
     lookupExistingAgentRun:async()=>{calls.push('read-host');return null;},
     admitExistingP2:async()=>{calls.push('claim-p2');return f.claim;},
@@ -65,7 +92,7 @@ test('C26 dispatches through exactly the existing P2 and durable agent host',asy
   });
   const x=await continueC26WithExistingHost(f.input,p);
   assert.equal(x.status,'DELEGATED');
-  assert.deepEqual(calls,['read-p2','read-host','claim-p2','host-dispatch']);
+  assert.deepEqual(calls,['read-session','read-p2','read-host','claim-p2','host-dispatch']);
   assert.equal(x.createdQueue,false);
   assert.equal(x.certifiedC27,false);
   assert.equal(x.executorRunId,'host-run-0001');
@@ -163,6 +190,64 @@ test('C26 preserves owned-task recovery after host failure or unverified host re
     assert.equal(out.taskId,TASK);
     assert.equal(out.nextAction,'RESUME_OWNED_VIA_EXISTING_P2');
     assert.equal(out.certifiedC27,false);
+  }
+});
+
+
+test('C26 refuses Regulatory/foreign bound transport before any P2 read, claim or host lookup',async()=>{
+  const f=fixture();let accessed=0;
+  const foreign=boundSession(f);
+  foreign.governedSessionId='caa50d12-737c-47f9-9ee0-6cf8b763fdbe';
+  const result=await continueC26WithExistingHost(f.input,ports(f,{
+    readBoundAgentSession:async()=>foreign,
+    readOwnP2State:async()=>{accessed++;return f.p2;},
+    lookupExistingAgentRun:async()=>{accessed++;return null;},
+    admitExistingP2:async()=>{accessed++;return f.claim;}
+  }));
+  assert.equal(result.status,'BLOCKED');
+  assert.equal(result.reason,'OWN_TRANSPORT_SESSION_OR_BOOTSTRAP_CONFLICT');
+  assert.equal(accessed,0);
+});
+
+test('C26 requires an actual readable own session; it never derives ownership from nextWork',async()=>{
+  const f=fixture();let reads=0;
+  for(const changes of [
+    {readBoundAgentSession:undefined},
+    {readBoundAgentSession:async()=>{throw Error('MCP_TRANSPORT_UNAVAILABLE');}},
+    {readBoundAgentSession:async()=>null}
+  ]){
+    const result=await continueC26WithExistingHost(f.input,ports(f,{
+      ...changes,readOwnP2State:async()=>{reads++;return f.p2;}
+    }));
+    assert.equal(result.status,'BLOCKED');
+    assert.equal(result.claimedTask,false);
+  }
+  assert.equal(reads,0);
+});
+
+test('C26 rejects expired/mismatched Bootstrap Receipt and unverified OAuth',async()=>{
+  for(const mutate of [
+    x=>{x.bootstrapReceipt.status='ISSUED';},
+    x=>{x.bootstrapReceipt.expiresAt='2026-11-07T15:09:30.000Z';},
+    x=>{x.bootstrapReceipt.githubHead='b'.repeat(40);},
+    x=>{x.bootstrapReceipt.runtimeRevision='b'.repeat(40);},
+    x=>{x.bootstrapReceipt.stateVersion=1300;},
+    x=>{x.ownerPrincipalId='oauth:other-agent';},
+    x=>{x.identityAssurance='shared_credential';},
+    x=>{x.connectionContext.evidenceSource='declared_only';},
+    x=>{x.currentTransport=null;},
+    x=>{x.status='PAUSED';},
+    x=>{x.bootstrapReceipt.governedSessionId='other-session';}
+  ]){
+    const f=fixture(),session=boundSession(f);mutate(session);
+    let reads=0;
+    const result=await continueC26WithExistingHost(f.input,ports(f,{
+      readBoundAgentSession:async()=>session,
+      readOwnP2State:async()=>{reads++;return f.p2;}
+    }));
+    assert.equal(result.status,'BLOCKED');
+    assert.equal(result.reason,'OWN_TRANSPORT_SESSION_OR_BOOTSTRAP_CONFLICT');
+    assert.equal(reads,0);
   }
 });
 
