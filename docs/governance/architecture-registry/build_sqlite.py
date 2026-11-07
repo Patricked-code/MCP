@@ -56,6 +56,29 @@ def build(root: Path, output: Path) -> dict:
     if len({row[2] for row in file_rows}) != len(file_rows):
         raise ValueError("Duplicate file path")
 
+    tech = {}
+    for line in (root / links["technicalClassification"]).read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        item = json.loads(line)
+        if item["snapshotId"] != sid or item["branch"] != "main":
+            raise ValueError("Technical record identity mismatch")
+        if item["path"] in tech:
+            raise ValueError("Duplicate technical record")
+        tech[item["path"]] = item
+    file_sha = {r[2]: r[3] for r in file_rows}
+    if set(file_sha) != set(tech):
+        raise ValueError("Technical classification coverage mismatch")
+    if any(t["blobSha"] != file_sha[path] or t["commitSha"] != index["mainSha"]
+           for path, t in tech.items()):
+        raise ValueError("Technical Git SHA mismatch")
+    tech_rows = [
+        (sid, "main", path, t["blobSha"], t["formatType"],
+         t["technicalFamily"], t["detectedBy"], t["signatureValidation"],
+         t["functionalRoleStatus"])
+        for path, t in sorted(tech.items())
+    ]
+
     output = output.resolve()
     if output.exists():
         raise FileExistsError(f"Refusing to overwrite existing database: {output}")
@@ -75,6 +98,9 @@ def build(root: Path, output: Path) -> dict:
                       b["prefix"], b["headUrl"]) for b in branches))
                 db.executemany(
                     "INSERT INTO files VALUES (?, ?, ?, ?, ?, ?, ?)", file_rows)
+                db.executemany(
+                    "INSERT INTO file_technical_formats VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    tech_rows)
                 db.executemany(
                     "INSERT INTO components VALUES (?, ?, ?, ?, ?, ?)",
                     ((sid, c["id"], c["name"], c["kind"], c.get("purpose"),
@@ -104,7 +130,7 @@ def build(root: Path, output: Path) -> dict:
         raise
 
     return {"database": str(output), "snapshot": sid, "branches": len(branches),
-            "main_files": len(file_rows), "components": len(relationships["components"]),
+            "main_files": len(file_rows), "technical_classified": len(tech_rows), "components": len(relationships["components"]),
             "relations": len(relationships["relations"]), "sources": len(source_catalog["records"]),
             "integrity": "ok"}
 

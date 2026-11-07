@@ -25,9 +25,11 @@
     "Capture file trees per branch by exact head in bounded batches, allowing identical-sha reuse",
     "Analyze content/imports/tests/config for semantic grouping",
     "Cross-link PR/issue/commits/history with provenance",
-    "Check runtime live before making any runtime claims"
+    "Check runtime live before making any runtime claims",
+    "Inspect content and verify file signatures where relevant",
+    "Perform functional classification from file bodies, dependencies and actual interactions"
   ],
-  "nextAction": "REOBSERVE_BRANCH_REFS_THEN_INVENTORY_OTHER_BRANCH_TREES_IN_BOUNDED_BATCHES",
+  "nextAction": "READ_CONTENT_BY_BOUNDED_GROUPS_AND_CLASSIFY_FUNCTION_WITH_EVIDENCE",
   "protectedPRs": [
     372,
     373,
@@ -41,5 +43,15 @@
     "NO_NEW_AUTHORITY",
     "NO_SECRETS",
     "NO_FORCE_PUSH"
-  ]
+  ],
+  "technicalClassification": {
+    "stage": "TECHNICAL_FORMAT",
+    "status": "COMPLETE_BY_FILENAME_NOT_CONTENT",
+    "files": 844,
+    "formats": 11,
+    "unknown": 0,
+    "contentValidated": 0,
+    "semanticRolesClassified": 0,
+    "summary": "snapshots/2026-11-07/main-technical-summary.json"
+  }
 }

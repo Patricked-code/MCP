@@ -15,7 +15,11 @@
     "sourceReferences": "catalog/sources.json",
     "componentLinks": "catalog/component-links.json",
     "schema": "schema/schema.sql",
-    "checkpoint": "checkpoints/current.json"
+    "checkpoint": "checkpoints/current.json",
+    "technicalTaxonomy": "catalog/technical-format-taxonomy.json",
+    "technicalClassification": "snapshots/2026-11-07/main-technical-classification.jsonl",
+    "technicalSummary": "snapshots/2026-11-07/main-technical-summary.json",
+    "technicalVerification": "verify_technical_formats.mjs"
   },
   "notAuthoritativeFor": [
     "Task Queue",
@@ -24,5 +28,12 @@
     "Deployment",
     "Runtime",
     "GitHub branch HEAD"
-  ]
+  ],
+  "technicalStage": {
+    "status": "COMPLETE_BY_FILENAME_NOT_CONTENT",
+    "fileCount": 844,
+    "unknownNames": 0,
+    "contentValidated": 0,
+    "semanticRolesClassified": 0
+  }
 }

@@ -40,3 +40,19 @@ Les SHA des blobs identiques permettent de rapprocher les contenus entre branche
 ## Reprise immédiate
 
 Lire `checkpoints/current.json` et les fichiers de snapshot, puis **réobserver les HEAD de branches**. Prochaine étape : `REOBSERVE_BRANCH_REFS_THEN_INVENTORY_OTHER_BRANCH_TREES_IN_BOUNDED_BATCHES`. Aucune partie de cet inventaire n'accorde un mandat d'écriture runtime.
+
+## Classification 1 — Nature technique des fichiers de main (2026-11-07)
+
+À partir du snapshot immuable `main@7d29ad4212efa0bd343d53f400785e5c9cbf07f4`, **844/844 chemins+blob SHA** ont été associés à un type technique par extension (841) ou nom exact (3). Classification physique uniquement, **aucune lecture sémantique ni déduction du rôle depuis le dossier**.
+
+- `catalog/technical-format-taxonomy.json` : onze formats techniques reconnus et règles de reconnaissance.
+- `snapshots/2026-11-07/main-technical-classification.jsonl` : une ligne par fichier ; nom, version, type, méthode, validation de signature et rôle fonctionnel non examiné.
+- `snapshots/2026-11-07/main-technical-summary.json` : agrégations, exemples et limites.
+- `verify_technical_formats.mjs` : contrôle sans écriture des 844 rapprochements exacts.
+- `schema/schema.sql` + `build_sqlite.py` : projection SQL additive, sans nouvelle autorité.
+
+Répartition observée : TypeScript 402 ; Markdown 231 ; JSON 172 ; MJS 15 ; YAML 7 ; TXT 6 ; Shell 5 ; PDF 3 ; .env.example 1 ; .gitignore 1 ; Dockerfile 1 = 844.
+
+**À ne pas confondre avec la deuxième classification** : le format d'un fichier ne prouve ni qu'il est chargé au runtime, ni qu'il gouverne, ni qu'il définit un contrat, ni son utilité dans un processus. Chaque ligne conserve `functionalRoleStatus=UNREVIEWED` et `signatureValidation=NOT_PERFORMED`. Les preuves de contenu et les relations viennent ensuite.
+
+Le nouveau `README.md` de cette PR est inscrit dans le baseline documentaire existant afin de respecter les contrôles CI; cela ne modifie pas le snapshot historique `main`.

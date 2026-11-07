@@ -43,3 +43,20 @@ CREATE TABLE IF NOT EXISTS checkpoints (
   recorded_at TEXT NOT NULL, status TEXT NOT NULL, next_action TEXT NOT NULL,
   evidence_json TEXT NOT NULL
 );
+
+-- Additive technical-format projection (not authority, not functional role).
+CREATE TABLE IF NOT EXISTS file_technical_formats (
+  snapshot_id TEXT NOT NULL,
+  branch_name TEXT NOT NULL,
+  path TEXT NOT NULL,
+  blob_sha TEXT NOT NULL,
+  format_type TEXT NOT NULL,
+  technical_family TEXT NOT NULL,
+  detected_by TEXT NOT NULL,
+  signature_validation TEXT NOT NULL,
+  functional_role_status TEXT NOT NULL,
+  PRIMARY KEY(snapshot_id, branch_name, path),
+  FOREIGN KEY(snapshot_id, branch_name, path)
+    REFERENCES files(snapshot_id, branch_name, path)
+);
+CREATE INDEX IF NOT EXISTS idx_technical_formats_type ON file_technical_formats(format_type);

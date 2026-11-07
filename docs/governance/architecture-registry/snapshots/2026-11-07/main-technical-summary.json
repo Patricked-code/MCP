@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "observationId": "mcp-branches-20261107-7d29ad4212ef",
+  "repository": "Patricked-code/MCP",
+  "branch": "main",
+  "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "totalFiles": 844,
+  "classifiedByFilename": 844,
+  "unknownFilenameFormats": 0,
+  "contentSignaturesValidated": 0,
+  "semanticRolesClassified": 0,
+  "exactFilenameMatches": 3,
+  "extensionMatches": 841,
+  "sourceInventory": "snapshots/2026-11-07/main-files.jsonl",
+  "taxonomy": "catalog/technical-format-taxonomy.json",
+  "types": [
+    {
+      "formatType": "TS",
+      "label": "TypeScript source",
+      "technicalFamily": "SOURCE_CODE",
+      "count": 402,
+      "percentage": 47.63,
+      "examples": [
+        "scripts/emit-function-cartography.ts",
+        "src/auth.ts",
+        "src/config/env.ts"
+      ]
+    },
+    {
+      "formatType": "MD",
+      "label": "Document Markdown",
+      "technicalFamily": "MARKUP_DOCUMENT",
+      "count": 231,
+      "percentage": 27.37,
+      "examples": [
+        "ACCESS_MATRIX.md",
+        "ACTIVITY_LOG.md",
+        "AGENTS_ARCHITECTURE.md"
+      ]
+    },
+    {
+      "formatType": "JSON",
+      "label": "Document JSON",
+      "technicalFamily": "STRUCTURED_TEXT",
+      "count": 172,
+      "percentage": 20.38,
+      "examples": [
+        ".devcontainer/devcontainer.json",
+        ".mcp/agents.json",
+        ".mcp/autodeploy-policy.json"
+      ]
+    },
+    {
+      "formatType": "MJS",
+      "label": "Module JavaScript ES",
+      "technicalFamily": "SOURCE_CODE",
+      "count": 15,
+      "percentage": 1.78,
+      "examples": [
+        "scripts/check-doc-governance.mjs",
+        "scripts/check-docs.mjs",
+        "scripts/check-function-cartography.mjs"
+      ]
+    },
+    {
+      "formatType": "YML",
+      "label": "Document YAML",
+      "technicalFamily": "STRUCTURED_TEXT",
+      "count": 7,
+      "percentage": 0.83,
+      "examples": [
+        ".github/workflows/mcp-auto-intake-discovery.yml",
+        ".github/workflows/mcp-ci.yml",
+        ".github/workflows/mcp-deploy.yml"
+      ]
+    },
+    {
+      "formatType": "TXT",
+      "label": "Texte brut",
+      "technicalFamily": "TEXT",
+      "count": 6,
+      "percentage": 0.71,
+      "examples": [
+        "docs/governance/pilots/PILOT-E2-01.txt",
+        "docs/gwc/canonical-memory/pr95-task-reconciliation-ready/sources/program-procedure.txt",
+        "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt"
+      ]
+    },
+    {
+      "formatType": "SH",
+      "label": "Script Shell",
+      "technicalFamily": "SCRIPT",
+      "count": 5,
+      "percentage": 0.59,
+      "examples": [
+        ".devcontainer/setup.sh",
+        "scripts/check-governance-rules.sh",
+        "scripts/check-mcp-server.sh"
+      ]
+    },
+    {
+      "formatType": "PDF",
+      "label": "Document PDF",
+      "technicalFamily": "BINARY_DOCUMENT",
+      "count": 3,
+      "percentage": 0.36,
+      "examples": [
+        "Migration/conversation_migration_disponible.pdf",
+        "Migration/PDF/conversation_migration_part_01_of_05_2026-07-04.pdf",
+        "Migration/PDF/conversation_migration_part_02_of_05_2026-07-04.pdf"
+      ]
+    },
+    {
+      "formatType": "ENV_EXAMPLE",
+      "label": "Modèle de variables d'environnement",
+      "technicalFamily": "CONFIG_TEMPLATE",
+      "count": 1,
+      "percentage": 0.12,
+      "examples": [
+        ".env.example"
+      ]
+    },
+    {
+      "formatType": "GITIGNORE",
+      "label": "Règles d'exclusion Git",
+      "technicalFamily": "TOOL_CONFIGURATION",
+      "count": 1,
+      "percentage": 0.12,
+      "examples": [
+        ".gitignore"
+      ]
+    },
+    {
+      "formatType": "DOCKERFILE",
+      "label": "Recette de construction Docker",
+      "technicalFamily": "BUILD_CONFIGURATION",
+      "count": 1,
+      "percentage": 0.12,
+      "examples": [
+        "Dockerfile"
+      ]
+    }
+  ],
+  "method": "Inferred only from exact filenames and extensions on observed main git tree; not from content semantics."
+}
