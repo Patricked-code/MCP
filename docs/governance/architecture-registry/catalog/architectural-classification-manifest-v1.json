@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "MCP-ARCH-BLOCK-CLASSIFICATION-V1-20261107",
+  "type": "DERIVED_NON_AUTHORITATIVE_CATALOG",
+  "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "blocks": 26,
+  "proposedRelations": 27,
+  "gwcContracts": 73,
+  "gwcGraphEdges": 91,
+  "workItems": 41,
+  "taskBlueprints": 94,
+  "files": {
+    "totalFiles": 844,
+    "anchorFilePaths": 61,
+    "previouslyInspectedPaths": 19,
+    "pathHintsOnly": 640,
+    "unreviewedWithoutHint": 133,
+    "fullySemanticallyAudited": 0
+  },
+  "filesParts": [
+    "catalog/architectural-file-candidates-v1-part-00.jsonl",
+    "catalog/architectural-file-candidates-v1-part-01.jsonl",
+    "catalog/architectural-file-candidates-v1-part-02.jsonl",
+    "catalog/architectural-file-candidates-v1-part-03.jsonl"
+  ],
+  "filesCatalog": "catalog/architectural-blocks-v1.json",
+  "gwcCrosswalk": "catalog/architectural-gwc-contract-map-v1.json",
+  "programCrosswalk": "catalog/architectural-program-blueprint-map-v1.json",
+  "evolution": "catalog/architectural-evolution-v1.json",
+  "verifier": "verify_architectural_blocks_v1.mjs",
+  "limitations": [
+    "PARTIAL_DECLARATION_INSPECTION_NOT_FULL_SEMANTIC_AUDIT",
+    "PATH_HINTS_ARE_NOT_ROLES",
+    "NO_RUNTIME_REATTESTATION",
+    "NO_MUTATION_OF_EXISTING_AUTHORITIES"
+  ],
+  "nextAction": "CONTENT_REVIEW_OF_844_BLOBS_IN_BOUNDED_BATCHES_THEN_EXACT_IMPORT_GRAPH_AND_TEST_BEHAVIOR_VERIFICATION"
+}
