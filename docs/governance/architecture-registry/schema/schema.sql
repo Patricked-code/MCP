@@ -82,3 +82,15 @@ SELECT snapshot_id,blob_sha,COUNT(*) AS appearances,
        COUNT(DISTINCT branch_name) AS branch_count
 FROM files
 GROUP BY snapshot_id,blob_sha;
+
+-- Additive documentary projection of main directory Git tree objects.
+CREATE TABLE IF NOT EXISTS directories (
+ snapshot_id TEXT NOT NULL REFERENCES observations(snapshot_id),
+ branch_name TEXT NOT NULL, path TEXT NOT NULL, parent_path TEXT,
+ commit_sha TEXT NOT NULL, tree_sha TEXT NOT NULL, git_mode TEXT NOT NULL,
+ depth INTEGER NOT NULL, direct_files INTEGER NOT NULL, direct_directories INTEGER NOT NULL,
+ descendant_files INTEGER NOT NULL, descendant_directories INTEGER NOT NULL,
+ PRIMARY KEY(snapshot_id,branch_name,path)
+);
+CREATE INDEX IF NOT EXISTS idx_directory_tree_sha ON directories(tree_sha);
+CREATE INDEX IF NOT EXISTS idx_directory_parent ON directories(snapshot_id,branch_name,parent_path);

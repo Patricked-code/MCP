@@ -16,6 +16,32 @@ def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+
+def _main_directory_rows(root: Path, index: dict, snapshot: str):
+    """Validate the frozen 145 main tree objects before indexing. No Git writes."""
+    import re
+    raw = [json.loads(line) for line in (root / index["files"]["mainDirectories"]).read_text(
+        encoding="utf-8").splitlines() if line.strip()]
+    if len(raw) != index["mainDirectoryCount"]:
+        raise ValueError("Directory count mismatch")
+    paths = {item["path"] for item in raw}
+    if len(paths) != len(raw):
+        raise ValueError("Duplicate directory path")
+    result = []
+    for d in raw:
+        parent = d["path"].rsplit("/", 1)[0] if "/" in d["path"] else None
+        if (d["snapshotId"] != index["snapshotId"] or d["branch"] != "main"
+            or d["commitSha"] != index["mainSha"] or d["gitMode"] != "040000"
+            or not re.fullmatch(r"[a-f0-9]{40}", d["treeSha"])
+            or d["parentPath"] != parent or (parent and parent not in paths)
+            or d["depth"] != len(d["path"].split("/"))):
+            raise ValueError("Invalid main directory row: " + d["path"])
+        result.append((snapshot, "main", d["path"], parent, d["commitSha"],
+            d["treeSha"], d["gitMode"], d["depth"], d["directFiles"],
+            d["directDirectories"], d["descendantFiles"], d["descendantDirectories"]))
+    return result
+
+
 def build(root: Path, output: Path) -> dict:
     index = read_json(root / "index.json")
     links = index["files"]
@@ -96,6 +122,9 @@ def build(root: Path, output: Path) -> dict:
                     "INSERT INTO branches VALUES (?, ?, ?, ?, ?, ?)",
                     ((sid, b["name"], b["headSha"], int(b["protected"]),
                       b["prefix"], b["headUrl"]) for b in branches))
+                db.executemany(
+                    "INSERT INTO directories VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    _main_directory_rows(root, index, sid))
                 db.executemany(
                     "INSERT INTO files VALUES (?, ?, ?, ?, ?, ?, ?)", file_rows)
                 db.executemany(
@@ -202,6 +231,12 @@ def build_all_branches(root: Path, output: Path) -> dict:
                       b["branch"].split("/", 1)[0] if "/" in b["branch"] else "(sans-prefixe)",
                       f'https://github.com/{idx["repository"]}/commit/{b["headSha"]}')
                      for b in refs))
+                frozen_main = next((ref for ref in refs if ref["branch"] == "main"), None)
+                if frozen_main is None or frozen_main["headSha"] != idx["mainSha"]:
+                    raise ValueError("Frozen main branch differs from directory baseline")
+                db.executemany(
+                    "INSERT INTO directories VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    _main_directory_rows(root, idx, snap))
                 for batch in manifest["batches"]:
                     path = root / multi["root"] / batch["filename"]
                     records = [json.loads(line) for line in path.read_text(

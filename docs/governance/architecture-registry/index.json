@@ -21,7 +21,8 @@
     "technicalSummary": "snapshots/2026-11-07/main-technical-summary.json",
     "technicalVerification": "verify_technical_formats.mjs",
     "mainDirectories": "snapshots/2026-11-07/main-directories.jsonl",
-    "mainDirectorySummary": "snapshots/2026-11-07/main-directory-summary.json"
+    "mainDirectorySummary": "snapshots/2026-11-07/main-directory-summary.json",
+    "directoryVerification": "verify_directory_inventory.mjs"
   },
   "notAuthoritativeFor": [
     "Task Queue",
@@ -65,6 +66,7 @@
     "gitTreeTruncated": false,
     "mainCommitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
     "otherBranches": "NOT_FULLY_INDEXED_AS_DIRECTORIES",
-    "semanticMeaning": "UNREVIEWED"
+    "semanticMeaning": "UNREVIEWED",
+    "sqliteProjection": "MAIN_DIRECTORIES_WITH_FROZEN_SNAPSHOT"
   }
 }
