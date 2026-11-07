@@ -86,9 +86,9 @@
     "filesSampled": 10,
     "fullSemanticFilesReviewed": 0,
     "otherFiles": "UNREVIEWED",
-    "next": "VERIFY_COMPARISON_AND_BUILD_IMPACT_GRAPH",
+    "next": "EXTEND_SEMANTIC_CODE_REVIEW_IN_BOUNDED_EXACT_BLOB_BATCHES_WITH_SOURCE_EVIDENCE_THEN_EXPAND_CROSSBRANCH_DEPENDENCY_GRAPH",
     "impactInspector": "READ_ONLY_BOUNDED_REVERSE_REFERENCE_CANDIDATES",
     "sqlGraphProjection": "verified_file_relations",
-    "checkpointId": "MCP-ARCH-REGISTRY-DIRECTORY-EVIDENCE-20261107-01"
+    "checkpointId": "MCP-ARCH-REGISTRY-ALL-190-DIRECTORIES-20261107-01"
   }
 }
