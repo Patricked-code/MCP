@@ -95,3 +95,23 @@ Les 190 inventaires ne signifient pas que nous avons **lu et compris le contenu*
 ## Inventaire explicite des 145 répertoires de main
 
 Ajout strictement additif au baseline immuable `main@7d29ad4212efa0bd343d53f400785e5c9cbf07f4`. Les fichiers `snapshots/2026-11-07/main-directories.jsonl` et `main-directory-summary.json` enregistrent **145/145 objets tree**, chemins, parents, profondeur, mode Git, SHA et nombres de descendants à partir du même arbre Git complet que les 844 blobs. Les 989 entrées excluent l'objet `tree` racine. L'analyse fonctionnelle reste UNREVIEWED, et les répertoires des autres branches ne sont pas encore indexés individuellement. Aucune autorité runtime, aucune fusion, aucun déploiement.
+
+## Analyse sourcée et impact limité (ajout à la PR #378)
+
+- `catalog/source-evidence-batch-01.json` : **10 chemins** analysés ponctuellement au commit `main@7d29ad4212efa0bd343d53f400785e5c9cbf07f4`, **6 références source** et **10 déclarations** avec lignes et blob SHA vérifiés. Ce lot n'est **pas** une classification sémantique exhaustive des fichiers.
+- `snapshots/2026-11-07/crossbranch-deploy-sample.json` : mêmes 10 chemins comparés aux **190 HEAD historiques**, sur **19 lots** de snapshots, par égalité stricte de blob SHA.
+- `schema/schema.sql` et `build_sqlite.py` : projection additive des relations sourcées dans `verified_file_relations` et vue `v_verified_direct_dependents`.
+- `verify_architecture_analysis.mjs` : vérifie les sources à leurs SHA Git, les lignes citées, les 19 lots de branches, puis fournit une inspection d'impact inversée **limitée aux références vérifiées**.
+
+Commandes à exécuter sur une copie de cette branche :
+
+```bash
+node docs/governance/architecture-registry/verify_directory_inventory.mjs
+node docs/governance/architecture-registry/verify_technical_formats.mjs
+node docs/governance/architecture-registry/verify_multibranch_inventory.mjs
+node docs/governance/architecture-registry/verify_architecture_analysis.mjs
+node docs/governance/architecture-registry/verify_architecture_analysis.mjs --impact src/deploy/s1Deploy.ts
+python3 docs/governance/architecture-registry/build_sqlite.py --help
+```
+
+Les réponses d'impact sont **des candidats fondés sur des références partielles**, jamais un verdict de sécurité, une liste exhaustive de dépendances, une attestation runtime ni une autorisation de fusion/déploiement. Aucune source `main` ni aucun fichier de mécanisme opérationnel existant n'a été modifié pour cette analyse.
