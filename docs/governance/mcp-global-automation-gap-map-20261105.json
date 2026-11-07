@@ -743,7 +743,9 @@
       "qualification": "VERIFY_EXISTING_FIRST",
       "existingMechanisms": [
         "src/governance/nextWorkProjection.ts",
-        "src/governance/programBlueprintMaterialization.ts"
+        "src/governance/programBlueprintMaterialization.ts",
+        "scripts/mcp-autonomous-agent-continuation.mjs",
+        "tests/mcpAutonomousAgentContinuation.test.mjs"
       ],
       "sourceLinks": [
         "https://github.com/Patricked-code/MCP/issues/222",
@@ -774,7 +776,9 @@
       "qualification": "VERIFY_EXISTING_FIRST",
       "existingMechanisms": [
         "docs/governance/README.md",
-        "docs/gwc/canonical-memory/current.json"
+        "docs/gwc/canonical-memory/current.json",
+        "scripts/mcp-autonomy-e2e-certification.mjs",
+        "tests/mcpAutonomyE2ECertification.test.mjs"
       ],
       "sourceLinks": [
         "https://github.com/Patricked-code/MCP/issues/235"
