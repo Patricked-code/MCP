@@ -778,7 +778,9 @@
         "docs/governance/README.md",
         "docs/gwc/canonical-memory/current.json",
         "scripts/mcp-autonomy-e2e-certification.mjs",
-        "tests/mcpAutonomyE2ECertification.test.mjs"
+        "tests/mcpAutonomyE2ECertification.test.mjs",
+        "scripts/mcp-c27-github-proof-readers.mjs",
+        "tests/mcpC27GithubProofReaders.test.mjs"
       ],
       "sourceLinks": [
         "https://github.com/Patricked-code/MCP/issues/235"
