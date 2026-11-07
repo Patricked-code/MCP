@@ -1,0 +1,493 @@
+{
+  "schemaVersion": 1,
+  "indexId": "MCP_PROGRAM_DOCUMENT_ROUTING_20261107",
+  "repository": "Patricked-code/MCP",
+  "kind": "NON_AUTHORITATIVE_DOCUMENT_NAVIGATION_AND_SCOPE_BOUNDARIES",
+  "indexStatus": "PROVISIONAL_DRAFT_PR_NOT_MAIN",
+  "preparedOn": "2026-11-07",
+  "observedMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "purpose": "Indexer les documents déjà identifiés sans inventer un programme, perdre la provenance ou donner à des instructions d'un autre programme la priorité sur MCP.",
+  "scopeRules": [
+    "Ce répertoire est exclusivement Patricked-code/MCP ; vérifier le repo avant toute lecture transversale.",
+    "Ne pas utiliser les plans WealthTech multi-applications comme état courant ou mandat du MCP.",
+    "Ne pas confondre issue #235 (programme MCP) avec issue #349 (programme GD-U spécialisé) ni PR #95 (conception GWC).",
+    "Les branches PR #376 et #378 sont des propositions distinctes et non le contenu actuel de main.",
+    "Conserver les documents originaux à leurs chemins ; l'index ne les copie, ne les modifie, ne les supersède pas.",
+    "Avant tout write : re-observer HEAD, permissions, ownership/collisions, CI/PR et autorités runtime concernées.",
+    "Réutiliser le Program Backlog V2, les registres et autorités existants; ne créer aucune deuxième mémoire, Task Queue ou registre d'identité.",
+    "Si le document demandé relève d'un autre programme/dépôt, arrêter le routage et consulter l'index de ce programme ; ne pas importer silencieusement son mandat."
+  ],
+  "programScopes": [
+    {
+      "id": "MCP_GLOBAL",
+      "label": "Programme global du serveur MCP",
+      "purpose": "Mission, cible, gouvernance et parcours général du MCP lui-même",
+      "excludes": [
+        "WEALTHTECH_ECOSYSTEM_HISTORY",
+        "OTHER_REPOSITORIES"
+      ]
+    },
+    {
+      "id": "MCP_OPERATIONAL_GOVERNANCE",
+      "label": "Gouvernance et exécution MCP",
+      "purpose": "Instructions agents, état GitHub/runtime, autorisations et continuité",
+      "parent": "MCP_GLOBAL"
+    },
+    {
+      "id": "MCP_GWC_DESIGN",
+      "label": "Conception et réalisation contractuelle GWC",
+      "purpose": "Contrats GW, architecture pré-code et candidats GWC, périmètre historique PR #95",
+      "parent": "MCP_GLOBAL",
+      "boundary": "La conception candidate PR95 ne certifie pas le déploiement live"
+    },
+    {
+      "id": "MCP_PROGRAM_CONVERGENCE",
+      "label": "Priorités PCM et Program Backlog V2",
+      "purpose": "Jalons, travaux, readiness, dépendances, planification non exécutoire",
+      "parent": "MCP_GLOBAL",
+      "boundary": "Les snapshots de dates historiques ne sont pas l'état courant runtime"
+    },
+    {
+      "id": "MCP_ARRIVAL_INTAKE",
+      "label": "Entrée et bootstrap des agents",
+      "purpose": "Instructions d'arrivée, résolutions et bootstrap MCP",
+      "parent": "MCP_GLOBAL",
+      "boundary": "Le contrat proposé PR376 est distinct du texte en vigueur dans main"
+    },
+    {
+      "id": "MCP_ARCHITECTURE_REGISTRY",
+      "label": "Inventaire et cartographie du code",
+      "purpose": "Index de fichiers/branches/blocs sur la PR #378",
+      "parent": "MCP_GLOBAL",
+      "boundary": "PR #378 draft non fusionnée à la date d'observation"
+    },
+    {
+      "id": "MCP_GD_UNIVERSAL",
+      "label": "Sous-programme Governed Deploy universel",
+      "purpose": "Déploiement et capacités MCP universelles sous issue #349",
+      "parent": "MCP_GLOBAL",
+      "boundary": "Ne remplace ni le programme MCP global, ni les autorités d'autres dépôts"
+    },
+    {
+      "id": "MCP_METHOD_LOOP",
+      "label": "Méthode Loop Engineering MCP",
+      "purpose": "Boucle générique en vigueur à rapprocher des états et contrats actuels",
+      "parent": "MCP_GLOBAL"
+    },
+    {
+      "id": "WEALTHTECH_ECOSYSTEM_HISTORY",
+      "label": "Historique initial écosystème WealthTech",
+      "purpose": "Loop Engineering, applications, migrations, stablecoin, OPCVM, Frontends métier",
+      "boundary": "Écosystème multi-projets : jamais considérer ce corpus comme le programme MCP actuel"
+    },
+    {
+      "id": "OTHER_REPOSITORIES",
+      "label": "Autres dépôts et programmes",
+      "purpose": "GRT, UAES, AfricaFunds, applications externes",
+      "boundary": "Hors du présent index ; vérifier repository/mandat propres avant d'utiliser leurs instructions"
+    }
+  ],
+  "references": [
+    {
+      "id": "MCP-001",
+      "programScope": "MCP_GLOBAL",
+      "path": "PROJECT_BRIEF.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/PROJECT_BRIEF.md",
+      "role": "Brief stratégique initial ; limité, ne remplace pas la roadmap",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "MCP-002",
+      "programScope": "MCP_GLOBAL",
+      "path": "MCP_PROJECT.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/MCP_PROJECT.md",
+      "role": "Énoncé du projet et priorité historique onboarding",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "MCP-003",
+      "programScope": "MCP_GLOBAL",
+      "path": "ARCHITECTURE.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/ARCHITECTURE.md",
+      "role": "Architecture technique, propriétaires des autorités, composants",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "MCP-004",
+      "programScope": "MCP_GLOBAL",
+      "path": "ROADMAP.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/ROADMAP.md",
+      "role": "Chantiers fonctionnels MCP A à K et acceptation globale",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "MCP-005",
+      "programScope": "MCP_GLOBAL",
+      "path": "https://github.com/Patricked-code/MCP/issues/235",
+      "ref": null,
+      "url": "https://github.com/Patricked-code/MCP/issues/235",
+      "role": "Directive propriétaire de finalisation continue du programme MCP",
+      "documentStatus": "PROGRAM_ISSUE_LIVE_CHECK_REQUIRED"
+    },
+    {
+      "id": "GOV-001",
+      "programScope": "MCP_OPERATIONAL_GOVERNANCE",
+      "path": "AGENTS.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/AGENTS.md",
+      "role": "Instructions et INTAKE en vigueur sur main",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "GOV-002",
+      "programScope": "MCP_OPERATIONAL_GOVERNANCE",
+      "path": "CLAUDE.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/CLAUDE.md",
+      "role": "Pacte, méthode de reprise et gouvernance agents",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "GOV-003",
+      "programScope": "MCP_OPERATIONAL_GOVERNANCE",
+      "path": "SUIVI.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/SUIVI.md",
+      "role": "Checkpoint documentaire à recouper avec les preuves live",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "GOV-004",
+      "programScope": "MCP_OPERATIONAL_GOVERNANCE",
+      "path": "docs/governance/README.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/README.md",
+      "role": "Index de gouvernance et chemin de lecture des sources",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "GOV-005",
+      "programScope": "MCP_OPERATIONAL_GOVERNANCE",
+      "path": "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
+      "role": "Fil d'Ariane historique et règles de reprise",
+      "documentStatus": "HISTORICAL_NAVIGATION_MAIN"
+    },
+    {
+      "id": "GOV-006",
+      "programScope": "MCP_OPERATIONAL_GOVERNANCE",
+      "path": "docs/governance/architecture-chronology-issue65-20261009.json",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/architecture-chronology-issue65-20261009.json",
+      "role": "Index historique partiel issues/PR #65+, non exhaustif",
+      "documentStatus": "HISTORICAL_INDEX_MAIN"
+    },
+    {
+      "id": "GWC-001",
+      "programScope": "MCP_GWC_DESIGN",
+      "path": "docs/gwc/README.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/gwc/README.md",
+      "role": "Entrée et index du dossier GWC",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "GWC-002",
+      "programScope": "MCP_GWC_DESIGN",
+      "path": "docs/gwc/canonical-memory/pr95-ded/sources/mission-directive.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/gwc/canonical-memory/pr95-ded/sources/mission-directive.md",
+      "role": "Objectif terminal GWC, architecture / conception / implémentation / code",
+      "documentStatus": "HISTORICAL_SCOPED_DESIGN_MAIN"
+    },
+    {
+      "id": "GWC-003",
+      "programScope": "MCP_GWC_DESIGN",
+      "path": "docs/gwc/PRECODE_EXECUTION_PLAN.txt",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/gwc/PRECODE_EXECUTION_PLAN.txt",
+      "role": "14 phases de conception, 18 blueprints et gates pré-code",
+      "documentStatus": "HISTORICAL_SCOPED_PLAN_MAIN"
+    },
+    {
+      "id": "GWC-004",
+      "programScope": "MCP_GWC_DESIGN",
+      "path": "docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/gwc/PRECODE_ACTION_TASK_FLOW.txt",
+      "role": "Découpage chronologique des work items pré-code",
+      "documentStatus": "HISTORICAL_SCOPED_PLAN_MAIN"
+    },
+    {
+      "id": "GWC-005",
+      "programScope": "MCP_GWC_DESIGN",
+      "path": "docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/gwc/ARCHITECTURE_73_CONTRACTS.md",
+      "role": "Architecture détaillée et contrats GW-01..GW-73",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "GWC-006",
+      "programScope": "MCP_GWC_DESIGN",
+      "path": ".mcp/gwc-workflow-graph.json",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/.mcp/gwc-workflow-graph.json",
+      "role": "Graphe machine des transitions GWC",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "GWC-007",
+      "programScope": "MCP_GWC_DESIGN",
+      "path": "docs/gwc/canonical-memory/current.json",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/gwc/canonical-memory/current.json",
+      "role": "Pointeur de mémoire canonique GWC, à valider selon son protocole",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "PCM-001",
+      "programScope": "MCP_PROGRAM_CONVERGENCE",
+      "path": "docs/governance/mcp-priority-convergence-map-20261015.json",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "role": "15 jalons PCM-00..14 ; ordre de coordination historique",
+      "documentStatus": "Dated_PLANNING_SNAPSHOT_MAIN"
+    },
+    {
+      "id": "PCM-002",
+      "programScope": "MCP_PROGRAM_CONVERGENCE",
+      "path": "docs/governance/program-backlog-convergence.json",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/program-backlog-convergence.json",
+      "role": "Program Backlog V2 ; waves, work items, blueprints, readiness",
+      "documentStatus": "PLANNING_PROJECTION_MAIN"
+    },
+    {
+      "id": "PCM-003",
+      "programScope": "MCP_PROGRAM_CONVERGENCE",
+      "path": "docs/governance/architecture-94-blueprint-crosswalk-20261009.json",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/architecture-94-blueprint-crosswalk-20261009.json",
+      "role": "Correspondances architecture et 94 blueprints",
+      "documentStatus": "HISTORICAL_CROSSWALK_MAIN"
+    },
+    {
+      "id": "IN-001",
+      "programScope": "MCP_ARRIVAL_INTAKE",
+      "path": "MCP_ONBOARDING_ENGINE.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/MCP_ONBOARDING_ENGINE.md",
+      "role": "Mandatory Agent Bootstrap et accès à Current-State Inventory",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "IN-002",
+      "programScope": "MCP_ARRIVAL_INTAKE",
+      "path": ".mcp/onboarding.json",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/.mcp/onboarding.json",
+      "role": "Projection machine du bootstrap existant",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "IN-003",
+      "programScope": "MCP_ARRIVAL_INTAKE",
+      "path": "AGENTS.md",
+      "ref": "mcp/agent-github-mcp-auto-arrival-20261105",
+      "url": "https://github.com/Patricked-code/MCP/blob/mcp/agent-github-mcp-auto-arrival-20261105/AGENTS.md",
+      "role": "Extension proposée : arrivée GitHub→MCP, G1/G2/G3",
+      "documentStatus": "UNMERGED_PR_376"
+    },
+    {
+      "id": "REG-001",
+      "programScope": "MCP_ARCHITECTURE_REGISTRY",
+      "path": "docs/governance/architecture-registry/index.json",
+      "ref": "mcp/architecture-registry-20261107",
+      "url": "https://github.com/Patricked-code/MCP/blob/mcp/architecture-registry-20261107/docs/governance/architecture-registry/index.json",
+      "role": "Index machine du registre architectural, sur PR #378",
+      "documentStatus": "UNMERGED_DRAFT_PR_378"
+    },
+    {
+      "id": "GD-001",
+      "programScope": "MCP_GD_UNIVERSAL",
+      "path": "https://github.com/Patricked-code/MCP/issues/349",
+      "ref": null,
+      "url": "https://github.com/Patricked-code/MCP/issues/349",
+      "role": "Mandat du sous-programme GD-U, non racine du MCP global",
+      "documentStatus": "SPECIALIZED_PROGRAM_ISSUE"
+    },
+    {
+      "id": "GD-002",
+      "programScope": "MCP_GD_UNIVERSAL",
+      "path": "docs/governance/universal-program-history/README.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/universal-program-history/README.md",
+      "role": "Navigation historique des sous-chantiers GD-U",
+      "documentStatus": "HISTORICAL_SCOPED_INDEX_MAIN"
+    },
+    {
+      "id": "LOOP-001",
+      "programScope": "MCP_METHOD_LOOP",
+      "path": "LOOP_ENGINEERING.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/LOOP_ENGINEERING.md",
+      "role": "Boucle générique MCP obligatoire en version condensée",
+      "documentStatus": "REFERENCE_MAIN"
+    },
+    {
+      "id": "WT-001",
+      "programScope": "WEALTHTECH_ECOSYSTEM_HISTORY",
+      "path": "memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
+      "role": "Source historique 669 paragraphes pour l'écosystème WealthTech",
+      "documentStatus": "HISTORICAL_BROADER_SCOPE_MAIN"
+    },
+    {
+      "id": "WT-002",
+      "programScope": "WEALTHTECH_ECOSYSTEM_HISTORY",
+      "path": "memory/LOOP_ENGINEERING_WEALTHTECH_MASTER_PLAN_20260702.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/memory/LOOP_ENGINEERING_WEALTHTECH_MASTER_PLAN_20260702.md",
+      "role": "Plan maître historique multi-applications et serveurs",
+      "documentStatus": "HISTORICAL_BROADER_SCOPE_MAIN"
+    },
+    {
+      "id": "WT-003",
+      "programScope": "WEALTHTECH_ECOSYSTEM_HISTORY",
+      "path": "memory/PLAN_EXECUTION_COMPLET_WEALTHTECH_ACTUALISE_20260702.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/memory/PLAN_EXECUTION_COMPLET_WEALTHTECH_ACTUALISE_20260702.md",
+      "role": "Plan historique de l'écosystème, distinct du programme MCP",
+      "documentStatus": "HISTORICAL_BROADER_SCOPE_MAIN"
+    },
+    {
+      "id": "WT-004",
+      "programScope": "WEALTHTECH_ECOSYSTEM_HISTORY",
+      "path": "memory/MATRICE_TRACABILITE_SOURCES_EXIGENCES_TRACKS_20260702.md",
+      "ref": "main",
+      "url": "https://github.com/Patricked-code/MCP/blob/main/memory/MATRICE_TRACABILITE_SOURCES_EXIGENCES_TRACKS_20260702.md",
+      "role": "Traçabilité historique sources→exigences→tracks",
+      "documentStatus": "HISTORICAL_BROADER_SCOPE_MAIN"
+    }
+  ],
+  "routingByIntent": [
+    {
+      "intent": "Retrouver objectif et périmètre du MCP global",
+      "references": [
+        "MCP-001",
+        "MCP-003",
+        "MCP-004",
+        "MCP-005"
+      ],
+      "mustNotSubstitute": [
+        "WT-001",
+        "GD-001",
+        "GWC-002"
+      ]
+    },
+    {
+      "intent": "Retrouver architecture et déroulé contractuel de conception GWC",
+      "references": [
+        "GWC-001",
+        "GWC-002",
+        "GWC-003",
+        "GWC-004",
+        "GWC-005",
+        "GWC-006",
+        "GWC-007"
+      ],
+      "mustNotSubstitute": [
+        "PCM-001",
+        "WT-002"
+      ]
+    },
+    {
+      "intent": "Retrouver planning, priorités, dépendances MCP",
+      "references": [
+        "PCM-001",
+        "PCM-002",
+        "PCM-003",
+        "MCP-005"
+      ],
+      "mustNotSubstitute": [
+        "WT-003",
+        "GD-002"
+      ]
+    },
+    {
+      "intent": "Arrivée d'un agent, récupération de contexte et autorisations",
+      "references": [
+        "GOV-001",
+        "GOV-002",
+        "GOV-003",
+        "GOV-004",
+        "IN-001",
+        "IN-002",
+        "IN-003"
+      ],
+      "mustNotSubstitute": [
+        "GWC-004"
+      ]
+    },
+    {
+      "intent": "Localiser code, branches, dossiers et blocs architecturaux",
+      "references": [
+        "MCP-003",
+        "REG-001"
+      ],
+      "mustNotSubstitute": [
+        "WT-003"
+      ]
+    },
+    {
+      "intent": "Comprendre GD-U, provisioning et sous-chantiers de déploiement universel",
+      "references": [
+        "GD-001",
+        "GD-002"
+      ],
+      "mustNotSubstitute": [
+        "MCP-004"
+      ]
+    },
+    {
+      "intent": "Retrouver les origines du Loop Engineering WealthTech",
+      "references": [
+        "LOOP-001",
+        "WT-001",
+        "WT-002",
+        "WT-003",
+        "WT-004"
+      ],
+      "mustNotSubstitute": [
+        "PCM-002"
+      ]
+    },
+    {
+      "intent": "Vérifier l'état réellement exécuté aujourd'hui",
+      "references": [
+        "GOV-003",
+        "GOV-002",
+        "GOV-004"
+      ],
+      "mandatoryExternalEvidence": [
+        "GitHub main SHA/PR/CI",
+        "Live State S1/runtime",
+        "Governed Task Queue/Session/Lock si nécessaire"
+      ],
+      "note": "Aucun index documentaire ne peut certifier un état runtime"
+    }
+  ],
+  "integrationNotes": [
+    "Index de navigation provisoire pour usage humain/agent; aucun changement de l'algorithme d'intake ou de la Task Queue.",
+    "En cas d'intégration future avec PR #378, réutiliser son architecture-registry/index.json en conservant les chemins et les catégories existantes.",
+    "L'index doit être réobservé à chaque changement documentaire, et les états live doivent être récupérés auprès des autorités correspondantes.",
+    "Le document est proposé sur une branche dédiée en PR Draft; ses chemins branchés ne deviennent pas main avant fusion autorisée."
+  ]
+}
