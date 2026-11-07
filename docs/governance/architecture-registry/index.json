@@ -88,10 +88,10 @@
     "filesSampled": 10,
     "fullSemanticFilesReviewed": 0,
     "otherFiles": "UNREVIEWED",
-    "next": "MORE_BOUNDED_SOURCE_REVIEW_AND_INTERBRANCH_SEMANTIC_LINKS",
+    "next": "EXPAND_EXACT_BLOB_SOURCE_REVIEWS_TO_UNREVIEWED_COMPONENTS_AND_BUILD_CROSS_BRANCH_REFERENCE_GRAPH_WITH_EVIDENCE",
     "impactInspector": "READ_ONLY_BOUNDED_REVERSE_REFERENCE_CANDIDATES",
     "sqlGraphProjection": "verified_file_relations + source_file_roles",
-    "checkpointId": "MCP-ARCH-REGISTRY-ALL-190-DIRECTORIES-20261107-01",
+    "checkpointId": "MCP-ARCH-REGISTRY-SEMANTIC-BATCH02-20261107-01",
     "semanticRoleAnchors": 9
   }
 }

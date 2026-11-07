@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "checkpointId": "MCP-ARCH-REGISTRY-ALL-190-DIRECTORIES-20261107-01",
+  "priorCheckpointId": "MCP-ARCH-REGISTRY-DIRECTORY-EVIDENCE-20261107-01",
+  "repository": "Patricked-code/MCP",
+  "recordedAt": "2026-11-07T06:18:15.442Z",
+  "observationId": "mcp-all-branches-20261107-01",
+  "historicMainCommitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "prNumber": 378,
+  "prBranch": "mcp/architecture-registry-20261107",
+  "observedPrHead": "cb1f3129e82c122ca46c03441dff0d9d21a1e790",
+  "status": "MULTIBRANCH_DIRECTORY_PROJECTION_VERIFIED_AND_SOURCE_ANALYSIS_PARTIAL",
+  "coverage": {
+    "main": {
+      "entries": 989,
+      "files": 844,
+      "directories": 145,
+      "technicalFormatClassifiedFiles": 844
+    },
+    "historicalBranches": {
+      "count": 190,
+      "sourceBatches": 19,
+      "fileMemberships": 96689,
+      "directoryMemberships": 17836,
+      "formatTypes": 17,
+      "treeObjectIdentities": "FROZEN_SNAPSHOTS"
+    },
+    "sourceEvidence": {
+      "filesInspected": 10,
+      "sourceRelations": 6,
+      "verifiedDeclarations": 10,
+      "fullySemanticallyClassifiedFiles": 0,
+      "crossBranchSamplePaths": 10
+    },
+    "indexBuild": {
+      "mainMode": "844_FILES_145_DIRECTORIES",
+      "allBranchesMode": "96689_FILES_17836_DIRECTORIES",
+      "verifiedRelations": 6,
+      "derivedNoRuntimeAuthority": true
+    }
+  },
+  "verifiedCi": {
+    "architectureRegistry": {
+      "runId": 42346316173,
+      "headSha": "cb1f3129e82c122ca46c03441dff0d9d21a1e790",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/Patricked-code/MCP/actions/runs/42346316173"
+    },
+    "generalMcpCi": {
+      "headSha": "cb1f3129e82c122ca46c03441dff0d9d21a1e790",
+      "conclusion": "PENDING_AT_CHECKPOINT"
+    }
+  },
+  "scopeRestrictions": [
+    "FROZEN_HISTORICAL_GIT_SNAPSHOTS_ONLY",
+    "NO_MAIN_WRITE",
+    "NO_S1_S2_WRITE",
+    "NO_MERGE_WITHOUT_EXPLICIT_OWNER_APPROVAL",
+    "NO_RUNTIME_AUTHORITY_CREATED",
+    "NO_FULL_SEMANTIC_COVERAGE_CLAIM",
+    "PRESERVE_PRIOR_CHECKPOINTS"
+  ],
+  "nextAction": "EXTEND_SEMANTIC_CODE_REVIEW_IN_BOUNDED_EXACT_BLOB_BATCHES_WITH_SOURCE_EVIDENCE_THEN_EXPAND_CROSSBRANCH_DEPENDENCY_GRAPH",
+  "references": {
+    "mainDirectories": "snapshots/2026-11-07/main-directories.jsonl",
+    "sourceEvidence": "catalog/source-evidence-batch-01.json",
+    "branchSubtreeBatches": "snapshots/2026-11-07/all-branches-v1/tree-object-shas/batch-00.jsonl..batch-18.jsonl",
+    "sqlBuilder": "build_sqlite.py",
+    "sqlSchema": "schema/schema.sql",
+    "verifier": "verify_architecture_analysis.mjs"
+  }
+}
