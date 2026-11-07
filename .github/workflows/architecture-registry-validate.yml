@@ -40,6 +40,7 @@ jobs:
                   count = lambda table: connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
                   assert count("files") == expected_files, name
                   assert count("directories") == expected_dirs, name
-                  assert count("verified_file_relations") == 6, name
+                  assert count("verified_file_relations") == 12, name
+                  assert count("source_file_roles") == 9, name
                   assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok", name
           PY

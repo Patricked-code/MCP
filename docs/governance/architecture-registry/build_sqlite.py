@@ -72,6 +72,42 @@ def _verified_file_relation_rows(root: Path, index: dict, snapshot: str):
     return rows
 
 
+
+def _second_semantic_evidence_rows(root: Path, index: dict, snapshot: str):
+    """Add source-backed declared roles and edges from the frozen second batch."""
+    batch = read_json(root / index["files"]["sourceEvidenceBatch02"])
+    if (batch["repository"] != index["repository"]
+            or batch["mainCommitSha"] != index["mainSha"]
+            or batch["snapshotId"] != index["snapshotId"]
+            or len(batch["files"]) != 9 or len(batch["relations"]) != 6):
+        raise ValueError("Second semantic evidence scope mismatch")
+    known = {}
+    with (root / index["files"]["mainFiles"]).open(encoding="utf-8") as stream:
+        for line in stream:
+            if line.strip():
+                entry = json.loads(line)
+                known[entry["path"]] = entry["blobSha"]
+    roles, edges = [], []
+    for item in batch["files"]:
+        if (item["status"] != "VERIFIED_DECLARED_SOURCE_ROLE"
+                or item["wholeFileSemanticallyReviewed"] is not False
+                or known.get(item["path"]) != item["blobSha"]
+                or item["evidence"]["line"] <= 0):
+            raise ValueError("Invalid semantic role: " + item["path"])
+        roles.append((snapshot, "main", item["path"], item["blobSha"],
+                      item["role"], item["status"], item["evidence"]["line"]))
+    for edge in batch["relations"]:
+        if (edge["status"] != "VERIFIED_SOURCE_REFERENCE"
+                or known.get(edge["from"]) != edge["sourceBlobSha"]
+                or known.get(edge["to"]) != edge["targetBlobSha"]
+                or edge["evidence"]["line"] <= 0):
+            raise ValueError("Invalid semantic reference: " + edge["id"])
+        edges.append((snapshot, "main", edge["id"], edge["from"], edge["to"],
+                      edge["predicate"], edge["sourceBlobSha"], edge["targetBlobSha"],
+                      edge["evidence"]["line"], edge["status"]))
+    return roles, edges
+
+
 def build(root: Path, output: Path) -> dict:
     index = read_json(root / "index.json")
     links = index["files"]
@@ -163,6 +199,11 @@ def build(root: Path, output: Path) -> dict:
                 db.executemany(
                     "INSERT INTO verified_file_relations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     _verified_file_relation_rows(root, index, sid))
+                role_rows, edge_rows = _second_semantic_evidence_rows(root, index, sid)
+                db.executemany(
+                    "INSERT INTO source_file_roles VALUES (?, ?, ?, ?, ?, ?, ?)", role_rows)
+                db.executemany(
+                    "INSERT INTO verified_file_relations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", edge_rows)
                 db.executemany(
                     "INSERT INTO components VALUES (?, ?, ?, ?, ?, ?)",
                     ((sid, c["id"], c["name"], c["kind"], c.get("purpose"),
@@ -396,6 +437,11 @@ def build_all_branches(root: Path, output: Path) -> dict:
                 db.executemany(
                     "INSERT INTO verified_file_relations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     _verified_file_relation_rows(root, idx, snap))
+                role_rows, edge_rows = _second_semantic_evidence_rows(root, idx, snap)
+                db.executemany(
+                    "INSERT INTO source_file_roles VALUES (?, ?, ?, ?, ?, ?, ?)", role_rows)
+                db.executemany(
+                    "INSERT INTO verified_file_relations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", edge_rows)
                 db.execute(
                     "INSERT INTO checkpoints VALUES (?, ?, ?, ?, ?, ?)",
                     (checkpoint["checkpointId"], snap, checkpoint["recordedAt"],

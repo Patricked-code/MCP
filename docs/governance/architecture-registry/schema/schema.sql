@@ -126,3 +126,16 @@ SELECT snapshot_id, tree_sha, COUNT(*) AS appearances,
        COUNT(DISTINCT branch_name) AS branch_count
 FROM directories
 GROUP BY snapshot_id, tree_sha;
+
+-- Source-role declarations are evidence-bound projections, not execution authority.
+CREATE TABLE IF NOT EXISTS source_file_roles (
+ snapshot_id TEXT NOT NULL,branch_name TEXT NOT NULL,
+ path TEXT NOT NULL,blob_sha TEXT NOT NULL,role TEXT NOT NULL,
+ status TEXT NOT NULL,evidence_line INTEGER NOT NULL,
+ PRIMARY KEY(snapshot_id,branch_name,path,role),
+ FOREIGN KEY(snapshot_id,branch_name,path) REFERENCES files(snapshot_id,branch_name,path)
+);
+CREATE INDEX IF NOT EXISTS idx_source_file_roles_role ON source_file_roles(role);
+CREATE VIEW IF NOT EXISTS v_source_file_role_lookup AS
+ SELECT snapshot_id,branch_name,path,role,status,evidence_line
+ FROM source_file_roles;

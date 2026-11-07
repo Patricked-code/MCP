@@ -90,7 +90,7 @@
     "otherFiles": "UNREVIEWED",
     "next": "MORE_BOUNDED_SOURCE_REVIEW_AND_INTERBRANCH_SEMANTIC_LINKS",
     "impactInspector": "READ_ONLY_BOUNDED_REVERSE_REFERENCE_CANDIDATES",
-    "sqlGraphProjection": "verified_file_relations",
+    "sqlGraphProjection": "verified_file_relations + source_file_roles",
     "checkpointId": "MCP-ARCH-REGISTRY-ALL-190-DIRECTORIES-20261107-01",
     "semanticRoleAnchors": 9
   }
