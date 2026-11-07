@@ -44,3 +44,7 @@ jobs:
                   assert count("source_file_roles") == 9, name
                   assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok", name
           PY
+      - name: Verify architectural building blocks and 844-file classification coverage
+        run: |
+          set -euo pipefail
+          node docs/governance/architecture-registry/verify_architectural_blocks_v1.mjs
