@@ -25,7 +25,8 @@
     "directoryVerification": "verify_directory_inventory.mjs",
     "sourceEvidenceBatch01": "catalog/source-evidence-batch-01.json",
     "crossbranchSample": "snapshots/2026-11-07/crossbranch-deploy-sample.json",
-    "architectureVerification": "verify_architecture_analysis.mjs"
+    "architectureVerification": "verify_architecture_analysis.mjs",
+    "mainCheckpoint": "checkpoints/history-main-baseline-20261107.json"
   },
   "notAuthoritativeFor": [
     "Task Queue",
@@ -61,7 +62,8 @@
     "sqliteBuilder": "build_sqlite.py",
     "sqliteMode": "all-branches",
     "technicalVerifier": "verify_multibranch_inventory.mjs",
-    "functionalClassification": "NOT_PERFORMED"
+    "functionalClassification": "NOT_PERFORMED",
+    "checkpoint": "checkpoints/history-multibranch-20261107-01.json"
   },
   "directoryStage": {
     "status": "COMPLETE_PHYSICAL_MAIN_ONLY",

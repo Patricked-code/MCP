@@ -79,7 +79,7 @@ def build(root: Path, output: Path) -> dict:
     tree_summary = read_json(root / links["mainSummary"])
     relationships = read_json(root / links["componentLinks"])
     source_catalog = read_json(root / links["sourceReferences"])
-    checkpoint = read_json(root / links["checkpoint"])
+    checkpoint = read_json(root / links["mainCheckpoint"])
     files_path = root / links["mainFiles"]
     schema_path = root / links["schema"]
 
@@ -228,7 +228,7 @@ def build_all_branches(root: Path, output: Path) -> dict:
     summary = read_json(root / multi["summary"])
     tax2 = read_json(root / multi["taxonomyV2"])
     tax1 = read_json(root / idx["files"]["technicalTaxonomy"])
-    checkpoint = read_json(root / idx["files"]["checkpoint"])
+    checkpoint = read_json(root / multi["checkpoint"])
     if manifest["status"] != "COMPLETE" or manifest["successfulBranches"] != 190:
         raise ValueError("Multibranch inventory has not been finalized")
     if not (snap == frozen["snapshotId"] == manifest["snapshotId"]
