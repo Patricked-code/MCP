@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "kind": "BOUNDED_SOURCE_EVIDENCE",
+  "repository": "Patricked-code/MCP",
+  "mainCommitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "branch": "main",
+  "scope": "selected governed deploy, authentication, tests and workflow declarations",
+  "fullFileSemanticClassification": false,
+  "inspectedPaths": [
+    {
+      "path": "src/auth.ts",
+      "blobSha": "fd03c809a9707070b194af7ecf3a6485e219d47f"
+    },
+    {
+      "path": "src/deploy/githubOidc.ts",
+      "blobSha": "577be1f620295ad7f7fd46fe52a082c45c5e8bd5"
+    },
+    {
+      "path": "src/deploy/routes.ts",
+      "blobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a"
+    },
+    {
+      "path": "src/deploy/s1Deploy.ts",
+      "blobSha": "cccb29bf435250eb47e6b2e8b969cac2a4541fa9"
+    },
+    {
+      "path": "src/oauth.ts",
+      "blobSha": "aded77500ea03e636463e4ea5f7f731bcc903dcd"
+    },
+    {
+      "path": "tests/deployRoutes.test.ts",
+      "blobSha": "a9b5e7a6a28ce744330f4848754aaef76a600ba3"
+    },
+    {
+      "path": "tests/s1Deploy.test.ts",
+      "blobSha": "158a6c3f5b61e184820bf68c208c49017ef54a0e"
+    },
+    {
+      "path": "tests/deployWorkflow.test.ts",
+      "blobSha": "6974e5236300f33af6c16eb0c073e72af021ecfd"
+    },
+    {
+      "path": ".github/workflows/mcp-deploy.yml",
+      "blobSha": "7ede327f0112559cb1145545e288fd244edfe166"
+    },
+    {
+      "path": ".github/workflows/mcp-ci.yml",
+      "blobSha": "3d6324a136804b8ece292b698f4ae4710e3ce964"
+    }
+  ],
+  "relations": [
+    {
+      "id": "verified-edge-1",
+      "from": "src/auth.ts",
+      "to": "src/oauth.ts",
+      "predicate": "STATIC_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "evidence": {
+        "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+        "path": "src/auth.ts",
+        "blobSha": "fd03c809a9707070b194af7ecf3a6485e219d47f",
+        "line": 4,
+        "excerpt": "import { inspectOauthAccessToken, oauthChallengeHeader } from './oauth.js';"
+      },
+      "targetBlobSha": "aded77500ea03e636463e4ea5f7f731bcc903dcd",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "verified-edge-2",
+      "from": "src/deploy/routes.ts",
+      "to": "src/deploy/githubOidc.ts",
+      "predicate": "STATIC_TYPE_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "evidence": {
+        "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+        "path": "src/deploy/routes.ts",
+        "blobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a",
+        "line": 4,
+        "excerpt": "import type { GithubOidcClaims } from './githubOidc.js';"
+      },
+      "targetBlobSha": "577be1f620295ad7f7fd46fe52a082c45c5e8bd5",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "verified-edge-3",
+      "from": "src/deploy/routes.ts",
+      "to": "src/deploy/s1Deploy.ts",
+      "predicate": "STATIC_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "evidence": {
+        "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+        "path": "src/deploy/routes.ts",
+        "blobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a",
+        "line": 11,
+        "excerpt": "} from './s1Deploy.js';"
+      },
+      "targetBlobSha": "cccb29bf435250eb47e6b2e8b969cac2a4541fa9",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "verified-edge-4",
+      "from": "tests/deployRoutes.test.ts",
+      "to": "src/deploy/routes.ts",
+      "predicate": "TEST_IMPORTS",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "evidence": {
+        "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+        "path": "tests/deployRoutes.test.ts",
+        "blobSha": "a9b5e7a6a28ce744330f4848754aaef76a600ba3",
+        "line": 7,
+        "excerpt": "import { createGithubDeployRouter } from '../src/deploy/routes.js';"
+      },
+      "targetBlobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "verified-edge-5",
+      "from": "tests/s1Deploy.test.ts",
+      "to": "src/deploy/s1Deploy.ts",
+      "predicate": "TEST_IMPORTS",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "evidence": {
+        "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+        "path": "tests/s1Deploy.test.ts",
+        "blobSha": "158a6c3f5b61e184820bf68c208c49017ef54a0e",
+        "line": 10,
+        "excerpt": "} from '../src/deploy/s1Deploy.js';"
+      },
+      "targetBlobSha": "cccb29bf435250eb47e6b2e8b969cac2a4541fa9",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "verified-edge-6",
+      "from": "tests/deployWorkflow.test.ts",
+      "to": ".github/workflows/mcp-deploy.yml",
+      "predicate": "TEST_READS_WORKFLOW",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "evidence": {
+        "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+        "path": "tests/deployWorkflow.test.ts",
+        "blobSha": "6974e5236300f33af6c16eb0c073e72af021ecfd",
+        "line": 5,
+        "excerpt": "const WORKFLOW = new URL('../.github/workflows/mcp-deploy.yml', import.meta.url);"
+      },
+      "targetBlobSha": "7ede327f0112559cb1145545e288fd244edfe166",
+      "runtimeEffect": "NOT_ATTESTED"
+    }
+  ],
+  "declarations": [
+    {
+      "id": "declaration-1",
+      "path": "src/auth.ts",
+      "blobSha": "fd03c809a9707070b194af7ecf3a6485e219d47f",
+      "line": 17,
+      "excerpt": "export function requireBearerToken(req: Request, res: Response, next: NextFunction): void {",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-2",
+      "path": "src/deploy/routes.ts",
+      "blobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a",
+      "line": 116,
+      "excerpt": "export function createGithubDeployRouter(dependencies: GithubDeployRouteDependencies): Router {",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-3",
+      "path": "src/deploy/routes.ts",
+      "blobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a",
+      "line": 120,
+      "excerpt": "router.post('/deploy/github/s1/start', json4kb, async (request, response) => {",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-4",
+      "path": "src/deploy/routes.ts",
+      "blobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a",
+      "line": 167,
+      "excerpt": "router.get('/deploy/github/s1/status/:jobId', async (request, response) => {",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-5",
+      "path": "src/deploy/s1Deploy.ts",
+      "blobSha": "cccb29bf435250eb47e6b2e8b969cac2a4541fa9",
+      "line": 112,
+      "excerpt": "export function buildS1DeployJobId(runIdInput: string, shaInput: string): string {",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-6",
+      "path": "src/deploy/s1Deploy.ts",
+      "blobSha": "cccb29bf435250eb47e6b2e8b969cac2a4541fa9",
+      "line": 426,
+      "excerpt": "export function parseS1DeployAttestation(",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-7",
+      "path": "src/deploy/githubOidc.ts",
+      "blobSha": "577be1f620295ad7f7fd46fe52a082c45c5e8bd5",
+      "line": 370,
+      "excerpt": "export async function verifyGithubOidcToken(",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-8",
+      "path": ".github/workflows/mcp-deploy.yml",
+      "blobSha": "7ede327f0112559cb1145545e288fd244edfe166",
+      "line": 4,
+      "excerpt": "workflow_dispatch:",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-9",
+      "path": ".github/workflows/mcp-deploy.yml",
+      "blobSha": "7ede327f0112559cb1145545e288fd244edfe166",
+      "line": 7,
+      "excerpt": "- main",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    },
+    {
+      "id": "declaration-10",
+      "path": ".github/workflows/mcp-deploy.yml",
+      "blobSha": "7ede327f0112559cb1145545e288fd244edfe166",
+      "line": 12,
+      "excerpt": "id-token: write",
+      "status": "SOURCE_TEXT_VERIFIED",
+      "runtimeEffect": "NOT_ATTESTED"
+    }
+  ],
+  "limitations": [
+    "Source anchors verified at immutable main SHA; not all file functions inspected",
+    "Static imports and tests do not prove runtime execution or a green test run",
+    "No server state, deployment or live GitHub authentication inferred",
+    "Independent OAuth and other PR ownership remains unchanged"
+  ]
+}

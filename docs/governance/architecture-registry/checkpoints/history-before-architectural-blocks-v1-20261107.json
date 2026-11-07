@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "checkpointId": "MCP-ARCH-REGISTRY-SEMANTIC-BATCH02-20261107-01",
+  "priorCheckpointId": "MCP-ARCH-REGISTRY-ALL-190-DIRECTORIES-20261107-01",
+  "recordedAt": "2026-11-07T06:22:53.923Z",
+  "repository": "Patricked-code/MCP",
+  "prNumber": 378,
+  "prBranch": "mcp/architecture-registry-20261107",
+  "observedPrHead": "180dc1c2171650f935a68db27286a7906fcce139",
+  "baselineMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "observationId": "mcp-all-branches-20261107-01",
+  "status": "STRUCTURE_AND_TECHNICAL_FORMATS_COMPLETE_SEMANTIC_ROLE_ANALYSIS_PARTIAL",
+  "counts": {
+    "mainFilePaths": 844,
+    "mainDirectoryPaths": 145,
+    "mainEntries": 989,
+    "frozenBranches": 190,
+    "crossbranchFilePresences": 96689,
+    "crossbranchDirectoryPresences": 17836,
+    "sourcePathsInspected": 19,
+    "verifiedReferences": 12,
+    "indexedSourceDeclaredRoles": 9,
+    "fullyAuditedSemanticFiles": 0
+  },
+  "evidence": {
+    "semanticBatch01": "catalog/source-evidence-batch-01.json",
+    "semanticBatch02": "catalog/source-evidence-batch-02.json",
+    "semanticVerifier02": "verify_source_evidence_batch_02.mjs",
+    "architectureVerifier": "verify_architecture_analysis.mjs",
+    "sqliteSchema": "schema/schema.sql",
+    "sqliteBuilder": "build_sqlite.py"
+  },
+  "lastSuccessfulSpecializedCi": {
+    "runId": 42346670704,
+    "headSha": "180dc1c2171650f935a68db27286a7906fcce139",
+    "conclusion": "SUCCESS",
+    "url": "https://github.com/Patricked-code/MCP/actions/runs/42346670704"
+  },
+  "mcpCiAtCheckpoint": "IN_PROGRESS_NO_CONCLUSION_CLAIMED",
+  "nextAction": "EXPAND_EXACT_BLOB_SOURCE_REVIEWS_TO_UNREVIEWED_COMPONENTS_AND_BUILD_CROSS_BRANCH_REFERENCE_GRAPH_WITH_EVIDENCE",
+  "rules": [
+    "NO_MAIN_WRITE",
+    "NO_MERGE_UNLESS_EXPLICIT_OWNER_CONSENT",
+    "NO_S1_WRITE",
+    "NO_RUNTIME_AUTHORITY",
+    "NO_SEMANTIC_INFERENCE_FROM_PATH",
+    "PRESERVE_ALL_FROZEN_SNAPSHOTS",
+    "KEEP_OLD_CHECKPOINTS"
+  ],
+  "limitations": [
+    "190 branches are frozen historical HEADs not live refs",
+    "19 files have bounded declaration/reference evidence, not complete semantic audit",
+    "No execution or deployment evidence inferred from static references",
+    "12 SQL relations do not establish total system dependency coverage"
+  ]
+}

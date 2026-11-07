@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "checkpointId": "MCP-ARCH-REGISTRY-ARCHITECTURAL-BLOCKS-20261107-V1",
+  "priorCheckpointId": "MCP-ARCH-REGISTRY-SEMANTIC-BATCH02-20261107-01",
+  "recordedAt": "2026-11-07T08:41:19.851Z",
+  "repository": "Patricked-code/MCP",
+  "prNumber": 378,
+  "prBranch": "mcp/architecture-registry-20261107",
+  "observedPrHead": "180dc1c2171650f935a68db27286a7906fcce139",
+  "baselineMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "observationId": "mcp-all-branches-20261107-01",
+  "status": "26_BLOCKS_844_FILE_CANDIDATES_73_GWC_94_PROGRAM_V2_BOUNDED_EVIDENCE",
+  "counts": {
+    "mainFilePaths": 844,
+    "mainDirectoryPaths": 145,
+    "mainEntries": 989,
+    "frozenBranches": 190,
+    "crossbranchFilePresences": 96689,
+    "crossbranchDirectoryPresences": 17836,
+    "sourcePathsInspected": 19,
+    "verifiedReferences": 12,
+    "indexedSourceDeclaredRoles": 9,
+    "fullyAuditedSemanticFiles": 0,
+    "architectureBlocks": 26,
+    "proposedBlockRelations": 27,
+    "mainFileCandidates": 844,
+    "mainFilesWithBlockAnchor": 61,
+    "previouslySourceInspectedFiles": 19,
+    "gwcContractMappings": 73,
+    "programTaskBlueprintMappings": 94
+  },
+  "evidence": {
+    "semanticBatch01": "catalog/source-evidence-batch-01.json",
+    "semanticBatch02": "catalog/source-evidence-batch-02.json",
+    "semanticVerifier02": "verify_source_evidence_batch_02.mjs",
+    "architectureVerifier": "verify_architectural_blocks_v1.mjs",
+    "sqliteSchema": "schema/schema.sql",
+    "sqliteBuilder": "build_sqlite.py",
+    "architectureBlocksCatalog": "catalog/architectural-blocks-v1.json",
+    "architectureManifest": "catalog/architectural-classification-manifest-v1.json",
+    "architecturePreviousCheckpoint": "checkpoints/history-before-architectural-blocks-v1-20261107.json"
+  },
+  "lastSuccessfulSpecializedCi": {
+    "runId": 42346670704,
+    "headSha": "180dc1c2171650f935a68db27286a7906fcce139",
+    "conclusion": "SUCCESS",
+    "url": "https://github.com/Patricked-code/MCP/actions/runs/42346670704"
+  },
+  "mcpCiAtCheckpoint": "IN_PROGRESS_NO_CONCLUSION_CLAIMED",
+  "nextAction": "CONTENT_REVIEW_OF_844_BLOBS_IN_BOUNDED_BATCHES_THEN_EXACT_IMPORT_GRAPH_AND_TEST_BEHAVIOR_VERIFICATION",
+  "rules": [
+    "NO_MAIN_WRITE",
+    "NO_MERGE_UNLESS_EXPLICIT_OWNER_CONSENT",
+    "NO_S1_WRITE",
+    "NO_RUNTIME_AUTHORITY",
+    "NO_SEMANTIC_INFERENCE_FROM_PATH",
+    "PRESERVE_ALL_FROZEN_SNAPSHOTS",
+    "KEEP_OLD_CHECKPOINTS"
+  ],
+  "limitations": [
+    "190 branches are frozen historical HEADs not live refs",
+    "19 files have bounded declaration/reference evidence, not complete semantic audit",
+    "No execution or deployment evidence inferred from static references",
+    "12 SQL relations do not establish total system dependency coverage",
+    "Block memberships and path hints are documentary discovery only, not a completed 844-file semantic audit",
+    "No new runtime acceptance, deployment or CI success asserted"
+  ],
+  "newWorkCIStatus": "NOT_ATTESTED"
+}

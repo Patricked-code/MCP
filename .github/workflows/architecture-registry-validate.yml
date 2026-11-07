@@ -1,0 +1,50 @@
+name: Architecture Registry Validation
+on:
+  pull_request:
+    paths:
+      - 'docs/governance/architecture-registry/**'
+      - '.github/workflows/architecture-registry-validate.yml'
+permissions:
+  contents: read
+jobs:
+  validate-registry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout source for exact-head analysis
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify frozen physical and format snapshots
+        run: |
+          set -euo pipefail
+          node docs/governance/architecture-registry/verify_directory_inventory.mjs
+          node docs/governance/architecture-registry/verify_technical_formats.mjs
+          node docs/governance/architecture-registry/verify_multibranch_inventory.mjs
+      - name: Verify source references and cross-branch sampled metrics
+        run: |
+          set -euo pipefail
+          node docs/governance/architecture-registry/verify_architecture_analysis.mjs
+          node docs/governance/architecture-registry/verify_source_evidence_batch_02.mjs
+          node docs/governance/architecture-registry/verify_architecture_analysis.mjs --impact src/deploy/s1Deploy.ts
+      - name: Rebuild main and multibranch read-only SQLite projections
+        run: |
+          set -euo pipefail
+          python3 docs/governance/architecture-registry/build_sqlite.py --mode main --output "$RUNNER_TEMP/architecture-main.sqlite"
+          python3 docs/governance/architecture-registry/build_sqlite.py --mode all-branches --output "$RUNNER_TEMP/architecture-branches.sqlite"
+          python3 - "$RUNNER_TEMP/architecture-main.sqlite" "$RUNNER_TEMP/architecture-branches.sqlite" <<'PY'
+          import sqlite3
+          import sys
+          for name, expected_files, expected_dirs in ((sys.argv[1], 844, 145), (sys.argv[2], 96689, 17836)):
+              with sqlite3.connect(name) as connection:
+                  count = lambda table: connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+                  assert count("files") == expected_files, name
+                  assert count("directories") == expected_dirs, name
+                  assert count("verified_file_relations") == 12, name
+                  assert count("source_file_roles") == 9, name
+                  assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok", name
+          PY
+      - name: Verify architectural building blocks and 844-file classification coverage
+        run: |
+          set -euo pipefail
+          node docs/governance/architecture-registry/verify_architectural_blocks_v1.mjs

@@ -1,0 +1,2908 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWC_73_CONTRACT_TO_ARCHITECTURAL_BLOCK_CROSSWALK",
+  "mainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "authority": "NON_AUTHORITATIVE",
+  "count": 73,
+  "graph": {
+    "edgeCount": 91,
+    "kinds": {
+      "FORWARD": 70,
+      "BACKWARD": 5,
+      "SKIP": 16
+    },
+    "entry": "GW-01",
+    "runtimeTerminal": "GW-72",
+    "outOfRuntime": "GW-73"
+  },
+  "contracts": [
+    {
+      "id": "GW-01",
+      "name": "INTENT_CAPTURE",
+      "family": "A",
+      "familyName": "Intake",
+      "blueprintId": "GWC-1",
+      "profile": [
+        "PURE_TRANSFORM"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [],
+      "outgoing": [
+        {
+          "to": "GW-02",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GWC-CONTRACTS"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-BOOTSTRAP"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-02",
+      "name": "CONNECTION_BOOTSTRAP",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "blueprintId": "GWC-4",
+      "profile": [
+        "BOOTSTRAP_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-01",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-03",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-16",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-BOOTSTRAP",
+        "ABB-CONNECTION",
+        "ABB-CURRENT-INVENTORY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-CONNECTION",
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-03",
+      "name": "CONNECTION_CONTEXT",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "blueprintId": "GWC-4",
+      "profile": [
+        "CONTEXT_PROJECTION"
+      ],
+      "semantics": "EVALUATE_ONLY / COMPOSED",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-02",
+          "kind": "FORWARD"
+        },
+        {
+          "from": "GW-16",
+          "kind": "BACKWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-04",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-BOOTSTRAP",
+        "ABB-CONNECTION"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-CONNECTION",
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-04",
+      "name": "GITHUB_IDENTITY_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "blueprintId": "GWC-3",
+      "profile": [
+        "RESOLVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-03",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-05",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-CONNECTION"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-CONNECTION",
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-05",
+      "name": "REPOSITORY_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "blueprintId": "GWC-3",
+      "profile": [
+        "RESOLVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-04",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-06",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GITREGISTRY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-CONNECTION",
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-06",
+      "name": "PROJECT_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "blueprintId": "GWC-3",
+      "profile": [
+        "RESOLVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-05",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-07",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-CONNECTION",
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-07",
+      "name": "SERVER_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "blueprintId": "GWC-6",
+      "profile": [
+        "RESOLVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-06",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-08",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-TARGET"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-CONNECTION",
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-08",
+      "name": "RUNTIME_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "blueprintId": "GWC-7",
+      "profile": [
+        "RESOLVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-07",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-09",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-TARGET"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-CONNECTION",
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-09",
+      "name": "DOMAIN_RESOLUTION",
+      "family": "B",
+      "familyName": "Identity and Target Resolution",
+      "blueprintId": "GWC-8",
+      "profile": [
+        "RESOLVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-08",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-10",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-TARGET"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-CONNECTION",
+        "ABB-GITREGISTRY",
+        "ABB-TARGET"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-10",
+      "name": "GOVERNANCE_INHERITANCE",
+      "family": "C",
+      "familyName": "Governance and Capability Composition",
+      "blueprintId": "GWC-9",
+      "profile": [
+        "DERIVER"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-09",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-11",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-CONTEXT"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-CONTEXT"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-11",
+      "name": "EFFECTIVE_CAPABILITIES",
+      "family": "C",
+      "familyName": "Governance and Capability Composition",
+      "blueprintId": "GWC-9",
+      "profile": [
+        "DECISION"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-10",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-12",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-13",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-CONTEXT"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-CONTEXT"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-12",
+      "name": "BOOTSTRAP_RECEIPT",
+      "family": "C",
+      "familyName": "Governance and Capability Composition",
+      "blueprintId": "GWC-4",
+      "profile": [
+        "PROJECTION"
+      ],
+      "semantics": "COMPOSED_SUBCONTRACT",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-11",
+          "kind": "FORWARD"
+        },
+        {
+          "from": "GW-13",
+          "kind": "BACKWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-17",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-BOOTSTRAP",
+        "ABB-GOVERNED-CONTEXT"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-CONTEXT"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-13",
+      "name": "LIVE_STATE_RECONCILIATION",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "blueprintId": "GWC-5",
+      "profile": [
+        "RECONCILER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-11",
+          "kind": "SKIP"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-12",
+          "kind": "BACKWARD"
+        },
+        {
+          "to": "GW-14",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-17",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-LIVE-STATE",
+        "ABB-CURRENT-INVENTORY",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-TASK-QUEUE",
+        "ABB-SESSIONS",
+        "ABB-LOCKS"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-14",
+      "name": "EXISTING_TASK_LOOKUP",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "blueprintId": "GWC-5",
+      "profile": [
+        "OBSERVER"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-13",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-15",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-TASK-QUEUE",
+        "ABB-DISPATCH"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-TASK-QUEUE",
+        "ABB-SESSIONS",
+        "ABB-LOCKS"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-15",
+      "name": "TASK_CREATION_IF_REQUIRED",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "blueprintId": "GWC-5",
+      "profile": [
+        "TASK_MUTATION"
+      ],
+      "semantics": "EVALUATE_THEN_MUTATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-14",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-16",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-TASK-QUEUE",
+        "ABB-DISPATCH"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-TASK-QUEUE",
+        "ABB-SESSIONS",
+        "ABB-LOCKS"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-16",
+      "name": "GOVERNED_SESSION_OPEN_OR_RESUME",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "blueprintId": "GWC-4",
+      "profile": [
+        "SESSION_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-02",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-15",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-03",
+          "kind": "BACKWARD"
+        },
+        {
+          "to": "GW-17",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-BOOTSTRAP",
+        "ABB-SESSIONS"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-TASK-QUEUE",
+        "ABB-SESSIONS",
+        "ABB-LOCKS"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-17",
+      "name": "CONTEXT_ACKNOWLEDGEMENT",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "blueprintId": "GWC-4",
+      "profile": [
+        "SESSION_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-12",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-13",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-16",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-18",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-BOOTSTRAP",
+        "ABB-SESSIONS"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-TASK-QUEUE",
+        "ABB-SESSIONS",
+        "ABB-LOCKS"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-18",
+      "name": "TASK_CLAIM",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "blueprintId": "GWC-5",
+      "profile": [
+        "TASK_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-17",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-19",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-BOOTSTRAP",
+        "ABB-TASK-QUEUE",
+        "ABB-DISPATCH"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-TASK-QUEUE",
+        "ABB-SESSIONS",
+        "ABB-LOCKS"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-19",
+      "name": "MINIMAL_LOCK_ACQUISITION",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "blueprintId": "GWC-5",
+      "profile": [
+        "LOCKING"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-18",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-20",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-LOCKS"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-TASK-QUEUE",
+        "ABB-SESSIONS",
+        "ABB-LOCKS"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-20",
+      "name": "TASK_IN_PROGRESS",
+      "family": "D",
+      "familyName": "Work Orchestration",
+      "blueprintId": "GWC-5",
+      "profile": [
+        "TASK_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-19",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-21",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-TASK-QUEUE",
+        "ABB-SESSIONS",
+        "ABB-LOCKS"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-21",
+      "name": "AUTHORITY_DOCUMENT_READ",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-11",
+      "profile": [
+        "OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-20",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-22",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GWC-ENGINE",
+        "ABB-DOCUMENTATION"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-22",
+      "name": "INTEGRATION_SLOT_RESOLUTION",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-11",
+      "profile": [
+        "DERIVER"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-21",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-23",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-23",
+      "name": "EXACT_GITHUB_BASELINE",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-11",
+      "profile": [
+        "GIT_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-22",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-24",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GITHUB-PLANE"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-24",
+      "name": "GOVERNED_BRANCH_CREATION",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "GIT_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-23",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-25",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GITHUB-PLANE"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-25",
+      "name": "TDD_RED_AUTHORING",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "DEV_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-24",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-26",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-CI-SAFETY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-26",
+      "name": "TDD_RED_OBSERVATION",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "TEST_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-25",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-27",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-CI-SAFETY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-27",
+      "name": "TDD_GREEN_MINIMAL_IMPLEMENTATION",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "DEV_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-26",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-28",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-28",
+      "name": "GREEN_CI",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "CI_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-27",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-29",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-CI-SAFETY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-29",
+      "name": "SELF_REVIEW",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "REVIEW_DECISION"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-28",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-30",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-32",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-30",
+      "name": "REGRESSION_RED_IF_FINDING",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "TEST_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-29",
+          "kind": "FORWARD"
+        },
+        {
+          "from": "GW-37",
+          "kind": "BACKWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-31",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-31",
+      "name": "REGRESSION_GREEN",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "DEV_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-30",
+          "kind": "FORWARD"
+        },
+        {
+          "from": "GW-37",
+          "kind": "BACKWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-32",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-CI-SAFETY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-32",
+      "name": "FULL_REGRESSION",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "CI_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-29",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-31",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-33",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-CI-SAFETY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-33",
+      "name": "NON_TERMINAL_DOCUMENTATION",
+      "family": "E",
+      "familyName": "Development",
+      "blueprintId": "GWC-13",
+      "profile": [
+        "DOC_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-32",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-34",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-34",
+      "name": "DRAFT_PR",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "GIT_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-33",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-35",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GWC-ENGINE",
+        "ABB-GITHUB-PLANE"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-35",
+      "name": "EXACT_DIFF_REVIEW",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "GIT_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-34",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-36",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-36",
+      "name": "RULESET_VERIFICATION",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "GIT_DECISION"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-35",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-37",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-37",
+      "name": "REVIEW_FINDINGS_RESOLUTION",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "REVIEW_MUTATION"
+      ],
+      "semantics": "EVALUATE_THEN_MUTATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-36",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-30",
+          "kind": "BACKWARD"
+        },
+        {
+          "to": "GW-31",
+          "kind": "BACKWARD"
+        },
+        {
+          "to": "GW-38",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-38",
+      "name": "PR_READY",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "GIT_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-37",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-39",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-39",
+      "name": "TASK_REVIEW",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "TASK_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-38",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-40",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-40",
+      "name": "REVIEW_CHECKPOINT",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "SESSION_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-39",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-41",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-41",
+      "name": "PREMERGE_REVALIDATION",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "CROSS_EVIDENCE_DECISION"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-40",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-42",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-42",
+      "name": "TASK_MERGE_READY",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "TASK_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-41",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-43",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-43",
+      "name": "EXACT_HEAD_MERGE",
+      "family": "F",
+      "familyName": "Review and Merge",
+      "blueprintId": "GWC-14",
+      "profile": [
+        "GIT_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-42",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-44",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GITHUB-PLANE"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GITHUB-PLANE",
+        "ABB-CI-SAFETY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-44",
+      "name": "MAIN_MERGE_COMMIT_OBSERVATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "GIT_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-43",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-45",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-45",
+      "name": "MAIN_CI",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "CI_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-44",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-46",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY",
+        "ABB-CI-SAFETY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-46",
+      "name": "GOVERNED_AUTODEPLOY_OBSERVATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "DEPLOY_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-45",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-47",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-48",
+          "kind": "SKIP"
+        },
+        {
+          "to": "GW-49",
+          "kind": "SKIP"
+        },
+        {
+          "to": "GW-50",
+          "kind": "SKIP"
+        },
+        {
+          "to": "GW-51",
+          "kind": "SKIP"
+        },
+        {
+          "to": "GW-52",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-47",
+      "name": "GITHUB_TO_S1_SYNC_ATTESTATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "DEPLOY_ATTESTATION"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-46",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-48",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-52",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-48",
+      "name": "DEPLOY_TYPECHECK_BUILD",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "DEPLOY_CI_ATTESTATION"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-46",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-47",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-49",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-52",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-49",
+      "name": "RUNTIME_REBUILD_OR_RESTART_ATTESTATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "RUNTIME_ATTESTATION"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-46",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-48",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-50",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-52",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-50",
+      "name": "HEALTH_CHECK",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "RUNTIME_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-46",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-49",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-51",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-52",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-51",
+      "name": "RUNTIME_IMAGE_ATTESTATION",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "RUNTIME_ATTESTATION"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-46",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-50",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-52",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-52",
+      "name": "EXACT_SHA_DEPLOYMENT_PROOF",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "CROSS_AUTHORITY_DECISION"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-46",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-47",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-48",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-49",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-50",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-51",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-53",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY",
+        "ABB-OBSERVABILITY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-53",
+      "name": "LIVE_STATE_UPDATE",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "RECONCILER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-52",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-54",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-LIVE-STATE",
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-54",
+      "name": "STALE_RECEIPT_DETECTION",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "DECISION"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-53",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-55",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-56",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-55",
+      "name": "RECEIPT_REFRESH",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "SESSION_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-54",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-56",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-56",
+      "name": "TASK_RUNTIME_REVISION_BINDING",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "DERIVER_BINDING"
+      ],
+      "semantics": "COMPOSED_SUBCONTRACT",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-54",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-55",
+          "kind": "FORWARD"
+        },
+        {
+          "from": "GW-65",
+          "kind": "BACKWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-57",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-57",
+      "name": "TASK_DEPLOYING",
+      "family": "G",
+      "familyName": "Deployment",
+      "blueprintId": "GWC-15",
+      "profile": [
+        "TASK_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-56",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-58",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GOVERNED-DEPLOY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-58",
+      "name": "DOCUMENTATION_DRIFT_DECISION",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "DECISION"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-57",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-59",
+          "kind": "FORWARD"
+        },
+        {
+          "to": "GW-66",
+          "kind": "SKIP"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-DOCUMENTATION"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-59",
+      "name": "DOCUMENTATION_BRANCH_IF_REQUIRED",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "GIT_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-58",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-60",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-60",
+      "name": "DOCUMENTATION_RECONCILIATION",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "DOC_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-59",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-61",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-DOCUMENTATION"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-61",
+      "name": "DOCUMENTATION_PR",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "GIT_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-60",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-62",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-62",
+      "name": "DOCUMENTATION_CI_REVIEW",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "CI_REVIEW"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-61",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-63",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-63",
+      "name": "DOCUMENTATION_EXACT_HEAD_MERGE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "GIT_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-62",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-64",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-64",
+      "name": "DOCUMENTATION_AUTODEPLOY",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "DEPLOY_OBSERVER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-63",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-65",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-65",
+      "name": "DOCUMENTATION_LIVE_STATE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "RECONCILER"
+      ],
+      "semantics": "OBSERVE_AND_EVALUATE",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-64",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-56",
+          "kind": "BACKWARD"
+        },
+        {
+          "to": "GW-66",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-66",
+      "name": "TERMINAL_RECEIPT_REFRESH",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "SESSION_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-58",
+          "kind": "SKIP"
+        },
+        {
+          "from": "GW-65",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-67",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-67",
+      "name": "TASK_VERIFYING",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "TASK_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-66",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-68",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-68",
+      "name": "TERMINAL_VERIFICATION",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "TERMINAL_DECISION"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-67",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-69",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-OBSERVABILITY"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-69",
+      "name": "TASK_DONE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "TASK_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-68",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-70",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-TASK-QUEUE"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-70",
+      "name": "TERMINAL_CHECKPOINT",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "SESSION_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-69",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-71",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-OPERATIONAL-MEMORY",
+        "ABB-DOCUMENTATION"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-71",
+      "name": "LOCK_RELEASE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "LOCK_MUTATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-70",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [
+        {
+          "to": "GW-72",
+          "kind": "FORWARD"
+        }
+      ],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-LOCKS"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-72",
+      "name": "SESSION_CLOSE_AND_QUEUE_RECONCILE",
+      "family": "H",
+      "familyName": "Verification and Closure",
+      "blueprintId": "GWC-16",
+      "profile": [
+        "SESSION_TASK_ORCHESTRATION"
+      ],
+      "semantics": "MUTATE_THEN_VERIFY",
+      "inRuntimeGraph": true,
+      "incoming": [
+        {
+          "from": "GW-71",
+          "kind": "FORWARD"
+        }
+      ],
+      "outgoing": [],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-SESSIONS",
+        "ABB-GWC-CONTRACTS"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-DOCUMENTATION",
+        "ABB-OPERATIONAL-MEMORY"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    },
+    {
+      "id": "GW-73",
+      "name": "UNIVERSAL_ACCEPTANCE",
+      "family": "I",
+      "familyName": "Universal Acceptance",
+      "blueprintId": "GWC-17",
+      "profile": [
+        "ACCEPTANCE"
+      ],
+      "semantics": "EVALUATE_ONLY",
+      "inRuntimeGraph": false,
+      "incoming": [],
+      "outgoing": [],
+      "explicitArchitecturalBlockRefs": [
+        "ABB-GWC-CONTRACTS",
+        "ABB-GWC-ENGINE"
+      ],
+      "familyLevelBlockDiscoveryHints": [
+        "ABB-GWC-ENGINE"
+      ],
+      "source": {
+        "path": ".mcp/gwc-contracts.json",
+        "sha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+        "graphPath": ".mcp/gwc-workflow-graph.json",
+        "graphSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb"
+      },
+      "caveat": "EXPLICIT_REFERENCES_ARE_A_CLASSIFICATION_CROSSWALK_NOT_PROOF_OF_RUNTIME_ROUTING"
+    }
+  ]
+}

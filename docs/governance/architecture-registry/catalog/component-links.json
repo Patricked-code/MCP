@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "observationId": "mcp-branches-20261107-7d29ad4212ef",
+  "statusVocabulary": [
+    "VERIFIED_DOCUMENTARY",
+    "VERIFIED_CODE_RELATION",
+    "CANDIDATE",
+    "UNKNOWN",
+    "CONTRADICTED"
+  ],
+  "components": [
+    {
+      "id": "process:mcp-governed-deploy",
+      "name": "MCP Governed Deploy",
+      "kind": "GOVERNED_PROCESS",
+      "purpose": "Deploy MCP S1 from approved GitHub revision with exact SHA and attestation",
+      "runtimeStatus": "NEEDS_LIVE_REOBSERVATION",
+      "sourceRefs": [
+        "src:gwc-contracts",
+        "src:gwc-graph"
+      ]
+    },
+    {
+      "id": "blueprint:GWC-15",
+      "name": "Deployment / exact-SHA evidence",
+      "kind": "DESIGN_BLUEPRINT",
+      "sourceRefs": [
+        "src:gwc-contracts"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "process:mcp-governed-deploy",
+      "predicate": "WORKFLOW_FILE",
+      "to": ".github/workflows/mcp-deploy.yml",
+      "status": "VERIFIED_DOCUMENTARY",
+      "evidence": "src:gittree-main"
+    },
+    {
+      "from": "process:mcp-governed-deploy",
+      "predicate": "ADMISSION_AND_IDENTITY",
+      "to": "src/deploy/githubOidc.ts",
+      "status": "VERIFIED_CODE_RELATION",
+      "evidence": "src:gittree-main"
+    },
+    {
+      "from": "process:mcp-governed-deploy",
+      "predicate": "ADMISSION_ROUTES",
+      "to": "src/deploy/routes.ts",
+      "status": "VERIFIED_CODE_RELATION",
+      "evidence": "src:gittree-main"
+    },
+    {
+      "from": "process:mcp-governed-deploy",
+      "predicate": "SERVER_EXECUTION",
+      "to": "src/deploy/s1Deploy.ts",
+      "status": "VERIFIED_CODE_RELATION",
+      "evidence": "src:gittree-main"
+    },
+    {
+      "from": "process:mcp-governed-deploy",
+      "predicate": "DESIGN_RELATED_TO",
+      "to": "blueprint:GWC-15",
+      "status": "VERIFIED_DOCUMENTARY",
+      "evidence": "src:gwc-contracts"
+    },
+    {
+      "from": "blueprint:GWC-15",
+      "predicate": "CONTRACT_RANGE",
+      "to": "GW-44..GW-57",
+      "status": "VERIFIED_DOCUMENTARY",
+      "evidence": "src:gwc-contracts"
+    },
+    {
+      "from": "contract:GW-46",
+      "predicate": "OBSERVES",
+      "to": "process:mcp-governed-deploy",
+      "status": "VERIFIED_DOCUMENTARY",
+      "evidence": "src:gwc-contracts"
+    },
+    {
+      "from": "contract:GW-52",
+      "predicate": "EVALUATES_EXACT_SHA_PROOF",
+      "to": "process:mcp-governed-deploy",
+      "status": "VERIFIED_DOCUMENTARY",
+      "evidence": "src:gwc-contracts"
+    }
+  ],
+  "unclassifiedFiles": 844,
+  "classifiedFiles": 0,
+  "warning": "Relations initiales documentaires/techniques; ne pas inférer le statut de chacun des 73 contrats au runtime."
+}

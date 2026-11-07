@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "observationId": "mcp-branches-20261107-7d29ad4212ef",
+  "observedAt": "2026-11-07T03:12:33.424Z",
+  "branch": "main",
+  "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "treeObjectSha": "9b4480b32b663c9c67a30062b1372d174ef2b9a8",
+  "totalEntries": 989,
+  "blobCount": 844,
+  "directoryCount": 145,
+  "truncated": false,
+  "byRoot": {
+    ".devcontainer": 2,
+    "[racine]": 65,
+    ".github": 6,
+    ".mcp": 19,
+    "data": 2,
+    "docs": 242,
+    "memory": 62,
+    "Migration": 10,
+    "scripts": 21,
+    "src": 182,
+    "tests": 226,
+    "wealthtech_project_memory": 7
+  },
+  "byExtension": {
+    "json": 172,
+    "sh": 5,
+    "example": 1,
+    "yml": 7,
+    "gitignore": 1,
+    "md": 231,
+    "(sans extension)": 1,
+    "txt": 6,
+    "pdf": 3,
+    "mjs": 15,
+    "ts": 402
+  },
+  "sourceUrl": "https://api.github.com/repos/Patricked-code/MCP/git/trees/7d29ad4212efa0bd343d53f400785e5c9cbf07f4?recursive=1",
+  "classificationStatus": "PHYSICAL_ONLY"
+}

@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "projectionKind": "READ_ONLY_ARCHITECTURE_REGISTRY",
+  "snapshotId": "mcp-branches-20261107-7d29ad4212ef",
+  "observedAt": "2026-11-07T03:12:33.424Z",
+  "mainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "branchCount": 189,
+  "mainFileCount": 844,
+  "mainDirectoryCount": 145,
+  "files": {
+    "branchHeads": "snapshots/2026-11-07/branch-heads.json",
+    "mainFiles": "snapshots/2026-11-07/main-files.jsonl",
+    "mainSummary": "snapshots/2026-11-07/main-summary.json",
+    "sourceReferences": "catalog/sources.json",
+    "componentLinks": "catalog/component-links.json",
+    "schema": "schema/schema.sql",
+    "checkpoint": "checkpoints/current.json",
+    "technicalTaxonomy": "catalog/technical-format-taxonomy.json",
+    "technicalClassification": "snapshots/2026-11-07/main-technical-classification.jsonl",
+    "technicalSummary": "snapshots/2026-11-07/main-technical-summary.json",
+    "technicalVerification": "verify_technical_formats.mjs",
+    "mainDirectories": "snapshots/2026-11-07/main-directories.jsonl",
+    "mainDirectorySummary": "snapshots/2026-11-07/main-directory-summary.json",
+    "directoryVerification": "verify_directory_inventory.mjs",
+    "sourceEvidenceBatch01": "catalog/source-evidence-batch-01.json",
+    "crossbranchSample": "snapshots/2026-11-07/crossbranch-deploy-sample.json",
+    "architectureVerification": "verify_architecture_analysis.mjs",
+    "mainCheckpoint": "checkpoints/history-main-baseline-20261107.json",
+    "sourceEvidenceBatch02": "catalog/source-evidence-batch-02.json",
+    "semanticVerificationBatch02": "verify_source_evidence_batch_02.mjs"
+  },
+  "notAuthoritativeFor": [
+    "Task Queue",
+    "Session/Claims/Locks",
+    "Live State",
+    "Deployment",
+    "Runtime",
+    "GitHub branch HEAD"
+  ],
+  "technicalStage": {
+    "status": "COMPLETE_BY_FILENAME_NOT_CONTENT",
+    "fileCount": 844,
+    "unknownNames": 0,
+    "contentValidated": 0,
+    "semanticRolesClassified": 0
+  },
+  "latestSnapshotId": "mcp-all-branches-20261107-01",
+  "multiBranchInventory": {
+    "status": "COMPLETE",
+    "snapshotId": "mcp-all-branches-20261107-01",
+    "branches": 190,
+    "fileMemberships": 96689,
+    "technicalTypes": 17,
+    "root": "snapshots/2026-11-07/all-branches-v1/",
+    "manifest": "snapshots/2026-11-07/all-branches-v1/manifest.json",
+    "summary": "snapshots/2026-11-07/all-branches-v1/summary.json",
+    "branchHeads": "snapshots/2026-11-07/all-branches-v1/frozen-branch-heads.json",
+    "taxonomyV2": "catalog/technical-format-taxonomy-v2.json",
+    "validation": [
+      "snapshots/2026-11-07/all-branches-v1/validation/part-00.json",
+      "snapshots/2026-11-07/all-branches-v1/validation/part-01.json"
+    ],
+    "sqliteBuilder": "build_sqlite.py",
+    "sqliteMode": "all-branches",
+    "technicalVerifier": "verify_multibranch_inventory.mjs",
+    "functionalClassification": "NOT_PERFORMED",
+    "checkpoint": "checkpoints/history-multibranch-20261107-01.json"
+  },
+  "directoryStage": {
+    "status": "COMPLETE_PHYSICAL_FROZEN_ALL_BRANCHES",
+    "directoryPaths": 145,
+    "gitTreeTruncated": false,
+    "mainCommitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+    "otherBranches": "17836_SUBTREE_MEMBERSHIPS_DERIVED_FROM_IMMUTABLE_BATCHES",
+    "semanticMeaning": "UNREVIEWED",
+    "sqliteProjection": "ALL_BRANCH_DIRECTORIES_FROZEN_SNAPSHOT",
+    "allBranches": 190,
+    "allBranchDirectoryMemberships": 17836,
+    "derivedFrom": "snapshots/2026-11-07/all-branches-v1/tree-object-shas/batch-00.jsonl..batch-18.jsonl"
+  },
+  "analysisStage": {
+    "status": "PARTIAL_EVIDENCE_BACKED",
+    "sourcePathsInspected": 19,
+    "sourceRelationsVerified": 12,
+    "declarationsVerified": 10,
+    "branchesComparedForSample": 190,
+    "filesSampled": 10,
+    "fullSemanticFilesReviewed": 0,
+    "otherFiles": "UNREVIEWED",
+    "next": "EXPAND_EXACT_BLOB_SOURCE_REVIEWS_TO_UNREVIEWED_COMPONENTS_AND_BUILD_CROSS_BRANCH_REFERENCE_GRAPH_WITH_EVIDENCE",
+    "impactInspector": "READ_ONLY_BOUNDED_REVERSE_REFERENCE_CANDIDATES",
+    "sqlGraphProjection": "verified_file_relations + source_file_roles",
+    "checkpointId": "MCP-ARCH-REGISTRY-SEMANTIC-BATCH02-20261107-01",
+    "semanticRoleAnchors": 9
+  },
+  "architecturalBlockStage": {
+    "catalog": "catalog/architectural-blocks-v1.json",
+    "manifest": "catalog/architectural-classification-manifest-v1.json",
+    "fileCandidates": [
+      "catalog/architectural-file-candidates-v1-part-00.jsonl",
+      "catalog/architectural-file-candidates-v1-part-01.jsonl",
+      "catalog/architectural-file-candidates-v1-part-02.jsonl",
+      "catalog/architectural-file-candidates-v1-part-03.jsonl"
+    ],
+    "gwcCrosswalk": "catalog/architectural-gwc-contract-map-v1.json",
+    "programCrosswalk": "catalog/architectural-program-blueprint-map-v1.json",
+    "history": "catalog/architectural-evolution-v1.json",
+    "verifier": "verify_architectural_blocks_v1.mjs",
+    "blocks": 26,
+    "relations": 27,
+    "files": {
+      "totalFiles": 844,
+      "anchorFilePaths": 61,
+      "previouslyInspectedPaths": 19,
+      "pathHintsOnly": 640,
+      "unreviewedWithoutHint": 133,
+      "fullySemanticallyAudited": 0
+    },
+    "semanticAuditComplete": false,
+    "status": "PROPOSED_CLASSIFICATION_BOUNDED_EVIDENCE_NO_RUNTIME_AUTHORITY"
+  }
+}

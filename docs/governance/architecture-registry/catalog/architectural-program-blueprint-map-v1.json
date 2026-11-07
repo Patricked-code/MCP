@@ -1,0 +1,2573 @@
+{
+  "schemaVersion": 1,
+  "kind": "PROGRAM_BACKLOG_V2_TO_ARCHITECTURAL_BLOCK_CROSSWALK",
+  "mainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "projectionId": "program-backlog-convergence-v2-20260924",
+  "authority": "NON_AUTHORITATIVE",
+  "workItems": 41,
+  "blueprintCount": 94,
+  "byWave": {
+    "W1": 7,
+    "W2": 3,
+    "W3": 46,
+    "W4": 26,
+    "MAINTENANCE": 2,
+    "CONDITIONAL": 10
+  },
+  "limitations": [
+    "GIT_PROJECTION_NOT_RUNTIME_TASK_QUEUE",
+    "GWB04_PATH_EXISTENCE_NOT_BEHAVIOR_PROOF",
+    "NO_INFERENCE_OF_DONE_FROM_PROJECTION",
+    "NO_NEW_WORK_ITEMS"
+  ],
+  "items": [
+    {
+      "id": "PB-FOUNDATIONS-DONE",
+      "title": "Delivered connection/repository/project foundations",
+      "dispositionInGitProjection": "DONE",
+      "slot": "program.delivered-foundations",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": []
+    },
+    {
+      "id": "PB-A2.2",
+      "title": "A2.2 Verified Client Evidence",
+      "dispositionInGitProjection": "DONE",
+      "slot": "connection.client-evidence",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-CONNECTION"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-A22-01",
+        "TB-W3-A22-02"
+      ]
+    },
+    {
+      "id": "PB-A3",
+      "title": "A3 OAuth Auth Attempt Correlation",
+      "dispositionInGitProjection": "PARTIALLY_IMPLEMENTED",
+      "slot": "connection.oauth-attempt-correlation",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-CONNECTION"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-A3-01",
+        "TB-W3-A3-02"
+      ]
+    },
+    {
+      "id": "PB-B3",
+      "title": "B3 Multi-repository Governed Context",
+      "dispositionInGitProjection": "DONE",
+      "slot": "context.multi-repository",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W3-B3-01",
+        "TB-W3-B3-02"
+      ]
+    },
+    {
+      "id": "PB-DISPATCH",
+      "title": "Autonomous governed task-dispatch loop",
+      "dispositionInGitProjection": "DONE",
+      "slot": "orchestration.autonomous-dispatch-loop",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-BOOTSTRAP",
+        "ABB-TASK-QUEUE",
+        "ABB-DISPATCH"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-DISPATCH-01",
+        "TB-W3-DISPATCH-02",
+        "TB-W3-DISPATCH-03"
+      ]
+    },
+    {
+      "id": "PB-C1",
+      "title": "C1 GitRegistry V2 verification and activation path",
+      "dispositionInGitProjection": "PARTIALLY_IMPLEMENTED",
+      "slot": "project.gitregistry-verification",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-GITREGISTRY"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-C1-01",
+        "TB-COND-C1-ACTIVATE"
+      ]
+    },
+    {
+      "id": "PB-C345",
+      "title": "C3/C4/C5 Server, Runtime and Domain Resolution",
+      "dispositionInGitProjection": "DONE",
+      "slot": "project.server-runtime-domain-resolution",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-TARGET"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-C3-01",
+        "TB-W3-C4-01",
+        "TB-W3-C5-01",
+        "TB-W3-C345-02"
+      ]
+    },
+    {
+      "id": "PB-D1",
+      "title": "D1 Existing Governance Inheritance",
+      "dispositionInGitProjection": "DONE",
+      "slot": "governance.inheritance",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W3-D1-01"
+      ]
+    },
+    {
+      "id": "PB-D2",
+      "title": "D2 Effective Capabilities",
+      "dispositionInGitProjection": "DONE",
+      "slot": "governance.effective-capabilities",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-GOVERNED-CONTEXT"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-D2-01"
+      ]
+    },
+    {
+      "id": "PB-D3",
+      "title": "D3 Bootstrap Receipt Enrichment",
+      "dispositionInGitProjection": "DONE",
+      "slot": "bootstrap.receipt-enrichment",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-BOOTSTRAP"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-D3-01"
+      ]
+    },
+    {
+      "id": "PB-E",
+      "title": "E1/E2/E3 Guided Context Completion",
+      "dispositionInGitProjection": "DONE",
+      "slot": "context.guided-completion",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W3-E1-01",
+        "TB-W3-E2-01",
+        "TB-W3-E3-01"
+      ]
+    },
+    {
+      "id": "PB-F",
+      "title": "F Governed Provisioning",
+      "dispositionInGitProjection": "PARTIALLY_IMPLEMENTED",
+      "slot": "provisioning.governed",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROVISIONING"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-F-01",
+        "TB-W3-F-02",
+        "TB-W3-F-03",
+        "TB-W3-F-04",
+        "TB-W3-F-05"
+      ]
+    },
+    {
+      "id": "PB-G12",
+      "title": "G1/G2 Client Presence and two-clock model",
+      "dispositionInGitProjection": "DONE",
+      "slot": "presence.client-two-clock",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W4-G1-01",
+        "TB-W4-G2-01"
+      ]
+    },
+    {
+      "id": "PB-G3",
+      "title": "G3 Tool Surface Attestation",
+      "dispositionInGitProjection": "DONE",
+      "slot": "attestation.tool-surface",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W4-G3-01"
+      ]
+    },
+    {
+      "id": "PB-H",
+      "title": "H End-to-End Tracing",
+      "dispositionInGitProjection": "KNOWN_NOT_ANALYZED",
+      "slot": "observability.end-to-end-tracing",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-OBSERVABILITY"
+      ],
+      "subordinateBlueprints": [
+        "TB-W4-H-01",
+        "TB-W4-H-02",
+        "TB-W4-H-03"
+      ]
+    },
+    {
+      "id": "PB-I",
+      "title": "I1/I2/I3 Synthetic Monitoring, connection dashboard and alerts",
+      "dispositionInGitProjection": "KNOWN_NOT_ANALYZED",
+      "slot": "observability.synthetic-monitoring",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-OBSERVABILITY"
+      ],
+      "subordinateBlueprints": [
+        "TB-W4-I1-01",
+        "TB-W4-I2-01",
+        "TB-W4-I3-01"
+      ]
+    },
+    {
+      "id": "PB-J12",
+      "title": "J1/J2 Claude and ChatGPT certification",
+      "dispositionInGitProjection": "KNOWN_NOT_ANALYZED",
+      "slot": "certification.clients",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W4-J1-01",
+        "TB-W4-J2-01"
+      ]
+    },
+    {
+      "id": "PB-K",
+      "title": "K — Super Admin Cockpit",
+      "dispositionInGitProjection": "DESIGNED_NOT_IMPLEMENTED",
+      "slot": "cockpit.super-admin",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "subordinateBlueprints": [
+        "TB-W4-K-01",
+        "TB-W4-K-02",
+        "TB-W4-K-03",
+        "TB-W4-K-04",
+        "TB-W4-K-05",
+        "TB-W4-K-06",
+        "TB-W4-K-07",
+        "TB-W4-K-08",
+        "TB-W4-K-09",
+        "TB-W4-K-10",
+        "TB-W4-K-11",
+        "TB-W4-K-12"
+      ]
+    },
+    {
+      "id": "PB-J3",
+      "title": "J3 GitHub Actions / Node 24 maintenance",
+      "dispositionInGitProjection": "KNOWN_NOT_ANALYZED",
+      "slot": "maintenance.github-actions-node24",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-M-01"
+      ]
+    },
+    {
+      "id": "PB-J4",
+      "title": "J4 WRITE gate shadow→enforce",
+      "dispositionInGitProjection": "CONDITIONAL",
+      "slot": "governance.write-gate-enforcement",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-COND-J4"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-FIRST-PROGRAM",
+      "title": "GitHub-first Operational Continuity residual program",
+      "dispositionInGitProjection": "DONE",
+      "slot": "github-first.continuity-program",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": []
+    },
+    {
+      "id": "PB-GITHUB-FIRST-PROOF",
+      "title": "GitHub-first S1 read-only evidence proof",
+      "dispositionInGitProjection": "DONE",
+      "slot": "github-first.read-evidence-proof",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": []
+    },
+    {
+      "id": "PB-GITHUB-FIRST-FALLBACKS",
+      "title": "Optional SSH read-only fallback selection",
+      "dispositionInGitProjection": "DEFERRED",
+      "slot": "github-first.optional-readonly-fallbacks",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-COND-SSH"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-FIRST-WRITE",
+      "title": "Additional bounded server WRITE transports",
+      "dispositionInGitProjection": "DEFERRED",
+      "slot": "github-first.server-write-extensions",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-COND-SERVER-WRITE"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-READ",
+      "title": "GitHub Control Plane READ R1",
+      "dispositionInGitProjection": "DONE",
+      "slot": "github.control-plane.read-complements",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-ADMIN",
+      "title": "Governed github_create_repository",
+      "dispositionInGitProjection": "DESIGNED_NOT_IMPLEMENTED",
+      "slot": "github.admin.create-repository",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W3-ADMIN-01"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-PRWRITE",
+      "title": "Governed PR write extensions",
+      "dispositionInGitProjection": "DESIGNED_NOT_IMPLEMENTED",
+      "slot": "github.pr-write.extensions",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W3-PRW-01",
+        "TB-W3-PRW-02"
+      ]
+    },
+    {
+      "id": "PB-GITHUB-DESTRUCTIVE",
+      "title": "Destructive GitHub file/branch operations",
+      "dispositionInGitProjection": "DEFERRED",
+      "slot": "github.destructive-writes",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-COND-GH-DELETE"
+      ]
+    },
+    {
+      "id": "PB-STABLECOIN-APPDEPLOY",
+      "title": "Stablecoin application-changing deploy path",
+      "dispositionInGitProjection": "CONDITIONAL",
+      "slot": "deployment.stablecoin-application",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-COND-STABLECOIN-DEPLOY"
+      ]
+    },
+    {
+      "id": "PB-UAC",
+      "title": "Universal Agent Coordination / heartbeat and claim observability",
+      "dispositionInGitProjection": "DONE",
+      "slot": "coordination.universal",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-UAC"
+      ],
+      "subordinateBlueprints": []
+    },
+    {
+      "id": "PB-GWC-RECONCILE",
+      "title": "GWC-0..17 implementation-state convergence",
+      "dispositionInGitProjection": "DONE",
+      "slot": "governance.gwc-blueprint-convergence",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROGRAM-V2",
+        "ABB-GWC-CONTRACTS"
+      ],
+      "subordinateBlueprints": [
+        "TB-W1-01",
+        "TB-W1-02",
+        "TB-W1-06",
+        "TB-W1-07"
+      ]
+    },
+    {
+      "id": "PB-AF-CLOSED",
+      "title": "GWC findings with attested corrections",
+      "dispositionInGitProjection": "DONE",
+      "slot": "governance.gwc-findings-closed",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": []
+    },
+    {
+      "id": "PB-AF-RECONCILE",
+      "title": "Remaining GWC finding classification",
+      "dispositionInGitProjection": "DONE",
+      "slot": "governance.gwc-findings-reconciliation",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W1-03"
+      ]
+    },
+    {
+      "id": "PB-OD-RECONCILE",
+      "title": "OD-01..12 decision-state convergence",
+      "dispositionInGitProjection": "PARTIALLY_IMPLEMENTED",
+      "slot": "governance.open-decisions-reconciliation",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W1-04",
+        "TB-COND-OD08",
+        "TB-COND-OD09"
+      ]
+    },
+    {
+      "id": "PB-TASKREG-RECONCILE",
+      "title": "Static task-registry drift reconciliation",
+      "dispositionInGitProjection": "DONE",
+      "slot": "governance.task-registry-reconciliation",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W1-05"
+      ]
+    },
+    {
+      "id": "PB-LEGACY-CONVERGENCE-DONE",
+      "title": "Historical PR intent reconciliation",
+      "dispositionInGitProjection": "DONE",
+      "slot": "governance.historical-pr-intents",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": []
+    },
+    {
+      "id": "PB-GGCC",
+      "title": "Git/GitHub Capability Completion — intake #177 convergence and residual capability completion",
+      "dispositionInGitProjection": "PARTIALLY_IMPLEMENTED",
+      "slot": "control-plane.git-github-capability-completion",
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-GITHUB-PLANE"
+      ],
+      "subordinateBlueprints": [
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W3-GGCC-GIT-SYNC",
+        "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+        "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
+        "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
+        "TB-W3-GGCC-GH-REPO-BRANCH",
+        "TB-W3-GGCC-GH-COMMIT-FILE",
+        "TB-W3-GGCC-GH-PR-REVIEW",
+        "TB-W3-GGCC-GH-ACTIONS",
+        "TB-W3-GGCC-GH-RULESETS",
+        "TB-W3-GGCC-GH-WEBHOOKS",
+        "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+        "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+        "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+        "TB-W3-GGCC-GH-ORG",
+        "TB-W4-GGCC-AUDIT",
+        "TB-W4-GGCC-E2E",
+        "TB-M-GGCC-GIT-MAINTENANCE",
+        "TB-COND-GIT-HISTORY-REWRITE",
+        "TB-COND-GIT-DESTRUCTIVE"
+      ]
+    },
+    {
+      "id": "PB-SSH-ACCESS",
+      "title": "Governed repository SSH certificate access",
+      "dispositionInGitProjection": "DONE",
+      "slot": "transport.repository-ssh",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W3-SSH-ACCESS-01"
+      ]
+    },
+    {
+      "id": "PB-OAUTH-CONSENT",
+      "title": "OAuth authorization explicit operator consent",
+      "dispositionInGitProjection": "DONE",
+      "slot": "connection.oauth-authorization-consent",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W3-OAUTH-CONSENT-01"
+      ]
+    },
+    {
+      "id": "PB-OAUTH-WRITE-SCOPE",
+      "title": "OAuth mcp:write scope enforcement",
+      "dispositionInGitProjection": "DESIGNED_NOT_IMPLEMENTED",
+      "slot": "connection.oauth-write-scope-enforcement",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W3-OAUTH-WRITE-SCOPE-01"
+      ]
+    },
+    {
+      "id": "PB-MCP-TERMINAL",
+      "title": "Global MCP terminal acceptance",
+      "dispositionInGitProjection": "DESIGNED_NOT_IMPLEMENTED",
+      "slot": "program.global-terminal-acceptance",
+      "blockRefsViaExactIntegrationSlot": [],
+      "subordinateBlueprints": [
+        "TB-W4-MCP-FINAL-ACCEPTANCE"
+      ]
+    }
+  ],
+  "blueprints": [
+    {
+      "id": "TB-W1-01",
+      "waveId": "W1",
+      "lotId": "W1.1",
+      "workItemId": "PB-GWC-RECONCILE",
+      "title": "Freeze post-UAC reconciliation baseline",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "dependencyIds": [],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/gwc-evolution-design.json",
+        "src/governance/nextWorkProjection.ts",
+        "tests/programBacklogConvergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROGRAM-V2",
+        "ABB-GWC-CONTRACTS"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W1-02",
+      "waveId": "W1",
+      "lotId": "W1.2",
+      "workItemId": "PB-GWC-RECONCILE",
+      "title": "Reconcile GWC-0..17 implementation state",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "dependencyIds": [
+        "TB-W1-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/gwc-evolution-design.json",
+        "src/governance/nextWorkProjection.ts",
+        "tests/programBacklogConvergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROGRAM-V2",
+        "ABB-GWC-CONTRACTS"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W1-03",
+      "waveId": "W1",
+      "lotId": "W1.3",
+      "workItemId": "PB-AF-RECONCILE",
+      "title": "Reconcile AF-01..36 findings",
+      "integrationSlot": "governance.gwc-findings-reconciliation",
+      "dependencyIds": [
+        "TB-W1-02"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/gwc-evolution-design.json",
+        "docs/gwc/canonical-memory/current.json",
+        "tests/programBacklogConvergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W1-04",
+      "waveId": "W1",
+      "lotId": "W1.4",
+      "workItemId": "PB-OD-RECONCILE",
+      "title": "Reconcile OD-01..12 decisions",
+      "integrationSlot": "governance.open-decisions-reconciliation",
+      "dependencyIds": [
+        "TB-W1-02"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/gwc-evolution-design.json",
+        "DECISIONS_LOG.md",
+        "src/governance/operationalDecision.ts",
+        "tests/programBacklogConvergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W1-05",
+      "waveId": "W1",
+      "lotId": "W1.5",
+      "workItemId": "PB-TASKREG-RECONCILE",
+      "title": "Reconcile static task-registry drift",
+      "integrationSlot": "governance.task-registry-reconciliation",
+      "dependencyIds": [
+        "TB-W1-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/task-registry.json",
+        "src/operationalMemory/taskQueue.ts",
+        "tests/governedTaskQueue.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W1-06",
+      "waveId": "W1",
+      "lotId": "W1.6",
+      "workItemId": "PB-GWC-RECONCILE",
+      "title": "Reconcile ROADMAP/TODO/TASKS/backlog projections",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "dependencyIds": [
+        "TB-W1-02",
+        "TB-W1-03",
+        "TB-W1-04",
+        "TB-W1-05"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/gwc-evolution-design.json",
+        "src/governance/nextWorkProjection.ts",
+        "tests/programBacklogConvergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROGRAM-V2",
+        "ABB-GWC-CONTRACTS"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W1-07",
+      "waveId": "W1",
+      "lotId": "W1.7",
+      "workItemId": "PB-GWC-RECONCILE",
+      "title": "Publish W1 readiness handoff",
+      "integrationSlot": "governance.gwc-blueprint-convergence",
+      "dependencyIds": [
+        "TB-W1-06"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/gwc-evolution-design.json",
+        "src/governance/nextWorkProjection.ts",
+        "tests/programBacklogConvergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROGRAM-V2",
+        "ABB-GWC-CONTRACTS"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W2-01",
+      "waveId": "W2",
+      "lotId": "W2.R1",
+      "workItemId": "PB-GITHUB-READ",
+      "title": "Add github_get_commits",
+      "integrationSlot": "github.control-plane.read-complements",
+      "dependencyIds": [
+        "TB-W1-07"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/tools/githubControlPlaneRead.ts",
+        "src/github/inventory.ts",
+        "src/github/repositoryResolution.ts",
+        "tests/githubControlPlaneReadComplements.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W2-02",
+      "waveId": "W2",
+      "lotId": "W2.R2",
+      "workItemId": "PB-GITHUB-READ",
+      "title": "Add github_get_tree",
+      "integrationSlot": "github.control-plane.read-complements",
+      "dependencyIds": [
+        "TB-W1-07"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/tools/githubControlPlaneRead.ts",
+        "src/github/inventory.ts",
+        "src/github/repositoryResolution.ts",
+        "tests/githubControlPlaneReadComplements.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W2-03",
+      "waveId": "W2",
+      "lotId": "W2.R3",
+      "workItemId": "PB-GITHUB-READ",
+      "title": "Add github_get_required_checks",
+      "integrationSlot": "github.control-plane.read-complements",
+      "dependencyIds": [
+        "TB-W1-07"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/tools/githubControlPlaneRead.ts",
+        "src/github/inventory.ts",
+        "src/github/repositoryResolution.ts",
+        "tests/githubControlPlaneReadComplements.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-A22-01",
+      "waveId": "W3",
+      "lotId": "A2.2.1",
+      "workItemId": "PB-A2.2",
+      "title": "Inventory verifiable client evidence",
+      "integrationSlot": "connection.client-evidence",
+      "dependencyIds": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/clientPresence.ts",
+        "tests/clientEvidenceInventory.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-CONNECTION"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-A22-02",
+      "waveId": "W3",
+      "lotId": "A2.2.2",
+      "workItemId": "PB-A2.2",
+      "title": "Extend ConnectionContext with bounded client evidence",
+      "integrationSlot": "connection.client-evidence",
+      "dependencyIds": [
+        "TB-W3-A22-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/clientPresence.ts",
+        "tests/clientEvidenceInventory.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-CONNECTION"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-A3-01",
+      "waveId": "W3",
+      "lotId": "A3.1",
+      "workItemId": "PB-A3",
+      "title": "Inventory OAuth correlation surfaces",
+      "integrationSlot": "connection.oauth-attempt-correlation",
+      "dependencyIds": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/oauth.ts",
+        "src/operationalMemory/connectionContext.ts",
+        "tests/oauthAuthorizeConsent.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-CONNECTION"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-A3-02",
+      "waveId": "W3",
+      "lotId": "A3.2",
+      "workItemId": "PB-A3",
+      "title": "Add bounded OAuth attempt correlation",
+      "integrationSlot": "connection.oauth-attempt-correlation",
+      "dependencyIds": [
+        "TB-W3-A3-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/oauth.ts",
+        "src/operationalMemory/connectionContext.ts",
+        "tests/oauthAuthorizeConsent.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-CONNECTION"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-B3-01",
+      "waveId": "W3",
+      "lotId": "B3.1",
+      "workItemId": "PB-B3",
+      "title": "Reconcile remaining MCP-only target consumers",
+      "integrationSlot": "context.multi-repository",
+      "dependencyIds": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governedContext/github.ts",
+        "src/github/repositoryResolution.ts",
+        "tests/governedContextGithub.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-B3-02",
+      "waveId": "W3",
+      "lotId": "B3.2",
+      "workItemId": "PB-B3",
+      "title": "Operator-configured server target project and TargetScope propagation",
+      "integrationSlot": "context.multi-repository",
+      "dependencyIds": [
+        "TB-W3-B3-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governedContext/github.ts",
+        "src/github/repositoryResolution.ts",
+        "tests/governedContextGithub.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-DISPATCH-01",
+      "waveId": "W3",
+      "lotId": "DISPATCH.1",
+      "workItemId": "PB-DISPATCH",
+      "title": "Blueprint-bound governed materialization gate",
+      "integrationSlot": "orchestration.autonomous-dispatch-loop",
+      "dependencyIds": [
+        "TB-W3-B3-02"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governance/nextWorkProjection.ts",
+        "src/governance/programBlueprintMaterialization.ts",
+        "src/operationalMemory/taskQueue.ts",
+        "tests/programIntakes220to222Convergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-BOOTSTRAP",
+        "ABB-TASK-QUEUE",
+        "ABB-DISPATCH"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-DISPATCH-02",
+      "waveId": "W3",
+      "lotId": "DISPATCH.2",
+      "workItemId": "PB-DISPATCH",
+      "title": "Resume-owned-first governed claim",
+      "integrationSlot": "orchestration.autonomous-dispatch-loop",
+      "dependencyIds": [
+        "TB-W3-DISPATCH-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governance/nextWorkProjection.ts",
+        "src/governance/programBlueprintMaterialization.ts",
+        "src/operationalMemory/taskQueue.ts",
+        "tests/programIntakes220to222Convergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-BOOTSTRAP",
+        "ABB-TASK-QUEUE",
+        "ABB-DISPATCH"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-DISPATCH-03",
+      "waveId": "W3",
+      "lotId": "DISPATCH.3",
+      "workItemId": "PB-DISPATCH",
+      "title": "Connected-agent next-work projection and terminal recompute",
+      "integrationSlot": "orchestration.autonomous-dispatch-loop",
+      "dependencyIds": [
+        "TB-W3-DISPATCH-02"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governance/nextWorkProjection.ts",
+        "src/governance/programBlueprintMaterialization.ts",
+        "src/operationalMemory/taskQueue.ts",
+        "tests/programIntakes220to222Convergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-BOOTSTRAP",
+        "ABB-TASK-QUEUE",
+        "ABB-DISPATCH"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-C1-01",
+      "waveId": "W3",
+      "lotId": "C1.1",
+      "workItemId": "PB-C1",
+      "title": "Refresh GitRegistry V2 verification evidence",
+      "integrationSlot": "project.gitregistry-verification",
+      "dependencyIds": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/server-map.json",
+        "src/github/registryV2.ts",
+        "src/github/registry.ts",
+        "tests/githubRegistryEvidence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-GITREGISTRY"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-C3-01",
+      "waveId": "W3",
+      "lotId": "C3",
+      "workItemId": "PB-C345",
+      "title": "Integrate Server Resolution",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "dependencyIds": [
+        "TB-W3-B3-02",
+        "TB-W3-C1-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/server-map.json",
+        "src/github/serverResolution.ts",
+        "src/github/runtimeResolution.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-TARGET"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-C4-01",
+      "waveId": "W3",
+      "lotId": "C4",
+      "workItemId": "PB-C345",
+      "title": "Integrate Runtime/Container/Proxy Resolution",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "dependencyIds": [
+        "TB-W3-C3-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/server-map.json",
+        "src/github/serverResolution.ts",
+        "src/github/runtimeResolution.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-TARGET"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-C5-01",
+      "waveId": "W3",
+      "lotId": "C5",
+      "workItemId": "PB-C345",
+      "title": "Integrate Domain Resolution",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "dependencyIds": [
+        "TB-W3-C3-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/server-map.json",
+        "src/github/serverResolution.ts",
+        "src/github/runtimeResolution.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-TARGET"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-C345-02",
+      "waveId": "W3",
+      "lotId": "C345.E2E",
+      "workItemId": "PB-C345",
+      "title": "Project reality acceptance",
+      "integrationSlot": "project.server-runtime-domain-resolution",
+      "dependencyIds": [
+        "TB-W3-C4-01",
+        "TB-W3-C5-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/server-map.json",
+        "src/github/serverResolution.ts",
+        "src/github/runtimeResolution.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-TARGET"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-D1-01",
+      "waveId": "W3",
+      "lotId": "D1",
+      "workItemId": "PB-D1",
+      "title": "Existing Governance Inheritance",
+      "integrationSlot": "governance.inheritance",
+      "dependencyIds": [
+        "TB-W3-C345-02"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governedContext/agentCoordination.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/governedWorkflowGovernanceIntegration.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-D2-01",
+      "waveId": "W3",
+      "lotId": "D2",
+      "workItemId": "PB-D2",
+      "title": "Effective Capabilities",
+      "integrationSlot": "governance.effective-capabilities",
+      "dependencyIds": [
+        "TB-W3-D1-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governance/scopedWriteGate.ts",
+        "src/governedContext/service.ts",
+        "tests/governedWorkflowAuthority.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-GOVERNED-CONTEXT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-D3-01",
+      "waveId": "W3",
+      "lotId": "D3",
+      "workItemId": "PB-D3",
+      "title": "Bootstrap Receipt Enrichment",
+      "integrationSlot": "bootstrap.receipt-enrichment",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/sessionService.ts",
+        "src/governedContext/receiptReferences.ts",
+        "tests/governedConnectionBootstrap.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-BOOTSTRAP"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-E1-01",
+      "waveId": "W3",
+      "lotId": "E1",
+      "workItemId": "PB-E",
+      "title": "Missing-context Detection",
+      "integrationSlot": "context.guided-completion",
+      "dependencyIds": [
+        "TB-W3-D3-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governedContext/contextCompletion.ts",
+        "src/governedContext/missingContext.ts",
+        "tests/governedContextService.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-E2-01",
+      "waveId": "W3",
+      "lotId": "E2",
+      "workItemId": "PB-E",
+      "title": "Context Completion Wizard",
+      "integrationSlot": "context.guided-completion",
+      "dependencyIds": [
+        "TB-W3-E1-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governedContext/contextCompletion.ts",
+        "src/governedContext/missingContext.ts",
+        "tests/governedContextService.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-E3-01",
+      "waveId": "W3",
+      "lotId": "E3",
+      "workItemId": "PB-E",
+      "title": "Consent and Validation",
+      "integrationSlot": "context.guided-completion",
+      "dependencyIds": [
+        "TB-W3-E2-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governedContext/contextCompletion.ts",
+        "src/governedContext/missingContext.ts",
+        "tests/governedContextService.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-F-01",
+      "waveId": "W3",
+      "lotId": "F.0",
+      "workItemId": "PB-F",
+      "title": "Provisioning capability decomposition",
+      "integrationSlot": "provisioning.governed",
+      "dependencyIds": [
+        "TB-W3-E3-01",
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/provisioning/projectRuntime.ts",
+        "src/provisioning/routes.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROVISIONING"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-F-02",
+      "waveId": "W3",
+      "lotId": "F.1",
+      "workItemId": "PB-F",
+      "title": "Repository provisioning",
+      "integrationSlot": "provisioning.governed",
+      "dependencyIds": [
+        "TB-W3-F-01",
+        "TB-W3-ADMIN-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/provisioning/projectRuntime.ts",
+        "src/provisioning/routes.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROVISIONING"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-F-03",
+      "waveId": "W3",
+      "lotId": "F.2",
+      "workItemId": "PB-F",
+      "title": "Project/runtime provisioning",
+      "integrationSlot": "provisioning.governed",
+      "dependencyIds": [
+        "TB-W3-F-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/provisioning/projectRuntime.ts",
+        "src/provisioning/routes.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROVISIONING"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-F-04",
+      "waveId": "W3",
+      "lotId": "F.3",
+      "workItemId": "PB-F",
+      "title": "Domain/binding provisioning",
+      "integrationSlot": "provisioning.governed",
+      "dependencyIds": [
+        "TB-W3-F-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/provisioning/projectRuntime.ts",
+        "src/provisioning/routes.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROVISIONING"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-F-05",
+      "waveId": "W3",
+      "lotId": "F.E2E",
+      "workItemId": "PB-F",
+      "title": "Provisioning acceptance and rollback",
+      "integrationSlot": "provisioning.governed",
+      "dependencyIds": [
+        "TB-W3-F-02",
+        "TB-W3-F-03",
+        "TB-W3-F-04"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/provisioning/projectRuntime.ts",
+        "src/provisioning/routes.ts",
+        "src/liveState/servedDomains.ts",
+        "tests/servedDomainObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-PROVISIONING"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-PRW-01",
+      "waveId": "W3",
+      "lotId": "GH.PR.1",
+      "workItemId": "PB-GITHUB-PRWRITE",
+      "title": "Exact-head request-review",
+      "integrationSlot": "github.pr-write.extensions",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-PRW-02",
+      "waveId": "W3",
+      "lotId": "GH.PR.2",
+      "workItemId": "PB-GITHUB-PRWRITE",
+      "title": "Reduced PR metadata update",
+      "integrationSlot": "github.pr-write.extensions",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-ADMIN-01",
+      "waveId": "W3",
+      "lotId": "GH.ADMIN.1",
+      "workItemId": "PB-GITHUB-ADMIN",
+      "title": "Governed private repository creation",
+      "integrationSlot": "github.admin.create-repository",
+      "dependencyIds": [
+        "TB-W3-F-01",
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-G1-01",
+      "waveId": "W4",
+      "lotId": "G1",
+      "workItemId": "PB-G12",
+      "title": "Client Presence",
+      "integrationSlot": "presence.client-two-clock",
+      "dependencyIds": [
+        "TB-W3-A22-02"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/clientPresence.ts",
+        "tests/clientPresenceTwoClock.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-G2-01",
+      "waveId": "W4",
+      "lotId": "G2",
+      "workItemId": "PB-G12",
+      "title": "Two-clock Presence",
+      "integrationSlot": "presence.client-two-clock",
+      "dependencyIds": [
+        "TB-W4-G1-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/clientPresence.ts",
+        "tests/clientPresenceTwoClock.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-G3-01",
+      "waveId": "W4",
+      "lotId": "G3.RESIDUAL",
+      "workItemId": "PB-G3",
+      "title": "Tool Surface Attestation residual",
+      "integrationSlot": "attestation.tool-surface",
+      "dependencyIds": [
+        "TB-W4-G2-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governance/toolSurfaceAttestation.ts",
+        "tests/clientToolSurfaceAttestation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-H-01",
+      "waveId": "W4",
+      "lotId": "H.1",
+      "workItemId": "PB-H",
+      "title": "Trace evidence inventory",
+      "integrationSlot": "observability.end-to-end-tracing",
+      "dependencyIds": [
+        "TB-W3-D3-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/operationalAudit.ts",
+        "src/operationalMemory/eventJournal.ts",
+        "tests/governedObservability.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-OBSERVABILITY"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-H-02",
+      "waveId": "W4",
+      "lotId": "H.2",
+      "workItemId": "PB-H",
+      "title": "Bounded trace context",
+      "integrationSlot": "observability.end-to-end-tracing",
+      "dependencyIds": [
+        "TB-W4-H-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/operationalAudit.ts",
+        "src/operationalMemory/eventJournal.ts",
+        "tests/governedObservability.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-OBSERVABILITY"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-H-03",
+      "waveId": "W4",
+      "lotId": "H.3",
+      "workItemId": "PB-H",
+      "title": "Event Journal trace integration",
+      "integrationSlot": "observability.end-to-end-tracing",
+      "dependencyIds": [
+        "TB-W4-H-02"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/operationalAudit.ts",
+        "src/operationalMemory/eventJournal.ts",
+        "tests/governedObservability.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-OBSERVABILITY"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-I1-01",
+      "waveId": "W4",
+      "lotId": "I1",
+      "workItemId": "PB-I",
+      "title": "Synthetic Monitor",
+      "integrationSlot": "observability.synthetic-monitoring",
+      "dependencyIds": [
+        "TB-W4-H-03",
+        "TB-W4-G2-01",
+        "TB-W4-G3-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/clientPresence.ts",
+        "src/currentState/service.ts",
+        "tests/governedObservability.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-OBSERVABILITY"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-I2-01",
+      "waveId": "W4",
+      "lotId": "I2",
+      "workItemId": "PB-I",
+      "title": "Connection-chain Dashboard",
+      "integrationSlot": "observability.synthetic-monitoring",
+      "dependencyIds": [
+        "TB-W4-I1-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/clientPresence.ts",
+        "src/currentState/service.ts",
+        "tests/governedObservability.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-OBSERVABILITY"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-I3-01",
+      "waveId": "W4",
+      "lotId": "I3",
+      "workItemId": "PB-I",
+      "title": "Layer-specific Alerts",
+      "integrationSlot": "observability.synthetic-monitoring",
+      "dependencyIds": [
+        "TB-W4-I2-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/clientPresence.ts",
+        "src/currentState/service.ts",
+        "tests/governedObservability.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-OBSERVABILITY"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-J1-01",
+      "waveId": "W4",
+      "lotId": "J1",
+      "workItemId": "PB-J12",
+      "title": "Claude certification",
+      "integrationSlot": "certification.clients",
+      "dependencyIds": [
+        "TB-W4-I3-01",
+        "TB-W4-G3-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governedContext/agentCoordination.ts",
+        "tests/governedConnectionBootstrap.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-J2-01",
+      "waveId": "W4",
+      "lotId": "J2",
+      "workItemId": "PB-J12",
+      "title": "ChatGPT certification",
+      "integrationSlot": "certification.clients",
+      "dependencyIds": [
+        "TB-W4-I3-01",
+        "TB-W4-G3-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governedContext/agentCoordination.ts",
+        "tests/governedConnectionBootstrap.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-01",
+      "waveId": "W4",
+      "lotId": "K.1",
+      "workItemId": "PB-K",
+      "title": "Cockpit shell, design system, security baseline and read-only Command Center",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W3-DISPATCH-03",
+        "TB-W4-G3-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-02",
+      "waveId": "W4",
+      "lotId": "K.2",
+      "workItemId": "PB-K",
+      "title": "Program, Sessions, Tasks/nextWork and Claims & Locks explorers with global search (read-only)",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-03",
+      "waveId": "W4",
+      "lotId": "K.3",
+      "workItemId": "PB-K",
+      "title": "Agents & Clients and Tool Catalogue/Inspector (read-only)",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-04",
+      "waveId": "W4",
+      "lotId": "K.4",
+      "workItemId": "PB-K",
+      "title": "Pull Request and CI/Checks operations center (read-only)",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-05",
+      "waveId": "W4",
+      "lotId": "K.5",
+      "workItemId": "PB-K",
+      "title": "Project Reality Explorer and Repository/Git workspace (read-only)",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-01",
+        "TB-W3-C345-02",
+        "TB-W3-GGCC-GIT-READ"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-06",
+      "waveId": "W4",
+      "lotId": "K.6",
+      "workItemId": "PB-K",
+      "title": "Deployments, runtime and Evidence/Receipts center (read-only)",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-01",
+        "TB-W3-C4-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-07",
+      "waveId": "W4",
+      "lotId": "K.7",
+      "workItemId": "PB-K",
+      "title": "Identity/OAuth, Capability Reality matrix, Governance center and System configuration (read-only)",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-01",
+        "TB-W3-D2-01",
+        "TB-W3-A3-02",
+        "TB-W3-OAUTH-WRITE-SCOPE-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-08",
+      "waveId": "W4",
+      "lotId": "K.8",
+      "workItemId": "PB-K",
+      "title": "Governed action pipeline and PR/CI actions",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-07",
+        "TB-W4-K-04",
+        "TB-W3-PRW-01",
+        "TB-W3-PRW-02",
+        "TB-W3-GGCC-GH-PR-REVIEW",
+        "TB-W3-GGCC-GH-ACTIONS"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-09",
+      "waveId": "W4",
+      "lotId": "K.9",
+      "workItemId": "PB-K",
+      "title": "GitHub control plane, Git and deployment/runtime governed actions",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-08",
+        "TB-W4-K-05",
+        "TB-W4-K-06",
+        "TB-W4-GGCC-E2E"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-10",
+      "waveId": "W4",
+      "lotId": "K.10",
+      "workItemId": "PB-K",
+      "title": "Provisioning Center",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-08",
+        "TB-W3-E3-01",
+        "TB-W3-F-05"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-11",
+      "waveId": "W4",
+      "lotId": "K.11",
+      "workItemId": "PB-K",
+      "title": "Events/Tracing, Monitoring, Alerts/Incidents and Audit/Drift explorers",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-01",
+        "TB-W4-H-03",
+        "TB-W4-I3-01",
+        "TB-W4-GGCC-AUDIT"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-K-12",
+      "waveId": "W4",
+      "lotId": "K.12",
+      "workItemId": "PB-K",
+      "title": "Cockpit E2E acceptance, browser certification and operational documentation",
+      "integrationSlot": "cockpit.super-admin",
+      "dependencyIds": [
+        "TB-W4-K-02",
+        "TB-W4-K-03",
+        "TB-W4-K-04",
+        "TB-W4-K-05",
+        "TB-W4-K-06",
+        "TB-W4-K-07",
+        "TB-W4-K-08",
+        "TB-W4-K-09",
+        "TB-W4-K-10",
+        "TB-W4-K-11"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/server.ts",
+        "src/governedContext/dashboard.ts",
+        "tests/governedDashboard.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-COCKPIT"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-M-01",
+      "waveId": "MAINTENANCE",
+      "lotId": "J3",
+      "workItemId": "PB-J3",
+      "title": "GitHub Actions Node 24 maintenance",
+      "integrationSlot": "maintenance.github-actions-node24",
+      "dependencyIds": [],
+      "readinessInGitProjection": "DEFERRED",
+      "sourcePathCandidatesFromGWB04": [
+        ".github/workflows/mcp-ci.yml",
+        "tests/githubReadonlyEvidenceWorkflow.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-C1-ACTIVATE",
+      "waveId": "CONDITIONAL",
+      "lotId": "C1.ACTIVATE",
+      "workItemId": "PB-C1",
+      "title": "GitRegistry V2 validated→active transition",
+      "integrationSlot": "project.gitregistry-verification",
+      "dependencyIds": [
+        "TB-W3-C1-01",
+        "TB-W3-C345-02"
+      ],
+      "readinessInGitProjection": "CONDITIONAL",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/server-map.json",
+        "src/github/registryV2.ts",
+        "src/github/registry.ts",
+        "tests/githubRegistryEvidence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [
+        "ABB-GITREGISTRY"
+      ],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-J4",
+      "waveId": "CONDITIONAL",
+      "lotId": "J4",
+      "workItemId": "PB-J4",
+      "title": "WRITE gate shadow→enforce",
+      "integrationSlot": "governance.write-gate-enforcement",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "CONDITIONAL",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governance/scopedWriteGate.ts",
+        "tests/governedWorkflowAuthority.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-SSH",
+      "waveId": "CONDITIONAL",
+      "lotId": "GF.SSH",
+      "workItemId": "PB-GITHUB-FIRST-FALLBACKS",
+      "title": "Optional read-only SSH fallback selection",
+      "integrationSlot": "github-first.optional-readonly-fallbacks",
+      "dependencyIds": [
+        "TB-W1-07"
+      ],
+      "readinessInGitProjection": "DEFERRED",
+      "sourcePathCandidatesFromGWB04": [
+        ".mcp/github-first-operational-policy.json",
+        ".github/workflows/mcp-readonly-evidence.yml",
+        "tests/githubFirstOperationalContinuity.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-SERVER-WRITE",
+      "waveId": "CONDITIONAL",
+      "lotId": "GF.WRITE",
+      "workItemId": "PB-GITHUB-FIRST-WRITE",
+      "title": "Additional bounded server WRITE transport",
+      "integrationSlot": "github-first.server-write-extensions",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "DEFERRED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/deploy/routes.ts",
+        "src/deploy/s1Deploy.ts",
+        "tests/governedWorkflowDeploy.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-GH-DELETE",
+      "waveId": "CONDITIONAL",
+      "lotId": "GH.DELETE",
+      "workItemId": "PB-GITHUB-DESTRUCTIVE",
+      "title": "Destructive GitHub operations",
+      "integrationSlot": "github.destructive-writes",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "DEFERRED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-STABLECOIN-DEPLOY",
+      "waveId": "CONDITIONAL",
+      "lotId": "STABLECOIN.APPDEPLOY",
+      "workItemId": "PB-STABLECOIN-APPDEPLOY",
+      "title": "Stablecoin application-changing deploy",
+      "integrationSlot": "deployment.stablecoin-application",
+      "dependencyIds": [],
+      "readinessInGitProjection": "CONDITIONAL",
+      "sourcePathCandidatesFromGWB04": [
+        "src/deploy/routes.ts",
+        "tests/governedWorkflowDeploy.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-OD08",
+      "waveId": "CONDITIONAL",
+      "lotId": "OD-08",
+      "workItemId": "PB-OD-RECONCILE",
+      "title": "Distributed Operational Memory concurrency",
+      "integrationSlot": "operational-memory.distributed-concurrency",
+      "dependencyIds": [
+        "TB-W1-04"
+      ],
+      "readinessInGitProjection": "DEFERRED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/atomicStore.ts",
+        "src/operationalMemory/lockService.ts",
+        "tests/governedLocks.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-OD09",
+      "waveId": "CONDITIONAL",
+      "lotId": "OD-09",
+      "workItemId": "PB-OD-RECONCILE",
+      "title": "Contract/Graph incompatible schema migration",
+      "integrationSlot": "governed-workflow.schema-migration",
+      "dependencyIds": [
+        "TB-W1-04"
+      ],
+      "readinessInGitProjection": "DEFERRED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/operationalMemory/types.ts",
+        "tests/governedWorkflowContractSubstrate.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-READ",
+      "waveId": "W3",
+      "lotId": "GGCC-1",
+      "workItemId": "PB-GGCC",
+      "title": "Generic governed Git READ capability layer",
+      "integrationSlot": "git.capability.read",
+      "dependencyIds": [
+        "TB-W3-B3-02",
+        "TB-W3-C1-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/client.ts",
+        "src/github/connection.ts",
+        "tests/githubConnectionObservation.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-SYNC",
+      "waveId": "W3",
+      "lotId": "GGCC-2",
+      "workItemId": "PB-GGCC",
+      "title": "Governed Git SYNC capability layer",
+      "integrationSlot": "git.capability.sync",
+      "dependencyIds": [
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/client.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubFirstOperationalContinuity.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+      "waveId": "W3",
+      "lotId": "GGCC-3",
+      "workItemId": "PB-GGCC",
+      "title": "Governed Git branch/commit/state capability layer",
+      "integrationSlot": "git.capability.branch-commit",
+      "dependencyIds": [
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/client.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
+      "waveId": "W3",
+      "lotId": "GGCC-4",
+      "workItemId": "PB-GGCC",
+      "title": "Governed Git integration/recovery capability layer",
+      "integrationSlot": "git.capability.integration-recovery",
+      "dependencyIds": [
+        "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/client.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
+      "waveId": "W3",
+      "lotId": "GGCC-5",
+      "workItemId": "PB-GGCC",
+      "title": "Governed Git remote/worktree capability layer",
+      "integrationSlot": "git.capability.remote-worktree",
+      "dependencyIds": [
+        "TB-W3-GGCC-GIT-READ",
+        "TB-W3-C345-02",
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/client.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-REPO-BRANCH",
+      "waveId": "W3",
+      "lotId": "GGCC-6",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub repository/branch capability completion",
+      "integrationSlot": "github.control-plane.repository-branch",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/repositoryResolution.ts",
+        "src/github/connection.ts",
+        "tests/githubRepositoryResolution.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-COMMIT-FILE",
+      "waveId": "W3",
+      "lotId": "GGCC-7",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub commit/file/tree capability completion",
+      "integrationSlot": "github.control-plane.commit-file-tree",
+      "dependencyIds": [
+        "TB-W3-D2-01",
+        "TB-W2-02"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "tests/githubControlPlaneReadComplements.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-PR-REVIEW",
+      "waveId": "W3",
+      "lotId": "GGCC-8",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub PR/review capability completion",
+      "integrationSlot": "github.pr-review",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-ACTIONS",
+      "waveId": "W3",
+      "lotId": "GGCC-9",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub Actions/checks capability completion",
+      "integrationSlot": "github.actions-checks",
+      "dependencyIds": [
+        "TB-W3-D2-01",
+        "TB-W2-03"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "tests/githubControlPlaneReadComplements.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-RULESETS",
+      "waveId": "W3",
+      "lotId": "GGCC-10",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub rulesets/protections capability completion",
+      "integrationSlot": "github.rulesets-protection",
+      "dependencyIds": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-WEBHOOKS",
+      "waveId": "W3",
+      "lotId": "GGCC-11",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub webhook capability completion",
+      "integrationSlot": "github.webhooks",
+      "dependencyIds": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+      "waveId": "W3",
+      "lotId": "GGCC-12",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub environments/variables/secrets capability completion",
+      "integrationSlot": "github.environments-variables-secrets",
+      "dependencyIds": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+      "waveId": "W3",
+      "lotId": "GGCC-13",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub releases/deployments capability completion",
+      "integrationSlot": "github.releases-deployments",
+      "dependencyIds": [
+        "TB-W3-D2-01",
+        "TB-W3-C345-02"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "src/deploy/githubOidc.ts",
+        "tests/githubOidc.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+      "waveId": "W3",
+      "lotId": "GGCC-14",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub issues/projects capability completion",
+      "integrationSlot": "github.issues-projects",
+      "dependencyIds": [
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-GGCC-GH-ORG",
+      "waveId": "W3",
+      "lotId": "GGCC-15",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub organization capability completion",
+      "integrationSlot": "github.organization",
+      "dependencyIds": [
+        "TB-W3-D2-01",
+        "TB-W3-E3-01"
+      ],
+      "readinessInGitProjection": "READY",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/connection.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-GGCC-AUDIT",
+      "waveId": "W4",
+      "lotId": "GGCC-16",
+      "workItemId": "PB-GGCC",
+      "title": "GitHub audit/governance-state projection",
+      "integrationSlot": "github.audit-governance-state",
+      "dependencyIds": [
+        "TB-W4-H-03",
+        "TB-W3-GGCC-GH-REPO-BRANCH",
+        "TB-W3-GGCC-GH-ACTIONS",
+        "TB-W3-GGCC-GH-RULESETS",
+        "TB-W3-GGCC-GH-WEBHOOKS",
+        "TB-W3-GGCC-GH-ORG"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/github/authorizationDiagnostics.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/githubAuthorization.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-GGCC-E2E",
+      "waveId": "W4",
+      "lotId": "GGCC-18",
+      "workItemId": "PB-GGCC",
+      "title": "E2E autonomous Git/GitHub acceptance",
+      "integrationSlot": "control-plane.git-github-e2e",
+      "dependencyIds": [
+        "TB-W4-GGCC-AUDIT",
+        "TB-W3-GGCC-GIT-SYNC",
+        "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
+        "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
+        "TB-W3-GGCC-GH-COMMIT-FILE",
+        "TB-W3-GGCC-GH-PR-REVIEW",
+        "TB-W3-GGCC-GH-ACTIONS",
+        "TB-W3-GGCC-GH-RULESETS",
+        "TB-W3-GGCC-GH-WEBHOOKS",
+        "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
+        "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
+        "TB-W3-GGCC-GH-ISSUES-PROJECTS",
+        "TB-W3-GGCC-GH-ORG",
+        "TB-W3-ADMIN-01",
+        "TB-W3-PRW-01",
+        "TB-W3-PRW-02"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/currentState/service.ts",
+        "src/governedContext/agentCoordination.ts",
+        "tests/governedWorkflowUniversalAcceptance/universalAcceptance.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-M-GGCC-GIT-MAINTENANCE",
+      "waveId": "MAINTENANCE",
+      "lotId": "GGCC-5M",
+      "workItemId": "PB-GGCC",
+      "title": "Git maintenance diagnostics",
+      "integrationSlot": "maintenance.git-capabilities",
+      "dependencyIds": [
+        "TB-W3-GGCC-GIT-READ"
+      ],
+      "readinessInGitProjection": "DEFERRED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/client.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-GIT-HISTORY-REWRITE",
+      "waveId": "CONDITIONAL",
+      "lotId": "GGCC-HISTORY",
+      "workItemId": "PB-GGCC",
+      "title": "Git history rewrite capabilities",
+      "integrationSlot": "git.capability.history-rewrite",
+      "dependencyIds": [
+        "TB-W3-GGCC-GIT-BRANCH-COMMIT",
+        "TB-W3-D2-01"
+      ],
+      "readinessInGitProjection": "CONDITIONAL",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/client.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-COND-GIT-DESTRUCTIVE",
+      "waveId": "CONDITIONAL",
+      "lotId": "GGCC-DESTRUCTIVE",
+      "workItemId": "PB-GGCC",
+      "title": "Destructive local Git lifecycle operations",
+      "integrationSlot": "git.capability.destructive",
+      "dependencyIds": [
+        "TB-W3-D2-01",
+        "TB-W3-GGCC-GIT-READ"
+      ],
+      "readinessInGitProjection": "CONDITIONAL",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/client.ts",
+        "tests/githubLifecycleControl.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-SSH-ACCESS-01",
+      "waveId": "W3",
+      "lotId": "SSH.1",
+      "workItemId": "PB-SSH-ACCESS",
+      "title": "Governed repository ephemeral SSH certificate transport",
+      "integrationSlot": "transport.repository-ssh",
+      "dependencyIds": [
+        "TB-W2-01",
+        "TB-W2-02",
+        "TB-W2-03"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/ssh/repositoryGateway.ts",
+        "src/ssh/repositoryCertificate.ts",
+        "tests/githubFirstOperationalContinuity.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-OAUTH-CONSENT-01",
+      "waveId": "W3",
+      "lotId": "OAUTH-CONSENT.1",
+      "workItemId": "PB-OAUTH-CONSENT",
+      "title": "Explicit operator consent before OAuth code issuance",
+      "integrationSlot": "connection.oauth-authorization-consent",
+      "dependencyIds": [
+        "TB-W3-A3-01"
+      ],
+      "readinessInGitProjection": "DONE",
+      "sourcePathCandidatesFromGWB04": [
+        "src/oauth.ts",
+        "tests/oauthAuthorizeConsent.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W3-OAUTH-WRITE-SCOPE-01",
+      "waveId": "W3",
+      "lotId": "OAUTH-WRITE-SCOPE.1",
+      "workItemId": "PB-OAUTH-WRITE-SCOPE",
+      "title": "Enforce mcp:write after a token-scope inventory",
+      "integrationSlot": "connection.oauth-write-scope-enforcement",
+      "dependencyIds": [
+        "TB-W3-A3-02"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/oauth.ts",
+        "src/governance/scopedWriteGate.ts",
+        "tests/oauthAuthorizeConsent.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    },
+    {
+      "id": "TB-W4-MCP-FINAL-ACCEPTANCE",
+      "waveId": "W4",
+      "lotId": "MCP-FINAL",
+      "workItemId": "PB-MCP-TERMINAL",
+      "title": "Global MCP terminal acceptance (GLOBAL_MCP_COMPLETE)",
+      "integrationSlot": "program.global-terminal-acceptance",
+      "dependencyIds": [
+        "TB-W3-F-05",
+        "TB-W4-I3-01",
+        "TB-W4-J1-01",
+        "TB-W4-J2-01",
+        "TB-W4-K-12",
+        "TB-W4-GGCC-E2E",
+        "TB-W3-OAUTH-WRITE-SCOPE-01"
+      ],
+      "readinessInGitProjection": "BLOCKED",
+      "sourcePathCandidatesFromGWB04": [
+        "src/governance/nextWorkProjection.ts",
+        "tests/programIntakes235to236Convergence.test.ts"
+      ],
+      "blockRefsViaExactIntegrationSlot": [],
+      "mappingState": "DESIGN_AND_PATH_EVIDENCE_ONLY_NO_SOURCE_SYMBOL_OR_RUNTIME_TASK_PROOF",
+      "runtimeTaskCreatedOrClaimed": "NOT_INFERRED"
+    }
+  ]
+}
