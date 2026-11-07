@@ -1,3 +1,5 @@
+import './mcpAutonomousAgentContinuation.test.mjs';
+import './mcpAutonomyE2ECertification.test.mjs';
 import './mcpGlobalContinuationObserver.test.mjs';
 import './mcpGlobalAgentHandoff.test.mjs';
 import './mcpPostdeployRunProof.test.mjs';
