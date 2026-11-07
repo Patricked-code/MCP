@@ -1,0 +1,1950 @@
+{
+  "schemaVersion": 1,
+  "snapshotId": "mcp-all-branches-20261107-01",
+  "part": "00",
+  "batches": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "validatedAt": "2026-11-07T03:53:02.120Z",
+  "branches": 100,
+  "filesAcrossBranches": 54668,
+  "foldersAcrossBranches": 9673,
+  "otherGitEntries": 0,
+  "formatCounts": {
+    "JSON": 9765,
+    "SH": 443,
+    "ENV_EXAMPLE": 100,
+    "UNREGISTERED:.gitattributes": 1,
+    "YML": 473,
+    "GITIGNORE": 100,
+    "MD": 20950,
+    "DOCKERFILE": 100,
+    "PDF": 300,
+    "UNREGISTERED:.csv": 4,
+    "UNREGISTERED:.sql": 6,
+    "TXT": 360,
+    "UNREGISTERED:.py": 24,
+    "MJS": 1041,
+    "TS": 20999,
+    "UNREGISTERED:.jsonl": 2
+  },
+  "unregistered": {
+    "UNREGISTERED:.gitattributes": 1,
+    "UNREGISTERED:.csv": 4,
+    "UNREGISTERED:.sql": 6,
+    "UNREGISTERED:.py": 24,
+    "UNREGISTERED:.jsonl": 2
+  },
+  "checks": [
+    "FROZEN_BRANCH_SHA_MATCH",
+    "NO_TRUNCATED_TREES",
+    "EXACT_TEN_BRANCHES_PER_BATCH",
+    "COMPLETE_PATHS_IN_EACH_BRANCH",
+    "BLOB_SHA_40_HEX",
+    "TECHNICAL_FORMATS_REPRODUCIBLE_FROM_NAMES",
+    "FORMAT_COUNTS_RECONCILED"
+  ],
+  "branchStats": [
+    {
+      "branch": "audit/mcp-historical-merge-traceability-20261103",
+      "headSha": "6516b4ab6d320739016f0229e75afbf51de324c5",
+      "fileCount": 882,
+      "directoryCount": 148,
+      "formatCounts": {
+        "JSON": 183,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "UNREGISTERED:.gitattributes": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 236,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "UNREGISTERED:.csv": 2,
+        "UNREGISTERED:.sql": 5,
+        "TXT": 6,
+        "UNREGISTERED:.py": 12,
+        "MJS": 15,
+        "TS": 404
+      }
+    },
+    {
+      "branch": "audit/mcp-merged-pr-sha-history-20261103",
+      "headSha": "62d3b361115a69985c6c77499e16829b60c57ae8",
+      "fileCount": 845,
+      "directoryCount": 146,
+      "formatCounts": {
+        "JSON": 173,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "chatgpt/w3-a3-oauth-correlation-inventory-20260928",
+      "headSha": "54b400b48f0a053471550c07ee6d600b1f389da7",
+      "fileCount": 581,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 126,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 219,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 201
+      }
+    },
+    {
+      "branch": "claude/ecstatic-edison-v1dyt1",
+      "headSha": "c4bd277495176de8adfb7c436a54f4b009968e68",
+      "fileCount": 745,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 161,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 223,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 323
+      }
+    },
+    {
+      "branch": "claude/trusting-ride-knf5tu",
+      "headSha": "2cadba36a5e9271d155deb83b0aa021e3347c569",
+      "fileCount": 734,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 223,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 313
+      }
+    },
+    {
+      "branch": "claude/zealous-volta-jm7jj6",
+      "headSha": "32b5fca039a023b397aa7e4d07760fff05c298be",
+      "fileCount": 709,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "docs/global-work-nomenclature-20261105",
+      "headSha": "95c5c0562bfeb23a60d78971392322113c4fc5b8",
+      "fileCount": 849,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 177,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "docs/governed-deploy-integral-history-20261029",
+      "headSha": "c7d7b44b1fedf1954e63b0d921f992362daae4b3",
+      "fileCount": 808,
+      "directoryCount": 144,
+      "formatCounts": {
+        "JSON": 213,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 247,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 310
+      }
+    },
+    {
+      "branch": "docs/mcp-memory-bootstrap",
+      "headSha": "0feb5a25585e83077985cb4a2ccfa4d3b1f8addf",
+      "fileCount": 277,
+      "directoryCount": 23,
+      "formatCounts": {
+        "JSON": 13,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "GITIGNORE": 1,
+        "MD": 233,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "YML": 1,
+        "MJS": 2,
+        "TS": 18
+      }
+    },
+    {
+      "branch": "docs/single-root-architecture-map-20261023",
+      "headSha": "4b440785e0a02024ee614d68c6ab68f0200d19fe",
+      "fileCount": 714,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 224,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "fix/governed-targeted-task-claim-20261022",
+      "headSha": "9f5468c2f53d6656b75a5e77682bb030d6307b61",
+      "fileCount": 712,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "fix/oauth-opaque-origin-diagnostics-20261022",
+      "headSha": "6a515f2856c78f9312eb05bcadf0841cc35c711b",
+      "fileCount": 712,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "fix/oauth-opaque-origin-signed-consent-20261022",
+      "headSha": "ecf989c1aca1d11d5655713c29af88eb63184a6d",
+      "fileCount": 712,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "fix/oauth-origin-runtime-classification-20261022",
+      "headSha": "89f11d57b2e4eea397c15ff3647896bb525a7ca4",
+      "fileCount": 712,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "fix/p0-oauth-consent-diagnostics-20261022",
+      "headSha": "4a257942559e2f1f80dad5cc7ac127acae9c3034",
+      "fileCount": 712,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "main",
+      "headSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "fileCount": 844,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "mcp/af09-production-state-reconcile-20260921",
+      "headSha": "e8eafc3282e022d5c1a9fe0817899fbd6debc615",
+      "fileCount": 553,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 184
+      }
+    },
+    {
+      "branch": "mcp/af09-structured-documentation-state-20260921",
+      "headSha": "0a51b09b13febdda9fbcdd4324de61ab22140363",
+      "fileCount": 553,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 184
+      }
+    },
+    {
+      "branch": "mcp/af10-af18-af24-af27-governance-consistency-20260922",
+      "headSha": "e378cca954c7760dd62ac994c79c9a2e3b56840e",
+      "fileCount": 553,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 184
+      }
+    },
+    {
+      "branch": "mcp/af10-af18-af24-af27-production-state-20260922",
+      "headSha": "cf77ebe30de0c4dd961a89faefe282a70de5367d",
+      "fileCount": 553,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 184
+      }
+    },
+    {
+      "branch": "mcp/af21-canonical-json-authority-20260922",
+      "headSha": "3f1238a4165ed112a9e8161635c6b1b7ff089030",
+      "fileCount": 555,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 186
+      }
+    },
+    {
+      "branch": "mcp/af23-checkpoint-event-links-20260922",
+      "headSha": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "fileCount": 553,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 184
+      }
+    },
+    {
+      "branch": "mcp/africafunds-phase1-documentation-20260912",
+      "headSha": "ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f",
+      "fileCount": 379,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 130
+      }
+    },
+    {
+      "branch": "mcp/africafunds-registry-phase1-20260912",
+      "headSha": "f7800966119601e336c480da6f2f98eafe6e6e70",
+      "fileCount": 379,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 130
+      }
+    },
+    {
+      "branch": "mcp/africafunds-registry-phase2-20260912",
+      "headSha": "18355de8d4892685ee4f68b11d1542fb249e838a",
+      "fileCount": 379,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 130
+      }
+    },
+    {
+      "branch": "mcp/africafunds-suivi-baseline-order-20260913",
+      "headSha": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+      "fileCount": 379,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 130
+      }
+    },
+    {
+      "branch": "mcp/africafunds-terminal-documentation-20260913",
+      "headSha": "29bb7fd35ca7b428541439bb49116ee6764576c4",
+      "fileCount": 379,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 130
+      }
+    },
+    {
+      "branch": "mcp/agent-github-mcp-auto-arrival-20261105",
+      "headSha": "9706f9828f406b0f6ceb570eea9e09a823b3e993",
+      "fileCount": 845,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 403
+      }
+    },
+    {
+      "branch": "mcp/alignment-recovery-20260805",
+      "headSha": "68088ef2b4330db1eaf14bbb6ede6ef99ee25323",
+      "fileCount": 215,
+      "directoryCount": 22,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 163,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 22
+      }
+    },
+    {
+      "branch": "mcp/architecture-chronology-recovery-20261009",
+      "headSha": "e8477395fd28750ea7865f8bcb0ea3335afe7338",
+      "fileCount": 679,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 138,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 285
+      }
+    },
+    {
+      "branch": "mcp/architecture-registry-20261107",
+      "headSha": "6a51d1416e60430ff3753d56d234877b7a58c739",
+      "fileCount": 858,
+      "directoryCount": 151,
+      "formatCounts": {
+        "JSON": 180,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 232,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "UNREGISTERED:.py": 1,
+        "UNREGISTERED:.sql": 1,
+        "UNREGISTERED:.jsonl": 2,
+        "MJS": 16,
+        "TXT": 6,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "mcp/audit-continuity-entrypoint-20261015",
+      "headSha": "355921a24c8642080a9a5016579fb5e35c90e262",
+      "fileCount": 698,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 156,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 286
+      }
+    },
+    {
+      "branch": "mcp/audit-historical-breadcrumbs-20261016",
+      "headSha": "a7c059cd1b0eaf2191d89b8c5dbc7e5758c1112b",
+      "fileCount": 709,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "mcp/audit-recovery-20260805",
+      "headSha": "feb9d61729453f7e956f6d063c38495242d2e2d3",
+      "fileCount": 221,
+      "directoryCount": 22,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 169,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 22
+      }
+    },
+    {
+      "branch": "mcp/audit-review-threads-checkpoint-20261009",
+      "headSha": "9d6725babc4c75e6c36eee3dacfdd40aa6671483",
+      "fileCount": 681,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 140,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 285
+      }
+    },
+    {
+      "branch": "mcp/audit-supervisor-canonical-anchor-20261019",
+      "headSha": "4e81a6482d1d304f536f25095a97a3e385cbb2ee",
+      "fileCount": 716,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 296
+      }
+    },
+    {
+      "branch": "mcp/auto-intake-discovery-v1-20261016",
+      "headSha": "ad018ba9a5ba33cfce0a980a9bf22a5d289f33ca",
+      "fileCount": 712,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "mcp/auto-intake-submitter-permission-20261016",
+      "headSha": "58b89bb43a72f73ea12b1c269ea2ab236a092d16",
+      "fileCount": 712,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 292
+      }
+    },
+    {
+      "branch": "mcp/automatic-governed-connection-bootstrap-20260829",
+      "headSha": "c3e374eea7b64087ee7ef21e30a89710ff099bcc",
+      "fileCount": 360,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 196,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 119
+      }
+    },
+    {
+      "branch": "mcp/b1-final-documentation-20260909",
+      "headSha": "0e037ceeae05dc342f99ba2ae58761dc8e892f7e",
+      "fileCount": 371,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 200,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 126
+      }
+    },
+    {
+      "branch": "mcp/b2-final-documentation-20260911",
+      "headSha": "17de4af98c0b66a3cf32c219c762febd1880c0e5",
+      "fileCount": 376,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 202,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 129
+      }
+    },
+    {
+      "branch": "mcp/b2-repository-resolution-20260909",
+      "headSha": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+      "fileCount": 376,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 202,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 129
+      }
+    },
+    {
+      "branch": "mcp/bus-existing-event-journal-replay-20261016",
+      "headSha": "05db818aa8d785c57e968ebe39d3d9e44bf7959c",
+      "fileCount": 714,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 222,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 294
+      }
+    },
+    {
+      "branch": "mcp/c1-gitregistry-v2-verification-20260913",
+      "headSha": "f62c7c0da2286f8041f67afbd183378501c98c7a",
+      "fileCount": 379,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 130
+      }
+    },
+    {
+      "branch": "mcp/c2-repository-project-resolution-20260915",
+      "headSha": "8b71f14f9a4884d57699e093853f4ccfb84080ef",
+      "fileCount": 382,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 133
+      }
+    },
+    {
+      "branch": "mcp/c2-terminal-documentation-20260915",
+      "headSha": "d124587f5c57c7941c7937a0d7b316a6f2e54e75",
+      "fileCount": 382,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 133
+      }
+    },
+    {
+      "branch": "mcp/canonical-conversation-continuity-20261104",
+      "headSha": "7e5b6a2c623684cdecdd7a917d6c4b7871f97674",
+      "fileCount": 851,
+      "directoryCount": 146,
+      "formatCounts": {
+        "JSON": 176,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 16,
+        "UNREGISTERED:.csv": 2,
+        "TXT": 6,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "mcp/canonical-memory-verifier-20260917",
+      "headSha": "f030561d8a26d4bb24b4da97b48e5a4be21854a2",
+      "fileCount": 384,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 205,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 134
+      }
+    },
+    {
+      "branch": "mcp/corrected-findings-final-baseline-20260922",
+      "headSha": "c7f7a026b2a140971988313dabf3e0407e6d422c",
+      "fileCount": 553,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 184
+      }
+    },
+    {
+      "branch": "mcp/dispatch-concurrent-cas-regression-20261009",
+      "headSha": "b88e835efc9336455c175e7427e8b1f2ede40693",
+      "fileCount": 671,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 130,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 285
+      }
+    },
+    {
+      "branch": "mcp/docker-image-attestation-readonly-20260805",
+      "headSha": "1fc26c979244a946d7a66d7dd0966a2801fed3e9",
+      "fileCount": 245,
+      "directoryCount": 24,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 182,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 33
+      }
+    },
+    {
+      "branch": "mcp/docs-historical-candidate-handoff-baseline-20260922",
+      "headSha": "1ba84589adbaa478babebd2c8aa1e63438820dcd",
+      "fileCount": 553,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 184
+      }
+    },
+    {
+      "branch": "mcp/document-s1-bootstrap-blocker-20260812",
+      "headSha": "84d4555fe7dacef63c07f6a75276ea58b64415e1",
+      "fileCount": 289,
+      "directoryCount": 30,
+      "formatCounts": {
+        "JSON": 18,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 189,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 6,
+        "TS": 61
+      }
+    },
+    {
+      "branch": "mcp/documentation-bootstrap-20260713",
+      "headSha": "750d010733191363abb275d8d31a1c0a8aee6ec9",
+      "fileCount": 228,
+      "directoryCount": 19,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "GITIGNORE": 1,
+        "MD": 180,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "YML": 1,
+        "MJS": 2,
+        "TS": 19
+      }
+    },
+    {
+      "branch": "mcp/documentation-hub-conversations-cartography-20260713",
+      "headSha": "8c7f0be63de853703446acb4f27bcb9ac0846c73",
+      "fileCount": 215,
+      "directoryCount": 19,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "GITIGNORE": 1,
+        "MD": 167,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "YML": 1,
+        "MJS": 2,
+        "TS": 19
+      }
+    },
+    {
+      "branch": "mcp/e2-block1-g2-canonical-discovery-20261103",
+      "headSha": "f418e06f3a8ffa293d6670c7e5cf1fe528ad60af",
+      "fileCount": 846,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 404
+      }
+    },
+    {
+      "branch": "mcp/e2-continuity-registry-recovery-20261031",
+      "headSha": "0b4d5f4ab3d2c4c40508e28dcc65b36e50277580",
+      "fileCount": 844,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "mcp/e2-g1-production-state-reconcile-20261105",
+      "headSha": "ac60b065759703776bffa81a609468bde9e8cd4e",
+      "fileCount": 844,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "mcp/e2-pilot-journal-observability-20261102",
+      "headSha": "c8ccf43eeb050ca92d30762088b856b8494e5ced",
+      "fileCount": 844,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "mcp/e2-production-state-reconciliation-20261031",
+      "headSha": "3bd73cdf03f5aa67703b841044c7fc955eb3ade0",
+      "fileCount": 844,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "mcp/e2-s1-account-drift-reconcile-20261031",
+      "headSha": "7aee8d98b8c1e8c84c134a4aacce998a8a17b085",
+      "fileCount": 810,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 230,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 369
+      }
+    },
+    {
+      "branch": "mcp/f04-dispatch-continuity-audit-20261009",
+      "headSha": "9381cb94ad89d8425d99463c3aab1ee9581e11dd",
+      "fileCount": 671,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 130,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 285
+      }
+    },
+    {
+      "branch": "mcp/f04-subdomain-ownership-safety-20261009",
+      "headSha": "d236a7ddf06120173be883601aa1cd344df0ac5f",
+      "fileCount": 671,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 130,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 285
+      }
+    },
+    {
+      "branch": "mcp/finalize-governed-autodeploy-20260813",
+      "headSha": "077485b457f01943bda88209a07076ba40461df3",
+      "fileCount": 289,
+      "directoryCount": 30,
+      "formatCounts": {
+        "JSON": 18,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 189,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 6,
+        "TS": 61
+      }
+    },
+    {
+      "branch": "mcp/fix-late-retention-review-20260815",
+      "headSha": "8dddc5656aa959f4c392d0f1816b5ee0e25709a0",
+      "fileCount": 322,
+      "directoryCount": 35,
+      "formatCounts": {
+        "JSON": 19,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 191,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 6,
+        "TS": 91
+      }
+    },
+    {
+      "branch": "mcp/fix-mandatory-bootstrap-review-20260822",
+      "headSha": "dedca6e6ffb928498e37dc09c467b835eae569df",
+      "fileCount": 348,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 196,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 107
+      }
+    },
+    {
+      "branch": "mcp/fix-restart-force-recreate-20260812",
+      "headSha": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+      "fileCount": 289,
+      "directoryCount": 30,
+      "formatCounts": {
+        "JSON": 18,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 189,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 6,
+        "TS": 61
+      }
+    },
+    {
+      "branch": "mcp/forensic-state-docs-20260805",
+      "headSha": "916ae0397703b30184142cc80553d7452336338b",
+      "fileCount": 227,
+      "directoryCount": 22,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 175,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 22
+      }
+    },
+    {
+      "branch": "mcp/foundations-final-state-20260805",
+      "headSha": "c6c732bbfa58e2171e214198929ed4eb5a5dbe4f",
+      "fileCount": 240,
+      "directoryCount": 24,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 180,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 30
+      }
+    },
+    {
+      "branch": "mcp/foundations-integration-preview-20260805",
+      "headSha": "19ba6888792b092051d1bc31d90de56a2395263d",
+      "fileCount": 222,
+      "directoryCount": 20,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 162,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 30
+      }
+    },
+    {
+      "branch": "mcp/g3-canonical-documentation-reconciliation-20260915",
+      "headSha": "4dd5fdeb6d43e56e835fc24572a9736ccb3eaf1b",
+      "fileCount": 380,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 131
+      }
+    },
+    {
+      "branch": "mcp/g3-client-tool-surface-attestation-20260914",
+      "headSha": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+      "fileCount": 380,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 131
+      }
+    },
+    {
+      "branch": "mcp/gd-u-e2-app-installation-live-readonly-20261030",
+      "headSha": "8e34cdea82ecc0019d3b47c1bd4359785df386e9",
+      "fileCount": 808,
+      "directoryCount": 144,
+      "formatCounts": {
+        "JSON": 171,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 230,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 368
+      }
+    },
+    {
+      "branch": "mcp/gd-u-e2-capability-current-evidence-20261030",
+      "headSha": "82fccd6b297bab2ea18ae58d01390f3b1f9d5174",
+      "fileCount": 810,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 230,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 369
+      }
+    },
+    {
+      "branch": "mcp/gd-u-e2-deployment-manifest-target-check-20261030",
+      "headSha": "2aee2c6af929ad77783776ddcbb6d800ba1ff75e",
+      "fileCount": 812,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 172,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 230,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 371
+      }
+    },
+    {
+      "branch": "mcp/gd-u-e2-registry-host-path-boundary-20261030",
+      "headSha": "1124494cc06f13b278633c261e0942c6ac2667b7",
+      "fileCount": 806,
+      "directoryCount": 144,
+      "formatCounts": {
+        "JSON": 171,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 230,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 15,
+        "TS": 366
+      }
+    },
+    {
+      "branch": "mcp/gd-u-fnd-001-024-first-admission-20261030",
+      "headSha": "5bcb02391590c6eb5ae195a8d23daab2296b8f09",
+      "fileCount": 734,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 161,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 223,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 312
+      }
+    },
+    {
+      "branch": "mcp/gd-u-installation-readiness-20261030",
+      "headSha": "4dba0e6e0cfb2fc7c2b84a566deb47f27155f8d3",
+      "fileCount": 736,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 161,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 223,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 314
+      }
+    },
+    {
+      "branch": "mcp/git-github-control-plane-foundation-20260915",
+      "headSha": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+      "fileCount": 387,
+      "directoryCount": 43,
+      "formatCounts": {
+        "JSON": 23,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 205,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 136
+      }
+    },
+    {
+      "branch": "mcp/git-registry-v2-foundation-20260805",
+      "headSha": "9a99c943bf07483836b5c39405abbe3b6f480bcd",
+      "fileCount": 218,
+      "directoryCount": 22,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 163,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 25
+      }
+    },
+    {
+      "branch": "mcp/git-registry-v2-foundation-rebased-20260805",
+      "headSha": "0d2098183afa4d32e3b3cc873be08ca42e1b242d",
+      "fileCount": 238,
+      "directoryCount": 23,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 178,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 30
+      }
+    },
+    {
+      "branch": "mcp/github-admin-repository-create-20260915",
+      "headSha": "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993",
+      "fileCount": 382,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 204,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 133
+      }
+    },
+    {
+      "branch": "mcp/github-administration-control-20260915",
+      "headSha": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+      "fileCount": 389,
+      "directoryCount": 43,
+      "formatCounts": {
+        "JSON": 23,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 205,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 138
+      }
+    },
+    {
+      "branch": "mcp/github-first-operational-continuity-20260920",
+      "headSha": "cd0443f9e483d498fd6dc2af30c78f74ccae074b",
+      "fileCount": 545,
+      "directoryCount": 139,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 4,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 177
+      }
+    },
+    {
+      "branch": "mcp/github-identity-resolution-20260907",
+      "headSha": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+      "fileCount": 371,
+      "directoryCount": 42,
+      "formatCounts": {
+        "JSON": 22,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 200,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 126
+      }
+    },
+    {
+      "branch": "mcp/github-lifecycle-control-20260915",
+      "headSha": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+      "fileCount": 389,
+      "directoryCount": 43,
+      "formatCounts": {
+        "JSON": 23,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 205,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 8,
+        "TS": 138
+      }
+    },
+    {
+      "branch": "mcp/github-oidc-first-continuity-20261015",
+      "headSha": "9fefbfb4d1fe72b489a1d0f7153cf68f6399fe06",
+      "fileCount": 684,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 142,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 286
+      }
+    },
+    {
+      "branch": "mcp/github-oidc-readonly-evidence-20260920",
+      "headSha": "844f042de95ef8aa103095770139b3258184b3c6",
+      "fileCount": 548,
+      "directoryCount": 140,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 4,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 180
+      }
+    },
+    {
+      "branch": "mcp/github-pr-auth-diagnostics-20260805",
+      "headSha": "a648fdf8094fa5285b66af773aab5be16bf75bef",
+      "fileCount": 218,
+      "directoryCount": 21,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 163,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 25
+      }
+    },
+    {
+      "branch": "mcp/github-pr-auth-diagnostics-rebased-20260805",
+      "headSha": "9ebdb59506975a9b16a137052d2d24d679123bc2",
+      "fileCount": 231,
+      "directoryCount": 23,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 2,
+        "GITIGNORE": 1,
+        "MD": 176,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "MJS": 2,
+        "TS": 25
+      }
+    },
+    {
+      "branch": "mcp/github-surface-preservation-rule-20260921",
+      "headSha": "da57f520948272b409abc1d89f564577abd94f2c",
+      "fileCount": 553,
+      "directoryCount": 141,
+      "formatCounts": {
+        "JSON": 122,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 5,
+        "GITIGNORE": 1,
+        "MD": 216,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 11,
+        "TS": 184
+      }
+    },
+    {
+      "branch": "mcp/github-tools-after-governance",
+      "headSha": "8fb7f578e706ee1f3995b4e1a4e5f4e11dc754c0",
+      "fileCount": 212,
+      "directoryCount": 18,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "GITIGNORE": 1,
+        "MD": 161,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "YML": 1,
+        "MJS": 2,
+        "TS": 22
+      }
+    },
+    {
+      "branch": "mcp/github-tools-implementation",
+      "headSha": "f375a25654d314d7dc18a285c23bf23e5652ca03",
+      "fileCount": 224,
+      "directoryCount": 28,
+      "formatCounts": {
+        "ENV_EXAMPLE": 1,
+        "GITIGNORE": 1,
+        "JSON": 23,
+        "DOCKERFILE": 1,
+        "MD": 138,
+        "PDF": 3,
+        "YML": 1,
+        "UNREGISTERED:.py": 11,
+        "MJS": 5,
+        "TS": 40
+      }
+    },
+    {
+      "branch": "mcp/global-automation-continuity-observer-20261105",
+      "headSha": "4de09f637a7150fc2a2ef36f745c7919ac227163",
+      "fileCount": 851,
+      "directoryCount": 145,
+      "formatCounts": {
+        "JSON": 173,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 231,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 6,
+        "MJS": 21,
+        "TS": 402
+      }
+    },
+    {
+      "branch": "mcp/governance-anti-dispersion-manual",
+      "headSha": "ff854bfef9f23b67b40747a49d254bbaf92e9430",
+      "fileCount": 208,
+      "directoryCount": 17,
+      "formatCounts": {
+        "JSON": 16,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "GITIGNORE": 1,
+        "MD": 161,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "YML": 1,
+        "MJS": 2,
+        "TS": 18
+      }
+    },
+    {
+      "branch": "mcp/governed-autodeploy-v1-20260809",
+      "headSha": "cac79821cfdb29b2f4b43c3dfb4ffa11eab82022",
+      "fileCount": 289,
+      "directoryCount": 30,
+      "formatCounts": {
+        "JSON": 18,
+        "SH": 4,
+        "ENV_EXAMPLE": 1,
+        "YML": 3,
+        "GITIGNORE": 1,
+        "MD": 189,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 2,
+        "MJS": 6,
+        "TS": 61
+      }
+    },
+    {
+      "branch": "mcp/governed-successive-audit-workblock-20261009",
+      "headSha": "484d6e2d9ff8dcc8aaf1dcafddc093569583ad87",
+      "fileCount": 684,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 142,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 286
+      }
+    },
+    {
+      "branch": "mcp/grt-runtime-admission-tdd-20261023",
+      "headSha": "58bcf5764e79f16c69301ec923b691e2a844953e",
+      "fileCount": 733,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 160,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 7,
+        "GITIGNORE": 1,
+        "MD": 223,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 15,
+        "TS": 312
+      }
+    },
+    {
+      "branch": "mcp/gwb02-inline-review-corpus-20261015",
+      "headSha": "92d892301d8bbd55d4dbcf7c04e15e909a23aee9",
+      "fileCount": 697,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 155,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 286
+      }
+    },
+    {
+      "branch": "mcp/gwb03-pr261-policy-evidence-20261015",
+      "headSha": "eb7d4b812a23b03ec04b51723e5191620e37025a",
+      "fileCount": 702,
+      "directoryCount": 142,
+      "formatCounts": {
+        "JSON": 158,
+        "SH": 5,
+        "ENV_EXAMPLE": 1,
+        "YML": 6,
+        "GITIGNORE": 1,
+        "MD": 221,
+        "DOCKERFILE": 1,
+        "PDF": 3,
+        "TXT": 5,
+        "MJS": 13,
+        "TS": 288
+      }
+    }
+  ]
+}
