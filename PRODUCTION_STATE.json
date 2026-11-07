@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-11-07T15:26:03.292Z",
-  "githubObservationBasis": "PR381_MERGE_4b56280_CI_42386136741_DEPLOY_42386136518_OBSERVER_42386334706_LIVESTATE_V1227_20261107",
-  "serverStateFreshness": "current_exact_sha_readonly_attested_20261107",
-  "runtimeStateFreshness": "current_exact_sha_governed_deploy_42386136518",
-  "githubCommitFull": "4b56280cb09fba1f10aa3f41623d5c0b5446ae32",
+  "githubObservedAt": "2026-11-07T16:01:46.258Z",
+  "githubObservationBasis": "PR383_MERGE_361c72c_CI_42388587951_DEPLOY_42388588015_LIVESTATE_V1234_20261107",
+  "serverStateFreshness": "current_exact_sha_readonly_attested_20261107T160146Z",
+  "runtimeStateFreshness": "current_exact_sha_governed_deploy_42388588015",
+  "githubCommitFull": "361c72c3bee39dccb9297b86fc3a7215b46087f6",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "4b56280cb09fba1f10aa3f41623d5c0b5446ae32",
+    "currentMainCommit": "361c72c3bee39dccb9297b86fc3a7215b46087f6",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -188,32 +188,32 @@
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "7d29ad4",
-    "lastDirectlyVerifiedCommitFull": "4b56280cb09fba1f10aa3f41623d5c0b5446ae32",
-    "originMain": "4b56280cb09fba1f10aa3f41623d5c0b5446ae32",
-    "lastDirectlyVerifiedAt": "2026-11-05T10:17:05.897Z",
+    "lastDirectlyVerifiedCommitAbbrev": "361c72c",
+    "lastDirectlyVerifiedCommitFull": "361c72c3bee39dccb9297b86fc3a7215b46087f6",
+    "originMain": "361c72c3bee39dccb9297b86fc3a7215b46087f6",
+    "lastDirectlyVerifiedAt": "2026-11-07T16:01:46.258Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
-    "currentAlignmentAttested": true,
+    "currentAlignmentAttested": false,
     "connectorSyncToolPresentInSource": true,
     "connectorSyncToolCallable": true,
     "connectorCatalogStatus": "governed_sync_callable",
     "fetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
     "pushRemote": "disabled://mcp-s1-read-only",
     "originMainFreshness": "current_live_state_attested",
-    "originMainObservationBasis": "mcp_reconcile_governed_context_live_state_v1206_20261105_after_pr368_deploy"
+    "originMainObservationBasis": "mcp_reconcile_governed_context_live_state_v1234_20261107_after_pr383_deploy"
   },
   "runtimeState": {
     "containerStatus": "running",
     "health": "healthy",
-    "imageId": "sha256:bbadaf881368a2fda0011f266a2b781a7b274904b454c24c795b376fcc52cf1d",
-    "currentRuntimeRevision": "4b56280cb09fba1f10aa3f41623d5c0b5446ae32",
-    "status": "FULLY_ALIGNED",
+    "imageId": "sha256:8c7773d05e04ad06e3927d3f0812a09c0954973af33e2a271be6ffab7da86eb8",
+    "currentRuntimeRevision": "361c72c3bee39dccb9297b86fc3a7215b46087f6",
+    "status": "RECONCILIATION_REQUIRED",
     "healthOk": true,
     "oauthOk": true,
     "mcpAuthOk": true,
     "rollbackStatus": "not_needed",
-    "imageIdFreshness": "current_mcp_runtime_image_attestation_20261107"
+    "imageIdFreshness": "current_mcp_runtime_image_attestation_20261107T160146Z"
   },
   "liveState": {
     "stateVersion": 1188,
@@ -705,6 +705,19 @@
     "proposedDocumentationOnly": true,
     "proofLevel": "PR365_DEPLOYED_RUNTIME_ALIGNED_DOCUMENTATION_CANDIDATE",
     "warning": "This JSON records observed SHA before the docs-only commit. The running E2 gate must independently attest that only documentation changed after this exact SHA.",
-    "historicalRecordPreservation": "Existing historical event and review fields intentionally unchanged"
+    "historicalRecordPreservation": "Existing historical event and review fields intentionally unchanged",
+    "latestObservation": {
+      "observedAt": "2026-11-07T16:01:46.258Z",
+      "githubMainSha": "361c72c3bee39dccb9297b86fc3a7215b46087f6",
+      "s1Sha": "361c72c3bee39dccb9297b86fc3a7215b46087f6",
+      "runtimeSha": "361c72c3bee39dccb9297b86fc3a7215b46087f6",
+      "liveStateVersion": 1234,
+      "documentationDriftBeforeCorrection": true,
+      "ciMainRunId": 42388587951,
+      "ciConclusion": "success",
+      "governedDeployRunId": 42388588015,
+      "deployConclusion": "success",
+      "note": "Documentation candidate only; no claim of post-merge FULLY_ALIGNED until new live reconciliation."
+    }
   }
 }
