@@ -1,51 +1,97 @@
 {
   "schemaVersion": 1,
-  "checkpointId": "MCP-ARCH-REGISTRY-MULTIBRANCH-20261107-01",
-  "priorCheckpointId": "MCP-ARCH-REGISTRY-BASELINE-20261107-01",
+  "checkpointId": "MCP-ARCH-REGISTRY-DIRECTORY-EVIDENCE-20261107-01",
+  "priorCheckpointId": "MCP-ARCH-REGISTRY-MULTIBRANCH-20261107-01",
   "repository": "Patricked-code/MCP",
-  "recordedAt": "2026-11-07T03:57:56.980Z",
+  "recordedAt": "2026-11-07T06:08:56.865Z",
   "observationId": "mcp-all-branches-20261107-01",
-  "sourceRefs": {
-    "frozenBranchHeads": "snapshots/2026-11-07/all-branches-v1/frozen-branch-heads.json",
-    "manifest": "snapshots/2026-11-07/all-branches-v1/manifest.json",
-    "summary": "snapshots/2026-11-07/all-branches-v1/summary.json",
-    "technicalTaxonomyV2": "catalog/technical-format-taxonomy-v2.json",
-    "validation": [
-      "snapshots/2026-11-07/all-branches-v1/validation/part-00.json",
-      "snapshots/2026-11-07/all-branches-v1/validation/part-01.json"
-    ]
-  },
-  "status": "190_BRANCH_TREES_INVENTORIED_AND_TECHNICALLY_CLASSIFIED",
-  "counts": {
-    "branches": 190,
-    "fileMemberships": 96689,
-    "directoryMemberships": 17836,
-    "formats": 17,
-    "filenameFormatUnknown": 0,
-    "contentSignaturesValidated": 0,
-    "filesSemanticallyReviewed": 0
-  },
-  "constraints": {
-    "sourceBranchRefs": "FROZEN_POINT_IN_TIME",
-    "registryBranchMovesAfterCapture": true,
-    "uniqueBlobsAcrossBranches": "NOT_CALCULATED",
-    "historicalCoverage": "CURRENT_REFS_ONLY",
-    "runtimeEffects": "NONE",
-    "sourcesRemainAuthoritative": true
-  },
-  "nextAction": "CLASSIFY_FUNCTIONS_BY_CONTENT_IN_BOUNDED_BATCHES_AND_ESTABLISH_CROSS_BRANCH_RELATIONS_WITH_EVIDENCE",
-  "protectedPRs": [
-    372,
-    373,
-    374
+  "historicMainCommitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "prNumber": 378,
+  "prBranch": "mcp/architecture-registry-20261107",
+  "prHeadBeforeCheckpoint": "54137afebe3741d1cb9ad3a6890205872b013f7a",
+  "status": "BOUNDED_ANALYSIS_COMMITTED_EXACT_HEAD_CI_PENDING",
+  "stages": [
+    {
+      "stage": 1,
+      "name": "PHYSICAL_MAIN_DIRECTORIES",
+      "status": "COMPLETE_AT_FROZEN_MAIN",
+      "files": 844,
+      "directories": 145,
+      "entries": 989
+    },
+    {
+      "stage": 2,
+      "name": "EXISTING_TECHNICAL_FORMATS",
+      "status": "PRESERVED_AND_INDEXED",
+      "mainFiles": 844,
+      "technicalFormats": 11,
+      "multibranchFiles": 96689,
+      "multibranchFormats": 17
+    },
+    {
+      "stage": 3,
+      "name": "SOURCE_CODE_SEMANTICS",
+      "status": "PARTIAL_SOURCE_REFERENCES_ONLY",
+      "sourcePathsInspected": 10,
+      "fullSemanticFilesReviewed": 0,
+      "declarations": 10
+    },
+    {
+      "stage": 4,
+      "name": "INTERBRANCH_CONTENT_COMPARISON",
+      "status": "TEN_PATH_SAMPLE_VERIFIED_BY_SHA",
+      "samplePaths": 10,
+      "historicalBranches": 190,
+      "batches": 19
+    },
+    {
+      "stage": 5,
+      "name": "RELATION_GRAPH",
+      "status": "PARTIAL_SOURCED_GRAPH",
+      "verifiedEdges": 6,
+      "sqlProjection": "verified_file_relations"
+    },
+    {
+      "stage": 6,
+      "name": "IMPACT_CANDIDATES",
+      "status": "READ_ONLY_INSPECTOR_COMMITTED_TEST_PENDING",
+      "command": "node docs/governance/architecture-registry/verify_architecture_analysis.mjs --impact src/deploy/s1Deploy.ts"
+    }
   ],
+  "evidencePaths": [
+    "snapshots/2026-11-07/main-directories.jsonl",
+    "snapshots/2026-11-07/main-directory-summary.json",
+    "catalog/source-evidence-batch-01.json",
+    "snapshots/2026-11-07/crossbranch-deploy-sample.json",
+    "verify_architecture_analysis.mjs",
+    "schema/schema.sql",
+    "build_sqlite.py",
+    ".github/workflows/architecture-registry-validate.yml"
+  ],
+  "checks": {
+    "githubWriteScope": "PR_BRANCH_ONLY",
+    "mainModified": false,
+    "prMergePerformed": false,
+    "serverWrites": false,
+    "formalExactHeadRegistryValidation": "PENDING",
+    "formalExactHeadMcpCI": "PENDING",
+    "runtimeAttestation": "NOT_ATTEMPTED"
+  },
+  "limits": [
+    "Not all files have been read semantically; no full role classification can be claimed",
+    "Crossbranch comparison covers ten paths, not all 96689 presences",
+    "Branch refs are historical frozen observations, not live current refs",
+    "Directory SHA indexing covers main only; other branches remain at existing snapshots",
+    "No deploy, merge, functional acceptance or new runtime authority"
+  ],
+  "nextAction": "VERIFY_EXACT_HEAD_CI_THEN_EXPAND_SOURCE_EVIDENCE_TO_NEXT_BOUNDED_BATCH_WITH_BLOB_REUSE",
   "rules": [
     "NO_MAIN_WRITE",
-    "NO_MERGE",
+    "NO_MERGE_WITHOUT_EXPLICIT_OWNER_APPROVAL",
     "NO_S1_WRITE",
     "NO_PARALLEL_RUNTIME_AUTHORITY",
-    "KEEP_HISTORICAL_SNAPSHOTS",
     "NO_SECRETS",
-    "NO_SEMANTIC_INFERENCE_FROM_PATH"
+    "NO_SEMANTIC_INFERENCE_FROM_PATH",
+    "PRESERVE_PREVIOUS_CHECKPOINT"
   ]
 }

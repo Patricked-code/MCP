@@ -83,6 +83,7 @@
     "otherFiles": "UNREVIEWED",
     "next": "VERIFY_COMPARISON_AND_BUILD_IMPACT_GRAPH",
     "impactInspector": "READ_ONLY_BOUNDED_REVERSE_REFERENCE_CANDIDATES",
-    "sqlGraphProjection": "verified_file_relations"
+    "sqlGraphProjection": "verified_file_relations",
+    "checkpointId": "MCP-ARCH-REGISTRY-DIRECTORY-EVIDENCE-20261107-01"
   }
 }

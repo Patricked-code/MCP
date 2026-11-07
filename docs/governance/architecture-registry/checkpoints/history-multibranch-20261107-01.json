@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "checkpointId": "MCP-ARCH-REGISTRY-MULTIBRANCH-20261107-01",
+  "priorCheckpointId": "MCP-ARCH-REGISTRY-BASELINE-20261107-01",
+  "repository": "Patricked-code/MCP",
+  "recordedAt": "2026-11-07T03:57:56.980Z",
+  "observationId": "mcp-all-branches-20261107-01",
+  "sourceRefs": {
+    "frozenBranchHeads": "snapshots/2026-11-07/all-branches-v1/frozen-branch-heads.json",
+    "manifest": "snapshots/2026-11-07/all-branches-v1/manifest.json",
+    "summary": "snapshots/2026-11-07/all-branches-v1/summary.json",
+    "technicalTaxonomyV2": "catalog/technical-format-taxonomy-v2.json",
+    "validation": [
+      "snapshots/2026-11-07/all-branches-v1/validation/part-00.json",
+      "snapshots/2026-11-07/all-branches-v1/validation/part-01.json"
+    ]
+  },
+  "status": "190_BRANCH_TREES_INVENTORIED_AND_TECHNICALLY_CLASSIFIED",
+  "counts": {
+    "branches": 190,
+    "fileMemberships": 96689,
+    "directoryMemberships": 17836,
+    "formats": 17,
+    "filenameFormatUnknown": 0,
+    "contentSignaturesValidated": 0,
+    "filesSemanticallyReviewed": 0
+  },
+  "constraints": {
+    "sourceBranchRefs": "FROZEN_POINT_IN_TIME",
+    "registryBranchMovesAfterCapture": true,
+    "uniqueBlobsAcrossBranches": "NOT_CALCULATED",
+    "historicalCoverage": "CURRENT_REFS_ONLY",
+    "runtimeEffects": "NONE",
+    "sourcesRemainAuthoritative": true
+  },
+  "nextAction": "CLASSIFY_FUNCTIONS_BY_CONTENT_IN_BOUNDED_BATCHES_AND_ESTABLISH_CROSS_BRANCH_RELATIONS_WITH_EVIDENCE",
+  "protectedPRs": [
+    372,
+    373,
+    374
+  ],
+  "rules": [
+    "NO_MAIN_WRITE",
+    "NO_MERGE",
+    "NO_S1_WRITE",
+    "NO_PARALLEL_RUNTIME_AUTHORITY",
+    "KEEP_HISTORICAL_SNAPSHOTS",
+    "NO_SECRETS",
+    "NO_SEMANTIC_INFERENCE_FROM_PATH"
+  ]
+}
