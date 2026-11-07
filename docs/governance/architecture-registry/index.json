@@ -66,13 +66,16 @@
     "checkpoint": "checkpoints/history-multibranch-20261107-01.json"
   },
   "directoryStage": {
-    "status": "COMPLETE_PHYSICAL_MAIN_ONLY",
+    "status": "COMPLETE_PHYSICAL_FROZEN_ALL_BRANCHES",
     "directoryPaths": 145,
     "gitTreeTruncated": false,
     "mainCommitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
-    "otherBranches": "NOT_FULLY_INDEXED_AS_DIRECTORIES",
+    "otherBranches": "17836_SUBTREE_MEMBERSHIPS_DERIVED_FROM_IMMUTABLE_BATCHES",
     "semanticMeaning": "UNREVIEWED",
-    "sqliteProjection": "MAIN_DIRECTORIES_WITH_FROZEN_SNAPSHOT"
+    "sqliteProjection": "ALL_BRANCH_DIRECTORIES_FROZEN_SNAPSHOT",
+    "allBranches": 190,
+    "allBranchDirectoryMemberships": 17836,
+    "derivedFrom": "snapshots/2026-11-07/all-branches-v1/tree-object-shas/batch-00.jsonl..batch-18.jsonl"
   },
   "analysisStage": {
     "status": "PARTIAL_EVIDENCE_BACKED",

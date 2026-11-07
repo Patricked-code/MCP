@@ -267,9 +267,10 @@ def build_all_branches(root: Path, output: Path) -> dict:
                 frozen_main = next((ref for ref in refs if ref["branch"] == "main"), None)
                 if frozen_main is None or frozen_main["headSha"] != idx["mainSha"]:
                     raise ValueError("Frozen main branch differs from directory baseline")
-                db.executemany(
-                    "INSERT INTO directories VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    _main_directory_rows(root, idx, snap))
+                baseline_directories = {
+                    row[2]: row for row in _main_directory_rows(root, idx, snap)
+                }
+                count_directories = 0
                 for batch in manifest["batches"]:
                     path = root / multi["root"] / batch["filename"]
                     records = [json.loads(line) for line in path.read_text(
@@ -278,11 +279,72 @@ def build_all_branches(root: Path, output: Path) -> dict:
                     if len(records) != len(expected) or len(records) != batch["branchCount"]:
                         raise ValueError(f"Missing entries in {batch['id']}")
                     batch_count += 1
-                    for record, target in zip(records, expected):
+                    sha_batch_filename = batch["filename"].replace("batches/", "tree-object-shas/", 1)
+                    if sha_batch_filename == batch["filename"]:
+                        raise ValueError("Unexpected subtree SHA batch name")
+                    sha_records = [json.loads(line) for line in (root / multi["root"] /
+                        sha_batch_filename).read_text(encoding="utf-8").splitlines() if line.strip()]
+                    if len(sha_records) != len(records):
+                        raise ValueError("Frozen subtree SHA batch coverage mismatch")
+                    for record, target, sha_record in zip(records, expected, sha_records):
                         branch = record["branch"]
                         if (branch != target["branch"] or record["headSha"] != target["headSha"]
                                 or record["truncated"] or not record["complete"]):
                             raise ValueError(f"Branch ref/tree mismatch: {branch}")
+                        if sha_record["branch"] != branch or sha_record["headSha"] != target["headSha"]:
+                            raise ValueError("Frozen subtree reference mismatch: " + branch)
+                        raw_subtrees = sha_record["subtrees"]
+                        if len(raw_subtrees) != record["directoryCount"]:
+                            raise ValueError("Frozen subtree count mismatch: " + branch)
+                        dir_sha = {}
+                        for subtree in raw_subtrees:
+                            if (not isinstance(subtree, list) or len(subtree) != 2
+                                    or not isinstance(subtree[0], str)
+                                    or not isinstance(subtree[1], str)
+                                    or not re.fullmatch(r"[a-f0-9]{40}", subtree[1])
+                                    or subtree[0] in dir_sha):
+                                raise ValueError("Malformed or duplicate subtree: " + branch)
+                            dir_sha[subtree[0]] = subtree[1]
+                        dirs = {path: [0, 0, 0, 0] for path in dir_sha}
+                        for directory in dir_sha:
+                            parent = directory.rsplit("/", 1)[0] if "/" in directory else None
+                            if parent is not None:
+                                if parent not in dirs:
+                                    raise ValueError("Orphan subtree: " + directory)
+                                dirs[parent][1] += 1
+                                ancestor = parent
+                                while ancestor is not None:
+                                    dirs[ancestor][3] += 1
+                                    ancestor = ancestor.rsplit("/", 1)[0] if "/" in ancestor else None
+                        for source_file in record["files"]:
+                            filename = source_file[0]
+                            parent = filename.rsplit("/", 1)[0] if "/" in filename else None
+                            if parent is not None:
+                                if parent not in dirs:
+                                    raise ValueError("Orphan file: " + filename)
+                                dirs[parent][0] += 1
+                                ancestor = parent
+                                while ancestor is not None:
+                                    dirs[ancestor][2] += 1
+                                    ancestor = ancestor.rsplit("/", 1)[0] if "/" in ancestor else None
+                        directory_rows = []
+                        for path_name, tree_sha in dir_sha.items():
+                            parent = path_name.rsplit("/", 1)[0] if "/" in path_name else None
+                            directory_rows.append((
+                                snap, branch, path_name, parent, target["headSha"],
+                                tree_sha, "040000", len(path_name.split("/")),
+                                *dirs[path_name]
+                            ))
+                        if branch == "main":
+                            if set(dir_sha) != set(baseline_directories):
+                                raise ValueError("Main directory paths drift")
+                            for row in directory_rows:
+                                if row != baseline_directories[row[2]]:
+                                    raise ValueError("Main directory tree SHA or hierarchy drift")
+                        db.executemany(
+                            "INSERT INTO directories VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            directory_rows)
+                        count_directories += len(directory_rows)
                         rows, technical = [], []
                         raw_counts = Counter()
                         normalized_counts = Counter()
@@ -325,6 +387,8 @@ def build_all_branches(root: Path, output: Path) -> dict:
                         total_types.update(normalized_counts)
                 if batch_count != len(manifest["batches"]) or len(manifest["batches"]) != 19:
                     raise ValueError("Incomplete batch coverage")
+                if count_directories != summary["foldersAcrossBranches"] or count_directories != 17836:
+                    raise ValueError("Aggregate directory count mismatch")
                 if count_files != summary["filesAcrossBranches"] or count_files != 96689:
                     raise ValueError("Aggregate file count mismatch")
                 if dict(total_types) != summary["formatCounts"]:
@@ -345,12 +409,14 @@ def build_all_branches(root: Path, output: Path) -> dict:
                 raise ValueError("SQL branches count mismatch")
             if db.execute("SELECT COUNT(*) FROM file_technical_formats").fetchone()[0] != 96689:
                 raise ValueError("SQL technical rows count mismatch")
+            if db.execute("SELECT COUNT(*) FROM directories").fetchone()[0] != 17836:
+                raise ValueError("SQL directory rows count mismatch")
     except BaseException:
         output.unlink(missing_ok=True)
         raise
     return {"database": str(output), "snapshot": snap, "branches": len(refs),
             "file_memberships": count_files, "technical_types": len(tax2["types"]),
-            "batches": batch_count, "integrity": "ok"}
+            "batches": batch_count, "directories": count_directories, "integrity": "ok"}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)

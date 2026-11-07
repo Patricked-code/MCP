@@ -34,7 +34,7 @@ jobs:
           python3 - "$RUNNER_TEMP/architecture-main.sqlite" "$RUNNER_TEMP/architecture-branches.sqlite" <<'PY'
           import sqlite3
           import sys
-          for name, expected_files, expected_dirs in ((sys.argv[1], 844, 145), (sys.argv[2], 96689, 145)):
+          for name, expected_files, expected_dirs in ((sys.argv[1], 844, 145), (sys.argv[2], 96689, 17836)):
               with sqlite3.connect(name) as connection:
                   count = lambda table: connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
                   assert count("files") == expected_files, name

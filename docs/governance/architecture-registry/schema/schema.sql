@@ -114,3 +114,15 @@ CREATE VIEW IF NOT EXISTS v_verified_direct_dependents AS
  SELECT snapshot_id,branch_name,target_path AS changed_file,
         source_path AS referencing_file,predicate,evidence_line,status
  FROM verified_file_relations;
+
+-- Historical Git subtree reuse; no functional or runtime claims.
+CREATE VIEW IF NOT EXISTS v_directory_versions_across_branches AS
+SELECT snapshot_id, path, COUNT(DISTINCT branch_name) AS branch_count,
+       COUNT(DISTINCT tree_sha) AS version_count
+FROM directories
+GROUP BY snapshot_id, path;
+CREATE VIEW IF NOT EXISTS v_shared_subtree_content AS
+SELECT snapshot_id, tree_sha, COUNT(*) AS appearances,
+       COUNT(DISTINCT branch_name) AS branch_count
+FROM directories
+GROUP BY snapshot_id, tree_sha;

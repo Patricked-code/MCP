@@ -115,3 +115,7 @@ python3 docs/governance/architecture-registry/build_sqlite.py --help
 ```
 
 Les réponses d'impact sont **des candidats fondés sur des références partielles**, jamais un verdict de sécurité, une liste exhaustive de dépendances, une attestation runtime ni une autorisation de fusion/déploiement. Aucune source `main` ni aucun fichier de mécanisme opérationnel existant n'a été modifié pour cette analyse.
+
+## Projection SQLite des répertoires des 190 branches historiques
+
+La table `directories` indexe **17 836 présences de répertoires**, dont les 145 de `main`, sous la clé `snapshot_id + branch_name + path`. `build_sqlite.py --mode all-branches` réutilise les **19 lots de SHA de sous-arbres** déjà conservés dans `all-branches-v1/tree-object-shas/` ainsi que les inventaires de fichiers existants. Chaque chemin, parent, SHA de sous-arbre et nombre de descendants est contrôlé ; les 145 objets de `main` sont recoupés avec le baseline individuel. Les 19 lots historiques ne sont pas réécrits. Le mode `--mode main` conserve ses 145 lignes. Deux nouvelles vues : `v_directory_versions_across_branches` et `v_shared_subtree_content`. Ces chiffres concernent des HEAD historiques figés et excluent les arbres racine ; les relations fonctionnelles restent à qualifier séparément.
