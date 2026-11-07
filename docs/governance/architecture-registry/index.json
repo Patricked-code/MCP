@@ -93,5 +93,31 @@
     "sqlGraphProjection": "verified_file_relations + source_file_roles",
     "checkpointId": "MCP-ARCH-REGISTRY-SEMANTIC-BATCH02-20261107-01",
     "semanticRoleAnchors": 9
+  },
+  "architecturalBlockStage": {
+    "catalog": "catalog/architectural-blocks-v1.json",
+    "manifest": "catalog/architectural-classification-manifest-v1.json",
+    "fileCandidates": [
+      "catalog/architectural-file-candidates-v1-part-00.jsonl",
+      "catalog/architectural-file-candidates-v1-part-01.jsonl",
+      "catalog/architectural-file-candidates-v1-part-02.jsonl",
+      "catalog/architectural-file-candidates-v1-part-03.jsonl"
+    ],
+    "gwcCrosswalk": "catalog/architectural-gwc-contract-map-v1.json",
+    "programCrosswalk": "catalog/architectural-program-blueprint-map-v1.json",
+    "history": "catalog/architectural-evolution-v1.json",
+    "verifier": "verify_architectural_blocks_v1.mjs",
+    "blocks": 26,
+    "relations": 27,
+    "files": {
+      "totalFiles": 844,
+      "anchorFilePaths": 61,
+      "previouslyInspectedPaths": 19,
+      "pathHintsOnly": 640,
+      "unreviewedWithoutHint": 133,
+      "fullySemanticallyAudited": 0
+    },
+    "semanticAuditComplete": false,
+    "status": "PROPOSED_CLASSIFICATION_BOUNDED_EVIDENCE_NO_RUNTIME_AUTHORITY"
   }
 }
