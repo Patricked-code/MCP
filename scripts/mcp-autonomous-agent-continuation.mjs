@@ -48,6 +48,52 @@ function validOwnP2(state,p){
   }
   return state.status==='READY'&&state.ownerGovernedSessionId===null;
 }
+/**
+ * Inspect ONLY the session bound to the CALLER'S authenticated transport.
+ * The caller must supply the existing MCP session service's own-session read
+ * port, not a list lookup keyed by an agent-selected governedSessionId.
+ * A GitHub Actions artifact, declared identity, or task projection cannot
+ * substitute for this record. The existing P2 mutation remains authoritative.
+ */
+function validateOwnBoundSession(session,p,observedAt){
+  if(!object(session)||session.source!=='GOVERNED_SESSIONS'
+    ||session.governedSessionId!==p.governedSessionId
+    ||session.repository!==p.repository
+    ||session.status!=='ACTIVE'
+    ||session.identityAssurance!=='oauth_subject'
+    ||typeof session.ownerPrincipalId!=='string'
+    ||!session.ownerPrincipalId.startsWith('oauth:')
+    ||!Number.isSafeInteger(session.sessionRevision)
+    ||session.sessionRevision<1
+    ||!object(session.currentTransport)
+    ||!/^[0-9a-f]{64}$/.test(session.currentTransport.fingerprint??'')){
+    return false;
+  }
+  const context=session.connectionContext,receipt=session.bootstrapReceipt;
+  if(!object(context)||context.governedSessionId!==p.governedSessionId
+    ||context.repository!==p.repository
+    ||context.principalId!==session.ownerPrincipalId
+    ||context.identityAssurance!=='oauth_subject'
+    ||context.evidenceSource!=='oauth_auth_info'
+    ||!object(receipt)||receipt.status!=='ACKNOWLEDGED'
+    ||receipt.governedSessionId!==p.governedSessionId
+    ||receipt.repository!==p.repository
+    ||receipt.githubHead!==p.headSha
+    ||receipt.runtimeRevision!==p.headSha
+    ||!Number.isSafeInteger(receipt.stateVersion)
+    ||receipt.stateVersion<1
+    ||!Number.isSafeInteger(session.lastAcknowledgedStateVersion)
+    ||session.lastAcknowledgedStateVersion<receipt.stateVersion){
+    return false;
+  }
+  const now=Date.parse(observedAt);
+  const validFrom=Date.parse(receipt.createdAt??'');
+  const validUntil=Date.parse(receipt.expiresAt??'');
+  return Number.isFinite(now)&&Number.isFinite(validFrom)
+    &&Number.isFinite(validUntil)
+    &&validFrom<=now&&now<validUntil;
+}
+
 function verifiedRun(host,p,key){
   return object(host)
     &&host.source==='EXISTING_AGENT_HOST'
@@ -75,6 +121,18 @@ export async function continueC26WithExistingHost(input,ports={}){
   if(typeof ports.startOrResumeExistingAgent!=='function'
     ||ports.atomicIdempotentHost!==true){
     return stop('ATOMIC_DURABLE_AGENT_HOST_UNAVAILABLE');
+  }
+  // Missing or foreign transport identity is a hard stop BEFORE P2 and host
+  // observations. Never accept inventory.nextWork.governedSessionId as proof
+  // that THIS code agent owns that governed session.
+  if(typeof ports.readBoundAgentSession!=='function'){
+    return stop('OWN_TRANSPORT_BOUND_SESSION_READER_UNAVAILABLE');
+  }
+  let ownSession;
+  try{ownSession=await ports.readBoundAgentSession();}
+  catch{return stop('OWN_TRANSPORT_SESSION_OBSERVATION_UNAVAILABLE');}
+  if(!validateOwnBoundSession(ownSession,p,input.at)){
+    return stop('OWN_TRANSPORT_SESSION_OR_BOOTSTRAP_CONFLICT');
   }
   const key=stableKey(p);
   let state,host;
