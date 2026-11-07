@@ -91,3 +91,7 @@ ORDER BY version_count DESC, path;
 Les 190 inventaires ne signifient pas que nous avons **lu et compris le contenu** de tous les fichiers. La nature technique est classée d'après le nom ou l'extension, la validité du contenu et le rôle fonctionnel restant explicitement `NOT_PERFORMED / UNREVIEWED`.
 
 **Étape suivante :** inspecter les fichiers par groupes bornés, comparer leurs contenus, appels, contrats et dépendances, puis renseigner les objets fonctionnels et relations vérifiées. La PR reste Draft ; aucun merge, déploiement ou modification d'une branche propriétaire n'est autorisé par ces données.
+
+## Inventaire explicite des 145 répertoires de main
+
+Ajout strictement additif au baseline immuable `main@7d29ad4212efa0bd343d53f400785e5c9cbf07f4`. Les fichiers `snapshots/2026-11-07/main-directories.jsonl` et `main-directory-summary.json` enregistrent **145/145 objets tree**, chemins, parents, profondeur, mode Git, SHA et nombres de descendants à partir du même arbre Git complet que les 844 blobs. Les 989 entrées excluent l'objet `tree` racine. L'analyse fonctionnelle reste UNREVIEWED, et les répertoires des autres branches ne sont pas encore indexés individuellement. Aucune autorité runtime, aucune fusion, aucun déploiement.

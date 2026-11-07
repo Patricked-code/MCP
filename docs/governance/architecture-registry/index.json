@@ -19,7 +19,9 @@
     "technicalTaxonomy": "catalog/technical-format-taxonomy.json",
     "technicalClassification": "snapshots/2026-11-07/main-technical-classification.jsonl",
     "technicalSummary": "snapshots/2026-11-07/main-technical-summary.json",
-    "technicalVerification": "verify_technical_formats.mjs"
+    "technicalVerification": "verify_technical_formats.mjs",
+    "mainDirectories": "snapshots/2026-11-07/main-directories.jsonl",
+    "mainDirectorySummary": "snapshots/2026-11-07/main-directory-summary.json"
   },
   "notAuthoritativeFor": [
     "Task Queue",
@@ -56,5 +58,13 @@
     "sqliteMode": "all-branches",
     "technicalVerifier": "verify_multibranch_inventory.mjs",
     "functionalClassification": "NOT_PERFORMED"
+  },
+  "directoryStage": {
+    "status": "COMPLETE_PHYSICAL_MAIN_ONLY",
+    "directoryPaths": 145,
+    "gitTreeTruncated": false,
+    "mainCommitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+    "otherBranches": "NOT_FULLY_INDEXED_AS_DIRECTORIES",
+    "semanticMeaning": "UNREVIEWED"
   }
 }
