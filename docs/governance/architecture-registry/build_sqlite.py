@@ -42,6 +42,36 @@ def _main_directory_rows(root: Path, index: dict, snapshot: str):
     return result
 
 
+
+def _verified_file_relation_rows(root: Path, index: dict, snapshot: str):
+    """Project selected source-anchored relations without semantic extrapolation."""
+    evidence = read_json(root / index["files"]["sourceEvidenceBatch01"])
+    if (evidence["mainCommitSha"] != index["mainSha"]
+            or evidence["repository"] != index["repository"]):
+        raise ValueError("Source evidence does not match main baseline")
+    known = {}
+    with (root / index["files"]["mainFiles"]).open(encoding="utf-8") as stream:
+        for line in stream:
+            if line.strip():
+                item = json.loads(line)
+                known[item["path"]] = item["blobSha"]
+    rows = []
+    for item in evidence["relations"]:
+        from_path, to_path = item["from"], item["to"]
+        src_sha, dst_sha = item["evidence"]["blobSha"], item["targetBlobSha"]
+        if (item["status"] != "VERIFIED_SOURCE_REFERENCE"
+            or known.get(from_path) != src_sha
+            or known.get(to_path) != dst_sha
+            or item["evidence"]["path"] != from_path
+            or item["evidence"]["commitSha"] != index["mainSha"]
+            or item["evidence"]["line"] <= 0):
+            raise ValueError("Unverified file relation: " + item["id"])
+        rows.append((snapshot, "main", item["id"], from_path, to_path,
+                     item["predicate"], src_sha, dst_sha,
+                     item["evidence"]["line"], item["status"]))
+    return rows
+
+
 def build(root: Path, output: Path) -> dict:
     index = read_json(root / "index.json")
     links = index["files"]
@@ -130,6 +160,9 @@ def build(root: Path, output: Path) -> dict:
                 db.executemany(
                     "INSERT INTO file_technical_formats VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     tech_rows)
+                db.executemany(
+                    "INSERT INTO verified_file_relations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    _verified_file_relation_rows(root, index, sid))
                 db.executemany(
                     "INSERT INTO components VALUES (?, ?, ?, ?, ?, ?)",
                     ((sid, c["id"], c["name"], c["kind"], c.get("purpose"),
@@ -296,6 +329,9 @@ def build_all_branches(root: Path, output: Path) -> dict:
                     raise ValueError("Aggregate file count mismatch")
                 if dict(total_types) != summary["formatCounts"]:
                     raise ValueError("Aggregate technical format counts mismatch")
+                db.executemany(
+                    "INSERT INTO verified_file_relations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    _verified_file_relation_rows(root, idx, snap))
                 db.execute(
                     "INSERT INTO checkpoints VALUES (?, ?, ?, ?, ?, ?)",
                     (checkpoint["checkpointId"], snap, checkpoint["recordedAt"],

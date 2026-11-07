@@ -94,3 +94,23 @@ CREATE TABLE IF NOT EXISTS directories (
 );
 CREATE INDEX IF NOT EXISTS idx_directory_tree_sha ON directories(tree_sha);
 CREATE INDEX IF NOT EXISTS idx_directory_parent ON directories(snapshot_id,branch_name,parent_path);
+
+-- Evidence-backed file-reference graph, documentary projection only.
+CREATE TABLE IF NOT EXISTS verified_file_relations (
+ snapshot_id TEXT NOT NULL, branch_name TEXT NOT NULL,
+ relation_id TEXT NOT NULL, source_path TEXT NOT NULL,
+ target_path TEXT NOT NULL, predicate TEXT NOT NULL,
+ source_blob_sha TEXT NOT NULL, target_blob_sha TEXT NOT NULL,
+ evidence_line INTEGER NOT NULL, status TEXT NOT NULL,
+ PRIMARY KEY(snapshot_id, branch_name, relation_id),
+ FOREIGN KEY(snapshot_id,branch_name,source_path)
+   REFERENCES files(snapshot_id,branch_name,path),
+ FOREIGN KEY(snapshot_id,branch_name,target_path)
+   REFERENCES files(snapshot_id,branch_name,path)
+);
+CREATE INDEX IF NOT EXISTS idx_verified_file_relations_target
+ ON verified_file_relations(snapshot_id,branch_name,target_path);
+CREATE VIEW IF NOT EXISTS v_verified_direct_dependents AS
+ SELECT snapshot_id,branch_name,target_path AS changed_file,
+        source_path AS referencing_file,predicate,evidence_line,status
+ FROM verified_file_relations;
