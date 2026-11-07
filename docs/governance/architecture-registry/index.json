@@ -35,5 +35,26 @@
     "unknownNames": 0,
     "contentValidated": 0,
     "semanticRolesClassified": 0
+  },
+  "latestSnapshotId": "mcp-all-branches-20261107-01",
+  "multiBranchInventory": {
+    "status": "COMPLETE",
+    "snapshotId": "mcp-all-branches-20261107-01",
+    "branches": 190,
+    "fileMemberships": 96689,
+    "technicalTypes": 17,
+    "root": "snapshots/2026-11-07/all-branches-v1/",
+    "manifest": "snapshots/2026-11-07/all-branches-v1/manifest.json",
+    "summary": "snapshots/2026-11-07/all-branches-v1/summary.json",
+    "branchHeads": "snapshots/2026-11-07/all-branches-v1/frozen-branch-heads.json",
+    "taxonomyV2": "catalog/technical-format-taxonomy-v2.json",
+    "validation": [
+      "snapshots/2026-11-07/all-branches-v1/validation/part-00.json",
+      "snapshots/2026-11-07/all-branches-v1/validation/part-01.json"
+    ],
+    "sqliteBuilder": "build_sqlite.py",
+    "sqliteMode": "all-branches",
+    "technicalVerifier": "verify_multibranch_inventory.mjs",
+    "functionalClassification": "NOT_PERFORMED"
   }
 }

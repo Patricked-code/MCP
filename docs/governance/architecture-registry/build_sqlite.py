@@ -135,9 +135,157 @@ def build(root: Path, output: Path) -> dict:
             "integrity": "ok"}
 
 
+
+def _format_from_name(path: str, taxonomy: dict):
+    base = path.rsplit("/", 1)[-1]
+    for entry in taxonomy["types"]:
+        if entry.get("exactName") and base == entry["exactName"]:
+            return entry
+    for entry in taxonomy["types"]:
+        if entry.get("extension") and base.endswith(entry["extension"]):
+            return entry
+    return None
+
+
+def _v1_unregistered(path: str) -> str:
+    base = path.rsplit("/", 1)[-1]
+    suffix = "." + base.rsplit(".", 1)[-1] if "." in base else "(no-extension)"
+    return "UNREGISTERED:" + suffix
+
+
+def build_all_branches(root: Path, output: Path) -> dict:
+    """Rebuild all branch-file rows from the frozen refs and complete JSONL batches."""
+    import re
+    from collections import Counter
+
+    idx = read_json(root / "index.json")
+    multi = idx["multiBranchInventory"]
+    snap = multi["snapshotId"]
+    frozen = read_json(root / multi["branchHeads"])
+    manifest = read_json(root / multi["manifest"])
+    summary = read_json(root / multi["summary"])
+    tax2 = read_json(root / multi["taxonomyV2"])
+    tax1 = read_json(root / idx["files"]["technicalTaxonomy"])
+    checkpoint = read_json(root / idx["files"]["checkpoint"])
+    if manifest["status"] != "COMPLETE" or manifest["successfulBranches"] != 190:
+        raise ValueError("Multibranch inventory has not been finalized")
+    if not (snap == frozen["snapshotId"] == manifest["snapshotId"]
+            == summary["snapshotId"] == checkpoint["observationId"]):
+        raise ValueError("Multibranch snapshot mismatch")
+    refs = frozen["branchRefs"]
+    if len(refs) != summary["branches"] or len(refs) != 190:
+        raise ValueError("Branch reference count mismatch")
+    if len({x["branch"] for x in refs}) != len(refs):
+        raise ValueError("Duplicate branch reference names")
+    summary_stats = {s["branch"]: s for s in summary["branchStats"]}
+    if len(summary_stats) != len(refs):
+        raise ValueError("Incomplete branch statistics")
+
+    output = output.resolve()
+    if output.exists():
+        raise FileExistsError(f"Refusing to overwrite existing database: {output}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    count_files = 0
+    total_types = Counter()
+    batch_count = 0
+    try:
+        with sqlite3.connect(output) as db:
+            db.executescript((root / idx["files"]["schema"]).read_text(encoding="utf-8"))
+            with db:
+                db.execute(
+                    "INSERT INTO observations VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (snap, idx["repository"], frozen["capturedAt"], idx["mainSha"],
+                     len(refs), idx["mainFileCount"], idx["mainDirectoryCount"]))
+                db.executemany(
+                    "INSERT INTO branches VALUES (?, ?, ?, ?, ?, ?)",
+                    ((snap, b["branch"], b["headSha"], int(b["protected"]),
+                      b["branch"].split("/", 1)[0] if "/" in b["branch"] else "(sans-prefixe)",
+                      f'https://github.com/{idx["repository"]}/commit/{b["headSha"]}')
+                     for b in refs))
+                for batch in manifest["batches"]:
+                    path = root / multi["root"] / batch["filename"]
+                    records = [json.loads(line) for line in path.read_text(
+                        encoding="utf-8").splitlines() if line.strip()]
+                    expected = refs[batch["from"]:batch["toExclusive"]]
+                    if len(records) != len(expected) or len(records) != batch["branchCount"]:
+                        raise ValueError(f"Missing entries in {batch['id']}")
+                    batch_count += 1
+                    for record, target in zip(records, expected):
+                        branch = record["branch"]
+                        if (branch != target["branch"] or record["headSha"] != target["headSha"]
+                                or record["truncated"] or not record["complete"]):
+                            raise ValueError(f"Branch ref/tree mismatch: {branch}")
+                        rows, technical = [], []
+                        raw_counts = Counter()
+                        normalized_counts = Counter()
+                        for item in record["files"]:
+                            if len(item) != 5:
+                                raise ValueError(f"Malformed blob row: {branch}")
+                            path_name, blob_sha, size_bytes, mode, saved_format = item
+                            if not re.fullmatch(r"[a-f0-9]{40}", blob_sha):
+                                raise ValueError(f"Malformed blob SHA: {branch} {path_name}")
+                            v1 = _format_from_name(path_name, tax1)
+                            expected_format = v1["id"] if v1 else _v1_unregistered(path_name)
+                            if saved_format != expected_format:
+                                raise ValueError(f"V1 format mismatch: {branch} {path_name}")
+                            typ = _format_from_name(path_name, tax2)
+                            if typ is None:
+                                raise ValueError(f"V2 unclassified format: {branch} {path_name}")
+                            raw_counts[saved_format] += 1
+                            normalized_counts[typ["id"]] += 1
+                            rows.append((snap, branch, path_name, blob_sha,
+                                         size_bytes, mode, "UNREVIEWED"))
+                            technical.append((snap, branch, path_name, blob_sha,
+                                              typ["id"], typ["family"], typ["detectBy"],
+                                              "NOT_PERFORMED", "UNREVIEWED"))
+                        if len(rows) != record["fileCount"] or len(rows) != len(
+                                {r[2] for r in rows}):
+                            raise ValueError(f"Incomplete or duplicate branch files: {branch}")
+                        if dict(raw_counts) != record["formatCounts"]:
+                            raise ValueError(f"Raw format counts mismatch: {branch}")
+                        branch_summary = summary_stats[branch]
+                        if (branch_summary["headSha"] != target["headSha"]
+                                or branch_summary["files"] != len(rows)
+                                or dict(normalized_counts) != branch_summary["formatCounts"]):
+                            raise ValueError(f"Normalized format counts mismatch: {branch}")
+                        db.executemany(
+                            "INSERT INTO files VALUES (?, ?, ?, ?, ?, ?, ?)", rows)
+                        db.executemany(
+                            "INSERT INTO file_technical_formats VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            technical)
+                        count_files += len(rows)
+                        total_types.update(normalized_counts)
+                if batch_count != len(manifest["batches"]) or len(manifest["batches"]) != 19:
+                    raise ValueError("Incomplete batch coverage")
+                if count_files != summary["filesAcrossBranches"] or count_files != 96689:
+                    raise ValueError("Aggregate file count mismatch")
+                if dict(total_types) != summary["formatCounts"]:
+                    raise ValueError("Aggregate technical format counts mismatch")
+                db.execute(
+                    "INSERT INTO checkpoints VALUES (?, ?, ?, ?, ?, ?)",
+                    (checkpoint["checkpointId"], snap, checkpoint["recordedAt"],
+                     checkpoint["status"], checkpoint["nextAction"],
+                     json.dumps(checkpoint, sort_keys=True, ensure_ascii=False)))
+            if db.execute("PRAGMA foreign_key_check").fetchall():
+                raise ValueError("SQLite foreign key integrity failure")
+            if db.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
+                raise ValueError("SQLite database integrity failure")
+            if db.execute("SELECT COUNT(*) FROM branches").fetchone()[0] != 190:
+                raise ValueError("SQL branches count mismatch")
+            if db.execute("SELECT COUNT(*) FROM file_technical_formats").fetchone()[0] != 96689:
+                raise ValueError("SQL technical rows count mismatch")
+    except BaseException:
+        output.unlink(missing_ok=True)
+        raise
+    return {"database": str(output), "snapshot": snap, "branches": len(refs),
+            "file_memberships": count_files, "technical_types": len(tax2["types"]),
+            "batches": batch_count, "integrity": "ok"}
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent)
     parser.add_argument("--output", type=Path, default=Path("architecture-registry.sqlite"))
+    parser.add_argument("--mode", choices=("main", "all-branches"), default="main")
     args = parser.parse_args()
-    print(json.dumps(build(args.root, args.output), indent=2, ensure_ascii=False))
+    fn = build_all_branches if args.mode == "all-branches" else build
+    print(json.dumps(fn(args.root, args.output), indent=2, ensure_ascii=False))

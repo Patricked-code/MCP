@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "checkpointId": "MCP-ARCH-REGISTRY-BASELINE-20261107-01",
+  "repository": "Patricked-code/MCP",
+  "recordedAt": "2026-11-07T03:12:33.424Z",
+  "observationId": "mcp-branches-20261107-7d29ad4212ef",
+  "baselineMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "scope": "NON_AUTHORITATIVE_ARCHITECTURE_INDEX_ONLY",
+  "status": "BASELINE_CAPTURED",
+  "counts": {
+    "branches": 189,
+    "mainFiles": 844,
+    "mainDirectories": 145,
+    "mainGitEntries": 989,
+    "branchFileTreesAnalyzed": 1,
+    "otherBranchFileTreesPending": 188,
+    "filesSemanticallyClassified": 0
+  },
+  "verifiedFacts": [
+    "189 branch heads obtained via pages 100+89+0",
+    "main git tree recursive, truncated=false, 844 blobs and 145 tree entries",
+    "existing policy and GWC sources enumerated without mutation"
+  ],
+  "remaining": [
+    "Capture file trees per branch by exact head in bounded batches, allowing identical-sha reuse",
+    "Analyze content/imports/tests/config for semantic grouping",
+    "Cross-link PR/issue/commits/history with provenance",
+    "Check runtime live before making any runtime claims",
+    "Inspect content and verify file signatures where relevant",
+    "Perform functional classification from file bodies, dependencies and actual interactions"
+  ],
+  "nextAction": "READ_CONTENT_BY_BOUNDED_GROUPS_AND_CLASSIFY_FUNCTION_WITH_EVIDENCE",
+  "protectedPRs": [
+    372,
+    373,
+    374
+  ],
+  "restrictions": [
+    "NO_MAIN_WRITE",
+    "NO_MERGE",
+    "NO_S1_OR_RUNTIME_WRITE",
+    "NO_NEW_TASK_QUEUE",
+    "NO_NEW_AUTHORITY",
+    "NO_SECRETS",
+    "NO_FORCE_PUSH"
+  ],
+  "technicalClassification": {
+    "stage": "TECHNICAL_FORMAT",
+    "status": "COMPLETE_BY_FILENAME_NOT_CONTENT",
+    "files": 844,
+    "formats": 11,
+    "unknown": 0,
+    "contentValidated": 0,
+    "semanticRolesClassified": 0,
+    "summary": "snapshots/2026-11-07/main-technical-summary.json"
+  }
+}

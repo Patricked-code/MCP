@@ -5,7 +5,7 @@
   "capturedAt": "2026-11-07T03:42:22.743Z",
   "originalMainCommit": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
   "sourceSnapshot": "frozen-branch-heads.json",
-  "classificationTaxonomy": "../../catalog/technical-format-taxonomy.json",
+  "classificationTaxonomy": "catalog/technical-format-taxonomy-v2.json",
   "fileTupleFields": [
     "path",
     "blobSha",
@@ -15,9 +15,9 @@
   ],
   "records": "A JSONL line per branch containing frozen headSha, Git tree response and all blobs with exact format label, no semantic roles",
   "expectedBranches": 190,
-  "successfulBranches": 0,
+  "successfulBranches": 190,
   "failedBranches": 0,
-  "status": "IN_PROGRESS",
+  "status": "COMPLETE",
   "batches": [
     {
       "id": "00",
@@ -37,7 +37,10 @@
         "docs/mcp-memory-bootstrap",
         "docs/single-root-architecture-map-20261023"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 7144,
+      "directoryCount": 1315,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "01",
@@ -57,7 +60,10 @@
         "mcp/af10-af18-af24-af27-governance-consistency-20260922",
         "mcp/af10-af18-af24-af27-production-state-20260922"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 6616,
+      "directoryCount": 1419,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "02",
@@ -77,7 +83,10 @@
         "mcp/alignment-recovery-20260805",
         "mcp/architecture-chronology-recovery-20261009"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 4742,
+      "directoryCount": 801,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "03",
@@ -97,7 +106,10 @@
         "mcp/automatic-governed-connection-bootstrap-20260829",
         "mcp/b1-final-documentation-20260909"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 6038,
+      "directoryCount": 1109,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "04",
@@ -117,7 +129,10 @@
         "mcp/corrected-findings-final-baseline-20260922",
         "mcp/dispatch-concurrent-cas-regression-20261009"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 5068,
+      "directoryCount": 823,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "05",
@@ -137,7 +152,10 @@
         "mcp/e2-pilot-journal-observability-20261102",
         "mcp/e2-production-state-reconciliation-20261031"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 5752,
+      "directoryCount": 958,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "06",
@@ -157,7 +175,10 @@
         "mcp/foundations-final-state-20260805",
         "mcp/foundations-integration-preview-20260805"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 4089,
+      "directoryCount": 632,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "07",
@@ -177,7 +198,10 @@
         "mcp/git-github-control-plane-foundation-20260915",
         "mcp/git-registry-v2-foundation-20260805"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 6071,
+      "directoryCount": 1011,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "08",
@@ -197,7 +221,10 @@
         "mcp/github-pr-auth-diagnostics-20260805",
         "mcp/github-pr-auth-diagnostics-rebased-20260805"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 3995,
+      "directoryCount": 658,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "09",
@@ -217,7 +244,10 @@
         "mcp/gwb02-inline-review-corpus-20261015",
         "mcp/gwb03-pr261-policy-evidence-20261015"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 5153,
+      "directoryCount": 947,
+      "validationRef": "validation/part-00.json"
     },
     {
       "id": "10",
@@ -237,7 +267,10 @@
         "mcp/gwc-v1-design-20260915",
         "mcp/harden-operational-memory-retention-20260815"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 5819,
+      "directoryCount": 1202,
+      "validationRef": "validation/part-01.json"
     },
     {
       "id": "11",
@@ -257,7 +290,10 @@
         "mcp/main-merged-pr-sha-inventory-20261103",
         "mcp/mandatory-agent-bootstrap-v1-20260822"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 5144,
+      "directoryCount": 962,
+      "validationRef": "validation/part-01.json"
     },
     {
       "id": "12",
@@ -277,7 +313,10 @@
         "mcp/pr-unification-audit-summary",
         "mcp/pr-unification-audit-summary-issues"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 3927,
+      "directoryCount": 590,
+      "validationRef": "validation/part-01.json"
     },
     {
       "id": "13",
@@ -297,7 +336,10 @@
         "mcp/read-write-foundation-rebased-20260805",
         "mcp/readonly-evidence-bounded-diagnostics-20260920"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 4680,
+      "directoryCount": 975,
+      "validationRef": "validation/part-01.json"
     },
     {
       "id": "14",
@@ -317,7 +359,10 @@
         "mcp/reconcile-s1-20260805T101753Z",
         "mcp/reconcile-unified-operational-work-state-20260829"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 3783,
+      "directoryCount": 586,
+      "validationRef": "validation/part-01.json"
     },
     {
       "id": "15",
@@ -337,7 +382,10 @@
         "mcp/repository-ssh-ca-issue-trigger-20260925",
         "mcp/repository-ssh-terminal-20260926"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 4915,
+      "directoryCount": 967,
+      "validationRef": "validation/part-01.json"
     },
     {
       "id": "16",
@@ -357,7 +405,10 @@
         "mcp/stablecoin-github-first-fast-forward-20260921",
         "mcp/stablecoin-probes-failsoft-20260920"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 4296,
+      "directoryCount": 867,
+      "validationRef": "validation/part-01.json"
     },
     {
       "id": "17",
@@ -377,7 +428,10 @@
         "mcp/w1-program-state-convergence-20260924",
         "mcp/w2-github-read-r1-20260924"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 5123,
+      "directoryCount": 1093,
+      "validationRef": "validation/part-01.json"
     },
     {
       "id": "18",
@@ -397,7 +451,10 @@
         "test-branch",
         "test-branch-created-by-mistake-cleanup-needed"
       ],
-      "status": "PENDING"
+      "status": "VALIDATED",
+      "fileCount": 4334,
+      "directoryCount": 921,
+      "validationRef": "validation/part-01.json"
     }
   ],
   "limitations": [
@@ -406,5 +463,22 @@
     "No proof of runtime use",
     "No new MCP authority or code deployed",
     "Preserve original main snapshot"
-  ]
+  ],
+  "filesAcrossBranches": 96689,
+  "directoriesAcrossBranches": 17836,
+  "technicalClassification": {
+    "types": 17,
+    "byFilename": true,
+    "signaturesValidated": 0,
+    "functionalRolesVerified": 0,
+    "normalizedUnknown": 0,
+    "originalUnregisteredExtensions": 61
+  },
+  "validatedAt": "2026-11-07T03:55:38.226Z",
+  "validationEvidence": [
+    "validation/part-00.json",
+    "validation/part-01.json"
+  ],
+  "summary": "summary.json",
+  "nextAction": "SEMANTIC_CONTENT_REVIEW_AND_CROSS_BRANCH_RELATIONS"
 }

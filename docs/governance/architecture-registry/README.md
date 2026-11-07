@@ -56,3 +56,38 @@ Répartition observée : TypeScript 402 ; Markdown 231 ; JSON 172 ; MJS 15 ; YAM
 **À ne pas confondre avec la deuxième classification** : le format d'un fichier ne prouve ni qu'il est chargé au runtime, ni qu'il gouverne, ni qu'il définit un contrat, ni son utilité dans un processus. Chaque ligne conserve `functionalRoleStatus=UNREVIEWED` et `signatureValidation=NOT_PERFORMED`. Les preuves de contenu et les relations viennent ensuite.
 
 Le nouveau `README.md` de cette PR est inscrit dans le baseline documentaire existant afin de respecter les contrôles CI; cela ne modifie pas le snapshot historique `main`.
+
+## Classification 1 — Extension multibranche achevée (190 branches au point figé)
+
+Un nouvel instantané **`mcp-all-branches-20261107-01`** conserve les 190 HEAD observés le `2026-11-07T03:42:22.743Z`, leurs 19 lots de Trees complets et **96689 présences de fichiers** (chaque présence = branche + SHA du commit + chemin + blob SHA + type). **17836 présences de dossiers** sont comptées. Il s'agit de nombres cumulés entre branches, **pas de fichiers uniques**.
+
+- `snapshots/2026-11-07/all-branches-v1/frozen-branch-heads.json` : référentiel immuable des 190 branches et SHA observés. Après l'écriture du registre, sa propre branche avance : son SHA figé reste historique et ne doit pas être confondu avec son SHA actuel.
+- `snapshots/2026-11-07/all-branches-v1/manifest.json` : 19 lots, 190 branches, contrôles et provenance.
+- `snapshots/2026-11-07/all-branches-v1/batches/batch-00.jsonl` ... `batch-18.jsonl` : un enregistrement par branche, contenant **tous les blobs de son arbre** sous forme de tuples `[path, blobSha, sizeBytes, gitMode, technicalTypeV1]`.
+- `snapshots/2026-11-07/all-branches-v1/validation/part-00.json`, `part-01.json` : validation intégrale de tous les lots, branch SHA et détection technique.
+- `snapshots/2026-11-07/all-branches-v1/summary.json` : 190 fiches de branche et totaux techniques par format.
+- `catalog/technical-format-taxonomy-v2.json` : ajoute, sans remplacer la nomenclature de `main`, six types trouvés dans d'autres branches : Python, SQL, CSV, JavaScript, JSONL, .gitattributes. Le stockage initial conserve 61 catégories `UNREGISTERED:extension` à titre de provenance ; elles sont toutes résolues dans la projection V2, soit **0 format restant inconnu par nom de fichier**.
+- `verify_multibranch_inventory.mjs` : validation reproductible des 190 inventaires (lecture seule).
+- `build_sqlite.py --mode all-branches --output /chemin/architecture-all-branches.sqlite` : reconstruction hors ligne d'une base relationnelle interrogeable.
+
+### Modèle de tables et exemples
+
+Les tables existantes `observations`, `branches`, `files` et `file_technical_formats` sont réutilisées. Les vues SQL `v_branch_file_format_counts`, `v_file_versions_across_branches` et `v_identical_content_across_branches` sont additives ; elles ne confèrent aucune permission de runtime.
+
+Exemples SQL (remplacer l'ID par `mcp-all-branches-20261107-01`) :
+
+```sql
+SELECT branch_name, format_type, file_count
+FROM v_branch_file_format_counts
+WHERE snapshot_id = 'mcp-all-branches-20261107-01'
+ORDER BY branch_name, format_type;
+
+SELECT path, branch_count, version_count
+FROM v_file_versions_across_branches
+WHERE snapshot_id = 'mcp-all-branches-20261107-01' AND version_count > 1
+ORDER BY version_count DESC, path;
+```
+
+Les 190 inventaires ne signifient pas que nous avons **lu et compris le contenu** de tous les fichiers. La nature technique est classée d'après le nom ou l'extension, la validité du contenu et le rôle fonctionnel restant explicitement `NOT_PERFORMED / UNREVIEWED`.
+
+**Étape suivante :** inspecter les fichiers par groupes bornés, comparer leurs contenus, appels, contrats et dépendances, puis renseigner les objets fonctionnels et relations vérifiées. La PR reste Draft ; aucun merge, déploiement ou modification d'une branche propriétaire n'est autorisé par ces données.

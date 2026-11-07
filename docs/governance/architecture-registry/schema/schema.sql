@@ -60,3 +60,25 @@ CREATE TABLE IF NOT EXISTS file_technical_formats (
     REFERENCES files(snapshot_id, branch_name, path)
 );
 CREATE INDEX IF NOT EXISTS idx_technical_formats_type ON file_technical_formats(format_type);
+
+-- Views for historical per-branch technical inventories. All queries must be scoped
+-- to a snapshot_id: branch names alone are not immutable Git identities.
+CREATE VIEW IF NOT EXISTS v_branch_file_format_counts AS
+SELECT f.snapshot_id AS snapshot_id, f.branch_name AS branch_name,
+       t.format_type AS format_type, COUNT(*) AS file_count
+FROM files AS f
+JOIN file_technical_formats AS t
+  ON f.snapshot_id=t.snapshot_id AND f.branch_name=t.branch_name AND f.path=t.path
+GROUP BY f.snapshot_id,f.branch_name,t.format_type;
+
+CREATE VIEW IF NOT EXISTS v_file_versions_across_branches AS
+SELECT snapshot_id,path,COUNT(DISTINCT branch_name) AS branch_count,
+       COUNT(DISTINCT blob_sha) AS version_count
+FROM files
+GROUP BY snapshot_id,path;
+
+CREATE VIEW IF NOT EXISTS v_identical_content_across_branches AS
+SELECT snapshot_id,blob_sha,COUNT(*) AS appearances,
+       COUNT(DISTINCT branch_name) AS branch_count
+FROM files
+GROUP BY snapshot_id,blob_sha;
