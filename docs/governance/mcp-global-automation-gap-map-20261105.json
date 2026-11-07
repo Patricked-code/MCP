@@ -745,7 +745,10 @@
         "src/governance/nextWorkProjection.ts",
         "src/governance/programBlueprintMaterialization.ts",
         "scripts/mcp-autonomous-agent-continuation.mjs",
-        "tests/mcpAutonomousAgentContinuation.test.mjs"
+        "tests/mcpAutonomousAgentContinuation.test.mjs",
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/transportBindings.ts",
+        "src/operationalMemory/types.ts"
       ],
       "sourceLinks": [
         "https://github.com/Patricked-code/MCP/issues/222",
@@ -764,7 +767,8 @@
         "actualAuthority",
         "testsAndCI",
         "runtimeAttestationWhenRequired",
-        "checkpointAndNextAction"
+        "checkpointAndNextAction",
+        "ownTransportBoundSessionAndAcknowledgedBootstrapReceipt"
       ],
       "acceptance": "Activation réelle d'un agent autorisé démontrée via transport supporté; pas de wake inventé."
     },
