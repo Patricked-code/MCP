@@ -1,3 +1,4 @@
+import './mcpC27GithubProofReaders.test.mjs';
 import './mcpAutonomousAgentContinuation.test.mjs';
 import './mcpAutonomyE2ECertification.test.mjs';
 import './mcpGlobalContinuationObserver.test.mjs';
