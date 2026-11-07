@@ -120,8 +120,10 @@ export async function continueC26WithExistingHost(input,ports={}){
   });
   if(delegated.status==='DELEGATED'){
     return Object.freeze({...delegated,idempotencyKey:key,
-      claimedTask:true,startedExecutor:true,certifiedC27:false});
+      createdQueue:false,claimedTask:true,startedExecutor:true,
+      certifiedC27:false});
   }
   return Object.freeze({...delegated,idempotencyKey:key,
-    certifiedC27:false});
+    createdQueue:false,claimedTask:delegated.status==='RECOVERY_REQUIRED',
+    startedExecutor:false,certifiedC27:false});
 }
