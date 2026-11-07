@@ -1,5 +1,12 @@
 # WealthTech MCP SSH Bridge
 
+## Arrivée universelle des agents — INTAKE global GitHub → MCP
+
+À la demande « Connecte-toi à Patricked-code/MCP », tout agent ayant accès aux connecteurs doit appliquer **en premier** le [parcours INTAKE global dans AGENTS.md](AGENTS.md#intake-global--arrivée-github--mcp--point-de-choix). La séquence commence par la connexion GitHub et la lecture des instructions ; elle raccorde ensuite le MCP existant (`ping`, `mcp_reconcile_governed_context`, `mcp_get_current_state_inventory`), contrôle GitHub/S1/runtime/documentation, corrige uniquement les divergences via les autorités déjà existantes, réatteste `FULLY_ALIGNED`, découvre les chantiers et **s'arrête au choix nouveau/reprise**.
+
+**Cet INTAKE est commun et précède les voies d'admission des travaux.** Il ne sélectionne aucun mode E1/E2, ne crée ni session/claim ni autorisation et ne remplace pas l'INTAKE historique ci-dessous. L'ouverture d'une connexion GitHub seule ne réveille pas automatiquement l'agent : celui-ci doit exécuter les consignes lorsqu'il reçoit la demande.
+
+
 ## Fil d'Ariane historique permanent du programme MCP
 
 **À toute arrivée, avant de choisir du travail, lire [le fil d'Ariane historique MCP](docs/governance/agent-historical-continuity-breadcrumbs-20261016.md)** : origine de l'audit depuis l'issue #65, jalons des PR, constats historiques, acquis attestés, lacunes non certifiées, dépendances et contrat de checkpoint commun. Ce document renvoie aux sources existantes et ne devient ni une autorité runtime ni une seconde Task Queue. Un nouvel agent doit pouvoir retrouver le passé et le `NEXT_ACTION` sans cette conversation ; réobserver GitHub et les autorités live avant toute mutation.
