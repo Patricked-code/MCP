@@ -1,0 +1,1058 @@
+{
+  "schemaVersion": 1,
+  "id": "MCP-ARCH-BLOCKS-20261107-V1",
+  "authority": "NON_AUTHORITATIVE_DERIVED_ARCHITECTURE",
+  "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "blockCount": 26,
+  "relationsCount": 27,
+  "derivedFrom": [
+    ".mcp/gwc-contracts.json",
+    "docs/governance/program-backlog-convergence.json",
+    "main Git tree"
+  ],
+  "hardRules": [
+    "NO_SECOND_RUNTIME_AUTHORITY",
+    "NO_SEMANTIC_CLASSIFICATION_FROM_FILENAME_ALONE",
+    "NO_BLUEPRINT_TO_TASK_CONFLATION",
+    "NO_RUNTIME_ATTESTATION_CLAIM",
+    "NO_MAIN_MERGE_OR_DEPLOY"
+  ],
+  "blocks": [
+    {
+      "id": "ABB-BOOTSTRAP",
+      "name": "Mandatory Agent Bootstrap & Work Orchestration",
+      "domain": "Admission & reprise",
+      "kind": "PROCESS",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "MCP_ONBOARDING_ENGINE.md",
+          "blobSha": "7b6ae4f758df808a2ef0bb25c9780f4c2ab24ea3",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": ".mcp/onboarding.json",
+          "blobSha": "f14ff9e654bad5508c66f758a0d9564c7d4621dd",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/tools/currentState.ts",
+          "blobSha": "223628a79995664c521d03601329499a6f471a1e",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-02",
+        "GW-03",
+        "GW-12",
+        "GW-16",
+        "GW-17",
+        "GW-18"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-4",
+        "GWC-5"
+      ],
+      "programIntegrationSlots": [
+        "bootstrap.receipt-enrichment",
+        "orchestration.autonomous-dispatch-loop"
+      ]
+    },
+    {
+      "id": "ABB-CONNECTION",
+      "name": "Connection Context & OAuth",
+      "domain": "Identité",
+      "kind": "CAPABILITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/oauth.ts",
+          "blobSha": "aded77500ea03e636463e4ea5f7f731bcc903dcd",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/operationalMemory/connectionContext.ts",
+          "blobSha": "438637d8fcbd50d18083deb8b33b5442f2ebc336",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governedContext/github.ts",
+          "blobSha": "f05715a3cf50eae283be6f50aae626005ace2234",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-02",
+        "GW-03",
+        "GW-04"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-4"
+      ],
+      "programIntegrationSlots": [
+        "connection.client-evidence",
+        "connection.oauth-attempt-correlation"
+      ]
+    },
+    {
+      "id": "ABB-GITREGISTRY",
+      "name": "GitRegistry and Repository Resolution",
+      "domain": "Identité",
+      "kind": "COMPONENT",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/github/registryV2.ts",
+          "blobSha": "07ed8be408ee7e1a1202df56010e77cdef5622a0",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "data/mcp-git-registry.json",
+          "blobSha": "5c13f76438369b99d8581945f077d41c2b65e36e",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-05",
+        "GW-06"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-3",
+        "GWC-12"
+      ],
+      "programIntegrationSlots": [
+        "project.gitregistry-verification"
+      ]
+    },
+    {
+      "id": "ABB-TARGET",
+      "name": "Project / Server / Runtime / Domain Resolvers",
+      "domain": "Résolution de cibles",
+      "kind": "CAPABILITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/governedWorkflow/resolvers/server.ts",
+          "blobSha": "d6e5a6beb6deb7abe700cafaadb09c5104e76445",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governedWorkflow/resolvers/runtime.ts",
+          "blobSha": "d9d6891c927a2b65b65a6a7470a2771828484f50",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governedWorkflow/resolvers/domain.ts",
+          "blobSha": "cf133240db117918ee3387bf6ac540d0d7d92a90",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-06",
+        "GW-07",
+        "GW-08",
+        "GW-09"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-6",
+        "GWC-7",
+        "GWC-8",
+        "GWC-10"
+      ],
+      "programIntegrationSlots": [
+        "project.server-runtime-domain-resolution"
+      ]
+    },
+    {
+      "id": "ABB-LIVE-STATE",
+      "name": "Live State Engine",
+      "domain": "État opérationnel",
+      "kind": "EXISTING_AUTHORITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/liveState/engine.ts",
+          "blobSha": "037baeb7e7d4f4b9adc54cb6658d4c9f005f68dd",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/liveState/reconcile.ts",
+          "blobSha": "c563c360f44de47c9979021970d664dda492f6f5",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-13",
+        "GW-53"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-5",
+        "GWC-15"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-CURRENT-INVENTORY",
+      "name": "Current-State Inventory",
+      "domain": "État opérationnel",
+      "kind": "DERIVED_VIEW",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/currentState/service.ts",
+          "blobSha": "0de58a23bd45c16c1b5d865f5f3892f68ae57dee",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/tools/currentState.ts",
+          "blobSha": "223628a79995664c521d03601329499a6f471a1e",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-02",
+        "GW-13"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-4"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-GOVERNED-CONTEXT",
+      "name": "Governed Context / Effective Capabilities",
+      "domain": "Gouvernance",
+      "kind": "COMPOSITE",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/governedContext/service.ts",
+          "blobSha": "0a8f67873cf6ed914578224aa72fcadab3762386",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governance/operationalDecision.ts",
+          "blobSha": "aa8e47f6ebc7722b164424330053a0829b2a70b6",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-10",
+        "GW-11",
+        "GW-12"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-9"
+      ],
+      "programIntegrationSlots": [
+        "governance.effective-capabilities"
+      ]
+    },
+    {
+      "id": "ABB-OPERATIONAL-MEMORY",
+      "name": "Operational Memory and Event Journal",
+      "domain": "Mémoire opérationnelle",
+      "kind": "EXISTING_AUTHORITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/operationalMemory/atomicStore.ts",
+          "blobSha": "14b3949364492ab8daa0588e0d180714bf36a5b2",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/operationalMemory/eventJournal.ts",
+          "blobSha": "f155e14d2112b94ac4808e089c07b27f88e6d599",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-13",
+        "GW-70"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-5",
+        "GWC-16"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-SESSIONS",
+      "name": "Governed Sessions & Receipts",
+      "domain": "Mémoire opérationnelle",
+      "kind": "EXISTING_AUTHORITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/operationalMemory/sessionService.ts",
+          "blobSha": "f6ee0989582124e95b242005c68db4b9d910b4f5",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/tools/governedSessions.ts",
+          "blobSha": "6bbc2278ff524004931d61f1dddd8d02f121077d",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-16",
+        "GW-17",
+        "GW-72"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-4"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-TASK-QUEUE",
+      "name": "Governed Task Queue",
+      "domain": "Orchestration du travail",
+      "kind": "EXISTING_AUTHORITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/operationalMemory/taskQueue.ts",
+          "blobSha": "6fa0ee32e18bef35a1cb357b46c3021a04e63abb",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/tools/governedTasks.ts",
+          "blobSha": "604b3df5931df0554bc1258fd245133ca547dc17",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-14",
+        "GW-15",
+        "GW-18",
+        "GW-69"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-5"
+      ],
+      "programIntegrationSlots": [
+        "orchestration.autonomous-dispatch-loop"
+      ]
+    },
+    {
+      "id": "ABB-LOCKS",
+      "name": "Governed Lock Service",
+      "domain": "Orchestration du travail",
+      "kind": "EXISTING_AUTHORITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/operationalMemory/lockService.ts",
+          "blobSha": "56c9080ce6e8c379c117a2c5b5fafaaf3a22fe0f",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-19",
+        "GW-71"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-5"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-PROGRAM-V2",
+      "name": "Program Backlog V2 & Readiness",
+      "domain": "Planification",
+      "kind": "PLANNING_PROJECTION",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "docs/governance/program-backlog-convergence.json",
+          "blobSha": "fc1ec980c8ec82278acd889796afc34e0b70647e",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "scripts/program-backlog-convergence-lib.mjs",
+          "blobSha": "6777f5c576734ef9d6ca31d2d03050a04fdd35cd",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [],
+      "gwcBlueprintRefs": [],
+      "programIntegrationSlots": [
+        "governance.gwc-blueprint-convergence"
+      ]
+    },
+    {
+      "id": "ABB-DISPATCH",
+      "name": "NextWork Projection and Blueprint Materialization",
+      "domain": "Orchestration du travail",
+      "kind": "CAPABILITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/governance/nextWorkProjection.ts",
+          "blobSha": "def6a1b4d387f1a003bd823dbe99fcac44bb0af1",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governance/programBlueprintMaterialization.ts",
+          "blobSha": "af3577b4ccf670d14048819bfed6b20bc6161149",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-14",
+        "GW-15",
+        "GW-18"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-5"
+      ],
+      "programIntegrationSlots": [
+        "orchestration.autonomous-dispatch-loop"
+      ]
+    },
+    {
+      "id": "ABB-GWC-CONTRACTS",
+      "name": "GWC Contracts and Workflow Graph",
+      "domain": "Architecture contractuelle",
+      "kind": "CONTRACT_MODEL",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": ".mcp/gwc-contracts.json",
+          "blobSha": "fd35f9e1aefba155ea909752c4cd4e4796050432",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": ".mcp/gwc-workflow-graph.json",
+          "blobSha": "77f1a5dc33e9ef0e53444fc6fb2e587c150328cb",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governedWorkflow/contractSubstrate.ts",
+          "blobSha": "d08dcdf83e46992a8e3a5d5af790a97526679108",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-01",
+        "GW-72",
+        "GW-73"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-0"
+      ],
+      "programIntegrationSlots": [
+        "governance.gwc-blueprint-convergence"
+      ]
+    },
+    {
+      "id": "ABB-GWC-ENGINE",
+      "name": "GWC Shadow Execution Engine",
+      "domain": "Architecture contractuelle",
+      "kind": "EVALUATION_ENGINE",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/governedWorkflow/executionEngine.ts",
+          "blobSha": "77f1f43e8683c16bae29d0caa5871d5006ab723e",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governedWorkflow/development/index.ts",
+          "blobSha": "7aeb0de3b12a6749be12b42bc861b3b8b565599c",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-21",
+        "GW-34",
+        "GW-73"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-2",
+        "GWC-13",
+        "GWC-14",
+        "GWC-17"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-UAC",
+      "name": "Universal Agent Coordination",
+      "domain": "Coordination inter-agents",
+      "kind": "CAPABILITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/governedContext/agentCoordination.ts",
+          "blobSha": "f04ee22d59fdd65b90f5ec2bfc389334db1d2904",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [],
+      "gwcBlueprintRefs": [],
+      "programIntegrationSlots": [
+        "coordination.universal"
+      ]
+    },
+    {
+      "id": "ABB-GITHUB-PLANE",
+      "name": "GitHub Control Plane",
+      "domain": "Livraison",
+      "kind": "CAPABILITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/github/registry.ts",
+          "blobSha": "99830e8df17fe17485a9766084c1a15cf4b9cf04",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/github/installationCapabilityReadiness.ts",
+          "blobSha": "f7aa6209936f288421081769797484c12c8768fd",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-23",
+        "GW-24",
+        "GW-34",
+        "GW-43"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-12",
+        "GWC-14"
+      ],
+      "programIntegrationSlots": [
+        "control-plane.git-github-capability-completion"
+      ]
+    },
+    {
+      "id": "ABB-GOVERNED-DEPLOY",
+      "name": "MCP Governed Deploy",
+      "domain": "Déploiement",
+      "kind": "PROCESS",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": ".github/workflows/mcp-deploy.yml",
+          "blobSha": "7ede327f0112559cb1145545e288fd244edfe166",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": ".mcp/autodeploy-policy.json",
+          "blobSha": "d9499af12d19cf6adbb65e5ddebb56eab956fabe",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/deploy/githubOidc.ts",
+          "blobSha": "577be1f620295ad7f7fd46fe52a082c45c5e8bd5",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/deploy/routes.ts",
+          "blobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/deploy/s1Deploy.ts",
+          "blobSha": "cccb29bf435250eb47e6b2e8b969cac2a4541fa9",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "DEPLOYMENT_PRODUCTION.md",
+          "blobSha": "ca94990a3195ec956f87c7b9245dc8d1c2e48ec5",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-44",
+        "GW-45",
+        "GW-46",
+        "GW-47",
+        "GW-48",
+        "GW-49",
+        "GW-50",
+        "GW-51",
+        "GW-52",
+        "GW-53",
+        "GW-54",
+        "GW-55",
+        "GW-56",
+        "GW-57"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-15"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-PROVISIONING",
+      "name": "Governed Provisioning / Plesk",
+      "domain": "Déploiement",
+      "kind": "CAPABILITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/provisioning/governedPleskSubdomainExecutor.ts",
+          "blobSha": "cde6d06afe2ea2dd44918d2fcb6e117cc03a69c4",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/provisioning/universalCapabilityDiscovery.ts",
+          "blobSha": "7aee3dc68b0376bab3c81598d3d5993b5ac78505",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [],
+      "gwcBlueprintRefs": [],
+      "programIntegrationSlots": [
+        "provisioning.governed"
+      ]
+    },
+    {
+      "id": "ABB-E2-RECOVERY",
+      "name": "External Governed Recovery",
+      "domain": "Continuité",
+      "kind": "PROCESS",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/governance/e2EntryFlow.ts",
+          "blobSha": "89b07f8b82ddcf741557be0dae11a643a235c806",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governance/mcpS1ReconciliationCycle.ts",
+          "blobSha": "0b1148ca9124474f843d8867d8c7a48c0e972288",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [],
+      "gwcBlueprintRefs": [],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-DOCUMENTATION",
+      "name": "Documentary Governance and Checkpoints",
+      "domain": "Gouvernance",
+      "kind": "DOCUMENTARY_SYSTEM",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "ROADMAP.md",
+          "blobSha": "17501c9119cc683b24bec3e38808c43c31cc5229",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "SUIVI.md",
+          "blobSha": "a97c5bf1ec6ddd5a1e746435433ecc7657a25a6e",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "TASKS.md",
+          "blobSha": "77b45fc31a19eb4ec01427f65c485ced2691d270",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "TODO.md",
+          "blobSha": "fd4d602ecb6a8733bb151f7079afcd65c84162ce",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "scripts/check-doc-governance.mjs",
+          "blobSha": "5b111f4ce449d22508798d2f6fdcb2bd8cd6580e",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-21",
+        "GW-58",
+        "GW-60",
+        "GW-70"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-11",
+        "GWC-16"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-CI-SAFETY",
+      "name": "MCP CI / TDD / Non-regression",
+      "domain": "Livraison",
+      "kind": "CAPABILITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": ".github/workflows/mcp-ci.yml",
+          "blobSha": "3d6324a136804b8ece292b698f4ae4710e3ce964",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "scripts/check-no-secrets.mjs",
+          "blobSha": "c1c0cb21f41257de8fa1444d098cfaaa1579f120",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "scripts/run-validation-tests.mjs",
+          "blobSha": "edaab1cb92e0e32f8e5bef97dc34511f4455cb9e",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-25",
+        "GW-26",
+        "GW-28",
+        "GW-31",
+        "GW-32",
+        "GW-45"
+      ],
+      "gwcBlueprintRefs": [
+        "GWC-13",
+        "GWC-15"
+      ],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-OBSERVABILITY",
+      "name": "Tracing / Monitoring / Evidence",
+      "domain": "Observabilité",
+      "kind": "CAPABILITY_FAMILY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "src/operationalMemory/operationalAudit.ts",
+          "blobSha": "23dcdc7b7616473c65569bcff53a79c15282f222",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "src/governedContext/dashboard.ts",
+          "blobSha": "0556c2000cde5c9e8eeede4030d8613df21a2a7d",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [
+        "GW-52",
+        "GW-68"
+      ],
+      "gwcBlueprintRefs": [],
+      "programIntegrationSlots": [
+        "observability.end-to-end-tracing",
+        "observability.synthetic-monitoring"
+      ]
+    },
+    {
+      "id": "ABB-COCKPIT",
+      "name": "Super Admin Cockpit",
+      "domain": "Observabilité",
+      "kind": "PLANNING_CAPABILITY",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "docs/governance/super-admin-cockpit-convergence-20261004.json",
+          "blobSha": "2c0a4c7451bb2ee45e606ea4192db1021183697c",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [],
+      "gwcBlueprintRefs": [],
+      "programIntegrationSlots": [
+        "cockpit.super-admin"
+      ]
+    },
+    {
+      "id": "ABB-HISTORICAL-MEMORY",
+      "name": "Historical Memory and Migration Corpus",
+      "domain": "Mémoire documentaire",
+      "kind": "HISTORICAL_CORPUS",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": "LOOP_ENGINEERING.md",
+          "blobSha": "c6d90a09a7a28f7b9c5f8728a17cb18926fcc844",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "memory/README.md",
+          "blobSha": "19d4fe923849a724bc8edace99d6f6e3f45a483d",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "Migration/README.md",
+          "blobSha": "0ae43622050f554ad02532387cbcc7bae51e054b",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [],
+      "gwcBlueprintRefs": [],
+      "programIntegrationSlots": []
+    },
+    {
+      "id": "ABB-AUTO-INTAKE",
+      "name": "GitHub Program Intake Discovery",
+      "domain": "Planification",
+      "kind": "EVENT_AUTOMATION",
+      "status": "PROPOSED_CLASSIFICATION_WITH_VERIFIED_ANCHOR_EXISTENCE",
+      "runtimeAttested": false,
+      "sourceMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "sourceAnchors": [
+        {
+          "path": ".github/workflows/mcp-auto-intake-discovery.yml",
+          "blobSha": "4b7b3940788241582ace7f7a8374f90bf79113b5",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        },
+        {
+          "path": "scripts/mcp-auto-intake-discovery.mjs",
+          "blobSha": "f5a8e4f7bbdc84ec38aa94c607661404eb1b995b",
+          "proof": "EXACT_MAIN_BLOB_EXISTENCE_NOT_BEHAVIOR_VERDICT"
+        }
+      ],
+      "contractRefs": [],
+      "gwcBlueprintRefs": [],
+      "programIntegrationSlots": []
+    }
+  ],
+  "relations": [
+    {
+      "id": "ABBR-1",
+      "from": "ABB-BOOTSTRAP",
+      "predicate": "REUSES",
+      "to": "ABB-LIVE-STATE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-2",
+      "from": "ABB-BOOTSTRAP",
+      "predicate": "REUSES",
+      "to": "ABB-CURRENT-INVENTORY",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-3",
+      "from": "ABB-BOOTSTRAP",
+      "predicate": "REUSES",
+      "to": "ABB-SESSIONS",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-4",
+      "from": "ABB-BOOTSTRAP",
+      "predicate": "ROUTES_TO",
+      "to": "ABB-TASK-QUEUE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-5",
+      "from": "ABB-CURRENT-INVENTORY",
+      "predicate": "OBSERVES",
+      "to": "ABB-LIVE-STATE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-6",
+      "from": "ABB-CURRENT-INVENTORY",
+      "predicate": "OBSERVES",
+      "to": "ABB-TASK-QUEUE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-7",
+      "from": "ABB-GOVERNED-CONTEXT",
+      "predicate": "REUSES",
+      "to": "ABB-LIVE-STATE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-8",
+      "from": "ABB-TASK-QUEUE",
+      "predicate": "PERSISTS_WITH",
+      "to": "ABB-OPERATIONAL-MEMORY",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-9",
+      "from": "ABB-SESSIONS",
+      "predicate": "PERSISTS_WITH",
+      "to": "ABB-OPERATIONAL-MEMORY",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-10",
+      "from": "ABB-LOCKS",
+      "predicate": "PERSISTS_WITH",
+      "to": "ABB-OPERATIONAL-MEMORY",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-11",
+      "from": "ABB-PROGRAM-V2",
+      "predicate": "PLANNING_INPUT_TO",
+      "to": "ABB-DISPATCH",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-12",
+      "from": "ABB-DISPATCH",
+      "predicate": "REUSES",
+      "to": "ABB-TASK-QUEUE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-13",
+      "from": "ABB-DISPATCH",
+      "predicate": "CHECKS",
+      "to": "ABB-LOCKS",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-14",
+      "from": "ABB-GWC-ENGINE",
+      "predicate": "USES",
+      "to": "ABB-GWC-CONTRACTS",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-15",
+      "from": "ABB-GWC-ENGINE",
+      "predicate": "REUSES",
+      "to": "ABB-SESSIONS",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-16",
+      "from": "ABB-UAC",
+      "predicate": "OBSERVES",
+      "to": "ABB-SESSIONS",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-17",
+      "from": "ABB-GITHUB-PLANE",
+      "predicate": "COMPLEMENTS",
+      "to": "ABB-GOVERNED-DEPLOY",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-18",
+      "from": "ABB-GOVERNED-DEPLOY",
+      "predicate": "REUSES",
+      "to": "ABB-CI-SAFETY",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-19",
+      "from": "ABB-GOVERNED-DEPLOY",
+      "predicate": "OBSERVED_BY",
+      "to": "ABB-LIVE-STATE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-20",
+      "from": "ABB-GOVERNED-DEPLOY",
+      "predicate": "MODELED_BY",
+      "to": "ABB-GWC-CONTRACTS",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-21",
+      "from": "ABB-E2-RECOVERY",
+      "predicate": "REUSES",
+      "to": "ABB-LIVE-STATE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-22",
+      "from": "ABB-E2-RECOVERY",
+      "predicate": "REUSES",
+      "to": "ABB-GITHUB-PLANE",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-23",
+      "from": "ABB-DOCUMENTATION",
+      "predicate": "DESCRIBES",
+      "to": "ABB-PROGRAM-V2",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-24",
+      "from": "ABB-DOCUMENTATION",
+      "predicate": "DESCRIBES",
+      "to": "ABB-GWC-CONTRACTS",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-25",
+      "from": "ABB-AUTO-INTAKE",
+      "predicate": "SUPPLIES_DISCOVERY_TO",
+      "to": "ABB-PROGRAM-V2",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-26",
+      "from": "ABB-OBSERVABILITY",
+      "predicate": "OBSERVES",
+      "to": "ABB-GOVERNED-DEPLOY",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    },
+    {
+      "id": "ABBR-27",
+      "from": "ABB-COCKPIT",
+      "predicate": "RELATED_TO",
+      "to": "ABB-OBSERVABILITY",
+      "confidence": "CANDIDATE_COMPOSITION_NOT_RUNTIME_ATTESTATION"
+    }
+  ]
+}
