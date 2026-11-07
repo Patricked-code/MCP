@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "projectionKind": "READ_ONLY_ARCHITECTURE_REGISTRY",
+  "snapshotId": "mcp-branches-20261107-7d29ad4212ef",
+  "observedAt": "2026-11-07T03:12:33.424Z",
+  "mainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "branchCount": 189,
+  "mainFileCount": 844,
+  "mainDirectoryCount": 145,
+  "files": {
+    "branchHeads": "snapshots/2026-11-07/branch-heads.json",
+    "mainFiles": "snapshots/2026-11-07/main-files.jsonl",
+    "mainSummary": "snapshots/2026-11-07/main-summary.json",
+    "sourceReferences": "catalog/sources.json",
+    "componentLinks": "catalog/component-links.json",
+    "schema": "schema/schema.sql",
+    "checkpoint": "checkpoints/current.json"
+  },
+  "notAuthoritativeFor": [
+    "Task Queue",
+    "Session/Claims/Locks",
+    "Live State",
+    "Deployment",
+    "Runtime",
+    "GitHub branch HEAD"
+  ]
+}

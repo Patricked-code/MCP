@@ -1,0 +1,1344 @@
+{
+  "schemaVersion": 1,
+  "source": "GITHUB_REST_BRANCHES",
+  "repository": "Patricked-code/MCP",
+  "observationId": "mcp-branches-20261107-7d29ad4212ef",
+  "observedAt": "2026-11-07T03:12:33.424Z",
+  "baselineMainSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "totalBranches": 189,
+  "pagination": {
+    "pageSize": 100,
+    "pagesVisited": 3,
+    "pageCounts": [
+      100,
+      89,
+      0
+    ],
+    "complete": true
+  },
+  "branches": [
+    {
+      "name": "audit/mcp-historical-merge-traceability-20261103",
+      "headSha": "6516b4ab6d320739016f0229e75afbf51de324c5",
+      "protected": false,
+      "prefix": "audit",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/6516b4ab6d320739016f0229e75afbf51de324c5"
+    },
+    {
+      "name": "audit/mcp-merged-pr-sha-history-20261103",
+      "headSha": "62d3b361115a69985c6c77499e16829b60c57ae8",
+      "protected": false,
+      "prefix": "audit",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/62d3b361115a69985c6c77499e16829b60c57ae8"
+    },
+    {
+      "name": "chatgpt/w3-a3-oauth-correlation-inventory-20260928",
+      "headSha": "54b400b48f0a053471550c07ee6d600b1f389da7",
+      "protected": false,
+      "prefix": "chatgpt",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/54b400b48f0a053471550c07ee6d600b1f389da7"
+    },
+    {
+      "name": "claude/ecstatic-edison-v1dyt1",
+      "headSha": "c4bd277495176de8adfb7c436a54f4b009968e68",
+      "protected": false,
+      "prefix": "claude",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/c4bd277495176de8adfb7c436a54f4b009968e68"
+    },
+    {
+      "name": "claude/trusting-ride-knf5tu",
+      "headSha": "2cadba36a5e9271d155deb83b0aa021e3347c569",
+      "protected": false,
+      "prefix": "claude",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/2cadba36a5e9271d155deb83b0aa021e3347c569"
+    },
+    {
+      "name": "claude/zealous-volta-jm7jj6",
+      "headSha": "32b5fca039a023b397aa7e4d07760fff05c298be",
+      "protected": false,
+      "prefix": "claude",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/32b5fca039a023b397aa7e4d07760fff05c298be"
+    },
+    {
+      "name": "docs/global-work-nomenclature-20261105",
+      "headSha": "95c5c0562bfeb23a60d78971392322113c4fc5b8",
+      "protected": false,
+      "prefix": "docs",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/95c5c0562bfeb23a60d78971392322113c4fc5b8"
+    },
+    {
+      "name": "docs/governed-deploy-integral-history-20261029",
+      "headSha": "c7d7b44b1fedf1954e63b0d921f992362daae4b3",
+      "protected": false,
+      "prefix": "docs",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/c7d7b44b1fedf1954e63b0d921f992362daae4b3"
+    },
+    {
+      "name": "docs/mcp-memory-bootstrap",
+      "headSha": "0feb5a25585e83077985cb4a2ccfa4d3b1f8addf",
+      "protected": false,
+      "prefix": "docs",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0feb5a25585e83077985cb4a2ccfa4d3b1f8addf"
+    },
+    {
+      "name": "docs/single-root-architecture-map-20261023",
+      "headSha": "4b440785e0a02024ee614d68c6ab68f0200d19fe",
+      "protected": false,
+      "prefix": "docs",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/4b440785e0a02024ee614d68c6ab68f0200d19fe"
+    },
+    {
+      "name": "fix/governed-targeted-task-claim-20261022",
+      "headSha": "9f5468c2f53d6656b75a5e77682bb030d6307b61",
+      "protected": false,
+      "prefix": "fix",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9f5468c2f53d6656b75a5e77682bb030d6307b61"
+    },
+    {
+      "name": "fix/oauth-opaque-origin-diagnostics-20261022",
+      "headSha": "6a515f2856c78f9312eb05bcadf0841cc35c711b",
+      "protected": false,
+      "prefix": "fix",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/6a515f2856c78f9312eb05bcadf0841cc35c711b"
+    },
+    {
+      "name": "fix/oauth-opaque-origin-signed-consent-20261022",
+      "headSha": "ecf989c1aca1d11d5655713c29af88eb63184a6d",
+      "protected": false,
+      "prefix": "fix",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ecf989c1aca1d11d5655713c29af88eb63184a6d"
+    },
+    {
+      "name": "fix/oauth-origin-runtime-classification-20261022",
+      "headSha": "89f11d57b2e4eea397c15ff3647896bb525a7ca4",
+      "protected": false,
+      "prefix": "fix",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/89f11d57b2e4eea397c15ff3647896bb525a7ca4"
+    },
+    {
+      "name": "fix/p0-oauth-consent-diagnostics-20261022",
+      "headSha": "4a257942559e2f1f80dad5cc7ac127acae9c3034",
+      "protected": false,
+      "prefix": "fix",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/4a257942559e2f1f80dad5cc7ac127acae9c3034"
+    },
+    {
+      "name": "main",
+      "headSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "protected": true,
+      "prefix": "(sans-prefixe)",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/7d29ad4212efa0bd343d53f400785e5c9cbf07f4"
+    },
+    {
+      "name": "mcp/af09-production-state-reconcile-20260921",
+      "headSha": "e8eafc3282e022d5c1a9fe0817899fbd6debc615",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/e8eafc3282e022d5c1a9fe0817899fbd6debc615"
+    },
+    {
+      "name": "mcp/af09-structured-documentation-state-20260921",
+      "headSha": "0a51b09b13febdda9fbcdd4324de61ab22140363",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0a51b09b13febdda9fbcdd4324de61ab22140363"
+    },
+    {
+      "name": "mcp/af10-af18-af24-af27-governance-consistency-20260922",
+      "headSha": "e378cca954c7760dd62ac994c79c9a2e3b56840e",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/e378cca954c7760dd62ac994c79c9a2e3b56840e"
+    },
+    {
+      "name": "mcp/af10-af18-af24-af27-production-state-20260922",
+      "headSha": "cf77ebe30de0c4dd961a89faefe282a70de5367d",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/cf77ebe30de0c4dd961a89faefe282a70de5367d"
+    },
+    {
+      "name": "mcp/af21-canonical-json-authority-20260922",
+      "headSha": "3f1238a4165ed112a9e8161635c6b1b7ff089030",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/3f1238a4165ed112a9e8161635c6b1b7ff089030"
+    },
+    {
+      "name": "mcp/af23-checkpoint-event-links-20260922",
+      "headSha": "68f2305f11e312fc67c71bc68ccc917d958b5d5a",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/68f2305f11e312fc67c71bc68ccc917d958b5d5a"
+    },
+    {
+      "name": "mcp/africafunds-phase1-documentation-20260912",
+      "headSha": "ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ced6e4d374eb75dabfaa958650f9b26ac2dd3d5f"
+    },
+    {
+      "name": "mcp/africafunds-registry-phase1-20260912",
+      "headSha": "f7800966119601e336c480da6f2f98eafe6e6e70",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/f7800966119601e336c480da6f2f98eafe6e6e70"
+    },
+    {
+      "name": "mcp/africafunds-registry-phase2-20260912",
+      "headSha": "18355de8d4892685ee4f68b11d1542fb249e838a",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/18355de8d4892685ee4f68b11d1542fb249e838a"
+    },
+    {
+      "name": "mcp/africafunds-suivi-baseline-order-20260913",
+      "headSha": "beea82c94795c9661e2d1f9aebecad8268b674b5",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/beea82c94795c9661e2d1f9aebecad8268b674b5"
+    },
+    {
+      "name": "mcp/africafunds-terminal-documentation-20260913",
+      "headSha": "29bb7fd35ca7b428541439bb49116ee6764576c4",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/29bb7fd35ca7b428541439bb49116ee6764576c4"
+    },
+    {
+      "name": "mcp/agent-github-mcp-auto-arrival-20261105",
+      "headSha": "9706f9828f406b0f6ceb570eea9e09a823b3e993",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9706f9828f406b0f6ceb570eea9e09a823b3e993"
+    },
+    {
+      "name": "mcp/alignment-recovery-20260805",
+      "headSha": "68088ef2b4330db1eaf14bbb6ede6ef99ee25323",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/68088ef2b4330db1eaf14bbb6ede6ef99ee25323"
+    },
+    {
+      "name": "mcp/architecture-chronology-recovery-20261009",
+      "headSha": "e8477395fd28750ea7865f8bcb0ea3335afe7338",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/e8477395fd28750ea7865f8bcb0ea3335afe7338"
+    },
+    {
+      "name": "mcp/audit-continuity-entrypoint-20261015",
+      "headSha": "355921a24c8642080a9a5016579fb5e35c90e262",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/355921a24c8642080a9a5016579fb5e35c90e262"
+    },
+    {
+      "name": "mcp/audit-historical-breadcrumbs-20261016",
+      "headSha": "a7c059cd1b0eaf2191d89b8c5dbc7e5758c1112b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/a7c059cd1b0eaf2191d89b8c5dbc7e5758c1112b"
+    },
+    {
+      "name": "mcp/audit-recovery-20260805",
+      "headSha": "feb9d61729453f7e956f6d063c38495242d2e2d3",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/feb9d61729453f7e956f6d063c38495242d2e2d3"
+    },
+    {
+      "name": "mcp/audit-review-threads-checkpoint-20261009",
+      "headSha": "9d6725babc4c75e6c36eee3dacfdd40aa6671483",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9d6725babc4c75e6c36eee3dacfdd40aa6671483"
+    },
+    {
+      "name": "mcp/audit-supervisor-canonical-anchor-20261019",
+      "headSha": "4e81a6482d1d304f536f25095a97a3e385cbb2ee",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/4e81a6482d1d304f536f25095a97a3e385cbb2ee"
+    },
+    {
+      "name": "mcp/auto-intake-discovery-v1-20261016",
+      "headSha": "ad018ba9a5ba33cfce0a980a9bf22a5d289f33ca",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ad018ba9a5ba33cfce0a980a9bf22a5d289f33ca"
+    },
+    {
+      "name": "mcp/auto-intake-submitter-permission-20261016",
+      "headSha": "58b89bb43a72f73ea12b1c269ea2ab236a092d16",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/58b89bb43a72f73ea12b1c269ea2ab236a092d16"
+    },
+    {
+      "name": "mcp/automatic-governed-connection-bootstrap-20260829",
+      "headSha": "c3e374eea7b64087ee7ef21e30a89710ff099bcc",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/c3e374eea7b64087ee7ef21e30a89710ff099bcc"
+    },
+    {
+      "name": "mcp/b1-final-documentation-20260909",
+      "headSha": "0e037ceeae05dc342f99ba2ae58761dc8e892f7e",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0e037ceeae05dc342f99ba2ae58761dc8e892f7e"
+    },
+    {
+      "name": "mcp/b2-final-documentation-20260911",
+      "headSha": "17de4af98c0b66a3cf32c219c762febd1880c0e5",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/17de4af98c0b66a3cf32c219c762febd1880c0e5"
+    },
+    {
+      "name": "mcp/b2-repository-resolution-20260909",
+      "headSha": "dd2a9a7894f928aa5dac886c79dc269ea3838a7b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/dd2a9a7894f928aa5dac886c79dc269ea3838a7b"
+    },
+    {
+      "name": "mcp/bus-existing-event-journal-replay-20261016",
+      "headSha": "05db818aa8d785c57e968ebe39d3d9e44bf7959c",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/05db818aa8d785c57e968ebe39d3d9e44bf7959c"
+    },
+    {
+      "name": "mcp/c1-gitregistry-v2-verification-20260913",
+      "headSha": "f62c7c0da2286f8041f67afbd183378501c98c7a",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/f62c7c0da2286f8041f67afbd183378501c98c7a"
+    },
+    {
+      "name": "mcp/c2-repository-project-resolution-20260915",
+      "headSha": "8b71f14f9a4884d57699e093853f4ccfb84080ef",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/8b71f14f9a4884d57699e093853f4ccfb84080ef"
+    },
+    {
+      "name": "mcp/c2-terminal-documentation-20260915",
+      "headSha": "d124587f5c57c7941c7937a0d7b316a6f2e54e75",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/d124587f5c57c7941c7937a0d7b316a6f2e54e75"
+    },
+    {
+      "name": "mcp/canonical-conversation-continuity-20261104",
+      "headSha": "7e5b6a2c623684cdecdd7a917d6c4b7871f97674",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/7e5b6a2c623684cdecdd7a917d6c4b7871f97674"
+    },
+    {
+      "name": "mcp/canonical-memory-verifier-20260917",
+      "headSha": "f030561d8a26d4bb24b4da97b48e5a4be21854a2",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/f030561d8a26d4bb24b4da97b48e5a4be21854a2"
+    },
+    {
+      "name": "mcp/corrected-findings-final-baseline-20260922",
+      "headSha": "c7f7a026b2a140971988313dabf3e0407e6d422c",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/c7f7a026b2a140971988313dabf3e0407e6d422c"
+    },
+    {
+      "name": "mcp/dispatch-concurrent-cas-regression-20261009",
+      "headSha": "b88e835efc9336455c175e7427e8b1f2ede40693",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/b88e835efc9336455c175e7427e8b1f2ede40693"
+    },
+    {
+      "name": "mcp/docker-image-attestation-readonly-20260805",
+      "headSha": "1fc26c979244a946d7a66d7dd0966a2801fed3e9",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/1fc26c979244a946d7a66d7dd0966a2801fed3e9"
+    },
+    {
+      "name": "mcp/docs-historical-candidate-handoff-baseline-20260922",
+      "headSha": "1ba84589adbaa478babebd2c8aa1e63438820dcd",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/1ba84589adbaa478babebd2c8aa1e63438820dcd"
+    },
+    {
+      "name": "mcp/document-s1-bootstrap-blocker-20260812",
+      "headSha": "84d4555fe7dacef63c07f6a75276ea58b64415e1",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/84d4555fe7dacef63c07f6a75276ea58b64415e1"
+    },
+    {
+      "name": "mcp/documentation-bootstrap-20260713",
+      "headSha": "750d010733191363abb275d8d31a1c0a8aee6ec9",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/750d010733191363abb275d8d31a1c0a8aee6ec9"
+    },
+    {
+      "name": "mcp/documentation-hub-conversations-cartography-20260713",
+      "headSha": "8c7f0be63de853703446acb4f27bcb9ac0846c73",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/8c7f0be63de853703446acb4f27bcb9ac0846c73"
+    },
+    {
+      "name": "mcp/e2-block1-g2-canonical-discovery-20261103",
+      "headSha": "f418e06f3a8ffa293d6670c7e5cf1fe528ad60af",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/f418e06f3a8ffa293d6670c7e5cf1fe528ad60af"
+    },
+    {
+      "name": "mcp/e2-continuity-registry-recovery-20261031",
+      "headSha": "0b4d5f4ab3d2c4c40508e28dcc65b36e50277580",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0b4d5f4ab3d2c4c40508e28dcc65b36e50277580"
+    },
+    {
+      "name": "mcp/e2-g1-production-state-reconcile-20261105",
+      "headSha": "ac60b065759703776bffa81a609468bde9e8cd4e",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ac60b065759703776bffa81a609468bde9e8cd4e"
+    },
+    {
+      "name": "mcp/e2-pilot-journal-observability-20261102",
+      "headSha": "c8ccf43eeb050ca92d30762088b856b8494e5ced",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/c8ccf43eeb050ca92d30762088b856b8494e5ced"
+    },
+    {
+      "name": "mcp/e2-production-state-reconciliation-20261031",
+      "headSha": "3bd73cdf03f5aa67703b841044c7fc955eb3ade0",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/3bd73cdf03f5aa67703b841044c7fc955eb3ade0"
+    },
+    {
+      "name": "mcp/e2-s1-account-drift-reconcile-20261031",
+      "headSha": "7aee8d98b8c1e8c84c134a4aacce998a8a17b085",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/7aee8d98b8c1e8c84c134a4aacce998a8a17b085"
+    },
+    {
+      "name": "mcp/f04-dispatch-continuity-audit-20261009",
+      "headSha": "9381cb94ad89d8425d99463c3aab1ee9581e11dd",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9381cb94ad89d8425d99463c3aab1ee9581e11dd"
+    },
+    {
+      "name": "mcp/f04-subdomain-ownership-safety-20261009",
+      "headSha": "d236a7ddf06120173be883601aa1cd344df0ac5f",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/d236a7ddf06120173be883601aa1cd344df0ac5f"
+    },
+    {
+      "name": "mcp/finalize-governed-autodeploy-20260813",
+      "headSha": "077485b457f01943bda88209a07076ba40461df3",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/077485b457f01943bda88209a07076ba40461df3"
+    },
+    {
+      "name": "mcp/fix-late-retention-review-20260815",
+      "headSha": "8dddc5656aa959f4c392d0f1816b5ee0e25709a0",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/8dddc5656aa959f4c392d0f1816b5ee0e25709a0"
+    },
+    {
+      "name": "mcp/fix-mandatory-bootstrap-review-20260822",
+      "headSha": "dedca6e6ffb928498e37dc09c467b835eae569df",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/dedca6e6ffb928498e37dc09c467b835eae569df"
+    },
+    {
+      "name": "mcp/fix-restart-force-recreate-20260812",
+      "headSha": "06b77fd8bc5f6fb2b976169c78599d6e1b513260",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/06b77fd8bc5f6fb2b976169c78599d6e1b513260"
+    },
+    {
+      "name": "mcp/forensic-state-docs-20260805",
+      "headSha": "916ae0397703b30184142cc80553d7452336338b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/916ae0397703b30184142cc80553d7452336338b"
+    },
+    {
+      "name": "mcp/foundations-final-state-20260805",
+      "headSha": "c6c732bbfa58e2171e214198929ed4eb5a5dbe4f",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/c6c732bbfa58e2171e214198929ed4eb5a5dbe4f"
+    },
+    {
+      "name": "mcp/foundations-integration-preview-20260805",
+      "headSha": "19ba6888792b092051d1bc31d90de56a2395263d",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/19ba6888792b092051d1bc31d90de56a2395263d"
+    },
+    {
+      "name": "mcp/g3-canonical-documentation-reconciliation-20260915",
+      "headSha": "4dd5fdeb6d43e56e835fc24572a9736ccb3eaf1b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/4dd5fdeb6d43e56e835fc24572a9736ccb3eaf1b"
+    },
+    {
+      "name": "mcp/g3-client-tool-surface-attestation-20260914",
+      "headSha": "289b3b71c8352738395bf290bc1ae10dc405ee15",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/289b3b71c8352738395bf290bc1ae10dc405ee15"
+    },
+    {
+      "name": "mcp/gd-u-e2-app-installation-live-readonly-20261030",
+      "headSha": "8e34cdea82ecc0019d3b47c1bd4359785df386e9",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/8e34cdea82ecc0019d3b47c1bd4359785df386e9"
+    },
+    {
+      "name": "mcp/gd-u-e2-capability-current-evidence-20261030",
+      "headSha": "82fccd6b297bab2ea18ae58d01390f3b1f9d5174",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/82fccd6b297bab2ea18ae58d01390f3b1f9d5174"
+    },
+    {
+      "name": "mcp/gd-u-e2-deployment-manifest-target-check-20261030",
+      "headSha": "2aee2c6af929ad77783776ddcbb6d800ba1ff75e",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/2aee2c6af929ad77783776ddcbb6d800ba1ff75e"
+    },
+    {
+      "name": "mcp/gd-u-e2-registry-host-path-boundary-20261030",
+      "headSha": "1124494cc06f13b278633c261e0942c6ac2667b7",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/1124494cc06f13b278633c261e0942c6ac2667b7"
+    },
+    {
+      "name": "mcp/gd-u-fnd-001-024-first-admission-20261030",
+      "headSha": "5bcb02391590c6eb5ae195a8d23daab2296b8f09",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/5bcb02391590c6eb5ae195a8d23daab2296b8f09"
+    },
+    {
+      "name": "mcp/gd-u-installation-readiness-20261030",
+      "headSha": "4dba0e6e0cfb2fc7c2b84a566deb47f27155f8d3",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/4dba0e6e0cfb2fc7c2b84a566deb47f27155f8d3"
+    },
+    {
+      "name": "mcp/git-github-control-plane-foundation-20260915",
+      "headSha": "5bc82c175311a76c2b70ec1b55ecc659ac692549",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/5bc82c175311a76c2b70ec1b55ecc659ac692549"
+    },
+    {
+      "name": "mcp/git-registry-v2-foundation-20260805",
+      "headSha": "9a99c943bf07483836b5c39405abbe3b6f480bcd",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9a99c943bf07483836b5c39405abbe3b6f480bcd"
+    },
+    {
+      "name": "mcp/git-registry-v2-foundation-rebased-20260805",
+      "headSha": "0d2098183afa4d32e3b3cc873be08ca42e1b242d",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0d2098183afa4d32e3b3cc873be08ca42e1b242d"
+    },
+    {
+      "name": "mcp/github-admin-repository-create-20260915",
+      "headSha": "d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/d5eb87c46b458f0c061d2b4dc3af0e7ba2d51993"
+    },
+    {
+      "name": "mcp/github-administration-control-20260915",
+      "headSha": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/b18f419a7b00ee5ccdd7688a6654ed9ac4330478"
+    },
+    {
+      "name": "mcp/github-first-operational-continuity-20260920",
+      "headSha": "cd0443f9e483d498fd6dc2af30c78f74ccae074b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/cd0443f9e483d498fd6dc2af30c78f74ccae074b"
+    },
+    {
+      "name": "mcp/github-identity-resolution-20260907",
+      "headSha": "9b1a572ab0362aeefa5e13f425225e1f510704b7",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9b1a572ab0362aeefa5e13f425225e1f510704b7"
+    },
+    {
+      "name": "mcp/github-lifecycle-control-20260915",
+      "headSha": "b18f419a7b00ee5ccdd7688a6654ed9ac4330478",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/b18f419a7b00ee5ccdd7688a6654ed9ac4330478"
+    },
+    {
+      "name": "mcp/github-oidc-first-continuity-20261015",
+      "headSha": "9fefbfb4d1fe72b489a1d0f7153cf68f6399fe06",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9fefbfb4d1fe72b489a1d0f7153cf68f6399fe06"
+    },
+    {
+      "name": "mcp/github-oidc-readonly-evidence-20260920",
+      "headSha": "844f042de95ef8aa103095770139b3258184b3c6",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/844f042de95ef8aa103095770139b3258184b3c6"
+    },
+    {
+      "name": "mcp/github-pr-auth-diagnostics-20260805",
+      "headSha": "a648fdf8094fa5285b66af773aab5be16bf75bef",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/a648fdf8094fa5285b66af773aab5be16bf75bef"
+    },
+    {
+      "name": "mcp/github-pr-auth-diagnostics-rebased-20260805",
+      "headSha": "9ebdb59506975a9b16a137052d2d24d679123bc2",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9ebdb59506975a9b16a137052d2d24d679123bc2"
+    },
+    {
+      "name": "mcp/github-surface-preservation-rule-20260921",
+      "headSha": "da57f520948272b409abc1d89f564577abd94f2c",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/da57f520948272b409abc1d89f564577abd94f2c"
+    },
+    {
+      "name": "mcp/github-tools-after-governance",
+      "headSha": "8fb7f578e706ee1f3995b4e1a4e5f4e11dc754c0",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/8fb7f578e706ee1f3995b4e1a4e5f4e11dc754c0"
+    },
+    {
+      "name": "mcp/github-tools-implementation",
+      "headSha": "f375a25654d314d7dc18a285c23bf23e5652ca03",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/f375a25654d314d7dc18a285c23bf23e5652ca03"
+    },
+    {
+      "name": "mcp/global-automation-continuity-observer-20261105",
+      "headSha": "4de09f637a7150fc2a2ef36f745c7919ac227163",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/4de09f637a7150fc2a2ef36f745c7919ac227163"
+    },
+    {
+      "name": "mcp/governance-anti-dispersion-manual",
+      "headSha": "ff854bfef9f23b67b40747a49d254bbaf92e9430",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ff854bfef9f23b67b40747a49d254bbaf92e9430"
+    },
+    {
+      "name": "mcp/governed-autodeploy-v1-20260809",
+      "headSha": "cac79821cfdb29b2f4b43c3dfb4ffa11eab82022",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/cac79821cfdb29b2f4b43c3dfb4ffa11eab82022"
+    },
+    {
+      "name": "mcp/governed-successive-audit-workblock-20261009",
+      "headSha": "484d6e2d9ff8dcc8aaf1dcafddc093569583ad87",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/484d6e2d9ff8dcc8aaf1dcafddc093569583ad87"
+    },
+    {
+      "name": "mcp/grt-runtime-admission-tdd-20261023",
+      "headSha": "58bcf5764e79f16c69301ec923b691e2a844953e",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/58bcf5764e79f16c69301ec923b691e2a844953e"
+    },
+    {
+      "name": "mcp/gwb02-inline-review-corpus-20261015",
+      "headSha": "92d892301d8bbd55d4dbcf7c04e15e909a23aee9",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/92d892301d8bbd55d4dbcf7c04e15e909a23aee9"
+    },
+    {
+      "name": "mcp/gwb03-pr261-policy-evidence-20261015",
+      "headSha": "eb7d4b812a23b03ec04b51723e5191620e37025a",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/eb7d4b812a23b03ec04b51723e5191620e37025a"
+    },
+    {
+      "name": "mcp/gwb03-pr267-domain-evidence-20261015",
+      "headSha": "1d288a48e03768a71aff86b022b08c92f572a457",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/1d288a48e03768a71aff86b022b08c92f572a457"
+    },
+    {
+      "name": "mcp/gwb03-review-findings-triage-20261015",
+      "headSha": "5af5439e377229bdfe4423771d5588cf1048ebb3",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/5af5439e377229bdfe4423771d5588cf1048ebb3"
+    },
+    {
+      "name": "mcp/gwb04-blueprint-code-trace-20261015",
+      "headSha": "22e9875ad746c077cb7f856ad1ab51ebf62b7cec",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/22e9875ad746c077cb7f856ad1ab51ebf62b7cec"
+    },
+    {
+      "name": "mcp/gwb04-h01-trace-inventory-20261016",
+      "headSha": "0d4b0d513e05ceb89b3b5eeb3e701bf9acde28e4",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0d4b0d513e05ceb89b3b5eeb3e701bf9acde28e4"
+    },
+    {
+      "name": "mcp/gwb04-ready-ownership-reconcile-20261015",
+      "headSha": "144248a0497c9d9c7c9895bcc0f8670e82d47d70",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/144248a0497c9d9c7c9895bcc0f8670e82d47d70"
+    },
+    {
+      "name": "mcp/gwc-documentation-reconciliation-20260920",
+      "headSha": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/d112358d1f13757fdace7e1d3fd73b8d7922cadb"
+    },
+    {
+      "name": "mcp/gwc-handoff-terminal-docs-20260920",
+      "headSha": "dce9d0b00af301d83d16ac7470e6c96c2e9f531d",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/dce9d0b00af301d83d16ac7470e6c96c2e9f531d"
+    },
+    {
+      "name": "mcp/gwc-post-integration-canonical-handoff-20260920",
+      "headSha": "18d93abf2d576d93a985b8c004d820d43f304090",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/18d93abf2d576d93a985b8c004d820d43f304090"
+    },
+    {
+      "name": "mcp/gwc-v1-design-20260915",
+      "headSha": "590cc5a1a99f219be10e79a678fdd0e9cbdb2f4f",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/590cc5a1a99f219be10e79a678fdd0e9cbdb2f4f"
+    },
+    {
+      "name": "mcp/harden-operational-memory-retention-20260815",
+      "headSha": "e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/e2b5f590a9af6a0ca6ae35aa99cb18c7e8c2506d"
+    },
+    {
+      "name": "mcp/hardening-readonly-ci-state-20260711",
+      "headSha": "55ca32a25ea02e1763f30455e7c773194848030a",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/55ca32a25ea02e1763f30455e7c773194848030a"
+    },
+    {
+      "name": "mcp/historical-candidate-post-integration-handoff-20260922",
+      "headSha": "8ab1bb9d354e601ba59f76cc83d234ca15232624",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/8ab1bb9d354e601ba59f76cc83d234ca15232624"
+    },
+    {
+      "name": "mcp/history-main-merge-sha-ledger-20261103",
+      "headSha": "dbe022d545fc1afa2e18c2695de83159d7d08db1",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/dbe022d545fc1afa2e18c2695de83159d7d08db1"
+    },
+    {
+      "name": "mcp/import-conversation-serveur-plus",
+      "headSha": "cd9593e8c2db0adae5251398bb551a3c064f09cd",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/cd9593e8c2db0adae5251398bb551a3c064f09cd"
+    },
+    {
+      "name": "mcp/intake-177-capability-convergence-20260925",
+      "headSha": "b3f3176eb87c8789ca27975f159673502bed67a1",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/b3f3176eb87c8789ca27975f159673502bed67a1"
+    },
+    {
+      "name": "mcp/intake-201-tls-recovery-convergence-20260929",
+      "headSha": "696dff1b02c422bb9afaf333ee65e814f1cbbb3e",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/696dff1b02c422bb9afaf333ee65e814f1cbbb3e"
+    },
+    {
+      "name": "mcp/intake-coldstart-handoff-20261016",
+      "headSha": "778f6e76b3a871733964e1fbb298d98f1a531a6d",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/778f6e76b3a871733964e1fbb298d98f1a531a6d"
+    },
+    {
+      "name": "mcp/live-state-v1-20260809",
+      "headSha": "ae3302338345ea8b2e355f099eea24a8b8e27d79",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ae3302338345ea8b2e355f099eea24a8b8e27d79"
+    },
+    {
+      "name": "mcp/main-merged-pr-sha-inventory-20261103",
+      "headSha": "bde8371d96cbf5a17c378e8f472b5cde016c5284",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/bde8371d96cbf5a17c378e8f472b5cde016c5284"
+    },
+    {
+      "name": "mcp/mandatory-agent-bootstrap-v1-20260822",
+      "headSha": "1c9297d663624e5c348fba687051b649ca3e2a22",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/1c9297d663624e5c348fba687051b649ca3e2a22"
+    },
+    {
+      "name": "mcp/migration-governance-setup",
+      "headSha": "61ae926f0216a718f8c238fec840d54fe7acd249",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/61ae926f0216a718f8c238fec840d54fe7acd249"
+    },
+    {
+      "name": "mcp/oauth-log-redaction-20260805",
+      "headSha": "959144c90520b464a415069dc53ccbbe185ac76b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/959144c90520b464a415069dc53ccbbe185ac76b"
+    },
+    {
+      "name": "mcp/oidc-governed-target-claim-20261022",
+      "headSha": "cccbece4f3af3dd12cb7d1f7004f9a381538f381",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/cccbece4f3af3dd12cb7d1f7004f9a381538f381"
+    },
+    {
+      "name": "mcp/onboarding-engine-spec-20260708",
+      "headSha": "c4baaddf8da02bee2e8c5a8f4a58334b11658df3",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/c4baaddf8da02bee2e8c5a8f4a58334b11658df3"
+    },
+    {
+      "name": "mcp/pilot-e2-01-work-entry-trace-20261030",
+      "headSha": "94857b62c203ed1ca79648b208d839e41015cd32",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/94857b62c203ed1ca79648b208d839e41015cd32"
+    },
+    {
+      "name": "mcp/plan-governed-actions-ssh-transport-20260914",
+      "headSha": "490d58597e4df0b133effd1825ababaa92f6463a",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/490d58597e4df0b133effd1825ababaa92f6463a"
+    },
+    {
+      "name": "mcp/plesk-provisioning-tdd-20261023",
+      "headSha": "5e8e48d5d3d1886c6bb8996577446413589103cd",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/5e8e48d5d3d1886c6bb8996577446413589103cd"
+    },
+    {
+      "name": "mcp/pr-unification-audit",
+      "headSha": "d38c7f1bbb1db2ae83f0e7a2132467fd3da451b3",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/d38c7f1bbb1db2ae83f0e7a2132467fd3da451b3"
+    },
+    {
+      "name": "mcp/pr-unification-audit-summary",
+      "headSha": "be6f16a908cd7a216a3042b9ba21418fb8fcb950",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/be6f16a908cd7a216a3042b9ba21418fb8fcb950"
+    },
+    {
+      "name": "mcp/pr-unification-audit-summary-issues",
+      "headSha": "6bbce6e53bc7494c8c8cdf93f1e8cb4814e7fa0b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/6bbce6e53bc7494c8c8cdf93f1e8cb4814e7fa0b"
+    },
+    {
+      "name": "mcp/priority-convergence-map-20261015",
+      "headSha": "c161b900f04605caaa4a7790ea626ceda75be302",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/c161b900f04605caaa4a7790ea626ceda75be302"
+    },
+    {
+      "name": "mcp/program-auto-continuation-20260925",
+      "headSha": "eb2aff8ef30ed349cc8d477cb23e7e364ae088df",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/eb2aff8ef30ed349cc8d477cb23e7e364ae088df"
+    },
+    {
+      "name": "mcp/program-auto-continuation-terminal-20260925",
+      "headSha": "8eba9d4edf2cef52061697e5daf97619e9193738",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/8eba9d4edf2cef52061697e5daf97619e9193738"
+    },
+    {
+      "name": "mcp/program-backlog-convergence-20260923",
+      "headSha": "91f5313d6d8f5b6bb6d8a92fa58bbeba3158f677",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/91f5313d6d8f5b6bb6d8a92fa58bbeba3158f677"
+    },
+    {
+      "name": "mcp/program-backlog-v2-20260924",
+      "headSha": "930724163176d8d050e1ec73d2a45b8f77f48866",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/930724163176d8d050e1ec73d2a45b8f77f48866"
+    },
+    {
+      "name": "mcp/project-context-resolution-20260901",
+      "headSha": "59de3687bf1b2439a24f092257236fb3f559feee",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/59de3687bf1b2439a24f092257236fb3f559feee"
+    },
+    {
+      "name": "mcp/project-context-resolution-docs-20260901",
+      "headSha": "8812506fd7508344bf305b1161f8024c64eb0036",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/8812506fd7508344bf305b1161f8024c64eb0036"
+    },
+    {
+      "name": "mcp/read-write-foundation-20260805",
+      "headSha": "7fa892d5ca7bf02cd509dd7c5a9341e007470902",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/7fa892d5ca7bf02cd509dd7c5a9341e007470902"
+    },
+    {
+      "name": "mcp/read-write-foundation-rebased-20260805",
+      "headSha": "839e811816b7155806d1d89a8daca228eafc3895",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/839e811816b7155806d1d89a8daca228eafc3895"
+    },
+    {
+      "name": "mcp/readonly-evidence-bounded-diagnostics-20260920",
+      "headSha": "ce1a3a58d2ca20d1f43627b8eba411ea3bf751f7",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ce1a3a58d2ca20d1f43627b8eba411ea3bf751f7"
+    },
+    {
+      "name": "mcp/reconcile-a21-final-documentation-20260901",
+      "headSha": "9732c65b4bd4e01885f098a34de121b720ffdd99",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9732c65b4bd4e01885f098a34de121b720ffdd99"
+    },
+    {
+      "name": "mcp/reconcile-canonical-documentation-20260831",
+      "headSha": "5ef6da355060ef2b3dfd6df6ecc64c83f778a50a",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/5ef6da355060ef2b3dfd6df6ecc64c83f778a50a"
+    },
+    {
+      "name": "mcp/reconcile-corrected-findings-20260922",
+      "headSha": "d614b4833704f030c23668d16d8cefbcf6452a0b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/d614b4833704f030c23668d16d8cefbcf6452a0b"
+    },
+    {
+      "name": "mcp/reconcile-late-retention-20260822",
+      "headSha": "78e836ff167e460d6e10fb69194d5d0f202fa9cb",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/78e836ff167e460d6e10fb69194d5d0f202fa9cb"
+    },
+    {
+      "name": "mcp/reconcile-legacy-open-pr-intents-20260922",
+      "headSha": "217443b16920b09a792b3bdf44883bcc6868115f",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/217443b16920b09a792b3bdf44883bcc6868115f"
+    },
+    {
+      "name": "mcp/reconcile-mandatory-bootstrap-docs-20260822",
+      "headSha": "87b6230718ecc8ac086053082a013c550b70f470",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/87b6230718ecc8ac086053082a013c550b70f470"
+    },
+    {
+      "name": "mcp/reconcile-mandatory-bootstrap-review-20260828",
+      "headSha": "258a9f2643a6efe7149e424823589138a7b1f76b",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/258a9f2643a6efe7149e424823589138a7b1f76b"
+    },
+    {
+      "name": "mcp/reconcile-operational-memory-20260815",
+      "headSha": "0f91e3dd678decc931dabc4c65ae8095be9ea1ac",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0f91e3dd678decc931dabc4c65ae8095be9ea1ac"
+    },
+    {
+      "name": "mcp/reconcile-s1-20260805T101753Z",
+      "headSha": "70415531d326fb34701e169d6498f776f0fdf2d8",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/70415531d326fb34701e169d6498f776f0fdf2d8"
+    },
+    {
+      "name": "mcp/reconcile-unified-operational-work-state-20260829",
+      "headSha": "62c95ec406b6653ef07337d04d4a79244a568732",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/62c95ec406b6653ef07337d04d4a79244a568732"
+    },
+    {
+      "name": "mcp/reconcile-unified-work-state-20260829",
+      "headSha": "219dd0c64b8a9b74162221c8e71454f389f95a9f",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/219dd0c64b8a9b74162221c8e71454f389f95a9f"
+    },
+    {
+      "name": "mcp/record-first-automatic-deploy-20260813",
+      "headSha": "2307292ef44ff50de36d851fe4f162272a3897cd",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/2307292ef44ff50de36d851fe4f162272a3897cd"
+    },
+    {
+      "name": "mcp/recover-runtime-drift-20260805",
+      "headSha": "7c8d9f782ae3195197345257f38fbc400504a848",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/7c8d9f782ae3195197345257f38fbc400504a848"
+    },
+    {
+      "name": "mcp/recovery-candidate-preparation-20260805",
+      "headSha": "dbb89f3d65e1bb6ac81e39e9911f9a7241233e06",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/dbb89f3d65e1bb6ac81e39e9911f9a7241233e06"
+    },
+    {
+      "name": "mcp/regulatory-s1-governed-admission-20261023",
+      "headSha": "0234a2ae3708d92993a2dc9b798b0ac95633ced1",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0234a2ae3708d92993a2dc9b798b0ac95633ced1"
+    },
+    {
+      "name": "mcp/regulatory-s1-subpath-20261023",
+      "headSha": "ed8bc5f0463a52b87b3b7e90e9fc2f5548894760",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ed8bc5f0463a52b87b3b7e90e9fc2f5548894760"
+    },
+    {
+      "name": "mcp/repository-oidc-discovery-v1",
+      "headSha": "b121b867c948c4981912a3b79e57252514e88467",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/b121b867c948c4981912a3b79e57252514e88467"
+    },
+    {
+      "name": "mcp/repository-ssh-access-provisioning-20260925",
+      "headSha": "bd4126de400fe5f894643b4a2939c382bc760385",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/bd4126de400fe5f894643b4a2939c382bc760385"
+    },
+    {
+      "name": "mcp/repository-ssh-ca-issue-trigger-20260925",
+      "headSha": "b97b0d807ff12794108d10cd6806d888ecc8dfea",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/b97b0d807ff12794108d10cd6806d888ecc8dfea"
+    },
+    {
+      "name": "mcp/repository-ssh-terminal-20260926",
+      "headSha": "0d8569f3dc94ae26a693b188e9d9ac1a3a866380",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/0d8569f3dc94ae26a693b188e9d9ac1a3a866380"
+    },
+    {
+      "name": "mcp/s1-git-sync-tool-20260713",
+      "headSha": "feef2ea8ca2d895a4629d1eb856ebd11255bb316",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/feef2ea8ca2d895a4629d1eb856ebd11255bb316"
+    },
+    {
+      "name": "mcp/s1-readonly-deploy-identity-20260809",
+      "headSha": "e667006cb64f607ec466054152b74fb0e9d014bd",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/e667006cb64f607ec466054152b74fb0e9d014bd"
+    },
+    {
+      "name": "mcp/session-continuity-v1-20260813",
+      "headSha": "bba56ac802ac952bf8a6211dc982a6eced732f44",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/bba56ac802ac952bf8a6211dc982a6eced732f44"
+    },
+    {
+      "name": "mcp/ssh-coordination-readonly-evidence-20260925",
+      "headSha": "7bcbbc721b709898f9b969b67c8c161775f2ea2e",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/7bcbbc721b709898f9b969b67c8c161775f2ea2e"
+    },
+    {
+      "name": "mcp/stabilize-governed-program-roadmap-20260901",
+      "headSha": "db290d85ab4e5ccafe351a5e1fbf1d7d6578b2db",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/db290d85ab4e5ccafe351a5e1fbf1d7d6578b2db"
+    },
+    {
+      "name": "mcp/stabilize-suivi-dynamic-baseline-20260901",
+      "headSha": "fb4b476b6867b0c39fbdd978d9f3b419d04f1a0d",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/fb4b476b6867b0c39fbdd978d9f3b419d04f1a0d"
+    },
+    {
+      "name": "mcp/stablecoin-backend-inventory-readonly-20260923",
+      "headSha": "30ea504e5a43e9ed6cd22d69daf7d9fd78fd16f2",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/30ea504e5a43e9ed6cd22d69daf7d9fd78fd16f2"
+    },
+    {
+      "name": "mcp/stablecoin-backend-runtime-ownership-readonly-20260923",
+      "headSha": "fdcdb684ca1bb3758e3831bfa1553142c483b478",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/fdcdb684ca1bb3758e3831bfa1553142c483b478"
+    },
+    {
+      "name": "mcp/stablecoin-github-first-fast-forward-20260921",
+      "headSha": "57d6933a815fd67c29ebceb1ec5092b8e579bf7a",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/57d6933a815fd67c29ebceb1ec5092b8e579bf7a"
+    },
+    {
+      "name": "mcp/stablecoin-probes-failsoft-20260920",
+      "headSha": "ba0dba033c93f6a75f2b354c84592f4b69008755",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ba0dba033c93f6a75f2b354c84592f4b69008755"
+    },
+    {
+      "name": "mcp/stablecoin-project-aware-s2-20260920",
+      "headSha": "9d8a3df91c1d53619e24f4fc630f6a938b088639",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9d8a3df91c1d53619e24f4fc630f6a938b088639"
+    },
+    {
+      "name": "mcp/stablecoin-readonly-reconciliation-probes-20260920",
+      "headSha": "160506ee60906ead8a3c04c25e49d449023cb1d0",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/160506ee60906ead8a3c04c25e49d449023cb1d0"
+    },
+    {
+      "name": "mcp/stablecoin-s2-governed-ssh-20260915",
+      "headSha": "5f54b78c87ae3a5e8a402ac80af42355a7f4ec08",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/5f54b78c87ae3a5e8a402ac80af42355a7f4ec08"
+    },
+    {
+      "name": "mcp/strict-read-write-separation-20260805",
+      "headSha": "41e276ec61442571d4b936e2a31244a4d0be3470",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/41e276ec61442571d4b936e2a31244a4d0be3470"
+    },
+    {
+      "name": "mcp/uac-terminal-reconciliation-20260924",
+      "headSha": "d576f1552708055701999b83f0a72b8635c7b146",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/d576f1552708055701999b83f0a72b8635c7b146"
+    },
+    {
+      "name": "mcp/unified-operational-work-state-20260829",
+      "headSha": "de0030b0df42a693d2e96c87f008c9ffd1c2ce04",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/de0030b0df42a693d2e96c87f008c9ffd1c2ce04"
+    },
+    {
+      "name": "mcp/universal-agent-coordination-20260923",
+      "headSha": "9100ab750472124d0a7b696f37b1f56e687f63ca",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/9100ab750472124d0a7b696f37b1f56e687f63ca"
+    },
+    {
+      "name": "mcp/universal-github-plesk-server-capabilities-20261028",
+      "headSha": "94613fcf0fcdba5adf654d210ca7b091f8438f76",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/94613fcf0fcdba5adf654d210ca7b091f8438f76"
+    },
+    {
+      "name": "mcp/w1-program-state-convergence-20260924",
+      "headSha": "95dd18b60280b3cddaaf15e42fbede47eda70f47",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/95dd18b60280b3cddaaf15e42fbede47eda70f47"
+    },
+    {
+      "name": "mcp/w2-github-read-r1-20260924",
+      "headSha": "ed3428148d9199240f04818ed6307129ff27d965",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/ed3428148d9199240f04818ed6307129ff27d965"
+    },
+    {
+      "name": "mcp/w3-a22-client-evidence-inventory-20260925",
+      "headSha": "1cc660ae5f54ccb660d199c1043501fd69a6e1f2",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/1cc660ae5f54ccb660d199c1043501fd69a6e1f2"
+    },
+    {
+      "name": "mcp/w3-a3-oauth-continuity-20260930",
+      "headSha": "253d23c42423ab52a4ea0d042abec5dafa17d3fc",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/253d23c42423ab52a4ea0d042abec5dafa17d3fc"
+    },
+    {
+      "name": "mcp/w3-a3-postmerge-handoff-20260928",
+      "headSha": "84296aee9fc8ed50552cc1f42dd0252ab003f8d1",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/84296aee9fc8ed50552cc1f42dd0252ab003f8d1"
+    },
+    {
+      "name": "mcp/w3-a3-runtime-authority-evidence-20260929",
+      "headSha": "34e265430ba152f595f22b92ddbc11edd3f46468",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/34e265430ba152f595f22b92ddbc11edd3f46468"
+    },
+    {
+      "name": "mcp/w3-a3-tls-blocker-checkpoint-20260929",
+      "headSha": "36ba412bbec6fd9451cf0b93573aa8e3444afe30",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/36ba412bbec6fd9451cf0b93573aa8e3444afe30"
+    },
+    {
+      "name": "mcp/w4-h01-trace-evidence-inventory-20261010",
+      "headSha": "6c1be281e1ed1a13879608b4274d0c0598156c18",
+      "protected": false,
+      "prefix": "mcp",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/6c1be281e1ed1a13879608b4274d0c0598156c18"
+    },
+    {
+      "name": "security/fix-hono-node-server-20260806",
+      "headSha": "65f24ee509836c2a420ca2a61a5fd194fab39efe",
+      "protected": false,
+      "prefix": "security",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/65f24ee509836c2a420ca2a61a5fd194fab39efe"
+    },
+    {
+      "name": "security/refresh-production-dependencies-20260806T130850Z",
+      "headSha": "55ed557af3efd4cad1ab1c3ed3df766122ff2eb5",
+      "protected": false,
+      "prefix": "security",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/55ed557af3efd4cad1ab1c3ed3df766122ff2eb5"
+    },
+    {
+      "name": "test-branch",
+      "headSha": "181a7e8f3b80f4d63ed2d915279a79698551a0f5",
+      "protected": false,
+      "prefix": "(sans-prefixe)",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/181a7e8f3b80f4d63ed2d915279a79698551a0f5"
+    },
+    {
+      "name": "test-branch-created-by-mistake-cleanup-needed",
+      "headSha": "181a7e8f3b80f4d63ed2d915279a79698551a0f5",
+      "protected": false,
+      "prefix": "(sans-prefixe)",
+      "headUrl": "https://github.com/Patricked-code/MCP/commit/181a7e8f3b80f4d63ed2d915279a79698551a0f5"
+    }
+  ]
+}
