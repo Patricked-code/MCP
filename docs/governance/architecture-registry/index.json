@@ -26,7 +26,9 @@
     "sourceEvidenceBatch01": "catalog/source-evidence-batch-01.json",
     "crossbranchSample": "snapshots/2026-11-07/crossbranch-deploy-sample.json",
     "architectureVerification": "verify_architecture_analysis.mjs",
-    "mainCheckpoint": "checkpoints/history-main-baseline-20261107.json"
+    "mainCheckpoint": "checkpoints/history-main-baseline-20261107.json",
+    "sourceEvidenceBatch02": "catalog/source-evidence-batch-02.json",
+    "semanticVerificationBatch02": "verify_source_evidence_batch_02.mjs"
   },
   "notAuthoritativeFor": [
     "Task Queue",
@@ -79,16 +81,17 @@
   },
   "analysisStage": {
     "status": "PARTIAL_EVIDENCE_BACKED",
-    "sourcePathsInspected": 10,
-    "sourceRelationsVerified": 6,
+    "sourcePathsInspected": 19,
+    "sourceRelationsVerified": 12,
     "declarationsVerified": 10,
     "branchesComparedForSample": 190,
     "filesSampled": 10,
     "fullSemanticFilesReviewed": 0,
     "otherFiles": "UNREVIEWED",
-    "next": "EXTEND_SEMANTIC_CODE_REVIEW_IN_BOUNDED_EXACT_BLOB_BATCHES_WITH_SOURCE_EVIDENCE_THEN_EXPAND_CROSSBRANCH_DEPENDENCY_GRAPH",
+    "next": "MORE_BOUNDED_SOURCE_REVIEW_AND_INTERBRANCH_SEMANTIC_LINKS",
     "impactInspector": "READ_ONLY_BOUNDED_REVERSE_REFERENCE_CANDIDATES",
     "sqlGraphProjection": "verified_file_relations",
-    "checkpointId": "MCP-ARCH-REGISTRY-ALL-190-DIRECTORIES-20261107-01"
+    "checkpointId": "MCP-ARCH-REGISTRY-ALL-190-DIRECTORIES-20261107-01",
+    "semanticRoleAnchors": 9
   }
 }

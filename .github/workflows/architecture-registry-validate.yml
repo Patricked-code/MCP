@@ -25,6 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           node docs/governance/architecture-registry/verify_architecture_analysis.mjs
+          node docs/governance/architecture-registry/verify_source_evidence_batch_02.mjs
           node docs/governance/architecture-registry/verify_architecture_analysis.mjs --impact src/deploy/s1Deploy.ts
       - name: Rebuild main and multibranch read-only SQLite projections
         run: |
