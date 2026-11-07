@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "kind": "CROSSBRANCH_FILE_VERSION_COUNTS",
+  "repository": "Patricked-code/MCP",
+  "snapshotId": "mcp-all-branches-20261107-01",
+  "mainBaseline": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "branchesScanned": 190,
+  "batchesScanned": 19,
+  "filesSampled": 10,
+  "derivedFrom": "snapshots/2026-11-07/all-branches-v1/batches/batch-00.jsonl..batch-18.jsonl",
+  "comparisons": [
+    {
+      "path": "src/auth.ts",
+      "mainBlobSha": "fd03c809a9707070b194af7ecf3a6485e219d47f",
+      "branchesPresent": 190,
+      "branchesAbsent": 0,
+      "identicalToMain": 147,
+      "distinctBlobShas": 4
+    },
+    {
+      "path": "src/deploy/githubOidc.ts",
+      "mainBlobSha": "577be1f620295ad7f7fd46fe52a082c45c5e8bd5",
+      "branchesPresent": 153,
+      "branchesAbsent": 37,
+      "identicalToMain": 69,
+      "distinctBlobShas": 7
+    },
+    {
+      "path": "src/deploy/routes.ts",
+      "mainBlobSha": "04b7e4f3770dfcd23dc06020291c9b522b5e825a",
+      "branchesPresent": 153,
+      "branchesAbsent": 37,
+      "identicalToMain": 107,
+      "distinctBlobShas": 2
+    },
+    {
+      "path": "src/deploy/s1Deploy.ts",
+      "mainBlobSha": "cccb29bf435250eb47e6b2e8b969cac2a4541fa9",
+      "branchesPresent": 153,
+      "branchesAbsent": 37,
+      "identicalToMain": 107,
+      "distinctBlobShas": 2
+    },
+    {
+      "path": "src/oauth.ts",
+      "mainBlobSha": "aded77500ea03e636463e4ea5f7f731bcc903dcd",
+      "branchesPresent": 188,
+      "branchesAbsent": 2,
+      "identicalToMain": 33,
+      "distinctBlobShas": 9
+    },
+    {
+      "path": "tests/deployRoutes.test.ts",
+      "mainBlobSha": "a9b5e7a6a28ce744330f4848754aaef76a600ba3",
+      "branchesPresent": 153,
+      "branchesAbsent": 37,
+      "identicalToMain": 107,
+      "distinctBlobShas": 2
+    },
+    {
+      "path": "tests/s1Deploy.test.ts",
+      "mainBlobSha": "158a6c3f5b61e184820bf68c208c49017ef54a0e",
+      "branchesPresent": 153,
+      "branchesAbsent": 37,
+      "identicalToMain": 107,
+      "distinctBlobShas": 2
+    },
+    {
+      "path": "tests/deployWorkflow.test.ts",
+      "mainBlobSha": "6974e5236300f33af6c16eb0c073e72af021ecfd",
+      "branchesPresent": 153,
+      "branchesAbsent": 37,
+      "identicalToMain": 107,
+      "distinctBlobShas": 3
+    },
+    {
+      "path": ".github/workflows/mcp-deploy.yml",
+      "mainBlobSha": "7ede327f0112559cb1145545e288fd244edfe166",
+      "branchesPresent": 153,
+      "branchesAbsent": 37,
+      "identicalToMain": 107,
+      "distinctBlobShas": 2
+    },
+    {
+      "path": ".github/workflows/mcp-ci.yml",
+      "mainBlobSha": "3d6324a136804b8ece292b698f4ae4710e3ce964",
+      "branchesPresent": 176,
+      "branchesAbsent": 14,
+      "identicalToMain": 27,
+      "distinctBlobShas": 12
+    }
+  ],
+  "limitations": [
+    "Frozen historical branch heads, not live current heads",
+    "Same Git blob SHA means byte-identical content, not tested behavior",
+    "Different SHA does not automatically imply incompatible behavior",
+    "Ten selected paths, not the full 96689-file functional analysis"
+  ]
+}

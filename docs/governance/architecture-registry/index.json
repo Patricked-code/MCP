@@ -22,7 +22,9 @@
     "technicalVerification": "verify_technical_formats.mjs",
     "mainDirectories": "snapshots/2026-11-07/main-directories.jsonl",
     "mainDirectorySummary": "snapshots/2026-11-07/main-directory-summary.json",
-    "directoryVerification": "verify_directory_inventory.mjs"
+    "directoryVerification": "verify_directory_inventory.mjs",
+    "sourceEvidenceBatch01": "catalog/source-evidence-batch-01.json",
+    "crossbranchSample": "snapshots/2026-11-07/crossbranch-deploy-sample.json"
   },
   "notAuthoritativeFor": [
     "Task Queue",
@@ -68,5 +70,16 @@
     "otherBranches": "NOT_FULLY_INDEXED_AS_DIRECTORIES",
     "semanticMeaning": "UNREVIEWED",
     "sqliteProjection": "MAIN_DIRECTORIES_WITH_FROZEN_SNAPSHOT"
+  },
+  "analysisStage": {
+    "status": "PARTIAL_EVIDENCE_BACKED",
+    "sourcePathsInspected": 10,
+    "sourceRelationsVerified": 6,
+    "declarationsVerified": 10,
+    "branchesComparedForSample": 190,
+    "filesSampled": 10,
+    "fullSemanticFilesReviewed": 0,
+    "otherFiles": "UNREVIEWED",
+    "next": "VERIFY_COMPARISON_AND_BUILD_IMPACT_GRAPH"
   }
 }
