@@ -123,3 +123,20 @@ La table `directories` indexe **17 836 présences de répertoires**, dont les 14
 ## Lot de preuve sémantique 02 : gouvernance, continuité, dispatch
 
 Au SHA historique `main@7d29ad4212efa0bd343d53f400785e5c9cbf07f4`, les **9 fichiers** recensés dans `catalog/source-evidence-batch-02.json` possèdent chacun une fonction ou un test explicitement cité avec sa ligne et son blob SHA. **6 relations** d'import ou de test sont également ancrées. `verify_source_evidence_batch_02.mjs` vérifie les blobs et les ancres en CI. Ceci constitue une **classification de rôle déclaré partielle**, pas une preuve d'exécution, une couverture fonctionnelle exhaustive, ni une nouvelle autorité de tâches/locks/sessions.
+
+
+## Référentiel complémentaire de blocs architecturaux (7 novembre 2026)
+
+Nouvelle **projection non autoritative** intégrée à ce registre, sans remplacer les 190 snapshots de branches, les 844 blobs de main, la Task Queue, la mémoire opérationnelle, Live State ni le programme V2 existants.
+
+- `catalog/architectural-blocks-v1.json` : **26 blocs architecturaux** (ABB) et **27 relations proposées**. Les blocs regroupent des capacités fonctionnelles ; leurs identifiants ne sont ni des Task IDs ni des autorités runtime.
+- `catalog/architectural-file-candidates-v1-part-00..03.jsonl` : **844/844 fichiers de main** avec path, SHA, format technique, ancres de bloc et pistes de recherche (individuellement non assimilées à une preuve sémantique).
+- `catalog/architectural-gwc-contract-map-v1.json` : **73 contrats** GWC, dont les chemins du graphe (91 transitions) restent ceux du registre officiel.
+- `catalog/architectural-program-blueprint-map-v1.json` : **41 Work Items et 94 Task Blueprints V2**, liens de conception par Integration Slot et sources candidates existantes.
+- `catalog/architectural-evolution-v1.json` : neuf jalons historiques de `main` (échantillonnage, pas toute l'histoire Git).
+- `catalog/architectural-classification-manifest-v1.json` : contrôles de couverture, statuts et limites.
+- `verify_architectural_blocks_v1.mjs` : validateur local en lecture seule ; à exécuter depuis la racine du clone avec `node docs/governance/architecture-registry/verify_architectural_blocks_v1.mjs`.
+
+**Précision sur la couverture** : 61 fichiers sont des ancres explicites de blocs dont les blobs Git existent, 19 avaient déjà une inspection de source limitée, 640 ont uniquement un indice de recherche par chemin, et 133 n'ont pas de piste. **0/844** fichiers ne peut être déclaré intégralement audité sémantiquement. Aucun état de production nouveau n'est attesté.
+
+Le chemin sûr de continuation est une analyse du contenu par lots et l'ajout de liens source→contrat→test→preuve, toujours sur SHA exact et sans écriture sur `main` ou S1.
