@@ -384,6 +384,16 @@ test('C26 OAuth principal never auto-attaches to an active Regulatory owner sess
       transportSessionId: 'regulatory-existing-transport',
       identity: regulatory
     });
+    // openSession starts OPEN. First activate the owner through its authentic
+    // original transport so the test mirrors the ACTIVE Regulatory session.
+    const activeRegulatory = await service.heartbeat({
+      governedSessionId: existing.session.governedSessionId,
+      expectedSessionRevision: existing.session.sessionRevision
+    }, {
+      transportSessionId: 'regulatory-existing-transport',
+      identity: regulatory
+    });
+    assert.equal(activeRegulatory.status, 'ACTIVE');
     const attempted = await service.autoResumeCompatibleSession(
       { repository: 'Patricked-code/MCP' },
       { transportSessionId: 'c26-independent-transport', identity: c26 }
