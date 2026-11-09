@@ -9,8 +9,7 @@ import {
   C26_OAUTH_SUBJECT,
   c26SubjectFromCookie,
   clearC26OAuthCookie,
-  issueC26OAuthCookie,
-  verifyC26OAuthLoginToken
+  issueC26OAuthCookieFromLogin
 } from './oauthC26WebIdentity.js';
 import { requireBearerToken } from './auth.js';
 import {
@@ -893,15 +892,16 @@ export async function startHttpServer(): Promise<void> {
       res.redirect(next);
       return;
     }
-    if (verifyC26OAuthLoginToken(token)) {
+    const c26Cookie = issueC26OAuthCookieFromLogin(token, {
+      maxAgeSeconds: Math.min(WEB_SESSION_MAX_AGE_SECONDS, 86_400),
+      secure: secureCookieAttribute().includes('Secure')
+    });
+    if (c26Cookie !== null) {
       if (!next.startsWith('/oauth/authorize')) {
         res.status(403).type('html').send(renderLoginPage('Ce compte est réservé à OAuth.', '/oauth/authorize'));
         return;
       }
-      res.setHeader('Set-Cookie', issueC26OAuthCookie({
-        maxAgeSeconds: Math.min(WEB_SESSION_MAX_AGE_SECONDS, 86_400),
-        secure: secureCookieAttribute().includes('Secure')
-      }));
+      res.setHeader('Set-Cookie', c26Cookie);
       res.redirect(next);
       return;
     }
