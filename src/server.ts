@@ -6,8 +6,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { env } from './config/env.js';
 import {
-  C26_OAUTH_SUBJECT,
-  c26SubjectFromCookie,
+  resolveVerifiedOAuthWebSubject,
   clearC26OAuthCookie,
   issueC26OAuthCookieFromLogin
 } from './oauthC26WebIdentity.js';
@@ -194,9 +193,7 @@ function isWebAuthenticated(req: express.Request): boolean {
  * dashboard, git, Plesk, or the historical MCP Bearer middleware.
  */
 function oauthAuthenticatedSubject(req: express.Request): string | null {
-  if (isWebAuthenticated(req)) return 'wealthtech-mcp-admin';
-  return c26SubjectFromCookie(req.header('cookie')) === C26_OAUTH_SUBJECT
-    ? C26_OAUTH_SUBJECT : null;
+  return resolveVerifiedOAuthWebSubject(isWebAuthenticated(req), req.header('cookie'));
 }
 
 function isOAuthWebAuthenticated(req: express.Request): boolean {
