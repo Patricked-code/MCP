@@ -158,6 +158,58 @@ test('an approved consent issues a code for the original request and the token e
   });
 });
 
+test('invalid PKCE burns the code permanently even when the next request is valid', async () => {
+  const { challenge, verifier } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const approved = await submitConsent(baseUrl, fields, 'approve');
+    assert.equal(approved.status, 302);
+    const code = new URL(approved.headers.get('location') ?? 'about:blank').searchParams.get('code');
+    assert.ok(code);
+    const exchange = (codeVerifier: string) => fetch(`${baseUrl}/oauth/token`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code, redirect_uri: REDIRECT_URI,
+        client_id: 'https://client.example/oauth-client',
+        code_verifier: codeVerifier, resource: oauthIssuer()
+      })
+    });
+    const failedPkce = await exchange('wrong-code-verifier');
+    assert.equal(failedPkce.status, 400);
+    assert.equal((await failedPkce.json()).error, 'invalid_grant');
+    const validButReplayed = await exchange(verifier);
+    assert.equal(validButReplayed.status, 400, 'failed PKCE must have burned the code');
+    assert.equal((await validButReplayed.json()).error, 'invalid_grant');
+  });
+});
+
+test('client mismatch burns the code before a second legitimate exchange', async () => {
+  const { challenge, verifier } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const approved = await submitConsent(baseUrl, fields, 'approve');
+    assert.equal(approved.status, 302);
+    const code = new URL(approved.headers.get('location') ?? 'about:blank').searchParams.get('code');
+    assert.ok(code);
+    const exchange = (clientId: string) => fetch(`${baseUrl}/oauth/token`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI,
+        client_id: clientId, code_verifier: verifier, resource: oauthIssuer()
+      })
+    });
+    const wrongClient = await exchange('attacker-client');
+    assert.equal(wrongClient.status, 400);
+    assert.equal((await wrongClient.json()).error, 'invalid_grant');
+    const retry = await exchange('https://client.example/oauth-client');
+    assert.equal(retry.status, 400);
+    assert.equal((await retry.json()).error, 'invalid_grant');
+  });
+});
+
 test('a denied consent redirects with access_denied and never issues a code', async () => {
   const { challenge } = pkce();
   await withOauthServer(true, async (baseUrl) => {
