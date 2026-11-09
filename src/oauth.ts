@@ -48,6 +48,8 @@ export type VerifiedOauthIdentity = {
 
 type RegisterOAuthRoutesOptions = {
   isAuthenticated: (req: Request) => boolean;
+  /** Authenticated server-owned principal, never a client_id or query parameter. */
+  authenticatedSubject?: (req: Request) => string | null;
 };
 
 function normalizeBaseUrl(value: string): string {
@@ -535,7 +537,12 @@ function denyAuthorization(res: Response, request: AuthorizationConsentRequest):
   res.redirect(302, redirectTarget.toString());
 }
 
-async function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (req: Request) => boolean): Promise<void> {
+async function handleAuthorizeDecision(
+  req: Request,
+  res: Response,
+  isAuthenticated: (req: Request) => boolean,
+  authenticatedSubject?: (req: Request) => string | null
+): Promise<void> {
   if (!isAuthenticated(req)) {
     sendOAuthError(res, 401, 'access_denied', 'Une session opérateur est requise pour autoriser une connexion.');
     return;
@@ -592,12 +599,12 @@ async function handleAuthorizeDecision(req: Request, res: Response, isAuthentica
 
   const decision = getSingleBodyParam(req, 'decision');
   if (decision === 'approve') {
-    await handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'APPROVED');
+    await handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'APPROVED', authenticatedSubject);
     return;
   }
 
   if (decision === 'deny') {
-    await handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'DENIED');
+    await handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'DENIED', authenticatedSubject);
     return;
   }
 
@@ -609,7 +616,8 @@ async function handleAuthorize(
   res: Response,
   isAuthenticated: (req: Request) => boolean,
   readParam: (req: Request, name: string) => string | undefined = getSingleQueryParam,
-  consent: 'REQUIRED' | 'APPROVED' | 'DENIED' = 'REQUIRED'
+  consent: 'REQUIRED' | 'APPROVED' | 'DENIED' = 'REQUIRED',
+  authenticatedSubject?: (req: Request) => string | null
 ): Promise<void> {
   if (!isAuthenticated(req)) {
     redirectToLogin(req, res);
@@ -676,6 +684,13 @@ async function handleAuthorize(
     return;
   }
 
+  // The OAuth principal must be established by the server-side web login.
+  // Never derive sub from client_id, redirect_uri, bearer token text or query.
+  const subject = authenticatedSubject ? authenticatedSubject(req) : 'wealthtech-mcp-admin';
+  if (!subject || !['wealthtech-mcp-admin', 'wealthtech-mcp-c26-agent'].includes(subject)) {
+    sendOAuthError(res, 401, 'access_denied', 'Identité OAuth vérifiée requise.');
+    return;
+  }
   const oauthAttemptRef = `oa_${base64Url(randomBytes(16))}`;
   const code = await issueAuthorizationCode({
     clientId,
@@ -685,7 +700,7 @@ async function handleAuthorize(
     codeChallenge,
     codeChallengeMethod: 'S256',
     expiresAt: Date.now() + AUTHORIZATION_CODE_TTL_MS,
-    subject: 'wealthtech-mcp-admin',
+    subject,
     oauthAttemptRef
   });
 
@@ -865,11 +880,11 @@ export function registerOauthRoutes(app: Express, options: RegisterOAuthRoutesOp
   };
 
   app.get('/oauth/authorize', (req, res) => {
-    void handleAuthorize(req, res, options.isAuthenticated).catch(authorizationFailure(res));
+    void handleAuthorize(req, res, options.isAuthenticated, getSingleQueryParam, 'REQUIRED', options.authenticatedSubject).catch(authorizationFailure(res));
   });
 
   app.post('/oauth/authorize', (req, res) => {
-    void handleAuthorizeDecision(req, res, options.isAuthenticated).catch(authorizationFailure(res));
+    void handleAuthorizeDecision(req, res, options.isAuthenticated, options.authenticatedSubject).catch(authorizationFailure(res));
   });
 
   app.post('/oauth/token', async (req, res) => {
