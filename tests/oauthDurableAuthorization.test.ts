@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash, createHmac } from 'node:crypto';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -114,6 +114,89 @@ test('refresh token durable: rotation, hash-only persistence et replay revocatio
       }),
       /OAUTH_REFRESH_GRANT_REVOKED/
     );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('two independent refresh grant services cannot both consume one generation', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-race-'));
+  const storePath = path.join(directory, 'refresh-grants.json');
+  const createService = () => createOAuthRefreshGrantService({
+    storePath,
+    idleTtlSeconds: 3600,
+    absoluteTtlSeconds: 86400,
+    lockTimeoutMs: 1000
+  });
+  try {
+    const issuer = createService();
+    const issued = await issuer.issue({
+      subject: 'oauth-race-test',
+      clientId: 'race-client',
+      resource: 'https://mcp.wealthtechinnovations.com',
+      scopes: ['mcp:read', 'offline_access'],
+      oauthAttemptRef: 'oa_abcdefghijklmnopqrstuv'
+    });
+    const a = createService();
+    const b = createService();
+    const results = await Promise.allSettled([
+      a.rotate({ refreshToken: issued.refreshToken, clientId: 'race-client' }),
+      b.rotate({ refreshToken: issued.refreshToken, clientId: 'race-client' })
+    ]);
+    assert.equal(results.filter((result) => result.status === 'fulfilled').length, 1,
+      'one refresh generation must never be accepted twice');
+    assert.equal(results.filter((result) => result.status === 'rejected').length, 1);
+    const persisted = JSON.parse(await readFile(storePath, 'utf8'));
+    assert.equal(persisted.grants.length, 1);
+    assert.equal(persisted.grants[0].currentGeneration, 1);
+    assert.equal(persisted.grants[0].revokedAt !== null, true,
+      'a replayed predecessor revokes the entire existing family');
+    assert.equal(persisted.grants[0].revokeReason, 'replay_detected');
+    const successor = results.find((result) => result.status === 'fulfilled');
+    if (!successor || successor.status !== 'fulfilled') throw new Error('NO_SUCCESSOR');
+    await assert.rejects(
+      createService().rotate({ refreshToken: successor.value.refreshToken, clientId: 'race-client' }),
+      /OAUTH_REFRESH_GRANT_REVOKED/
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('interrupted refresh transaction remains fail-closed, then orderly restart uses persisted revision', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-restart-'));
+  const storePath = path.join(directory, 'refresh-grants.json');
+  const lockPath = `${storePath}.transaction-lock`;
+  const createService = () => createOAuthRefreshGrantService({
+    storePath,
+    idleTtlSeconds: 3600,
+    absoluteTtlSeconds: 86400,
+    lockTimeoutMs: 100
+  });
+  try {
+    const issued = await createService().issue({
+      subject: 'oauth-restart-test',
+      clientId: 'restart-client',
+      resource: 'https://mcp.wealthtechinnovations.com',
+      scopes: ['mcp:read', 'offline_access'],
+      oauthAttemptRef: 'oa_abcdefghijklmnopqrstuv'
+    });
+    await mkdir(lockPath, { mode: 0o700 }); // simulate a lock left by a crashed owner
+    await assert.rejects(
+      createService().rotate({ refreshToken: issued.refreshToken, clientId: 'restart-client' }),
+      /OPERATIONAL_STORE_LOCK_TIMEOUT/,
+      'never bypass an unverified lock after a crash'
+    );
+    assert.equal(JSON.parse(await readFile(storePath, 'utf8')).grants[0].currentGeneration, 0);
+    await rm(lockPath, { recursive: true });
+    const rotated = await createService().rotate({
+      refreshToken: issued.refreshToken, clientId: 'restart-client'
+    });
+    assert.equal(JSON.parse(await readFile(storePath, 'utf8')).grants[0].currentGeneration, 1);
+    const restarted = createService();
+    const again = await restarted.rotate({ refreshToken: rotated.refreshToken, clientId: 'restart-client' });
+    assert.equal(JSON.parse(await readFile(storePath, 'utf8')).grants[0].currentGeneration, 2);
+    assert.notEqual(again.refreshToken, rotated.refreshToken);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
