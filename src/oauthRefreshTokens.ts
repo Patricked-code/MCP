@@ -100,6 +100,8 @@ type OAuthRefreshGrantServiceOptions = {
   now?: () => Date;
   randomUUID?: () => string;
   randomBytes?: (size: number) => Buffer;
+  /** Bounded per-file transaction-lock wait (test override only). */
+  lockTimeoutMs?: number;
 };
 
 function hashToken(token: string): string {
@@ -162,7 +164,10 @@ export function createOAuthRefreshGrantService(
   const store = createAtomicJsonStore({
     filePath: options.storePath,
     schema: OAuthRefreshGrantStoreDocumentSchema,
-    empty: createEmptyOAuthRefreshGrantStoreDocument
+    empty: createEmptyOAuthRefreshGrantStoreDocument,
+    interprocessLock: true,
+    durableWrites: true,
+    lockTimeoutMs: options.lockTimeoutMs
   });
 
   return {
