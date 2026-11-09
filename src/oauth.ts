@@ -904,4 +904,3 @@ export function registerOauthRoutes(app: Express, options: RegisterOAuthRoutesOp
     }
   });
 }
-}
