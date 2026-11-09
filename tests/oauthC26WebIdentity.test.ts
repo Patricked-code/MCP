@@ -9,6 +9,7 @@ const {
   issueC26OAuthCookie,
   issueC26OAuthCookieFromLogin,
   c26SubjectFromCookie,
+  resolveVerifiedOAuthWebSubject,
   clearC26OAuthCookie
 } = await import('../src/oauthC26WebIdentity.js');
 
@@ -35,6 +36,15 @@ test('C26 OAuth-only identity is opt-in, requires the distinct secret, and is ti
   assert.ok(cookie.startsWith(`${C26_OAUTH_COOKIE_NAME}=`));
   const header = cookie.split(';')[0];
   assert.equal(c26SubjectFromCookie(header, { now: at + 5_000, readSecret: () => c26Secret }), C26_OAUTH_SUBJECT);
+  assert.equal(resolveVerifiedOAuthWebSubject(false, header, {
+    now: at + 5_000, readSecret: () => c26Secret
+  }), C26_OAUTH_SUBJECT);
+  assert.equal(resolveVerifiedOAuthWebSubject(true, header, {
+    now: at + 5_000, readSecret: () => c26Secret
+  }), 'wealthtech-mcp-admin');
+  assert.equal(resolveVerifiedOAuthWebSubject(false, 'mcp_web_session=legacy_admin_cookie', {
+    now: at + 5_000, readSecret: () => c26Secret
+  }), null);
   assert.equal(c26SubjectFromCookie(header, { now: at + 3_600_001, readSecret: () => c26Secret }), null);
   assert.equal(c26SubjectFromCookie(header, { now: at + 5_000, readSecret: () => wrongSecret }), null);
   assert.equal(c26SubjectFromCookie(header, { now: at + 5_000, readSecret: () => null }), null);
