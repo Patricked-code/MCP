@@ -330,6 +330,83 @@ test('durable OAuth authorization codes store only their hash and are consumed e
   }
 });
 
+test('two real OS processes cannot both exchange one authorization code', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-code-multiprocess-'));
+  const storePath = path.join(directory, 'codes.json');
+  const workers: ReturnType<typeof fork>[] = [];
+  try {
+    const code = await createOAuthAuthorizationCodeService({ storePath }).issue({
+      clientId: 'race-client',
+      redirectUri: 'https://client.example/callback',
+      scope: 'mcp:read',
+      resource: 'https://mcp.wealthtechinnovations.com',
+      codeChallenge: 'C'.repeat(43),
+      codeChallengeMethod: 'S256',
+      subject: 'wealthtech-mcp-admin',
+      oauthAttemptRef: 'oa_abcdefghijklmnopqrstuv',
+      expiresAt: Date.now() + 300_000
+    });
+    const makeWorker = () => {
+      const child = fork(new URL('./fixtures/oauthRefreshTransactionWorker.mjs', import.meta.url), [], {
+        execArgv: ['--import', 'tsx'], silent: true
+      });
+      workers.push(child);
+      let readyResolve!: () => void;
+      let readyReject!: (err: Error) => void;
+      let resultResolve!: (outcome: string) => void;
+      let resultReject!: (err: Error) => void;
+      const ready = new Promise<void>((resolve, reject) => { readyResolve = resolve; readyReject = reject; });
+      const result = new Promise<string>((resolve, reject) => { resultResolve = resolve; resultReject = reject; });
+      void result.catch(() => undefined);
+      let finished = false;
+      const timer = setTimeout(() => {
+        if (finished) return;
+        finished = true;
+        child.kill();
+        const err = new Error('OAUTH_CODE_WORKER_TIMEOUT');
+        readyReject(err);
+        resultReject(err);
+      }, 15000);
+      child.on('message', (message: { kind?: string; outcome?: string }) => {
+        if (message.kind === 'READY') readyResolve();
+        if (message.kind === 'RESULT' && !finished) {
+          finished = true;
+          clearTimeout(timer);
+          resultResolve(message.outcome ?? 'UNKNOWN');
+        }
+      });
+      child.once('error', err => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        readyReject(err);
+        resultReject(err);
+      });
+      child.once('exit', code => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        const err = new Error(`OAUTH_CODE_WORKER_EXIT_${code}`);
+        readyReject(err);
+        resultReject(err);
+      });
+      return { child, ready, result };
+    };
+    const a = makeWorker(), b = makeWorker();
+    await Promise.all([a.ready, b.ready]);
+    a.child.send({ kind: 'CONSUME_AUTH_CODE', storePath, authorizationCode: code });
+    b.child.send({ kind: 'CONSUME_AUTH_CODE', storePath, authorizationCode: code });
+    const outcomes = await Promise.all([a.result, b.result]);
+    assert.deepEqual(outcomes.sort(), ['ALREADY_CONSUMED', 'CONSUMED']);
+    const stored = JSON.parse(await readFile(storePath, 'utf8'));
+    assert.equal(stored.codes.length, 0);
+    assert.equal(stored.storeRevision, 2);
+  } finally {
+    for (const worker of workers) worker.kill();
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test('expired OAuth authorization codes never resume after restart or exchange', async () => {
   const directory = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-codes-expiry-'));
   const storePath = path.join(directory, 'codes.json');
