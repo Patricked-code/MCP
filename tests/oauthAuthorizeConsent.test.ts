@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict';
 import { createHash, randomBytes } from 'node:crypto';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import { once } from 'node:events';
 import type { AddressInfo } from 'node:net';
-import test from 'node:test';
+import test, { after } from 'node:test';
 import express from 'express';
 
 process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260805-abcdef';
@@ -10,6 +13,12 @@ process.env.S1_HOST ??= '127.0.0.1';
 process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
 process.env.S2_HOST ??= '127.0.0.1';
 process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
+
+// This suite must not write under /app/data on the CI runner. Each test file
+// uses one isolated store and cleans it up after all HTTP integration tests.
+const codeStoreDir = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-http-codes-'));
+process.env.MCP_OAUTH_CODE_STORE_PATH = path.join(codeStoreDir, 'authorization-codes.json');
+after(async () => { await rm(codeStoreDir, { recursive: true, force: true }); });
 
 const { registerOauthRoutes, inspectOauthAccessToken, oauthIssuer, consentOriginRejectionReason, getOauthConsentProvenanceEvidence } = await import('../src/oauth.js');
 
