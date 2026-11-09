@@ -74,11 +74,19 @@ Principes de sécurité :
 - avec `offline_access`, `/oauth/token` peut émettre un refresh token durable et accepter ensuite `grant_type=refresh_token` ;
 - un refresh token est remplacé à chaque usage ; la réutilisation d'une génération ancienne révoque la famille ;
 - le refresh token brut n'est jamais persisté : seul son hash courant et des références non secrètes de grant/corrélation sont stockés sous `/app/data` ;
+- les codes `authorization_code` de la candidate #207 sont à usage unique, persistés par **hachage SHA-256 uniquement** avec les bornes client, redirection, ressource, challenge PKCE et expiration ; aucun code brut n'est écrit dans `/app/data/mcp-oauth-authorization-codes.json` ;
+- l'émission/la consommation des codes et la rotation des refresh grants de la candidate utilisent l'exclusion transactionnelle **opt-in** du stockage opérationnel existant ; `fsync` du fichier/dossier avant réponse ;
+- cette exclusion ne vaut que si **tous** les processus OAuth utilisent le **même volume local POSIX**, à opérations `mkdir` et `rename` atomiques ; un déploiement multi-hôte avec volumes indépendants est **non pris en charge** par cette candidate ;
+- un répertoire `*.transaction-lock` abandonné à la suite d'un crash bloque volontairement les écritures : aucune suppression/récupération ne doit intervenir sans avoir établi qu'aucun processus propriétaire n'écrit encore ; cette reprise reste gouvernée et non automatique ;
+- `MCP_OAUTH_CODE_STORE_PATH` permet aux tests d'utiliser un stockage isolé (par défaut `/app/data/mcp-oauth-authorization-codes.json`) ; ne pas confondre cette option de stockage avec une permission OAuth ou une identité de session ;
+
 - les TTL refresh sont configurables, avec 30 jours d'inactivité et 90 jours maximum par défaut ;
 - `MCP_AUTH_TOKEN` n'est jamais renvoyé dans les réponses OAuth ;
 - le login web existant `/login` authentifie l'opérateur ;
 - chaque connexion OAuth affiche ensuite une page de consentement (client, hôte de redirection, accès demandé) : le code n'est émis qu'après un clic « Autoriser » sur cette page, via un POST same-origin lié à la demande exacte et valable 10 minutes ; « Refuser » renvoie `access_denied` au client ;
 - le serveur renvoie un header `WWW-Authenticate` sur les `401` MCP pour permettre à ChatGPT de découvrir `/.well-known/oauth-protected-resource`.
+
+**Statut :** ces mécanismes de persistance sont une candidate non déployée de la PR #207. Les tests CI locaux et multiprocessus ne remplacent ni un audit de la topologie/du filesystem réels, ni une revue de sécurité indépendante, ni un déploiement gouverné attesté.
 
 Tests publics attendus :
 
