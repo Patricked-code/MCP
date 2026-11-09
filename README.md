@@ -88,6 +88,20 @@ Principes de sécurité :
 
 **Statut :** ces mécanismes de persistance sont une candidate non déployée de la PR #207. Les tests CI locaux et multiprocessus ne remplacent ni un audit de la topologie/du filesystem réels, ni une revue de sécurité indépendante, ni un déploiement gouverné attesté.
 
+### Identité OAuth C26 distincte — candidate opt-in de la PR #207
+
+Cette candidate **n'active aucune identité C26 par défaut**. La session historique `mcp_web_session` et le Bearer `MCP_AUTH_TOKEN` restent associés au principal administrateur historique. La connexion C26 ne devient possible que si un secret indépendant, aléatoire et restreint est provisionné par l'opérateur sous le montage de secrets S1 existant :
+
+- chemin du conteneur : `/app/secrets/mcp-c26-oauth-login-token` (montage existant `./secrets:/app/secrets`) ;
+- fichier ordinaire, **ni lien symbolique, ni accès groupe/autres**, mode `0600` ; contenu base64url ou hex aléatoire de 43 à 256 caractères, différent de `MCP_AUTH_TOKEN` ;
+- aucun secret dans GitHub, les journaux CI, les issues ou les conversations ;
+- le login web existant `/login` reconnaît ce secret uniquement pour un retour vers `/oauth/authorize` et émet un cookie signé distinct `mcp_c26_oauth_session` (`HttpOnly; SameSite=Lax; Path=/oauth; Secure` en HTTPS) ;
+- ce cookie n'est accepté ni par `requireWebLogin`, ni par `/dashboard`, `/git`, `/github`, les opérations Plesk, ni par le middleware Bearer de `/mcp` ;
+- après consentement OAuth explicite, le serveur peut signer des access/refresh tokens avec `sub=wealthtech-mcp-c26-agent`, projetés dans le MCP sous `oauth:wealthtech-mcp-c26-agent`, **distinct de `oauth:wealthtech-mcp-admin`** ;
+- la séparation effective du transport MCP, la nouvelle connexion OAuth ChatGPT, un Bootstrap Receipt propre et la permission `SCHEDULED` sont des preuves distinctes qui restent à recueillir.
+
+**Précondition de mise en service** : validation de sécurité sur le SHA exact, audit du montage réel `/app/secrets`/`/app/data`, revue indépendante et déploiement gouverné de la PR #207. Le secret doit être créé sur S1 **en dehors du dépôt suivi**, via les procédures sécurisées de l'opérateur, et conservé dans un gestionnaire de secrets. Tant que ces étapes manquent, aucune certification C26/C27 n'est revendiquée.
+
 Tests publics attendus :
 
 ```bash
