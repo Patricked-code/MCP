@@ -15,6 +15,7 @@ process.env.MCP_WEB_BASE_URL ??= 'https://mcp.wealthtechinnovations.com';
 
 const { inspectOauthAccessToken } = await import('../src/oauth.js');
 const { createOAuthRefreshGrantService } = await import('../src/oauthRefreshTokens.js');
+const { createOAuthAuthorizationCodeService } = await import('../src/oauthAuthorizationCodes.js');
 
 function base64Url(value: string): string {
   return Buffer.from(value).toString('base64url');
@@ -287,6 +288,66 @@ test('interrupted refresh transaction remains fail-closed, then orderly restart 
     const again = await restarted.rotate({ refreshToken: rotated.refreshToken, clientId: 'restart-client' });
     assert.equal(JSON.parse(await readFile(storePath, 'utf8')).grants[0].currentGeneration, 2);
     assert.notEqual(again.refreshToken, rotated.refreshToken);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('durable OAuth authorization codes store only their hash and are consumed exactly once', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-codes-durable-'));
+  const storePath = path.join(directory, 'codes.json');
+  const record = {
+    clientId: 'https://client.example/oauth-client',
+    redirectUri: 'https://client.example/callback',
+    scope: 'mcp:read',
+    resource: 'https://mcp.wealthtechinnovations.com',
+    codeChallenge: 'A'.repeat(43),
+    codeChallengeMethod: 'S256' as const,
+    subject: 'wealthtech-mcp-admin',
+    oauthAttemptRef: 'oa_abcdefghijklmnopqrstuv',
+    expiresAt: Date.now() + 300000
+  };
+  const service = () => createOAuthAuthorizationCodeService({ storePath });
+  try {
+    const rawCode = await service().issue(record);
+    assert.match(rawCode, /^[A-Za-z0-9_-]{43}$/);
+    const persisted = await readFile(storePath, 'utf8');
+    assert.equal(persisted.includes(rawCode), false);
+    assert.equal(persisted.includes(createHash('sha256').update(rawCode).digest('hex')), true);
+    // A fresh instance after a restart sees the same durable record.
+    const twoIndependentReaders = await Promise.all([
+      service().consume(rawCode),
+      service().consume(rawCode)
+    ]);
+    assert.equal(twoIndependentReaders.filter(Boolean).length, 1);
+    assert.deepEqual(twoIndependentReaders.find(Boolean), record);
+    assert.equal(await service().consume(rawCode), null);
+    const state = JSON.parse(await readFile(storePath, 'utf8'));
+    assert.equal(state.codes.length, 0);
+    assert.equal(state.storeRevision, 2, 'issue and single consumption');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('expired OAuth authorization codes never resume after restart or exchange', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-codes-expiry-'));
+  const storePath = path.join(directory, 'codes.json');
+  let now = Date.parse('2026-11-09T00:00:00Z');
+  const service = () => createOAuthAuthorizationCodeService({ storePath, now: () => now });
+  try {
+    const rawCode = await service().issue({
+      clientId: 'client', redirectUri: 'https://client.example/callback',
+      scope: 'mcp:read', resource: 'https://mcp.wealthtechinnovations.com',
+      codeChallenge: 'B'.repeat(43), codeChallengeMethod: 'S256',
+      subject: 'wealthtech-mcp-admin',
+      oauthAttemptRef: 'oa_abcdefghijklmnopqrstuv',
+      expiresAt: now + 60_000
+    });
+    now += 61_000;
+    assert.equal(await service().consume(rawCode), null);
+    assert.equal(await service().consume(rawCode), null);
+    assert.equal(JSON.parse(await readFile(storePath, 'utf8')).codes.length, 0);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
