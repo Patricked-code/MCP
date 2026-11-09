@@ -7,6 +7,7 @@ const {
   C26_OAUTH_COOKIE_NAME,
   verifyC26OAuthLoginToken,
   issueC26OAuthCookie,
+  issueC26OAuthCookieFromLogin,
   c26SubjectFromCookie,
   clearC26OAuthCookie
 } = await import('../src/oauthC26WebIdentity.js');
@@ -25,6 +26,12 @@ test('C26 OAuth-only identity is opt-in, requires the distinct secret, and is ti
   assert.match(cookie, /HttpOnly; SameSite=Lax; Path=\/oauth; Max-Age=3600; Secure/);
   assert.equal(cookie.includes('mcp_web_session='), false);
   assert.equal(cookie.includes(c26Secret), false);
+  assert.equal(issueC26OAuthCookieFromLogin(c26Secret, {
+    now: at, maxAgeSeconds: 3600, secure: true, readSecret: () => c26Secret
+  }), cookie);
+  assert.equal(issueC26OAuthCookieFromLogin('wrong-login-token', {
+    now: at, maxAgeSeconds: 3600, secure: true, readSecret: () => c26Secret
+  }), null);
   assert.ok(cookie.startsWith(`${C26_OAUTH_COOKIE_NAME}=`));
   const header = cookie.split(';')[0];
   assert.equal(c26SubjectFromCookie(header, { now: at + 5_000, readSecret: () => c26Secret }), C26_OAUTH_SUBJECT);
@@ -56,7 +63,7 @@ test('C26 subject can only enter the OAuth route; web admin and shared Bearer re
   assert.match(server, /registerOauthRoutes\(app, \{\s*isAuthenticated: isOAuthWebAuthenticated,\s*authenticatedSubject: oauthAuthenticatedSubject/);
   assert.match(server, /function requireWebLogin\([\s\S]*?if \(isWebAuthenticated\(req\)\)/);
   assert.doesNotMatch(server.match(/function isWebAuthenticated\([\s\S]*?\n\}/)?.[0] ?? '', /c26SubjectFromCookie/);
-  assert.match(server, /issueC26OAuthCookie\(\{/);
+  assert.match(server, /issueC26OAuthCookieFromLogin\(token, \{/);
   assert.match(auth, /token === env\.MCP_AUTH_TOKEN/);
   assert.doesNotMatch(auth, /C26_OAUTH_COOKIE_NAME|verifyC26OAuthLoginToken/);
 });
