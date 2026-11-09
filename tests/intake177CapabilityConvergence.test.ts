@@ -159,7 +159,15 @@ test('intake #177 extends existing waves with residual blueprints and does not a
 
   for (const id of residualIds) {
     const state = byId.get(id)?.readiness?.state;
-    assert.ok(['BLOCKED','DEFERRED','CONDITIONAL'].includes(state), `${id} unexpectedly auto-promoted to ${state}`);
+    // Convergence never promotes a residual; later promotion is only the derived
+    // consequence of every dependency being DONE.
+    const dependenciesDone = (byId.get(id)?.dependsOn ?? []).every(
+      (dependency: string) => byId.get(dependency)?.readiness?.state === 'DONE'
+    );
+    assert.ok(
+      ['BLOCKED','DEFERRED','CONDITIONAL'].includes(state) || (dependenciesDone && ['READY', 'DONE'].includes(state)),
+      `${id} unexpectedly auto-promoted to ${state}`
+    );
     assert.equal(byId.get(id)?.materialization?.createsRuntimeTask, false);
   }
 });

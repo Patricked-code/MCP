@@ -18,7 +18,7 @@
     },
     {
       "owner": "Wealthtechinnovations",
-      "type": "organization_or_user",
+      "type": "user",
       "role": "source_or_secondary_target",
       "tokenFile": "/app/secrets/github_token_wealthtechinnovations",
       "status": "pending_s2_token_sync"

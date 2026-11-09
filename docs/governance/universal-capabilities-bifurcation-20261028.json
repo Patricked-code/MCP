@@ -1,0 +1,734 @@
+{
+  "schemaVersion": 1,
+  "id": "MCP-GD-UNIVERSAL-CAPABILITIES-BIFURCATION-20261028",
+  "kind": "ADDITIVE_NON_AUTHORITATIVE_WORKSTREAM_CHECKPOINT",
+  "repository": "Patricked-code/MCP",
+  "parentIssue": 349,
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "forkedFromMainSha": "48a529889517aa1c11974802d23acc3f35e0f187",
+  "date": "2026-10-28",
+  "purpose": "Extend the existing MCP with maximum officially delegable GitHub, Plesk, S1/S2 and cross-plane life-cycle capabilities. Reuse existing runtime/project/queue/registry/consent/transport/CI. Never create parallel authority or assume owner/root privileges.",
+  "governance": {
+    "transport": "GITHUB_ONLY_BIFURCATION",
+    "runtimeClaimOrSessionCreated": false,
+    "productionWritePerformed": false,
+    "sourceOfTruth": "GitHub PR/CI plus existing MCP governed authority",
+    "mutationAuthority": "EXISTING_MCP_GOVERNED_SESSIONS_TASK_QUEUE_CLAIMS_LOCKS_E3_AND_GITHUB_RULESETS",
+    "branchOwnership": "Dedicated ChatGPT GitHub connector branch; no other PR, main or S1/S2 writes",
+    "existingPrReservations": [
+      "#207 OAuth",
+      "#319 BUS",
+      "#351 GRT admission",
+      "#352 Regulatory subpath",
+      "#353 Regulatory admission",
+      "#354 GWC"
+    ],
+    "sharedCanonicalDocsDeferredToAdmittedReconciliation": true
+  },
+  "existingFoundations": [
+    "src/github/registryV2.ts",
+    "src/github/connection.ts",
+    "src/github/appInstallationToken.ts",
+    "src/provisioning/pleskSite.ts",
+    "src/provisioning/pleskExecute.ts",
+    "src/provisioning/pleskSshAdapter.ts",
+    "src/tools/pleskProvisioning.ts",
+    "src/tools/registrationPolicy.ts",
+    ".mcp/github-first-operational-policy.json",
+    "Governed Sessions / Task Queue / Locks / E3 existing",
+    "MCP Governed Deploy GitHub -> S1"
+  ],
+  "deliveredSlice": {
+    "id": "GD-U-01",
+    "description": "Pure read-only GitHub App installation capability assessment; no tokens, API calls or runtime writes.",
+    "code": "src/github/installationCapabilityReadiness.ts",
+    "tests": "tests/githubInstallationCapabilityReadiness.test.ts",
+    "operations": [
+      "repository.read",
+      "repository.write",
+      "pull_request.create",
+      "pull_request.merge",
+      "actions.dispatch",
+      "repository.admin"
+    ],
+    "contract": "PERMISSION_OBSERVED means only a fresh repository/installation-scoped permission observation, never runtime write admission.",
+    "redCommit": "067985c6aaa00b156ae2deff51e80d689d47f8dc",
+    "greenCommit": "bb105d043c98a17611ae2fc2980f9489da84c5ae",
+    "ciStatus": "SUCCESS",
+    "ciEvidence": {
+      "runId": 40632447512,
+      "headSha": "2371d222975ed35de46a348d4918a75012d0421a",
+      "job": "validate",
+      "conclusion": "success",
+      "note": "Exact HEAD evidence for GD-U-01 only; new autonomy slice requires its own CI."
+    }
+  },
+  "program": [
+    {
+      "id": "GD-U-01",
+      "title": "GitHub App capability preflight",
+      "status": "IMPLEMENTED_CI_GREEN",
+      "proof": "new standalone pure function and tests"
+    },
+    {
+      "id": "GD-U-02",
+      "title": "GitHub multi-account installations/permission inventory",
+      "status": "NEXT",
+      "reuse": [
+        "src/github/connection.ts",
+        "src/github/registryV2.ts",
+        "src/github/appInstallationToken.ts"
+      ],
+      "gate": "real installation, selected repositories, effective permission observation and credential on S1"
+    },
+    {
+      "id": "GD-U-03",
+      "title": "Plesk API/MCP/CLI interface inventory and safe adapter composition",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "src/provisioning/pleskSite.ts",
+        "src/provisioning/pleskSshAdapter.ts"
+      ],
+      "gate": "S1/S2 admin or subscription delegated permissions, read-only discovery before writes"
+    },
+    {
+      "id": "GD-U-04",
+      "title": "Server operations evidence and bounded privileged ports",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "src/ssh/client.ts",
+        "existing PROJECT_RUNTIME"
+      ],
+      "gate": "no arbitrary shell, verified resource identity, existing runtime authority"
+    },
+    {
+      "id": "GD-U-05",
+      "title": "Universal target modes: subdomain, existing-host subpath, dedicated domain, private service",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "src/github/registryV2.ts",
+        "src/provisioning/pleskSite.ts"
+      ],
+      "gate": "avoid overlap #352/#353, never reinterpret Regulatory subpath as subdomain"
+    },
+    {
+      "id": "GD-U-06",
+      "title": "GitHub to host mapping and deployment attestation",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "GitRegistry V2",
+        "MCP Governed Deploy"
+      ],
+      "gate": "SHA exact, CI, rollback, health, permissions and scope"
+    },
+    {
+      "id": "GD-U-07",
+      "title": "Continuous operation and failure recovery",
+      "status": "NOT_STARTED",
+      "reuse": [
+        "Task Queue",
+        "Governed Sessions",
+        "Locks",
+        "Operational Memory"
+      ],
+      "gate": "idempotent, checkpoints, no collisions, rollback"
+    },
+    {
+      "id": "GD-U-A1",
+      "title": "Read-only autonomy advisory composing existing candidate dispatcher, GitHub permission preflight and Plesk subdomain planner",
+      "status": "IMPLEMENTED_PENDING_CI",
+      "code": "src/provisioning/universalAutonomyAdvice.ts",
+      "tests": "tests/universalAutonomyAdvice.test.ts",
+      "reuse": [
+        "src/governedContext/candidateContinuity.ts dispatchCandidateWork",
+        "src/github/installationCapabilityReadiness.ts",
+        "src/provisioning/pleskSite.ts"
+      ],
+      "gates": [
+        "MCP live Task/Session/Claim/Locks is authoritative; candidate dispatcher only non-authoritative",
+        "E3 consent and GitHub rulesets independent",
+        "Exact main/S1/runtime SHA comparison",
+        "Real permission and Plesk observations",
+        "No subpath-to-subdomain fallback"
+      ],
+      "antiCollision": "No modifications in src/governedContext, task queue, PR352/353, GitHub workflow or S1/S2."
+    },
+    {
+      "id": "GD-U-MAX",
+      "title": "165-entry GitHub/Plesk/Server/Intelligence target catalogue with safe evidence checks",
+      "status": "IMPLEMENTED_PENDING_CI",
+      "code": "src/provisioning/universalAdminCapabilityCatalog.ts",
+      "tests": "tests/universalAdminCapabilityCatalog.test.ts",
+      "kind": "NON_EXECUTABLE"
+    },
+    {
+      "id": "GD-U-COMPOSE",
+      "title": "Cross-plane typed deployment dependency blueprint (GitHub -> Plesk -> S1/S2 -> proof)",
+      "status": "IMPLEMENTED_PENDING_CI",
+      "code": "src/provisioning/universalDeploymentBlueprint.ts",
+      "tests": "tests/universalDeploymentBlueprint.test.ts",
+      "kind": "NON_EXECUTABLE"
+    },
+    {
+      "id": "GD-U-CONTINUITY",
+      "title": "Governed Task Queue + Session + Checkpoint read-only resumability",
+      "status": "IMPLEMENTED_PENDING_CI",
+      "code": "src/provisioning/universalResumeAdvice.ts",
+      "tests": "tests/universalResumeAdvice.test.ts",
+      "kind": "NON_EXECUTABLE"
+    },
+    {
+      "id": "GD-U-02A",
+      "title": "Real existing MCP executor binding and bounded GitHub/Plesk/Linux read probes",
+      "status": "CODED_PENDING_EXACT_HEAD_CI",
+      "files": [
+        "src/provisioning/universalExecutableBindings.ts",
+        "src/provisioning/universalAdminLiveProbe.ts",
+        "src/provisioning/universalCapabilityDiscovery.ts",
+        "src/tools/readOnly.ts"
+      ],
+      "tests": [
+        "tests/universalExecutableBindings.test.ts",
+        "tests/universalAdminLiveProbe.test.ts"
+      ],
+      "runtimeToolRegistrationsAdded": 0
+    },
+    {
+      "id": "GD-U-02C",
+      "title": "Real narrowly scoped Plesk subdomain execution adapter gated by existing runtime authority",
+      "status": "CODED_PENDING_CI",
+      "code": "src/provisioning/governedPleskSubdomainExecutor.ts",
+      "tests": "tests/governedPleskSubdomainExecutor.test.ts",
+      "runtimeToolRegistration": "NOT_WIRED",
+      "noDirectS1Mutation": true
+    },
+    {
+      "id": "GD-U-02D-A",
+      "title": "Trusted Plesk governance reader + real resource lock normalization; consent and CI fail closed",
+      "status": "CODED_PENDING_CI",
+      "code": "src/provisioning/existingPleskAuthorityReader.ts",
+      "tests": "tests/existingPleskAuthorityReader.test.ts",
+      "runtimeToolRegistration": "BLOCKED_PENDING_E3_AND_REVIEW",
+      "existingCapabilityPreserved": true
+    },
+    {
+      "id": "GD-U-02D-B1",
+      "title": "Signed Plesk web E3 + real OAuth mcp:write identity attestation",
+      "status": "CODED_PENDING_CI",
+      "code": "src/provisioning/pleskWebOauthBridge.ts",
+      "tests": "tests/pleskWebOauthBridge.test.ts",
+      "runtimeToolRegistration": "NOT_REGISTERED",
+      "noProductionRightsGranted": true
+    },
+    {
+      "id": "GD-U-02D-B2",
+      "title": "Unique owned OAuth Plesk Task/Session/Lock resolution from existing stores, no browser IDs",
+      "status": "CODED_PENDING_CI",
+      "code": "src/provisioning/pleskOwnedWebSession.ts",
+      "tests": "tests/pleskOwnedWebSession.test.ts",
+      "runtimeToolRegistration": "NOT_REGISTERED",
+      "noWritePossible": true
+    }
+  ],
+  "acceptance": [
+    "no direct main/S1/S2/other-PR writes",
+    "no credentials in Git or logs",
+    "fail closed on stale/missing permission evidence and selected repo membership",
+    "no ambient admin privileges inferred from GitHub App",
+    "CI exact PR HEAD and independent review before merge",
+    "no runtime mutation without existing task/session/claim/locks/consent",
+    "Regulatory remains real integration pilot, not special-case architecture"
+  ],
+  "nextAction": "GD-U-02D-B3: design and validate authenticated single-use web OAuth-to-governed-session linkage and independent review/CI evidence using existing E3 web route; only after approval connect authorizeRuntimeWrite without disabling safeguards. Coordinate any tool registration with GWC PR #354.",
+  "intelligenceAutonomyRoadmap": {
+    "kind": "NON_EXECUTABLE_PROGRAM_ADDENDUM",
+    "existingFirst": [
+      "REUSE",
+      "COMPOSE",
+      "WRAP",
+      "GENERALIZE",
+      "EXTEND",
+      "NEW"
+    ],
+    "capabilities": [
+      {
+        "id": "INT-01",
+        "name": "Dynamic capability/permission discovery",
+        "status": "PARTIAL",
+        "reuse": "GitHub auth/registry and Plesk preview"
+      },
+      {
+        "id": "INT-02",
+        "name": "Dependency-aware plans and candidate prioritization",
+        "status": "COMPOSED_PROJECTION",
+        "reuse": "dispatchCandidateWork / program:next"
+      },
+      {
+        "id": "INT-03",
+        "name": "Multi-agent collision detection and work allocation",
+        "status": "EXISTING_RUNTIME_AUTHORITIES_NOT_REPLACED",
+        "reuse": "Task Queue, Sessions, claims, locks, BUS when admitted"
+      },
+      {
+        "id": "INT-04",
+        "name": "Checkpoint-based restart and idempotent completion proof",
+        "status": "TO_INTEGRATE",
+        "reuse": "Operational Memory and checkpoints"
+      },
+      {
+        "id": "INT-05",
+        "name": "GitHub-to-S1/S2/Plesk drift reconciliation",
+        "status": "PARTIAL_READONLY_ADVICE",
+        "reuse": "Live State exact HEAD"
+      },
+      {
+        "id": "INT-06",
+        "name": "Policy-compliant fallback route selection",
+        "status": "TO_INTEGRATE",
+        "reuse": "GitHub-first operational policy, existing adapters"
+      },
+      {
+        "id": "INT-07",
+        "name": "Runtime health/rollback/safe recovery plans",
+        "status": "TO_INTEGRATE",
+        "reuse": "Existing Governed Deploy and health/rollback"
+      },
+      {
+        "id": "INT-08",
+        "name": "Evidence feedback into versioned capabilities and heuristics",
+        "status": "TO_INTEGRATE",
+        "reuse": "Existing Operational Memory, PR/CI/checkpoints"
+      }
+    ],
+    "autonomyNeverImplies": [
+      "ownership without live claim",
+      "readiness without current observations",
+      "human consent bypass",
+      "privilege escalation",
+      "cross-domain or cross-account installation",
+      "production mutation on draft branch"
+    ]
+  },
+  "maximumAdministrationTarget": {
+    "target": "Maximum officially delegable capabilities, not identity impersonation.",
+    "principalTypes": [
+      "GitHub App installation scoped per owner/repository",
+      "Authorized GitHub user authorization where necessary",
+      "Plesk server admin or delegated subscription identity",
+      "S1/S2 bounded privileged executor through existing MCP and host policies"
+    ],
+    "delegatedPrivilegesActuallyMintedOrGranted": false,
+    "pleskServerMutationsPerformed": false,
+    "liveGithubAdministrationGrantedByThisPR": false,
+    "serverRootAccessGrantedByThisPR": false,
+    "riskPrinciple": "Fail closed on absent, stale, inconsistent or cross-account proof; no unrestricted shell, no assumption that GitHub admin implies Linux root, no human consent bypass.",
+    "catalogue": {
+      "path": "src/provisioning/universalAdminCapabilityCatalog.ts",
+      "total": 165,
+      "distribution": {
+        "github": 52,
+        "plesk": 45,
+        "server": 46,
+        "intelligence": 22
+      },
+      "status": "TARGET_CONTRACT_CODED_NOT_EXECUTION_ADAPTERS",
+      "reminder": "Permission hints are NOT official complete API contracts; verify provider/endpoint/version, account role, effective permission and source before any write."
+    }
+  },
+  "crossPlaneComposition": {
+    "path": "src/provisioning/universalDeploymentBlueprint.ts",
+    "tests": "tests/universalDeploymentBlueprint.test.ts",
+    "status": "PURE_BLUEPRINT_NON_EXECUTABLE",
+    "steps": "GitHub source / exact SHA → workflow → server directory → Plesk target mode → TLS → build → deploy → healthcheck → checkpoint; rollback step designed, not executed",
+    "targetModes": [
+      "EXISTING_HOST_SUBPATH",
+      "SUBDOMAIN",
+      "DEDICATED_DOMAIN"
+    ],
+    "subpathSafety": "Existing-host subpath always HOLD until dedicated adapter and cross-repo authority are attested; no subdomain fallback.",
+    "dependencies": "Every step depends on previous, with separate exact resource-scope permission evidence; task/consent/locks remain external mandatory authorities."
+  },
+  "continuityNextSlice": {
+    "path": "src/provisioning/universalResumeAdvice.ts",
+    "tests": "tests/universalResumeAdvice.test.ts",
+    "status": "PURE_ADVICE_NON_EXECUTABLE",
+    "reuse": [
+      "src/operationalMemory/taskQueue.ts: ownedResumableTask/executableTaskCandidates/taskClaimConflict",
+      "GovernedTaskRecord",
+      "GovernedCheckpoint",
+      "GovernedSessionRecord",
+      "Live State"
+    ],
+    "failClosed": [
+      "live SHA drift or stale",
+      "queue revision drift",
+      "session not active/owned/fresh",
+      "checkpoint mismatch",
+      "foreign locks or task scope collision",
+      "missing exact candidateTaskId"
+    ],
+    "noAutomaticTakeover": true
+  },
+  "validationCheckpoint": {
+    "afterCommit": "459b9eec4049733c6121cd720b6c3925866a819e",
+    "ci": "PENDING_RUN_AT_FINAL_DOC_HEAD",
+    "reviewed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "workingMethodology": {
+    "version": "GD-U-METHOD-20261028-01",
+    "binding": "MANDATORY_FOR_ALL_FUTURE_GD_U_SLICES",
+    "parentIssue": 349,
+    "pullRequest": 355,
+    "principles": [
+      {
+        "id": "GITHUB_FIRST",
+        "rule": "Code only through GitHub branch and PR, CI on exact HEAD, governed merge/deploy; no manual modification of running S1/S2 code.",
+        "acceptance": [
+          "PR preserves main",
+          "Exact commit SHA recorded",
+          "CI and independent review before merge",
+          "Post-deploy verified only after governed merge"
+        ]
+      },
+      {
+        "id": "NO_REGRESSION",
+        "rule": "All existing runtime tools, MCP permissions, memories, sessions, Task Queue, claims, locks, Plesk/GitHub/SSH adapters, governance and external project owners are kept; enrich/compose/wrap, never silently replace.",
+        "acceptance": [
+          "Old runtime tools remain registered",
+          "No changes to other active PR scopes",
+          "New code does not grant authority by default",
+          "Historical tests pass"
+        ]
+      },
+      {
+        "id": "INDEPENDENT_SLICES",
+        "rule": "Use bounded, independently reviewable tranches with explicit ownership, dependency edges, acceptance criteria, tests, proof and persistent handoff. Avoid competing agents and shared-file edits.",
+        "acceptance": [
+          "Unique owner/branch/scopes",
+          "RED and GREEN commits recorded",
+          "Each slice has CI evidence",
+          "NEXT_ACTION and blockade persisted"
+        ]
+      },
+      {
+        "id": "RED_GREEN_REGRESSION",
+        "rule": "Prove missing behavior with tests (RED); implement missing code (GREEN); execute full historical regression suite; keep CI proof on exact SHA.",
+        "acceptance": [
+          "RED proof or explicitly identified unverified RED",
+          "GREEN implementation linked",
+          "Full CI after final commit",
+          "Security, privilege and failure-path tests pass"
+        ]
+      }
+    ],
+    "executionModel": [
+      "READ_ONLY_DISCOVERY",
+      "FRESH_PROVIDER_PERMISSION_EVIDENCE",
+      "EXISTING_TASK_AND_SESSION_ADMISSION",
+      "EXACT_SCOPED_CLAIM_AND_LOCK",
+      "EXPLICIT_CONSENT_WHERE_REQUIRED",
+      "PR_AND_CI_AND_REVIEW",
+      "AUTHORIZED_OPERATION",
+      "POSTCONDITION_AND_ROLLBACK_PROOF",
+      "DURABLE_CHECKPOINT_AND_HANDOFF"
+    ],
+    "exposurePolicy": {
+      "existingTools": "Retain every registered runtime tool; no handler or schema removed.",
+      "additiveDiscovery": "Expose 165 target capabilities through get_project_context in addition to legacy name/mode/servers fields.",
+      "metadataNotExecution": "TARGET_ONLY_NOT_REGISTERED_TOOL != callable. A capability requires typed adapter, verified effective delegation, runtime registration and cartography update to become executable.",
+      "separationOfRoles": "GitHub App installation/admin does not imply Plesk administrator or Unix root.",
+      "exposeOnlyWhenImplemented": "Do not register 165 placeholder tools or claim complete administrator rights from metadata."
+    }
+  },
+  "exposureSlice": {
+    "id": "GD-U-EXPOSE",
+    "status": "CODED_PENDING_EXACT_HEAD_CI",
+    "existingReadTool": "get_project_context",
+    "existingFieldsPreserved": [
+      "name",
+      "mode",
+      "servers"
+    ],
+    "newProperty": "universalCapabilities",
+    "totalTargets": 165,
+    "capabilitiesAreNotRegisteredTools": true,
+    "code": [
+      "src/provisioning/universalCapabilityDiscovery.ts",
+      "src/tools/readOnly.ts"
+    ],
+    "tests": [
+      "tests/universalCapabilityDiscovery.test.ts",
+      "tests/universalCapabilityContextIntegration.test.ts"
+    ],
+    "sourceOfRuntimeToolNames": "getCurrentToolCatalog() via existing runtime registration",
+    "noNewToolSchemaOrCartographyMutation": true,
+    "redCommit": "83be411d3b71ac443361caa167a90a8c529952f4",
+    "redCiEvidence": "PENDING_NOT_ATTESTED",
+    "greenCodeCommits": [
+      "9e223a760c325acc52cf9cafd2e91093db2aeab2",
+      "6266b68158502d9c762fa7ebe3998ff1e3ecacde",
+      "4347fc5d101ea2f6ecd4e5fbb8e76a1afee3c3a3",
+      "07c66ec62c4b45f005a11d9917a01094342c6853"
+    ],
+    "notes": "No service registration added; existing tool callback augmented. No runtime permission or provider credentials changed. Does not affect GWC PR #354 shared cartography file."
+  },
+  "gdU02LiveExecution": {
+    "stage": "GD-U-02A",
+    "title": "Raccordement réel des exécuteurs MCP et observations de délégations GitHub/Plesk/S1/S2",
+    "status": "CODED_GD_U_02A_02B_PENDING_CI",
+    "existingRuntimeToolCountBaseline": 138,
+    "catalogTargetCount": 165,
+    "operationDelegationCreated": false,
+    "activeProviderAdminRightsGranted": false,
+    "newlyRegisteredMcpTools": 0,
+    "additions": [
+      {
+        "code": "src/provisioning/universalExecutableBindings.ts",
+        "tests": "tests/universalExecutableBindings.test.ts",
+        "role": "Map capability IDs to real registered runtime tools (read, scoped-write or preflight) with explicit limitations; never labels unregistered features runnable",
+        "target": "13 mapped handlers if all registered in runtime"
+      },
+      {
+        "code": "src/provisioning/universalAdminLiveProbe.ts",
+        "tests": "tests/universalAdminLiveProbe.test.ts",
+        "role": "Real provider GET /user through existing GitHub credential and SSH id -u/Plesk version on both servers, without mutations or exposing stdout/secrets",
+        "target": "Four remote read commands plus one GitHub request per on-demand execution"
+      },
+      {
+        "code": "src/provisioning/universalCapabilityDiscovery.ts",
+        "role": "Expose executable bindings and live provider observations without altering legacy fields, while preserving all 165 target entries"
+      },
+      {
+        "code": "src/tools/readOnly.ts",
+        "role": "Execute live read probes when get_project_context is called, preserve existing tool registration and input schema"
+      }
+    ],
+    "targetStates": [
+      "CATALOGUED_NOT_IMPLEMENTED",
+      "RUNTIME_HANDLER_REGISTERED_READ_ONLY",
+      "RUNTIME_HANDLER_REGISTERED_GOVERNED_WRITE",
+      "RUNTIME_PREFLIGHT_ONLY_NOT_MUTATION",
+      "DELEGATED_PROVIDER_ACCESS_VERIFIED",
+      "RUNTIME_ADMISSION_GRANTED_FOR_TARGETED_ACTION",
+      "GITHUB_REPO_PULL_PUSH_ADMIN_PERMISSION_OBSERVED_FROM_API"
+    ],
+    "factualDistinctions": {
+      "realBackendExistsForMappedHandlers": true,
+      "codeInProduction": false,
+      "successfulLiveProviderRunOnS1OrS2": false,
+      "adminOrRootPrivilegesGrantedByThisCode": false,
+      "all165Executable": false,
+      "githubAppMultiAccountFullAuthorization": false,
+      "pleskAdminWriteAdmission": false,
+      "serverRootWriteAdmission": false
+    },
+    "followUpMilestones": [
+      "GD-U-02B provider-specific effective repository permissions per actual owner/installation; never infer from OAuth scopes or GitHub App permission hint",
+      "GD-U-02C Plesk REST/MCP/CLI method discovery with delegated subscription and safe typed execution ports, from real S1/S2 observations",
+      "GD-U-02D specific bounded privileged system functions through existing governed Task Queue/Session/locks/consent, not arbitrary shell",
+      "GD-U-03+ genuine runtime registration per batch, regenerate cartography and coordinate GWC PR #354 before touching shared files",
+      "GD-U-04+ full deployment pilots with postconditions, failure restoration, CI regression, independent review and governed promotion"
+    ],
+    "safety": "Do not misrepresent target labels as executable; registered tool itself remains subject to enabled runtime surfaces, provider permission and per-task mandate.",
+    "extension": {
+      "id": "GD-U-02B",
+      "state": "CODED_PENDING_EXACT_HEAD_CI",
+      "actualAuthenticatedCalls": [
+        "GET /user over existing bounded MCP GitHub credential",
+        "GET /repos/{owner}/{repo} for repository declared in package mcpValidationProfile, with exact full_name validation and explicit pull/push/admin boolean observations",
+        "id -u and plesk version over existing S1/S2 readonly SSH transport"
+      ],
+      "delegatedPrivilegeNotes": "GitHub repo admin:true is observation from GitHub API only. It is not GitHub App owner-equivalent permission, authorization to manage another repository/account or runtime write admission; Linux uid 0 and Plesk version are observations only.",
+      "code": [
+        "src/github/delegatedRepositoryPermissions.ts",
+        "src/provisioning/universalAdminLiveProbe.ts"
+      ],
+      "tests": [
+        "tests/delegatedRepositoryPermissions.test.ts",
+        "tests/universalAdminLiveProbe.test.ts"
+      ],
+      "redProof": {
+        "commit": "0801afe517b8577cf5ddf391f27feb60f9b9b7c3",
+        "run": 40635937761,
+        "outcome": "failure",
+        "reason": "missing delegatedRepositoryPermissions module"
+      },
+      "previousCi": {
+        "run": 40635834120,
+        "outcome": "failure",
+        "diagnosis": "two new tests failed: import-time env validation and brittle regex assertion",
+        "fixCommits": [
+          "706f9fda9b8c36c023df3d188316c743564d18bb",
+          "ef7b79bb0199e6a266e5b681466bce60e277a35a"
+        ]
+      },
+      "independentReview": "NOT_YET_PERFORMED",
+      "liveProductionExecution": "NOT_DEPLOYED"
+    }
+  },
+  "gdU02PrivilegedPleskSlice": {
+    "id": "GD-U-02C",
+    "status": "CODED_GREEN_AT_PREVIOUS_HEAD_PENDING_FINAL_CI",
+    "parent": "GD-U-02B",
+    "implementedFiles": [
+      "src/provisioning/governedPleskSubdomainExecutor.ts",
+      "tests/governedPleskSubdomainExecutor.test.ts"
+    ],
+    "purpose": "Executable, bounded Plesk subdomain creation via existing Plesk/SSH TDD engine; direct runtime admission intentionally not wired pending independent governance owner.",
+    "existingReused": [
+      "src/provisioning/pleskExecute.ts",
+      "src/provisioning/pleskSshAdapter.ts",
+      "src/provisioning/pleskSite.ts",
+      "src/ssh/client.ts"
+    ],
+    "requiredInExistingRuntime": [
+      "fresh trusted Task Queue status IN_PROGRESS, exact task ID and claimed owner session",
+      "active session with exact principal and fresh heartbeat",
+      "active target resource lock owned by session and not expired",
+      "precise CREATE_SUBDOMAIN consent from trusted runtime admission",
+      "fully successful independent review and exact HEAD CI",
+      "same exact HEAD observed GitHub main, S1 checkout and runtime",
+      "Plesk subscription allowlist and fresh filesystem/Plesk observation",
+      "post-create verification; no silent rollback or deletion"
+    ],
+    "actualExecutionTransport": "buildExistingPleskSshExecutionPort (lazy import of existing runReadOnlyCommand/runGuardedCommand; fixed exact Plesk creation command and exact target server)",
+    "functionalEntry": "executeGovernedPleskSubdomain()",
+    "callableBackendFunctionExists": true,
+    "runnableByExistingMcpClient": false,
+    "mcpToolRegistered": false,
+    "newGithubOrServerPrivilegeGranted": false,
+    "sourceOfAuthority": "readExistingAuthority dependency MUST be wired by the existing MCP server to its persisted Task Queue/Session/Lock/Consent/CI; caller assertions do not constitute authority.",
+    "nextImplementation": "Build and independently review trusted runtime admission binding using existing session/task/locks and consent verifier, coordinate with PR #354 before registering a new MCP write tool or changing function-cartography.",
+    "redProof": {
+      "sha": "07ce84b020633d9a84697c650c1dc506a5b7ab6f",
+      "run": 40636818226,
+      "result": "failure before module created"
+    },
+    "expectedGreenHead": "PENDING_AT_DOC_COMMIT",
+    "workMethod": [
+      "GITHUB_FIRST",
+      "NO_REGRESSION",
+      "INDEPENDENT_SLICES",
+      "RED_GREEN_REGRESSION"
+    ],
+    "securityHardening": "The privileged SSH port constructor is PRIVATE (not exported). Public on-server entry executeGovernedPleskSubdomainOnExistingSsh requires the same trusted authority callback and runs full plan, authorization, Plesk observation, bounded command and postcondition.",
+    "publicFunctions": [
+      "executeGovernedPleskSubdomain (injected, gated, testable)",
+      "executeGovernedPleskSubdomainOnExistingSsh (production SSH transport, admission REQUIRED)",
+      "isAllowlistedPleskCreateCommand (pure boolean, no IO)"
+    ],
+    "exactCommand": "plesk bin subdomain --create '<validated label>' -domain '<validated parent>' -www-root '/<validated label>'",
+    "securityTestCoverage": [
+      "wrong task, session, owner, lock, missing/expired proof",
+      "no GitHub/S1/runtime exact HEAD",
+      "no review+CI or exact consent",
+      "unlisted Plesk subscription",
+      "reject SSH shell and cross-server target",
+      "Plesk CLI nonzero exit never counts as CREATED",
+      "post-create Plesk and filesystem proof required",
+      "existing unowned subdomain cannot be taken over",
+      "SSH privileged factory not exported"
+    ],
+    "regressiveChangeToExistingTools": false,
+    "earlierGreen": {
+      "sha": "f5c924c98190be3f0f1a4218e289d37a9286de1c",
+      "run": 40637058702,
+      "result": "success"
+    },
+    "lastHardeningCommit": "052e6be85a00b992381308d35c775cd4450ce313",
+    "followUp": "Build a trusted actual runtime readExistingAuthority port using the existing TaskQueue.getVisibleTask, SessionService.getVisibleSession and LockService.listActiveLocks with explicit E3/CI attestation; do not register until independently reviewed and coordinated with PR #354."
+  },
+  "gdU02TrustedAuthorityReader": {
+    "id": "GD-U-02D-A",
+    "status": "CODED_CI_PENDING",
+    "objective": "Bridge the existing persisted Task Queue, OAuth-owned Governed Session, normalized resource LockService and Live State into the Plesk executor. Never manufacture E3 consent or CI review.",
+    "code": "src/provisioning/existingPleskAuthorityReader.ts",
+    "tests": "tests/existingPleskAuthorityReader.test.ts",
+    "codeChanges": [
+      "src/provisioning/governedPleskSubdomainExecutor.ts",
+      "tests/governedPleskSubdomainExecutor.test.ts"
+    ],
+    "targetLockExample": "resource:plesk:s1:wealthtechinnovations.com",
+    "reusedAuthorityAPIs": [
+      "getGovernedTaskToolDependencies().queue.getVisibleTask(taskId)",
+      "getGovernedSessionToolDependencies().sessions.getVisibleSession(sessionId,oauthTransportRequest)",
+      "getGovernedSessionToolDependencies().locks.listActiveLocks()",
+      "liveStateEngine.getCurrent()",
+      "normalizeLockScope({type:'resource',key})"
+    ],
+    "defaultConsent": null,
+    "independentCiReviewObserved": false,
+    "note": "Task/Session/Lock/LiveState records do not persist Plesk-specific E3 create consent or independent PR+CI approval. A checkpoint is not consent. Reader always returns consent:null and reviewAndCiApproved:false, so adapter blocks before SSH even on valid scopes.",
+    "executableStatus": "REAL_BACKEND_WRITER_PRESENT_BUT_NOT_REGISTERED_OR_ADMITTED",
+    "codeInProduction": false,
+    "sshWritePerformed": false,
+    "scopeCollision": "No changes to PR #354 runtime tool cartography, PR #353 Regulatory or other agents",
+    "method": [
+      "GITHUB_FIRST",
+      "NO_REGRESSION",
+      "INDEPENDENT_SLICES",
+      "RED_GREEN_REGRESSION"
+    ],
+    "verification": "PENDING_FINAL_EXACT_HEAD_CI",
+    "nextAction": "Establish a real signed Plesk-specific E3 consent ticket bound to exact owner/task/session/server/domain/revision plus independent CI/review evidence, in cooperation with existing E3 control plane, then register bounded write tool under session/claim/lock enforcement in a non-colliding PR scope; no generic root SSH endpoint.",
+    "existingWebE3": {
+      "route": "src/provisioning/pleskWebRoutes.ts",
+      "configuredBy": "src/server.ts:createPleskSubdomainRouter",
+      "signedTicket": true,
+      "sameOriginCheck": true,
+      "exactTargetConfirmation": true,
+      "currentAuthorizeRuntimeWrite": "async () => false",
+      "missingBridge": "Web E3 consent is not a durable owned Governed Session/Task/Lock grant; authenticate and bind exact principal and resource to both authorities. Never replace the signed web E3 or infer it from a Task Queue checkpoint.",
+      "nextAction": "GD-U-02D-B: compose existing Plesk web E3 signed target consent with OAuth governed session/claim/lock/CI proofs in server-owned scoped admission, then independent review and RED/GREEN/REGRESSION. Do not expose a generic SSH or owner/root action."
+    }
+  },
+  "gdU02ScopedWebOauthBridge": {
+    "id": "GD-U-02D-B1",
+    "status": "CODED_PENDING_FINAL_EXACT_HEAD_CI",
+    "purpose": "Validate the existing signed Plesk Web E3 ticket and independently verified OAuth mcp:write principal for the exact web session and target. This is a strictly read-only pre-admission check, not permission to mutate.",
+    "code": "src/provisioning/pleskWebOauthBridge.ts",
+    "tests": "tests/pleskWebOauthBridge.test.ts",
+    "mandatoryExistingAuthorities": [
+      "src/oauth.ts:verifyWebConsentTicket('plesk-create-subdomain',ticket,webSession+target)",
+      "src/oauth.ts:inspectOauthAccessToken(token,'mcp:write')",
+      "src/provisioning/pleskWebRoutes.ts:requireLogin/sameOrigin/confirm_fqdn",
+      "src/operationalMemory/sessionService.ts:actual OAuth principal and bound transport session",
+      "src/operationalMemory/taskQueue.ts:owned IN_PROGRESS task",
+      "src/operationalMemory/lockService.ts:resource:plesk:<server>:<parentDomain>",
+      "independent exact HEAD CI and code review proof"
+    ],
+    "implemented": "Cryptographically verified signed E3 web ticket and OAuth write scope can be composed via actual existing verifiers. No new credential, token issuer or governance store. The module never returns runtimeWriteAuthorized=true.",
+    "notImplemented": [
+      "Authenticated server-side association of the HTTP web session cookie to the concrete OAuth transport and its governed session",
+      "Task/Session/Lock/CI/review E3 admission upgrade",
+      "MCP tool registration and deployment",
+      "Plesk live subdomain creation"
+    ],
+    "existingRouteKeptUnchanged": true,
+    "existingProductionGate": "src/server.ts still has authorizeRuntimeWrite: async () => false",
+    "redCommit": "52dcc6636d208ca7d7ac2cffc39956d8ac6e825d",
+    "greenCommit": "67da90a48838864aa53ce0a4e44627cbfb58b0ae",
+    "strictNoRegression": true,
+    "concurrency": "Did not change server.ts, pleskWebRoutes.ts, PR #354 cartography, PR #353 Regulatory, or prior programs",
+    "nextAction": "GD-U-02D-B2: implement server-derived OAuth-web session binding (not a client-supplied session id) and trustworthy independent CI/review attestation, with comprehensive tests. Wire existing Plesk web router authorizeRuntimeWrite only after authority actually verifies every check; leave fail-closed default until all gates and review pass.",
+    "ownedSessionResolution": {
+      "id": "GD-U-02D-B2",
+      "status": "CODED_PENDING_CI_FINAL",
+      "code": "src/provisioning/pleskOwnedWebSession.ts",
+      "tests": "tests/pleskOwnedWebSession.test.ts",
+      "redCommit": "315c157e02848fa82e4ff954b66c3560a503a31c",
+      "greenCommit": "bdc61b708c27deceead03d35fb932bf60728fc10",
+      "method": "Server-side read-only reconciliation of the exact OAuth principal (from verified mcp:write token) against existing sessions.listVisibleSessions, tasks.listVisibleTasks and locks.listActiveLocks, plus exact healthy Live State. A candidate is returned ONLY if unique owned IN_PROGRESS Task, ACTIVE session, correct unexpired normalized Plesk resource lock and exact GitHub/S1/runtime SHA.",
+      "antiCollision": [
+        "No browser-supplied taskId or sessionId; task/session IDs derived from persisted runtime records",
+        "Ambiguous multiple same-principal tasks are BLOCKED",
+        "Foreign, expired, missing lock or stale/altered sha BLOCKED",
+        "No Task Queue seed, claim, session mutation or new store"
+      ],
+      "limitation": "Unique owned candidate is NOT a durable web-transport linkage, independent CI/review, E3/Task/Lock write grant or SSH permission. output runtimeWriteAuthorized=false always.",
+      "nextAction": "GD-U-02D-B3: design and validate authenticated single-use web OAuth-to-governed-session linkage and independent review/CI evidence using existing E3 web route; only after approval connect authorizeRuntimeWrite without disabling safeguards. Coordinate any tool registration with GWC PR #354."
+    }
+  }
+}

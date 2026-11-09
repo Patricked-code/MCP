@@ -168,3 +168,19 @@ test('buildMcpServer classifies the complete real registration surface', async (
   assert.equal(surfaceByTool.get('mcp_claim_next_governed_task'), 'operational-write');
   assert.equal(surfaceByTool.get('mcp_transition_governed_task'), 'operational-write');
 });
+
+test('P2: authenticated Plesk pairing tool is visible in the real MCP tool catalogue',async()=>{
+  const { buildMcpServer } = await import('../src/server.js');
+  const { createPleskWebTransportPairing } = await import('../src/provisioning/pleskWebTransportPairing.js');
+  const pairing=createPleskWebTransportPairing({
+    now:()=>Date.parse('2026-10-30T06:00:00.000Z'),
+    lookupSessionId:()=>null,
+    inspectOauth:()=>null
+  });
+  buildMcpServer(pairing);
+  const tools=getCurrentToolCatalog().tools;
+  const registered=tools.filter(t=>t.name==='mcp_issue_plesk_web_pairing_proof');
+  assert.equal(registered.length,1);
+  assert.equal(registered[0]?.surface,'operational-write');
+  assert.ok(registered[0]?.inputSchema);
+});

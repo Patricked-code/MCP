@@ -1,4 +1,6 @@
+import type { ServedDomainInventories } from './servedDomains.js';
 import type { TargetContext } from '../operationalMemory/targetScope.js';
+import type { ProvisionedRuntimeInventory } from '../provisioning/projectRuntime.js';
 
 export type LiveStateSourceStatus = 'CURRENT' | 'STALE' | 'UNAVAILABLE';
 export type LiveStateFreshness = 'CURRENT' | 'STALE';
@@ -40,6 +42,8 @@ export type RuntimeLiveObservation = {
   health: string | null;
   imageId: string | null;
   revision: string | null;
+  /** C4: bounded `com.docker.compose.project` label; absent in older snapshots. */
+  composeProject?: string | null;
   error?: string | null;
 };
 
@@ -117,9 +121,27 @@ export type CurrentStateAuditBaselineObservation = {
   error?: string | null;
 };
 
+/**
+ * B3.2: how this server's operator-configured target project was resolved.
+ * Present only when a target is configured; absent means the historical
+ * single-repository meaning and leaves the snapshot unchanged.
+ */
+export type LiveStateTargetSelection = {
+  source: 'server_map';
+  serverId: string;
+  status: 'RESOLVED' | 'UNRESOLVED';
+  projectIds: string[];
+  reasonCodes: string[];
+};
+
 export type LiveStateObservations = {
   repository: string;
+  targetSelection?: LiveStateTargetSelection;
   targetContext?: TargetContext;
+  /** F.2: read-only inventory of the configured target's runtimes; absent without a resolved target. */
+  provisionedRuntimes?: ProvisionedRuntimeInventory;
+  /** F-04: read-only inventory, per managed server, of the domains its Plesk serves; absent when not collected. */
+  servedDomains?: ServedDomainInventories;
   github: GithubLiveObservation;
   s1: S1LiveObservation;
   runtime: RuntimeLiveObservation;

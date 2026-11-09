@@ -1,5 +1,24 @@
 # TASKS.md
 
+## Carte de priorité exécutable par les autorités existantes — 2026-10-15
+
+**La carte chronologique [PCM-00..14](docs/governance/mcp-priority-convergence-map-20261015.json) est le point d'entrée obligatoire pour comprendre les 15 phases et les 94 blueprints**. Elle est une projection documentaire (NON_AUTHORITATIVE), pas une seconde Task Queue. Pour sélectionner réellement un travail : reprendre OWNED_FIRST, réobserver `program:readiness` et `program:next`, puis Queue/Session/Locks live, scope/permissions, HEAD exact et collisions. Aucun statut de la carte ne matérialise de Task ni ne valide une PR.
+
+**NEXT_ACTION audit :** PCM-02 → GWB03-01 (PR #261), puis #267 ; PCM-03 certifie les blueprints en parallèle ; PCM-06 OAuth suit le propriétaire de PR #207. **NEXT_ACTION développement :** PCM-09 peut reprendre dès maintenant un candidat live déjà admissible dans un scope indépendant, sans gate inventée jusqu'à la fin de l'audit. PCM-04/05 consolideront les écarts vérifiés pour PCM-10..14. Toutes les opérations mutantes demeurent gouvernées par les autorités existantes.
+
+
+## Audit gouverné de continuité GWB (projection non autoritaire, 2026-10-15)
+
+Le bloc de référence reste `docs/governance/governed-audit-continuation-workblock-20261009.json` (PR #275 fusionnée) : il ne crée **aucune** `TASK-*` runtime. La sélection exécutable reste celle du Program Backlog V2 et de la Governed Task Queue/Session/Locks, pas celle de cette liste documentaire.
+
+- [x] **GWB-02, collecte PR** : [PR #291](https://github.com/Patricked-code/MCP/pull/291) archivée/fusionnée ; 282 inline comments, 215 reviews sur 135 PR. Réserve de couverture : commentaires sur commit non vérifiables par l'endpoint exposé.
+- [x] **GWB-04, reconnaissance des chemins** : [PR #290](https://github.com/Patricked-code/MCP/pull/290) fusionnée ; 94 blueprint slots rapprochés des chemins de code/tests réellement existants. **Aucun** statut blueprint n'est promu `DONE` par cette seule reconnaissance.
+- [ ] **GWB-03, qualification P1/P2** : [PR #292](https://github.com/Patricked-code/MCP/pull/292) candidate. Vérifier les P1/P2 historiques de #261 et #267 contre code, diff final, assertions et déploiement, puis autres groupes selon priorité d'impact et domaines de collision.
+- [ ] **GWB-04, certification fonctionnelle** : contrôler symboles, comportements, tests ciblés et preuves d'acceptation exact-head des 18 blueprints READY et des 36 DONE projetés. Enregistrer `UNVERIFIED` lorsqu'une preuve manque.
+- [ ] **GWB-05 puis GWB-06** : réconcilier les défauts réellement prouvés aux autorités existantes, re-calculer readiness et vérifier live Queue/Session/Lock avant matérialisation/claim ; aucun double travail ni gate humaine auto-créée.
+- [ ] **GWB-07..09** : incréments sous permissions/CI/Governed Deploy, certification multi-clients, `GLOBAL_MCP_COMPLETE` uniquement avec toutes les attestations.
+
+
 ## État canonique structurel
 
 ```canonical-state

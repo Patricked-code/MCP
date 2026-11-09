@@ -1,4 +1,453 @@
 # DECISIONS_LOG.md
+## 2026-10-23 — Extension additive et GRT /gouvern, sans nouvelle autorité
+
+- Décision : conserver le MCP, ses sessions, Task Queue, locks, consentement E3 et chaîne GitHub → S1. Pas de migration, pas de nouveau dispatcher, ni accès libre à Plesk.
+- Périmètre #349/#350 : préparation Plesk S1/S2 et pilote du dépôt `chainsolutions-wealthtech/Governed-Repository-Template` épinglé à `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Portail protégé `/gouvern` et archive privée sous `/app/data/gouvern`, pas d'exécution GRT.
+- Les routes d'écriture Plesk et GRT restent **bloquées par défaut** par une admission runtime indépendante (`authorizeRuntimeWrite` false) en attendant un claim/lease/locks attestés. Un ticket de consentement n'autorise jamais seul une écriture.
+- Un fournisseur optionnel GitHub App émet des jetons d'installation courts lorsque les identifiants privés sont disponibles sur S1 ; le credential GitHub existant reste le chemin par défaut. Aucune clé privée ChatGPT extraite ou copiée.
+- Preuves : tests RED/GREEN et CI exact-HEAD consignés dans PR #350 ; README checkpoint `docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md`. Aucune fusion ou modification de S1 attestée à cette étape. NEXT_ACTION : revue des fils, CI complète, fusion contrôlée puis Governed Deploy et recette.
+
+
+
+## 2026-10-15 — Directive propriétaire : priorité à la continuité et au dispatch gouverné sans dispersion
+
+**Décision enregistrée (projection de coordination, aucune nouvelle autorité)** : avant de poursuivre le développement MCP, fournir une carte chronologique accessible à chaque agent qui présente toutes les étapes, les travaux déjà existants, les dépendances, la voie d'exécution, les contrôles anti-collision et les traces à laisser. Mise en œuvre dans `docs/governance/mcp-priority-convergence-map-20261015.json` ; préserve `docs/governance/program-backlog-convergence.json`, la Governed Task Queue, les sessions, locks, et le workblock GWB-00..09 existants.
+
+L'entrée agent lit la carte après `CLAUDE.md` / `AGENTS.md` / `SUIVI.md`. Reprise OWNED_FIRST, puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` après vérification live, un seul writer par collision domain et checkpoint obligatoire avec preuve et NEXT_ACTION. Une carte documentaire ne crée ni Task, claim, permission, lease ni gate humaine. L'audit et les tâches de développement admissibles sur d'autres scopes peuvent avancer parallèlement ; le chantier OAuth #207 conserve son propriétaire. `GLOBAL_MCP_COMPLETE` uniquement sur acceptation démontrée backend + clients + cockpit.
+
+
+## 2026-10-15 — Exécution GitHub-first/OIDC prioritaire malgré une défaillance OAuth interactive
+
+**Décision d'exploitation du propriétaire**, conforme à l'autorité déjà existante `.mcp/github-first-operational-policy.json` : l'échec de la reconnexion `wealthtech_ssh_bridge` ne doit pas interrompre les opérations compatibles avec GitHub direct et les workflows GitHub Actions/OIDC approuvés. Il s'agit d'un rappel d'ordre d'accès, **pas d'une nouvelle permission d'écriture S1 ni d'un contournement OAuth**.
+
+- `GITHUB_ONLY → GITHUB_ACTION_READONLY_EVIDENCE → GITHUB_ACTION_BOUNDED_WRITE (seulement scope pré-autorisé) → RUNTIME_REQUIRED` ; preserve `GITHUB_AUTH_IS_CONTINUITY_NOT_RUNTIME_AUTHORITY`, `NO_ARBITRARY_SHELL`, `FAIL_CLOSED`, `NO_SERVER_TO_GITHUB_PUSH`.
+- Les cinq sondes #284–#288 et le Governed Deploy [#38783796272](https://github.com/Patricked-code/MCP/actions/runs/38783796272) montrent que l'accès OIDC et le déploiement restent opérants, indépendamment de la connexion web OAuth qui affiche un refus de provenance.
+- **Sécurité OAuth** : ne pas assouplir la validation `Sec-Fetch-Site` / `Origin` sans preuve et tests. Le diagnostic et le code correctif restent rattachés à la PR #207 et à la Task A3.2 existante. Aucune récupération de token, cookie, code ou consent_ticket.
+- **Règle des agents** : s'appuyer sur `CLAUDE.md §7.5`, `SUIVI.md`, l'intake #235 et le bloc GWB existant ; observer un SHA exact et des preuves horodatées avant d'écrire ou déclarer une capacité disponible. L'accès OIDC read-only ne donne jamais l'autorité d'attribuer une Task, de posséder un lock ou d'agir sur un serveur hors workflow allowlisté.
+
+
+## 2026-10-08 — F-04 incrément 1 : l'observation des domaines servis vient de Live State
+
+Décision technique, déduite selon #221. Sources : l'étape `observe-binding` du contrat `DOMAIN_BINDING` (`.mcp/provisioning-contracts.json`), le motif C4 (`liveStateRuntimeObservation`) et l'interdiction d'autorité parallèle.
+
+- **WRAP de l'existant.** L'observation enveloppe le listage read-only des vhosts (`list_domains_s1`) dans le cycle de Live State. Aucun nouveau store ni collecteur autonome n'est créé, et la fraîcheur est celle du snapshot.
+- **Échec fermé.** Au-delà de 1000 entrées, en cas d'échec ou de sortie illisible, l'observation est indisponible : jamais une absence partielle.
+- **Portée.** L'observation ne vaut que pour un serveur géré (voir la révision après revue ci-dessous). Un vhost prouve le binding côté serveur, pas le DNS ni le certificat, qui restent du ressort des étapes suivantes.
+- **Après revue (PR #267).** L'inventaire couvre chaque serveur géré (S1 et S2) au niveau `system/<domaine>` de Plesk. L'observation transmise à C5 est restreinte aux domaines que GitRegistry déclare pour le projet sélectionné : un serveur partagé sert d'autres projets, dont les domaines ne sont ni des preuves ni des contradictions pour celui-ci.
+- **Source de l'inventaire (troisième round).** Les enregistrements Plesk remplacent les répertoires de vhost : un répertoire survit à la suspension d'un site et un alias n'en a pas. Seul le statut actif prouve qu'un nom est servi. C'est un écart assumé par rapport à « envelopper `list_domains_s1/s2` » du contrat `DOMAIN_BINDING` : ces outils listent des répertoires, qui ne suffisent pas à prouver un service actif. Un projet sans domaine déclaré n'obtient aucune observation, car l'inventaire n'établit pas qui possède un nom.
+- **Portée par abonnement (cinquième round).** La propriété d'un nom sur un serveur partagé est celle de son abonnement Plesk. L'observation transmise à C5 couvre les abonnements qui servent au moins un domaine déclaré du projet : un nom non déclaré de ces abonnements est une contradiction à signaler, un nom d'un autre abonnement n'en est pas une.
+- **Preuve de propriété (sixième round).** Servir un nom déclaré ne prouve pas qu'un abonnement appartient au projet. La preuve retenue est le `serverPath` revu des mappings GitRegistry, qui nomme la racine de l'abonnement Plesk. Sans elle, l'observation reste indisponible.
+- **Preuve vérifiée seulement (septième round).** Le `serverPath` déclaré cède la place au `realPath` vérifié, et un abonnement partagé entre projets du registre n'est pas découpé. Conséquence assumée : tant qu'aucun chemin n'est vérifié, l'observation est indisponible pour tous les projets. Mieux vaut un `UNVERIFIED` qu'un `RESOLVED` sans preuve.
+
+## 2026-10-07 — F.2 incrément 3 : surface consentie et câblage du provisioning d'un runtime de projet
+
+Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` et le consentement E3 de `.mcp/provisioning-contracts.json`, l'admission du Governed Deploy, `EXISTING_MCP_EXPOSURE_FIRST` (#236), et les invariants `NO_RESOURCE_CREATION_WITHOUT_EXPLICIT_CONSENT` et `NO_IMPLICIT_ACTIVATION`.
+
+- **Une page de l'exposition existante, pas un outil MCP.** Le consentement E3 est une soumission web de même origine. Un appel d'outil, un drapeau `allow_write` ou une instruction d'agent n'en sont jamais un. La surface est donc une route Express derrière la connexion web, sans nouveau domaine ni proxy.
+- **Un ticket par cible exacte.** Le ticket est lié à sa finalité, à la session web et à la cible (projet, mapping, révision). Un consentement rendu pour une révision ne vaut jamais pour une autre. Création et activation restent deux valeurs explicites, décochées par défaut.
+- **La session web seule n'autorise rien.** Avant d'écrire, le serveur exige :
+  - le consentement E3 ;
+  - le mode écriture (`ENABLE_WRITE_TOOLS`), interrupteur partagé avec les autres routes d'écriture web et jamais un consentement ;
+  - la cible déclarée par une pull request revue (`servers.S1.targetProjectIds`) ;
+  - une re-observation fraîche et un plan `READY`.
+
+  Le verdict fantôme du Scoped WRITE Gate (session gouvernée, verrous, reçu) est propre au transport MCP : il n'a pas de sens pour une requête web.
+- **Admission de la révision, généralisée du Governed Deploy.**
+  - La révision doit appartenir à l'historique revu de la branche officielle de son mapping (depuis la huitième revue ; auparavant la branche par défaut), avec une CI ni en échec ni en cours ; tout est lu en entier.
+  - Sans aucune CI, le consentement explicite vaut admission manuelle, comme le dispatch manuel du Governed Deploy.
+  - L'admission est relue juste avant toute écriture, y compris pour activer un runtime créé plus tôt. Ce qui est illisible refuse.
+- **Un job long ne bloque pas la requête.** La réponse attend 25 s au plus, puis renvoie vers la page de statut. Le job continue et reste attesté dans son dossier.
+- **Le garde des commandes ne doit pas mal lire un nom.** Les noms de la cible passent par des variables : une ligne `docker compose` ne porte que ses drapeaux. Une commande que la politique refuse n'atteint jamais l'hôte et échoue avec la raison `command_policy`.
+- **La route comble les lacunes.** Classée `COMPOSABLE` pour le seul `PROJECT_RUNTIME`, elle compose la sauvegarde, la création, l'activation et le rollback du contrat, désormais provisionnable. Les dépôts et les bindings de domaine restent bloqués par leurs lacunes.
+- **Après la revue de la PR #261 :**
+  - **Consentement lié à la cible résolue.** Le ticket lie aussi le dépôt, le chemin et le projet Compose que la page a nommés. L'exécuteur refuse si son plan frais en résout d'autres : un changement du registre pendant la vie du ticket ne redirige jamais un consentement.
+  - **Checkout vérifié avant l'activation.**
+    - La création enregistre dans le marqueur l'empreinte de l'arbre préparé : contenu, bits d'exécution et liens, hors des fichiers que le provisioning écrit.
+    - L'activation la recalcule avant tout démarrage. Un checkout modifié depuis sa création ne démarre jamais sous la révision qu'il revendique.
+    - Un contenu illisible échoue au lieu de produire une empreinte partielle.
+  - **Un runtime par composant.** Les conteneurs d'un composant sont ceux de son projet Compose, dérivé du projet et du mapping. Un autre composant du même dépôt ne le masque plus et ne le bloque plus. C4 reste par dépôt : un mélange de `NO_RUNTIME` et d'un runtime y reste `UNKNOWN`.
+  - **Cible illisible ≠ absence.** Une configuration ou un registre illisible laisse les cibles `UNKNOWN`. Seule une configuration absente signifie « aucune cible ».
+- **Après la seconde revue de la PR #261 :**
+  - **Autorités de coordination (UAC, AGENTS.md §7.1).** Une soumission web reste une écriture.
+    - Juste avant d'écrire, l'exécuteur relit la Governed Task Queue et le Governed Lock Service. Il applique la règle de portée de D1 : dépôt du composant, portée `component:` de son mapping, ou verrou ciblant son projet. Un travail réservé ou verrouillé refuse, et une coordination illisible ou désactivée refuse aussi.
+    - La Governed Session et le Bootstrap Receipt sont liés au transport MCP d'un agent ; ils n'ont pas de sens pour un opérateur web. L'autorité par requête de celui-ci reste le consentement E3, lié à sa session et à la cible exacte.
+  - **Règle `DEPLOY` de GitRegistry, sans copie.** La décision de D1 (capacité `deploy`, statut `validated`/`active`, activation `READY`) devient une fonction partagée. Le plan de provisioning bloque avec les mêmes codes qu'elle.
+  - **Pilotes Compose.** Seuls `local` (volumes) et `bridge` (réseaux) sont admis, sans `driver_opts` : une option de pilote peut lier un chemin de l'hôte ou rejoindre son réseau.
+  - **Empreinte sans pipeline.** Chaque liste (fichiers, exécutables, liens) est capturée et vérifiée séparément, car le statut d'un pipeline POSIX masque les échecs internes.
+  - **Archive bornée avant extraction.** Elle est listée sans être extraite, puis limitée à 100 000 entrées et 1 Gio décompressés.
+  - **Pas de succès sans preuve.** Une attestation non écrite rend la réponse en erreur (HTTP 500) et le dit.
+  - **Base d'API conservée.** Le chemin de la base reste dans l'URL (GitHub Enterprise Server), et la seule redirection admise en plus de `codeload.github.com` est l'hôte de l'API configurée.
+  - **`NO_OP` complet.** Le marqueur enregistre les services du modèle Compose, et l'inventaire lit le service et la santé de chaque conteneur. Un runtime partiel, arrêté, malade ou sans marqueur est `EXISTING_RUNTIME_DEGRADED`, jamais « déjà en place ». Le réparer reste hors du provisioning, qui ne modifie jamais un runtime existant.
+- **Après la troisième revue de la PR #261 :**
+  - **Liste de clés revues, plus de liste noire.** Chaque revue trouvait une autre clé Compose qui atteint l'hôte (`use_api_socket`, puis les clés héritées `net`, `log_driver`, `volume_driver`, les hooks, `provider`…). La politique n'admet plus que les clés revues de la spécification Compose ; toute autre clé, y compris une clé à venir, est refusée et nommée.
+  - **Le fichier est analysé avant Compose.** Compose résout `include`, `extends`, `env_file` et `label_file` en chargeant le projet, puis n'en garde aucune trace dans le modèle ; une recherche ligne à ligne ne voit ni une clé entre guillemets, ni un mapping en ligne, ni un échappement. Le MCP analyse donc le fichier lui-même et applique les mêmes listes de clés, avant que Compose ne le lise.
+  - **Une dépendance, épinglée.** Aucun analyseur YAML n'existait dans le dépôt ; en écrire un serait moins sûr. `yaml` 2.9.1 (ISC, sans dépendance, publiée il y a plus de deux semaines) est épinglée à la version exacte. Un écart entre deux analyseurs échoue fermé : une clé lue autrement n'est jamais une clé admise.
+  - **Compose lit ce qui a été analysé, et rien d'autre.** Le script `config` vérifie l'empreinte du fichier analysé avant de construire le modèle.
+  - **`--no-env-resolution` est une seconde garde, pas un contrôle.** Compose v5.1.1 garde alors `env_file` dans le modèle, non lu, et le modèle le refuse. Compose v2.38.2 le lit quand même : l'option n'y saute qu'une seconde résolution. Elle est donc passée quand Compose la connaît, jamais exigée, car l'exiger n'apporterait aucune garantie. Le contrôle reste l'analyse du fichier.
+  - **Isolation réseau.** Le pont par défaut du moteur est partagé avec tous les conteneurs de l'hôte : seuls le réseau du projet, `none` et l'espace réseau d'un service du projet sont admis. Un réseau ou un volume nommé autrement que `<projet>_<clé>` rejoint ce qui porte déjà ce nom : il est traité comme externe.
+  - **Confinement et périphériques.** Seule `no-new-privileges` est admise comme option de sécurité ; seuls les pilotes de journalisation locaux, car les autres émettent depuis le moteur, sur le réseau de l'hôte ; une réservation de périphérique vaut un périphérique.
+  - **Prouvé contre Compose réel.** Ces comportements ont été vérifiés avec Docker Compose v5.1.1 et v2.38.2. Un test d'intégration les rejoue là où Compose est installé ; c'est lui qui a montré, en CI, que v2.38.2 lit les fichiers d'environnement malgré l'option.
+- **Après la quatrième revue de la PR #261 :**
+  - **Volumes conservés = état existant.** Le rollback ne supprime jamais les volumes ; une nouvelle création qui les rattacherait est donc refusée par la préparation. Les volumes restent à traiter hors provisioning.
+  - **Aucun nom d'image partagé.** Un build ne prend que le nom par défaut `<projet>-<service>` : `build.tags` et `image` sur un build retaggeraient une image utilisée ailleurs sur l'hôte.
+  - **Mode complet dans l'empreinte.** Tout changement de mode modifie l'empreinte du checkout.
+- **Après la cinquième revue de la PR #261 :**
+  - **Ce qui tourne est ce qui a été consenti.** Une image tirée est épinglée par empreinte ; un runtime n'est « déjà en place » que si son checkout digère comme à sa création (recalcul en lecture seule).
+  - **Borne de conteneurs.** Le total des réplicas reste dans la limite de 20 de l'inventaire, sinon le runtime ne serait plus observable.
+  - **Propriétaire dans l'empreinte.** Un `chown` du checkout change ce que le conteneur peut lire ou exécuter : il modifie l'empreinte.
+- **Après la sixième revue de la PR #261 :**
+  - **La confiance vient des données du job.** Le marqueur du checkout est accessible au runtime ; seul l'enregistrement du volume de données du MCP fait foi.
+  - **Rien de conservé n'est réutilisé.** Volumes et réseaux laissés par un rollback bloquent une nouvelle création ; la quarantaine est bornée et un plancher de capacité protège l'hôte, sans rien supprimer.
+  - **Réplicas attendus enregistrés.** Un runtime n'est complet qu'avec exactement ses réplicas.
+  - **Entrées des builds : décision propriétaire.** Exiger des `FROM` épinglés et un build sans réseau changerait ce que les projets peuvent faire ; la question est posée au propriétaire au lieu d'être tranchée par l'agent.
+- **Après la septième revue de la PR #261 :**
+  - **Le checkout n'écrit que là où son chemin le dit.** Le parent de la cible est résolu sur l'hôte avant chaque écriture ; les noms que le provisioning réserve sont refusés dans le dépôt.
+  - **Le rollback ne charge pas un fichier non vérifié.** Sans empreinte intacte, l'arrêt passe par les labels des conteneurs.
+  - **Seuls fichiers, dossiers et liens.** Tout autre type d'entrée fait échouer l'empreinte.
+  - **Quota des builds : décision propriétaire.** Un plancher protège l'hôte ; une borne stricte demande une configuration du démon Docker hors de ce dépôt.
+- **Après la huitième revue de la PR #261 :**
+  - **Coordination relue au plus près de chaque écriture.** Le Governed Lock Service n'accorde un verrou qu'à une Governed Session, liée au transport MCP d'un agent ; un opérateur web n'en a pas, et en fabriquer une pour le job créerait une autorité parallèle. La Task Queue et les verrous sont donc relus juste avant chaque écriture sur l'hôte (préparation, promotion, activation) : aucun appel GitHub ni téléchargement ne s'intercale plus entre la dernière lecture et l'écriture. Un travail réservé entre deux écritures arrête le job avant la suivante (`BLOCKED`). Le rollback et l'abandon de la préparation, qui ne défont que ce que le job a fait, ne sont jamais bloqués. Limite assumée : une réservation prise pendant une écriture en cours n'est vue qu'à l'écriture suivante ; la tenir pendant tout le job demandera qu'un opérateur web agisse sous une Governed Session (Cockpit, PB-K).
+  - **Branche officielle de D1.** La révision est admise depuis la branche que nomme le mapping (règle `OFFICIAL_BRANCH`), jamais depuis la seule branche par défaut du dépôt : une autre ligne de version n'est pas admise.
+  - **Pas de lien physique.** Une archive Git n'en contient aucun ; deux noms d'un même fichier changent ensemble, ce qu'aucune empreinte de contenu ou de mode ne montre. Un lien physique fait donc échouer l'empreinte.
+  - **Capacité là où le job écrit.** Les planchers sont mesurés sur le système de fichiers du parent de la cible et sur celui de la quarantaine, qu'un déplacement entre systèmes de fichiers copie.
+- **Après la neuvième revue de la PR #261 :**
+  - **Le rollback aussi cède au travail réservé.** Il est précédé d'une relecture ; un composant réservé pendant le contrôle de santé reste à son nouveau propriétaire, le job échoue en le disant.
+  - **Un conteneur arrêté ne revient pas seul.** Sa politique de redémarrage est effacée avant l'arrêt par labels.
+  - **Ce qu'un fichier peut faire.** Les capacités de fichier entrent dans l'empreinte ; une ACL la fait échouer (une archive Git n'en porte pas). `getcap` est requis sur l'hôte, sinon l'empreinte échoue fermée.
+  - **Sources de bind présentes.** Docker crée une source absente après l'empreinte ; une source manquante est donc refusée avant la promotion et l'activation. Un projet versionne le dossier (par exemple avec un `.gitkeep`).
+- **Après la dixième revue de la PR #261 :**
+  - **Pas de santé sans preuve.** Un conteneur seulement « en cours » ne prouve rien : chaque service doit avoir un contrôle de santé qui le déclare `healthy`, sinon l'activation échoue et revient en arrière. Même règle que les images épinglées : ce qui est attesté doit être prouvé.
+  - **Plafonds de ressources.** Mémoire, CPU et processus bornés par service, sinon refus : un conteneur sans plafond peut épuiser S1, MCP compris. Les valeurs restent celles du projet ; une borne globale relèverait d'une décision propriétaire.
+  - **Entrées des builds (décision du propriétaire, options 1 + 3).** Toute image qu'un build tire est épinglée par empreinte, comme une image de service ; le réseau pendant le build reste permis, et les images exécutées sont attestées pour rendre visible toute dérive. Stockage : le plancher de 10 Gio suffit, aucune configuration du démon.
+  - **Images vérifiées au `NO_OP`.** Le réseau reste permis pendant le build ; l'enregistrement des images exécutées, hors de portée du runtime, rend donc une reconstruction différente visible comme `EXISTING_RUNTIME_DEGRADED`.
+  - **Un seul frontend.** Le scan ne lit que la grammaire Dockerfile : un frontend personnalisé, même épinglé, est refusé.
+  - **Fin des itérations de revue (décision du propriétaire).** Après seize rounds, les constats déductibles sont corrigés et ceux qui dépendent de valeurs propres à S1 ou d'une configuration hors dépôt deviennent des limites connues, préalables à la configuration de la première cible : plafonds maximaux par service, limites des builds, quota du stockage inscriptible, droits des archives. Tant que `servers.S1.targetProjectIds` est vide, rien de tout cela n'est atteignable en production.
+  - **Rien téléchargé sans place.** Le pré-contrôle en lecture seule précède le téléchargement ; l'admission est relue entre le téléchargement et la première écriture.
+
+## 2026-10-06 — F.2 incrément 2 : exécuteur borné à la cible du provisioning d'un runtime de projet
+
+Décision technique, déduite selon #221. Sources : le contrat `PROJECT_RUNTIME` (F.0), le plan de l'incrément 1, et les invariants `NO_SHELL_FREEFORM_PROVISIONING`, `NO_IMPLICIT_SIDE_EFFECTS` et `NO_AUTOMATIC_DESTRUCTIVE_ROLLBACK`.
+
+- **Pas de preuve périmée.** L'exécuteur ne consomme jamais l'instantané de Live State. Juste avant toute écriture, il relit la cible, le registre et l'inventaire, puis replanifie. Sur S1, le script de préparation reprouve l'absence avant d'extraire, et la promotion revérifie que la cible est absente.
+- **Source exacte sans nouvel identifiant sur l'hôte.**
+  - S1 ne détient qu'une clé de lecture du MCP, et le client SSH ne transmet pas de flux.
+  - Le MCP télécharge donc l'archive GitHub de la révision exacte avec l'identifiant serveur existant, dans son volume `data`, que l'hôte lit.
+  - L'identifiant ne part que vers l'API, jamais vers l'URL signée de `codeload.github.com`. Toute autre redirection est refusée.
+  - L'archive est bornée, et son empreinte est vérifiée sur S1 avant l'extraction.
+- **Politique Compose : rien d'implicite.** Le modèle normalisé (`docker compose config`, lancé dans un environnement vide) doit rester dans le projet.
+  - Sont refusés :
+    - le mode privilégié, les capacités ajoutées, les périphériques, les espaces de noms de l'hôte et les profils non confinés ;
+    - un port publié hors de la boucle locale (un binding n'est jamais implicite) ;
+    - un montage, une construction ou un Dockerfile hors du projet, et une construction SSH ;
+    - un réseau, un volume, un lien ou un secret externe, et un nom de conteneur fixe.
+  - Le script refuse aussi les clés qui lisent des fichiers de l'hôte au chargement (`env_file`, `extends`, `include`, `label_file`) et les liens symboliques sortant du projet. Ce contrôle est portable et refuse quand il ne peut pas conclure.
+- **Création et activation séparées.** La création promeut le répertoire préparé et écrit un marqueur. Sans consentement d'activation, le runtime reste un checkout, que C4 voit comme `CHECKOUT_ONLY`. L'activation, sous son propre consentement, étiquette les services (dépôt, révision, projet), démarre le projet et attend la santé.
+- **Échec non destructif.** Le projet Compose est arrêté sans ses volumes (`down --remove-orphans`, jamais `-v`). Une cible créée par le job part en quarantaine ; une cible créée auparavant garde ses fichiers. Rien n'est supprimé.
+- **Un seul provisioning à la fois.** Chaque job est attesté dans `data/provisioning/<job>/attestation.json`.
+- **Pas encore de surface.** Le troisième incrément ajoutera la surface consentie (E3) qui décide des consentements côté serveur et appelle l'exécuteur.
+
+## 2026-10-06 — F.2 incrément 1 : preuve d'absence et plan du provisioning d'un runtime de projet
+
+Décision technique, déduite selon #221. Sources :
+- le contrat `PROJECT_RUNTIME` de `.mcp/provisioning-contracts.json` (F.0) ;
+- l'objectif du blueprint `TB-W3-F-03` : « ne provisionner que des ressources projet/runtime réellement absentes, avec cible exacte, sauvegarde/rollback et contrôle de santé ».
+
+- **Livraison par incréments.** Le provisioning d'un runtime touche l'hôte de production. Le lot est donc livré en trois incréments :
+  1. la preuve d'absence et le plan, en lecture seule ;
+  2. la surface consentie (E3) dans l'exposition Express existante ;
+  3. l'exécuteur borné à la cible : sauvegarde, création, activation, santé, restauration.
+
+  Le blueprint n'est clôturé qu'après le dernier incrément.
+- **Cible exacte réutilisée, pas inventée.** Le chemin d'un composant est celui que GitRegistry V2 déclare pour lui sur S1. Il n'est accepté que sous `/opt/apps` et hors du checkout du MCP. Les déclarations de sauvegarde et de méthode de rollback de D1 sont reprises dans le plan. S1 est le seul serveur ciblable : il est l'hôte du MCP et porte la liste de cibles de B3.2. S2 n'est jamais ciblé : c'est le serveur source de migration, avec des applications protégées.
+- **L'absence est prouvée, jamais supposée.** Live State est l'autorité d'observation existante. Pour la seule cible configurée, il inventorie en lecture seule le chemin déclaré et l'espace Docker provisionné, c'est-à-dire les conteneurs étiquetés `com.wealthtech.mcp.provisioning.repository`. C4 reçoit un `NO_RUNTIME` positif seulement si les deux sont vides. Un chemin présent sans runtime provisionné bloque (`TARGET_PATH_PRESENT`). Aucune absence n'est déclarée pour le dépôt que Live State observe déjà (le MCP).
+- **Plan sans exécution.** Le plan ne déduit jamais un consentement. La création et l'activation ont chacune leur consentement. La même révision donne un no-op ; toute autre ressource existante bloque. Rien n'est exécuté, créé ou autorisé par cet incrément.
+
+## 2026-10-05 — F.0 : décomposition du provisioning en contrats avant toute primitive
+
+Décision technique, déduite selon #221. Sources : le chantier F de la ROADMAP et l'objectif du blueprint `TB-W3-F-01` : « inventorier les primitives d'écriture bornées par ressource et définir les contrats de provisioning avant d'ajouter toute nouvelle primitive ».
+
+- **Une politique machine versionnée, pas une autorité.** `.mcp/provisioning-contracts.json` est une projection de contrats. Elle n'accorde aucune permission, ne crée aucune tâche, n'ajoute aucune primitive et ne remplace aucune autorité existante. Un agent la lit depuis GitHub, sans le runtime.
+- **Un inventaire lié à la surface réelle.** Sont classés : les 62 outils MCP capables d'écrire (dont 10 enregistrés sur la surface de lecture avec un drapeau `allow_write`), les 12 routes HTTP mutantes et les 5 workflows. Le validateur les confronte à trois sources :
+  - la cartographie des fonctions, vérifiée en CI ;
+  - les routes du code source ;
+  - le Program Backlog.
+
+  La suite échoue sur une primitive d'écriture non classée, une entrée périmée ou une lacune attribuée à un blueprint terminé.
+- **Six classes.** Seules les écritures du cycle de vie GitHub sont composables : organisation configurée, head exact, mise à jour sans force et WRITE gate. Les catégories suivantes ne composent jamais une étape de provisioning :
+  - les outils liés à un projet existant ;
+  - l'auto-gestion du MCP ;
+  - les outils destructifs ;
+  - l'exécuteur de scripts ;
+  - les éditions de fichiers côté serveur.
+- **Trois contrats** : dépôt, projet/runtime, binding de domaine. Chacun fixe :
+  - une cible exacte ;
+  - une preuve d'absence par le résolveur existant ;
+  - un no-op sur une ressource identique et un blocage sur une ressource en conflit ;
+  - le consentement E3, qui nomme la ressource et l'autorité ;
+  - un consentement propre pour l'activation ;
+  - un contrôle de santé et un rollback non destructif.
+
+  Un dépôt créé n'est jamais supprimé automatiquement. Aucun effet n'est implicite : équipes, webhooks, secrets, environnements, clés de déploiement, rulesets, enregistrements DNS.
+- **Des lacunes portées, jamais improvisées :**
+  - création du dépôt et mapping exact : `TB-W3-ADMIN-01`, `TB-W3-F-02` ;
+  - sauvegarde, création, activation et restauration d'un runtime : `TB-W3-F-03` ;
+  - observation, sauvegarde, binding, certificat, activation et restauration d'un domaine : `TB-W3-F-04`, `TB-W4-I1-01` ;
+  - protections du dépôt : `TB-W3-GGCC-GH-RULESETS`.
+
+  Chaque lacune nomme ce qu'il faut réutiliser ou généraliser.
+
+## 2026-10-05 — E3 : consentement explicite et validé côté serveur avant les mutations de complétion
+
+Décision technique (déduite, #221 ; ROADMAP chantier E : « exiger un consentement explicite avant toute création ou mutation de ressource qui n'existe pas encore » ; critère d'acceptation d'E3 posé à la clôture d'E2) :
+
+- **Périmètre.** Les seules mutations atteignables depuis une étape de complétion sont les formulaires de connexion GitHub de `/github` et `/git`. Une soumission y remplaçait l'identifiant du conteneur, enregistrait le compte dans GitRegistry et, si la connexion réussissait, ajoutait un mapping pour chaque dépôt visible. Cette dernière opération créait des ressources inconnues sans consentement distinct. Les bindings d'identité (`.mcp/identity-policy.json`) passent par une PR gouvernée et les connexions durables (`data/github-accounts.json`) n'ont aucune surface web : rien à protéger de plus ici.
+- **Deux consentements explicites**, chacun nommant sa ressource et son autorité :
+  - l'identifiant, dans le fichier secret du conteneur et dans GitRegistry ;
+  - la découverte, dans GitRegistry.
+  Ils sont décochés par défaut. La découverte n'est jamais déduite de la connexion.
+- **Validation côté serveur, réutilisée.** Le ticket de consentement signé du lot de consentement OAuth et son contrôle de même origine sont généralisés (`issueWebConsentTicket`, `verifyWebConsentTicket`, `isSameOriginSubmission`). Le domaine du ticket est séparé de l'OAuth, et le ticket est lié à son objet et à la session web. La décision (`decideConnectConsent`) précède tout appel GitHub ou toute écriture ; un refus ne modifie rien.
+- **Traçabilité.** Le consentement est enregistré dans l'audit GitRegistry de la connexion.
+
+## 2026-10-05 — E2 : complétion guidée sur les surfaces existantes, sans élargir la visibilité des sessions
+
+Décision technique (déduite, #221 ; ROADMAP chantier E : « faire évoluer les surfaces frontend existantes `/login`, `/git`, `/github` en complétion guidée ; demander uniquement les informations manquantes ; restaurer automatiquement un contexte déjà gouverné ») :
+
+- **Contrainte.** Une session gouvernée n'est visible que de son transport lié ou de son propriétaire OAuth. La session web à jeton partagé n'a pas de principal. Afficher le contexte manquant d'une session sur le web exigerait un nouvel accès : ce serait un élargissement de permission, écarté.
+- **Pont agent ↔ web.** E1 nomme la surface. `contextCompletion` donne à l'agent une étape unique, avec le lien absolu vers la surface web sur l'origine publique déjà configurée (l'émetteur OAuth, conformément à `EXISTING_MCP_EXPOSURE_FIRST`). La surface redérive côté serveur ce qu'elle porte et ne demande que ce qui manque réellement ; un paramètre d'URL n'est qu'un indice d'affichage validé, jamais une preuve.
+- **Identifiant GitHub.** La classification repose sur les statuts HTTP, enregistrés sous forme structurée et non plus déduits d'un message :
+  - 401 : identifiant refusé, le token est demandé ;
+  - 403 ou 404 sur l'organisation : identifiant aveugle à l'organisation, le token est demandé ;
+  - autre statut ou aucune réponse : rien n'est demandé, car l'inconnu ne justifie jamais une question.
+- **Mapping.** `/git` réutilise la règle d'appariement du résolveur de projet, extraite dans `projectMappingCandidates` sans changement de comportement. Un mapping absent est demandé par le chemin gouverné du registre ; E2 n'en crée aucun.
+- **Retour de connexion.** `/login` ne renvoie qu'à un chemin de la même origine. Le lien de complétion ramène l'opérateur à la surface qui demande la lacune.
+- **Module pur.** Les aides de complétion de l'identifiant vivent dans `src/github/credentialCompletion.ts`, sans configuration : le rendu du registre reste importable sans l'environnement d'exécution.
+
+## 2026-10-05 — E1 : contexte manquant détecté depuis les autorités existantes, première lacune seulement
+
+Décision technique (déduite, #221 ; `PB-E` `REUSE_WRAP_GENERALIZE_EXTEND`) : E1 lit les preuves que le contexte gouverné compose déjà. Il n'ajoute ni source, ni surface, ni question. Il respecte les non-régressions de PB-E : « No parallel frontend », « No repeated questions for known context », « No write from inferred consent ».
+
+- **Entrées et ordre.** Identité OAuth, identité GitHub, dépôt, mapping projet, binding serveur, dans l'ordre de leurs dépendances. Comme pour les couches de la réalité projet, une entrée n'est jamais résolue au-delà de celle dont elle dépend.
+- **Première lacune seulement.** Le contexte connu reste résolu. Seule la première lacune est exposée ; les suivantes attendent sans être demandées.
+- **Autorité de complétion.** Chaque lacune nomme l'autorité existante qui la complète, selon la carte d'autorités B1 :
+  - `.mcp/identity-policy.json` : le binding ;
+  - `data/github-accounts.json` : la connexion configurée ;
+  - `/github` : le credential et le compte ;
+  - `/git` : les mappings GitRegistry dépôt ↔ projet ↔ serveur ;
+  - `mcp_open_governed_session` : le dépôt demandé et la liaison OAuth de la session ;
+  - `/oauth/authorize` : un client non OAuth.
+- **Réconciliation plutôt que boucle.** Des autorités qui se contredisent sont à réconcilier, jamais redemandées ni ré-observées en boucle. C'est le cas d'une couche `CONFLICT`, d'un principal différent, d'une policy invalide, d'un serveur non canonique ou d'un mapping absent des bindings serveur.
+- **Dépôt non observé.** Une session liée à un dépôt TargetScope que l'observateur GitHub ne couvre pas reçoit `UNOBSERVABLE`, jamais une ré-observation illusoire.
+- **Prédicat partagé.** `isOauthConnectionContext`, porté par l'autorité `ConnectionContext`, devient le prédicat unique du scope d'identité GitHub et d'E1. E1 ne voit donc jamais un principal que la résolution ne pourrait pas utiliser.
+- **Hors périmètre.** E2 (restauration automatique et guidage) et E3 (consentement explicite). E1 n'écrit rien.
+
+## 2026-10-05 — #236 : exposition MCP existante d'abord pour le Super Admin Cockpit
+
+Décision de gouvernance (clarification propriétaire du 2026-10-05 sur #236, absorbée comme `COMPLEMENT`) : le cockpit devient la surface visuelle et opérationnelle gouvernée du MCP existant, pas un second déploiement.
+
+- **Avant toute décision** de route, d'URL publique, de reverse proxy, de TLS, de DNS ou de surface de déploiement, réobserver :
+  - `main` ;
+  - la réalité projet, GitRegistry, la carte serveur et le Live State de MCP ;
+  - l'exposition publique observée : domaine, DNS, TLS, reverse proxy, routes publiques existantes et frontières d'authentification.
+- **Par défaut.** Le cockpit se compose dans l'exposition existante et le Governed Deploy. Il n'y a ni nouveau domaine, ni second reverse proxy, runtime ou plan de contrôle. Les endpoints publics MCP (protocole, OAuth, santé) restent intacts. Aucune route spéculative (`/admin`, `/cockpit`) n'est fixée avant l'inventaire. Le `/cockpit` de l'inventaire dérivé n'est qu'une proposition.
+- **Séparation.** Elle n'est retenue que sur preuve technique ou de sécurité enregistrée, par le chemin gouverné de décision et de provisioning existant.
+- **Route ajoutée au domaine MCP.** Toute route ajoutée a une authentification et une autorisation explicites, des en-têtes CSP et de sécurité, une analyse de collision, des tests et un smoke post-déploiement. Les endpoints publics du protocole restent séparés en sécurité des surfaces privilégiées, même sur un hôte partagé.
+- **Preuves de K-01.** Elles comprennent `OBSERVED_MCP_PUBLIC_DOMAIN`, `DOMAIN_AUTHORITY`, `DNS_STATE`, `TLS_STATE`, `REVERSE_PROXY_STATE`, `EXISTING_PUBLIC_ROUTES`, `COCKPIT_ROUTE_OR_EXPOSURE_DECISION`, `AUTH_BOUNDARY`, `WHY_REUSE_IS_SAFE` ou `OR_WHY_SEPARATION_IS_REQUIRED`, `REGRESSION_TESTS_FOR_EXISTING_ENDPOINTS`, `EXACT_DEPLOYED_SHA` et `POST_DEPLOY_SMOKE_EVIDENCE`.
+
+## 2026-10-05 — D3 : références prouvées dans le Bootstrap Receipt existant, sans second receipt ni promotion
+
+Décision technique (déduite, #221 ; GW-12 `REUSE/GENERALIZE`, GWC-9 « receipt enrichment ») : le receipt existant gagne un champ optionnel `references` plutôt qu'un nouveau type ou un nouveau store.
+
+- **Sources.**
+  - La connexion vient du `ConnectionContext` OAuth que la session possède déjà : identifiant, assurance, source de preuve et date. Le principal et le client OAuth ne sont pas recopiés.
+  - Le dépôt, le projet et le mapping viennent de la réalité projet C345-02 du dépôt de la session et du périmètre D1.
+- **Pas de promotion.** Seules les couches `VERIFIED` deviennent des références. Une couche non prouvée coupe tout ce qui est en dessous : pas de projet sans dépôt, pas de mapping sans projet.
+- **Défense en profondeur.** Le service de session écarte des références observées pour un autre dépôt et refuse tout ce qui sort du schéma borné et fermé.
+- **Câblage.** Le service de session reçoit un observateur optionnel. En production, il lit le contexte gouverné de la même session, chargé paresseusement pour éviter le cycle des outils, comme les imports paresseux existants du Live State. Il n'est appelé que pour une session visible de l'appelant.
+- **Compatibilité.** Une observation en échec ne bloque jamais l'acquittement et reste explicite (`RECEIPT_PROJECT_REFERENCES_UNOBSERVED`). Sans observateur, et pour les receipts historiques, la forme reste inchangée.
+
+## 2026-10-05 — D2 : capacités effectives par périmètre projet, intersection en échec fermé, autorisation jamais inférée
+
+Décision technique (déduite, #221 ; GW-11 `REUSE/EXTEND`, SLOT-11 de `MCP_PERMISSIONS_MODEL.md`) : les capacités effectives composent séparément les autorités existantes, sans second moteur de permissions. GWC-9 l'imposait déjà : une restriction monotone de `CapabilityReality` et de `GovernanceDecision`.
+
+- **Vocabulaire.** Les quatorze classes de capacité du GitRegistry sont la seule liste. Il n'y a pas de classification par outil : la surface d'enregistrement n'est pas une sémantique d'opération, et l'inventaire #177 n'est pas une autorité. Les capacités typées GGCC s'y rattacheront.
+- **Déclaration.** Seul un mapping `validated` ou `active` déclare : le spec V2 exige des capacités explicites avant `active`. Un mapping `proposed` ou un candidat V1 migré reste `UNKNOWN`. Une capacité déclarée `false` bloque toujours.
+- **Identité.** Il faut le sujet OAuth de la session et une identité GitHub `RESOLVED` et courante pour le même principal. Une autre assurance ou un autre principal bloque.
+- **Cible et GitHub.** Les classes liées au serveur exigent la couche serveur vérifiée. Les mutations du dépôt exigent l'état de travail GitHub courant de ce même dépôt : l'observateur MCP n'est jamais prêté à un autre dépôt.
+- **Gouvernance et préconditions.** Les règles D1 de chaque classe décident : une règle qui interdit bloque, une règle inconnue laisse `UNKNOWN`. Les préconditions reprennent exactement les entrées du WRITE gate scoped, sur la liste complète des locks. Le verdict shadow est reproduit, jamais modifié.
+- **Autorisation.** Aucune autorité ne l'atteste encore : `UNKNOWN` (`AUTHORIZATION_UNATTESTED`). Aucune capacité n'est donc effective aujourd'hui. L'attestation viendra de l'inventaire des scopes OAuth (`TB-W3-OAUTH-WRITE-SCOPE-01`).
+- **Éligibilité.** L'éligibilité de dispatch fondée sur les capacités, différée par DISPATCH-02/03, n'est pas câblée. Elle exclurait tout travail tant que l'autorisation reste inattestée, et les tâches ne déclarent pas encore les capacités requises.
+
+## 2026-10-05 — D1 : héritage de gouvernance par périmètre projet prouvé, sans copie ni élargissement
+
+Décision technique (déduite, #221 ; GWC-9 `REUSE/EXTEND`, GW-10) : l'héritage de gouvernance compose les autorités existantes sur le périmètre prouvé par la réalité projet (C345-02). Il ne crée ni magasin de gouvernance ni nouvelle autorité.
+
+- **Sources.**
+  - Gouvernance déclarée du mapping GitRegistry, portée par le mapping sélectionné de la résolution projet (comme `activationReadiness`). Un registre V1 migré garde la provenance de candidat.
+  - Ruleset GitHub observé, pour son seul dépôt.
+  - Politique `.mcp/branch-governance.json`, lue de façon bornée et livrée dans l'image comme la carte serveur. Il n'y a pas de politique par défaut si elle est absente ou invalide.
+  - Locks actifs.
+  - Mode du WRITE gate.
+- **Composition.** La contrainte la plus stricte l'emporte. Une autorité qui interdit suffit. Le silence ou une preuve périmée donne `UNKNOWN`, jamais `PERMIT`. Deux listes de préfixes disjointes sont une contradiction (`CONFLICT`).
+- **Portée.** Les règles de `main` de la politique et du ruleset ne parlent que pour une branche officielle `main` : AfricaFunds hérite de sa branche officielle déclarée. Un ruleset observé pour `Patricked-code/MCP` n'est jamais prêté à un autre dépôt.
+- **Déploiement.** Il exige à la fois :
+  - la capacité `deploy` ;
+  - un mapping `validated` ou `active` ;
+  - une activation `READY` ;
+  - un serveur prouvé.
+
+  Le canal Governed Deploy de MCP reste gouverné par son propre workflow.
+- **Locks.** Seuls les locks actifs d'une autre session sur le dépôt, le composant ou le projet du périmètre contraignent, lus sur la liste complète des locks et non sur la projection bornée.
+- **Sans périmètre prouvé.** `UNVERIFIED`, aucune règle. Les capacités effectives (D2) composent ensuite cet héritage avec l'identité, GitHub, la réalité projet et le WRITE gate.
+
+## 2026-10-05 — C345-02 : réalité projet composée, jamais vérifiée au-delà de la preuve
+
+Décision technique (déduite, #221 ; OD-04, politique GWC-8) : l'acceptation Project Reality est une composition pure des résolutions existantes (GW-05 → GW-09), sans nouvel observateur ni nouvelle autorité.
+
+- **Emplacement.** La composition est calculée une seule fois dans le service de contexte gouverné (`projectReality`), à partir des résolutions du contexte GitHub. Elle reste cohérente avec les chemins de cache (miss, hit, expiré) sans les dupliquer.
+- **Preuve en chaîne.** Une couche n'est `VERIFIED` que si sa résolution est courante, que les couches sur lesquelles elle se compose sont `VERIFIED` et qu'elle leur est liée (dépôt → projet → serveur → runtime/domaine). Une couche en aval d'une couche non prouvée prend `PROJECT_REALITY_UPSTREAM_UNVERIFIED`.
+- **Contradictions.** Les contradictions sont classées `CONFLICT` et jamais normalisées : désaccord de contexte de compte, registre incohérent, observation d'un autre serveur, NO_RUNTIME contradictoire, domaine observé non déclaré ou déclaré non observé, vhost historique déclaré actif, liaison inter-couches incohérente. Une simple absence de preuve reste `UNVERIFIED`.
+- **Absences acceptées.** Seules sont acceptées comme `NONE` non bloquant : le runtime observé `NO_RUNTIME`, la surface publique confirmée absente (`DOMAIN_NONE_CONFIRMED`) et l'ingress qui en découle (`INGRESS_NONE_WITHOUT_DOMAIN`). Un `NONE` sur dépôt, projet ou serveur arrête la chaîne.
+- **Ingress.** Aucune autorité d'observation de ports ou de reverse proxy n'existe. L'ingress reste `UNVERIFIED` (`INGRESS_OBSERVATION_UNAVAILABLE`) et n'est jamais déduit des déclarations.
+- **TargetContext.** Le `TargetContext` Live State n'est pas enrichi. Les révisions runtime prouvées restent exposées par les liaisons GW-08, indexées par `mappingId`. Une tête exacte par composant exige une autorité d'observation Git par dépôt qui n'existe pas encore (GGCC Git READ). Aucun composant ne reçoit donc d'observation non prouvée.
+
+## 2026-10-04 — C5 : GW-09 chaîné après C2/C3 ; sans observation, aucun domaine n'est prouvé
+
+Décision technique (déduite, #221 ; politique GWC-8) : la résolution de domaine suit la chaîne du collecteur GitHub gouverné (C2 projet → C3 serveur → C5 domaine) et réutilise le résolveur GW-09.
+
+- **Déclarations.** Les déclarations du GitRegistry V2 sont exposées de façon additive (`domainEvidence`) :
+  - côté projet : `publicDomain`, `publicApi` et `historicalVhosts` ;
+  - côté mapping : `domain` et `domainVerified`.
+- **Observation.** Seule une observation courante de ce que sert le serveur résolu prouve un domaine. Or aucune autorité d'observation de domaine n'existe aujourd'hui dans le runtime. L'attestation runtime exclut le réseau, et une sonde DNS/TLS/HTTP relève du moniteur synthétique I1. Le point d'injection `readDomainObservation` reste donc vide par défaut, et la surface reste `UNVERIFIED`, jamais `NONE`.
+- **`domainVerified`.** C'est un drapeau du registre sans fraîcheur : il n'est jamais promu en observation.
+- **Listes protégées.** `protectedApplications` reste une liste de sécurité, jamais le modèle de domaine.
+- **Vhosts historiques.** Un vhost historique n'est jamais réactivé.
+- **Résiduel.** La preuve de service des domaines déclarés (domaine → proxy → port → runtime) relève de `TB-W3-C345-02` et de l'observation I1.
+
+## 2026-10-04 — C4 : GW-08 chaîné après C3, sur les seules observations runtime existantes
+
+Décision technique (déduite, #221 ; OD-04 RESOLVED) : la résolution runtime suit la chaîne de connexion du collecteur GitHub gouverné (C2 projet → C3 serveur → C4 runtime) et réutilise le résolveur GW-08, sans nouvel observateur.
+
+- **Composants.** Ce sont ceux que le GitRegistry V2 déclare : composants du projet enregistré, ou le seul mapping sélectionné s'il déclare son rôle. Une relation non prouvable reste `RUNTIME_COMPONENT_UNVERIFIED`, sans rôle ni composant deviné.
+- **Observations.** Elles viennent des autorités d'observation existantes. Aujourd'hui, seule Live State observe un runtime : celui du MCP, sur le serveur qu'elle lit.
+  - Live State est lue sans nouvelle collecte, et sa fraîcheur s'applique telle quelle.
+  - Le type de runtime vient du label compose observé sur le conteneur : le label `com.docker.compose.project`, déjà collecté par la commande allowlistée, est désormais conservé borné.
+- **Rattachement.** Une observation n'est rattachée qu'au composant de son dépôt. Une observation d'un autre dépôt n'est pas celle du projet ; un dépôt partagé par deux composants reste non prouvable.
+- **Déclarations.** Le GitRegistry V2 ne déclare aucun runtime : aucune déclaration n'est recoupée et aucune n'est inventée. Une déclaration ne remplace jamais une observation.
+- **Ports et reverse proxy.** Ils n'ont aucune autorité d'observation runtime, puisque l'attestation runtime exclut volontairement le réseau. Ils ne sont pas inventés. Le lien domaine → proxy → port → runtime reste un résiduel explicite de C5/C345, qui exigera une observation bornée dédiée.
+- **Conséquence courante.** Le mapping `Patricked-code/MCP` du registre versionné est V1, sans rôle de composant : sa résolution runtime reste `UNVERIFIED` tant que le registre ne déclare pas ce composant.
+
+## 2026-10-04 — Le Super Admin Cockpit (#236) étend le dashboard Express existant, en vague W4
+
+Décision propriétaire (intake #236) : la cible finale complète du MCP inclut un Super Admin Cockpit. Il est convergé en `PB-K` (slot `cockpit.super-admin`) avec douze blueprints `TB-W4-K-01..12`, et `COCKPIT_ACCEPTANCE` devient une dimension de la condition terminale. Inventaire §44 : `docs/governance/super-admin-cockpit-convergence-20261004.json`.
+
+Décisions techniques (déduites de l'inventaire, #221) :
+- La stack reste le rendu serveur Express avec la session web existante. Aucun framework, bundler ni backend-for-frontend supplémentaire n'est justifié aujourd'hui. K-01 factorise les cinq helpers d'échappement dupliqués et étend aux pages du Cockpit la CSP de la page de consentement OAuth.
+- Les vues read-only utilisent la session web. Une mutation exige une identité gouvernée et une capacité effective D2, revalidées côté serveur via une capability existante. La session à jeton partagé n'est pas une identité personnelle et n'autorise jamais seule une mutation (`SUPER ADMIN UI ≠ BYPASS GOVERNANCE`).
+- Le Cockpit est placé en W4, après les candidats W3 qu'il ne préempte pas. K-01 ne dépend que d'autorités DONE et est READY. Les vues suivent leurs projections, les actions suivent D2, PR WRITE et GGCC, et le provisioning suit E/F.
+- I2 reste propriétaire de la projection de chaîne de connexion. Le Cockpit la rend (K-11) sans la dupliquer.
+- Le Cockpit est servi par le serveur MCP existant et déployé par le Governed Deploy existant, sans cible de déploiement séparée.
+
+## 2026-10-04 — L'intake #235 renforce la boucle existante et ajoute une condition terminale contrôlée par machine
+
+Décision (intake #235) : la directive de finalisation complète renforce `PROGRAM_AUTO_CONTINUE`. Elle ne crée ni seconde boucle ni second programme. Ses 22 sections sont cartographiées sur les autorités existantes (`INTAKE-235.sectionMapping`). Elle n'apporte que deux compléments :
+- la condition terminale `GLOBAL_MCP_COMPLETE` (`executionModel.terminalCondition`, §16/§22), portée par `TB-W4-MCP-FINAL-ACCEPTANCE` ;
+- le rapport d'arrêt global (`agentHandoffContract.globalStopReport`, §21), qui affine `humanGatePolicy.globalStopOnlyWhen` sans le remplacer.
+
+Décision technique (déduite, #221) : l'acceptation terminale dépend directement des preuves de chaque dimension :
+- backend : puits du sous-graphe backend `TB-W3-F-05`, `TB-W4-I3-01`, `TB-W4-GGCC-E2E` et `TB-W3-OAUTH-WRITE-SCOPE-01` ;
+- certifications clients : `TB-W4-J1-01` et `TB-W4-J2-01` ;
+- cockpit : `TB-W4-K-12`.
+
+La validation existante du programme (`terminalAcceptanceGaps`) vérifie deux points : tout blueprint obligatoire (ni DONE, ni CONDITIONAL/DEFERRED) est un ancêtre de cette acceptation, et aucun lot gardé ne la bloque. Un travail obligatoire ajouté plus tard sans y être rattaché fait donc échouer la CI. Une capacité conditionnelle non déclenchée n'est jamais implémentée ni activée pour clore le programme, et `GLOBAL_MCP_COMPLETE` n'est jamais déclaré automatiquement.
+
+## 2026-10-04 — C3 : GW-07 chaîné après C2 avec l'identité serveur gérée et déclarée
+
+Décision technique (déduite, #221) : la résolution serveur suit la chaîne de connexion existante (B1 identité → B2 repository → C2 projet → C3 serveur) dans le collecteur GitHub gouverné, avec son cache unique, plutôt qu'un nouvel observateur. L'ensemble canonique OD-03 est l'intersection des serveurs gérés par la configuration runtime et des serveurs déclarés dans `.mcp/server-map.json` ; il garde l'orthographe des ids gérés, de sorte que les mappings stockés (`s1`, `s2`) se résolvent à l'identique (normalisation identité, rétrocompatibilité GWC-6). Un serveur connu d'une seule source n'est jamais canonique et ses liaisons restent `SERVER_ID_UNVERIFIED` : blocage local, pas d'arrêt global.
+
+Le résolveur GW-07 est généralisé minimalement : un ensemble canonique vide devient `SERVER_CANONICAL_ID_SET_INVALID` au lieu d'une exception de schéma. Des liaisons invalides rendent le registre indisponible (fail-closed). Aucun chemin déclaré n'est promu en chemin vérifié : seule la preuve GitRegistry `realPathVerified` compte ; la vérification live par composant relève des observations runtime (C4), Live State restant l'autorité d'observation du runtime MCP.
+
+## 2026-10-04 — DISPATCH-03 : projection next-work pure, dérivée des règles existantes
+
+Décision technique (déduite, #221) : le prochain travail d'une session connectée est une projection pure (`deriveNextWork`) recalculée à chaque lecture du Current-State Inventory, et non un dispatcher, une file ou un store. Elle réutilise les règles exportées par `taskQueue.ts` (reprise possédée, candidats exécutables, éligibilité TargetScope, conflits de scope et de lock) et le constructeur d'intention de `mcp_materialize_program_blueprint` : un blueprint n'est projeté que si l'outil le matérialiserait. Elle ne réclame rien et ne crée rien ; l'outil suggéré revérifie tout sous ses propres gardes. Un échec de calcul ne fait jamais échouer l'inventaire (`NEXT_WORK_PROJECTION_UNAVAILABLE`).
+
+Un blocage local n'est pas un arrêt global : la projection et `claimNextTask` sautent un candidat bloqué (scope actif ou lock d'une autre session) au profit du suivant compatible ; sans candidat compatible, le claim conserve le code historique du premier candidat. Dans le contexte gouverné, la projection n'est suivie que si elle a été calculée pour la session du contexte (elle porte son `governedSessionId`) ; une tâche possédée reprenable garde sa propre action, une tâche possédée non reprenable (BLOCKED) cède la place au travail compatible projeté ; sans projection, l'ordre historique est inchangé. La projection est chargée une seule fois par processus : elle est livrée avec la révision déployée.
+
+## 2026-10-04 — DISPATCH-02 : reprendre d'abord sa propre tâche active, sans jamais en prendre une autre
+
+Décision technique (déduite, #221) : `claimNextTask` rend d'abord la tâche active déjà possédée par la session (CLAIMED, IN_PROGRESS, REVIEW, MERGE_READY, DEPLOYING, VERIFYING) — sans mutation ni nouvel événement de claim — avant toute nouvelle réclamation. Une tâche BLOCKED attend son blocker et n'empêche pas la session de travailler ailleurs. La propriété ne change que par les transitions existantes ou la remise en file d'une session terminale ; un heartbeat absent ou ancien ne libère ni ne transfère rien.
+
+L'éligibilité suit le TargetScope construit par le serveur : l'outil transmet celui de la session ; une session sans scope ne réclame que des tâches historiques, une session ciblée seulement des tâches de la même cible dont les composants appartiennent à son scope. Un appelant interne qui ne transmet rien garde la sélection historique. Le filtrage par capacités effectives (D2) reste différé.
+
+## 2026-10-04 — DISPATCH-01 : un outil dédié matérialise un blueprint READY via la file existante
+
+Décision technique (déduite, #221) : plutôt que d'ajouter un mode optionnel à `mcp_reconcile_agent_intent` (champs requis devenus optionnels, valeurs par défaut indiscernables), un outil dédié `mcp_materialize_program_blueprint` expose la même autorité (`queue.reconcileIntent`) avec un contrat sans ambiguïté : seuls l'identifiant du blueprint et le bootstrap sont fournis ; titre, résumé, clé d'intention et scopes sont construits par le serveur.
+
+La readiness est recalculée au moment de l'appel depuis la projection versionnée livrée avec le déploiement exact-SHA, par la même bibliothèque que le dépôt : aucune seconde implémentation ni seconde autorité. La liaison au blueprint vit dans la clé d'intention (`program:<id>`) et le résumé (digest de projection), sans changement de schéma des tâches, ce qui garde un retour arrière sûr.
+
+Une tâche active tenant exactement les mêmes scopes est l'équivalent à réutiliser (un seul writer par domaine) ; un chevauchement partiel reste un conflit. La matérialisation n'est ouverte qu'à une session MCP non ciblée : le Program Backlog est le programme propre du dépôt MCP.
+
+## 2026-10-04 — B3.2 : la cible d'un serveur vit dans la carte serveur versionnée ; le TargetScope est toujours construit par le serveur
+
+Décision technique (déduite des autorités, sans gate humaine — #221) : la « configuration opérateur gouvernée » de #220 est `.mcp/server-map.json`, déjà autorité machine des serveurs et entrée prévue de C3/C4. Une modification passe donc par une PR revue, une CI exact-head et le Governed Deploy, sans écriture serveur hors gouvernance ; le fichier est copié dans l'image comme `identity-policy.json`. La liste `targetProjectIds` garde l'extension `MULTI_PROJECT_LIVE_STATE` additive ; la V1 en résout au plus un.
+
+Live State reste l'unique autorité d'observation : il dérive le `TargetContext` du projet GitRegistry V2 configuré, sans observation de composant (tout reste `UNVERIFIED` jusqu'aux résolveurs C3/C4). Une cible non résolue ne produit jamais de contexte partiel : elle ajoute une contradiction `TARGET_PROJECT_*` sans changer l'alignement global du MCP. Sans configuration, le snapshot est identique octet pour octet.
+
+Les outils n'acceptent que des identifiants de mapping ; le scope est construit depuis Live State (ouverture/reprise) ou depuis la session (intentions, locks). Sans scope, seul `Patricked-code/MCP` est accepté. L'inventaire courant (Current-State) décrit le serveur MCP lui-même et devient une frontière d'auto-gestion ; l'observation GitHub d'autres dépôts n'est pas simulée (`UNAVAILABLE`) et relève des lots GGCC GitHub et C3/C4.
+
+## 2026-10-04 — B3.2 : la décision propriétaire #220 retient la configuration opérateur, sans figer un projet par serveur
+
+Décision propriétaire (intake #220) : `OPERATOR_CONFIGURED_SERVER_TARGET` est la première implémentation de B3.2 — additive, minimale, réversible et rétrocompatible. Une configuration opérateur explicite (configuration gouvernée existante ou son extension minimale) nomme un projet GitRegistry V2 enregistré ; Live State reste l'autorité d'observation et en dérive son `TargetContext` singulier ; les composants sans preuve restent `UNVERIFIED`/`UNKNOWN`. Sans configuration, le comportement historique mono-dépôt est conservé à l'identique.
+
+La V1 ne doit introduire aucune hypothèse empêchant plus tard `1 serveur MCP → N projets → N TargetContexts bornés` (`MULTI_PROJECT_LIVE_STATE`). Les invariants de `w3B3TargetSelectionGate` restent non négociables, complétés par : aucune preuve manquante ne devient ALLOWED/ACTIVE, aucun heartbeat ne transfère d'ownership, aucun TargetScope ne contourne Task/Session/Claim/Lock/exact-head/stateVersion/autorisation, cibler un projet n'écrit ni n'active rien. Cette décision n'autorise aucune mutation runtime ; A3.2 / PR #207 reste indépendant.
+
+## 2026-10-04 — Un agent ne crée pas de gate humaine pour une décision technique déductible
+
+Décision (intake #221) : `HUMAN_GATE_EXISTING != AGENT_MAY_CREATE_HUMAN_GATE`. La gate `OWNER_DECISION_B3_TARGET_PROJECT_SELECTION` du 2026-10-01 était une gate auto-créée : l'agent avait lui-même déduit une option minimale, réversible et conforme aux invariants. Désormais une gate humaine n'est admissible que si elle cite une condition admissible et une source d'autorité préexistante extérieure à la projection du programme ; un choix technique déductible suit `AUTO_DECIDE → EXECUTE → VERIFY → CHECKPOINT → RECOMPUTE → CONTINUE`.
+
+Mise en œuvre sans moteur parallèle : `executionModel.humanGatePolicy` catalogue chaque gate de `requiredExplicitGates`, et la validation existante du programme (`uncataloguedGates`, `inadmissibleHumanGates`) échoue en CI sur toute gate non cataloguée ou humaine auto-créée. Les gates destructives/irréversibles, réservées par une décision préexistante (activation C1, enforce J4) ou de sécurité restent humaines même si une solution technique est déductible. Un blocker local reste local.
+
+## 2026-10-04 — La boucle autonome de dispatch étend l'orchestration existante, après B3.2
+
+Décision (intake #222) : la chaîne `READINESS → GOVERNED MATERIALIZATION GATE → GOVERNED TASK QUEUE → CLAIM → EXECUTION → CHECKPOINT → RECOMPUTE → NEXT` est construite en étendant `mcp_reconcile_agent_intent` (matérialisation liée à l'identité et à la readiness dérivée d'un blueprint, idempotente, sans claim implicite), `mcp_claim_next_governed_task` (reprise prioritaire du travail déjà possédé) et le contexte gouverné (projection next-work), via `TB-W3-DISPATCH-01..03` séquencés juste après B3.2. La readiness reste une projection de planification (`createsRuntimeTask=false`) ; la Governed Task Queue reste l'unique autorité de tâche runtime. Différés : éligibilité par capacités (D2), multi-TargetContexts, réveil des agents (H/I), et le passage d'un blueprint à DONE qui reste une preuve versionnée exact-head.
+
+## 2026-10-01 — La surface client est attestée par le client, horodatée et bornée par le serveur
+
+Décision : seul le client sait quels outils il voit réellement ; il le déclare via `mcp_attest_client_tool_surface`. Le serveur ne fait jamais confiance à un horodatage, un identifiant ou une liaison fournis par le client : il les attribue lui-même (heure serveur, expiration ≤ 300 s, session et contexte de connexion courants, provenance `client_attestation`). Une attestation expirée n'est plus une preuve courante.
+
+L'attestation n'informe que la callabilité. L'autorisation reste `UNKNOWN`, donc `safeNow` et `mayMutate` restent faux : aucune décision d'écriture ne peut s'appuyer sur une déclaration du client. Le catalogue serveur reste l'autorité de la surface exposée et ne prouve jamais ce que le client voit. Aucun store ni autorité n'est ajouté : l'attestation vit dans l'enregistrement de session existant.
+
+## 2026-10-01 — B3.2 relève d'une décision propriétaire : quel projet un serveur cible-t-il ?
+
+Précision de la décision du même jour (« B3.2 attend un TargetContext validé ») : le réexamen montre que ce n'est pas un simple producteur manquant mais une question d'architecture ouverte, déjà listée comme telle par le document canonique des 73 contrats. Le `TargetContext` de Live State est singulier ; il faut choisir comment un serveur sélectionne son projet cible parmi les projets GitRegistry V2. Les options (configuration opérateur par serveur, Live State multi-projets, résolution par session, maintien d'une surface d'outils mono-dépôt) ont des compromis réels et l'une d'elles demanderait d'amender un invariant GWC-10.
+
+L'agent ne tranche pas : `TB-W3-B3-02` est gardé `CONDITIONAL` derrière la gate `OWNER_DECISION_B3_TARGET_PROJECT_SELECTION`. Recommandation documentée : configuration opérateur d'un projet cible par serveur, l'incrément le plus petit et réversible qui respecte tous les invariants GWC-10. Quel que soit le choix, un TargetScope reste une identité/ownership sans autorité d'écriture, de déploiement ou de SHA, et son absence garde le sens historique mono-dépôt.
+
+## 2026-10-01 — La présence client est une projection à deux horloges, jamais une autorité
+
+Décision : la présence est dérivée uniquement de l'horloge client (trafic `/mcp` OAuth). L'horloge synthétique (`/health`, token partagé) est exposée à côté pour distinguer « serveur sain » et « client réellement présent », mais ne prouve jamais une présence client. `STALE` signifie seulement « non observé récemment », jamais « déconnecté ». `REVOKED` reste réservé à une future preuve de révocation et n'est jamais déduit.
+
+Les horloges sont en mémoire (réinitialisées au redémarrage, ce qui donne `UNKNOWN` jusqu'à la prochaine observation) : aucun store ni registre n'est ajouté, et le journal `client.observed` de G1 reste la trace durable. La projection `proof.clientPresence` est marquée `authoritative=false` ; aucune décision d'ownership, de claim, de lock ou de liveness ne peut s'appuyer dessus.
+
+## 2026-10-01 — La présence client se prouve par le trafic OAuth, pas par le heartbeat ni la santé synthétique
+
+Décision : une observation client réelle est une requête `/mcp` authentifiée par un jeton OAuth (`oauth_subject`). Le token partagé sert aux automatisations et à l'attestation de déploiement ; il ne prouve aucune présence client. `/health` est une sonde synthétique. Le heartbeat de Governed Session reste l'horloge de liveness de l'agent.
+
+L'observation est journalisée dans l'Operational Event Journal existant (aucun store ni registre parallèle), avec un digest du principal, sans identifiant client, conversation ou espace de travail. Elle est limitée à une écriture par principal et par minute et ne peut jamais faire échouer la requête. Les états de présence et la seconde horloge (`lastSyntheticProbeAt`) relèvent de G2.
+
+## 2026-10-01 — B3.2 attend un TargetContext validé ; la readiness registre passe par un probe OIDC redacted
+
+Décision : `TB-W3-B3-02` n'expose pas `TargetScope` sur les outils tant qu'aucune autorité serveur ne produit un `TargetContext` validé (Live State ne le remplit pas ; GitRegistry V2 reste en dry-run). Accepter un scope fourni par l'agent serait un élargissement de permission caché. B3.2 reste planning-READY mais n'est pas exécuté.
+
+Pour avancer C1 sans dépendre du bridge runtime, la readiness d'activation GitRegistry V2 est exposée par un probe OIDC read-only supplémentaire, servi in-process comme les probes d'autorités runtime. Comme les artifacts d'un dépôt public sont lisibles largement, la projection ne publie que des identifiants de mapping sûrs, des reason codes et des digests SHA-256 ; un identifiant de mapping non conforme est remplacé par son digest.
+
+## 2026-10-01 — Toute émission de code OAuth exige un consentement opérateur explicite
+
+Décision propriétaire (option 1) : une session opérateur valide ne suffit plus à émettre un code d'autorisation. `GET /oauth/authorize` affiche une page de consentement ; seul un `POST /oauth/authorize` same-origin, authentifié et porteur d'un ticket HMAC lié à la demande exacte et non expiré peut émettre le code. Un refus renvoie `access_denied`.
+
+Alternatives écartées : une allowlist d'hôtes de redirection (maintenance, risque de casser des clients légitimes) et un cookie `SameSite=Strict` (ressaisie du token MCP à chaque connexion). Le ticket est sans état : aucun store, registre client ou autorité n'est ajouté.
+
+Le bloc d'émission du code reste inchangé pour que la corrélation A3.2 (PR #207) s'y intègre sans conflit sémantique. L'application effective du scope `mcp:write` reste hors de ce lot : les tokens existants des connecteurs pourraient ne porter que `mcp:read`, et l'imposer sans inventaire casserait des flux d'écriture ; ce point exige un lot dédié.
+
 
 ## 2026-09-30 — Décision OAuth : autorisation durable sans credential permanent
 

@@ -316,8 +316,10 @@ test('GWC-9 AF-32 shadow observation is non-blocking for governed task mutations
     now: () => new Date('2026-09-19T07:15:00.000Z')
   } as any);
 
+  // DISPATCH-01: blueprint materialization is a queue mutation and is shadow-observed too.
   assert.deepEqual([...handlers.keys()].sort(), [
     'mcp_claim_next_governed_task',
+    'mcp_materialize_program_blueprint',
     'mcp_reconcile_agent_intent',
     'mcp_transition_governed_task'
   ]);

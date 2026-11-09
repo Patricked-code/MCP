@@ -6,8 +6,22 @@ import {
   deriveTaskReality,
   projectRegisteredCapabilityRealities
 } from '../governance/operationalDecision.js';
-import { deriveClientEvidence } from '../operationalMemory/connectionContext.js';
+import { deriveToolSurfaceProjection } from '../governance/toolSurfaceAttestation.js';
+import { deriveProjectReality } from '../github/projectReality.js';
+import {
+  parseBranchGovernancePolicy,
+  readBranchGovernancePolicy,
+  unavailableBranchGovernance
+} from '../governance/branchGovernance.js';
+import { deriveProjectEffectiveCapabilities } from '../governedWorkflow/governance/projectCapabilities.js';
+import { deriveProjectGovernanceInheritance } from '../governedWorkflow/governance/projectInheritance.js';
+import {
+  deriveClientEvidence,
+  isOauthConnectionContext
+} from '../operationalMemory/connectionContext.js';
+import type { ClientObservationRecorder } from '../operationalMemory/clientPresence.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
+import { RESUMABLE_TASK_STATUSES } from '../operationalMemory/taskQueue.js';
 import {
   NOOP_OPERATIONAL_AUDIT,
   type OperationalAudit
@@ -23,6 +37,8 @@ import type {
   PublicGovernedSession
 } from './types.js';
 import type { GithubIdentityScope } from './github.js';
+import { deriveContextCompletion } from './contextCompletion.js';
+import { deriveMissingContext } from './missingContext.js';
 import type { CurrentStateInventory, CurrentStateService } from '../currentState/service.js';
 
 export type GovernedContextInput = {
@@ -47,12 +63,19 @@ type ContextServiceOptions = {
   now?: () => Date;
   audit?: OperationalAudit;
   currentState?: Pick<CurrentStateService, 'getInventory'>;
+  clientPresence?: Pick<ClientObservationRecorder, 'presenceFor'>;
+  /** D1: reads the versioned MCP branch governance policy; defaults to `.mcp/branch-governance.json`. */
+  readBranchGovernance?: () => Promise<unknown>;
+  /** E2: the configured public MCP origin; completion links are omitted without it. */
+  publicBaseUrl?: string | null;
 };
 
 export type GovernedOperationalContextService = {
   getCurrent(input: GovernedContextInput): Promise<GovernedOperationalContext>;
   reconcileExplicit(input: GovernedContextInput): Promise<GovernedOperationalContext>;
 };
+
+const HISTORICAL_REPOSITORY = 'Patricked-code/MCP';
 
 function fallbackGithub(
   at: string,
@@ -144,15 +167,10 @@ function githubIdentityScope(
   session: PublicGovernedSession | null
 ): GithubIdentityScope {
   const context = session?.connectionContext;
-  const compatible = Boolean(
-    context
-    && context.identityAssurance === 'oauth_subject'
-    && context.evidenceSource === 'oauth_auth_info'
-    && context.principalId.startsWith('oauth:')
-  );
+  const compatible = isOauthConnectionContext(context);
   return {
-    oauthPrincipalId: compatible ? context!.principalId : null,
-    repositoryContext: compatible ? context!.repository : null
+    oauthPrincipalId: compatible ? context.principalId : null,
+    repositoryContext: compatible ? context.repository : null
   };
 }
 
@@ -162,14 +180,26 @@ function nextAction(
   bootstrapStatus: GovernedOperationalContext['bootstrap']['status'],
   currentTask: CurrentStateInventory['currentTask'],
   firstExecutableTask: CurrentStateInventory['firstExecutableTask'],
+  nextWork: CurrentStateInventory['nextWork'] | null,
   github: GithubOperationalContext,
   foreignLock: boolean
 ): string | null {
   if (liveState?.nextAction) return liveState.nextAction;
   if (!session) return 'mcp_open_governed_session';
   if (bootstrapStatus !== 'CURRENT') return 'mcp_acknowledge_governed_context';
-  if (currentTask) return currentTask.nextAction ?? 'mcp_transition_governed_task';
-  if (firstExecutableTask) return 'mcp_claim_next_governed_task';
+  // DISPATCH-03: the next-work projection drives the action only when it was
+  // computed for this session. Resumable owned work keeps its own next action;
+  // owned work that is not resumable (e.g. BLOCKED) never stalls the session
+  // when compatible work is projected.
+  const projected = nextWork?.governedSessionId === session.governedSessionId ? nextWork : null;
+  if (currentTask && (RESUMABLE_TASK_STATUSES.has(currentTask.status) || !projected?.tool)) {
+    return currentTask.nextAction ?? 'mcp_transition_governed_task';
+  }
+  if (projected) {
+    if (projected.tool) return projected.tool;
+  } else if (firstExecutableTask) {
+    return 'mcp_claim_next_governed_task';
+  }
   if (foreignLock) return 'wait_for_governed_lock';
   if (github.checks.failed > 0 || github.checks.conclusion === 'failure') {
     return 'resolve_github_checks';
@@ -259,15 +289,60 @@ export function createGovernedOperationalContextService(
     const activeLocks: PublicGovernedLock[] = (rawLocks ?? []).slice(0, 100);
     const workBranch = session?.workBranch ?? currentState?.currentTask?.workBranch ?? input.workBranch;
     const identityScope = githubIdentityScope(session);
-    const github = await safeRead(
-      () => explicit
-        ? options.github.reconcileExplicit(workBranch, identityScope)
-        : options.github.getCurrent(workBranch, identityScope),
-      fallbackGithub(generatedAt, workBranch, identityScope)
-    );
+    // B3.2: the GitHub observer covers the MCP governance repository only; a
+    // session bound to another (TargetScope) repository gets an explicit
+    // UNAVAILABLE instead of MCP data presented as its own state.
+    const github = session && session.repository !== HISTORICAL_REPOSITORY
+      ? {
+          ...fallbackGithub(generatedAt, workBranch, identityScope),
+          error: 'github_target_repository_not_observed'
+        }
+      : await safeRead(
+          () => explicit
+            ? options.github.reconcileExplicit(workBranch, identityScope)
+            : options.github.getCurrent(workBranch, identityScope),
+          fallbackGithub(generatedAt, workBranch, identityScope)
+        );
     if (github.status !== 'CURRENT') {
       limitations.push(github.error ?? 'github_context_degraded');
     }
+    // C345-02: one composition of the chained resolutions, whatever cache path
+    // produced them, so the project reality never outlives its layers.
+    const projectReality = deriveProjectReality({
+      repository: github.repositoryResolution ?? null,
+      project: github.projectResolution ?? null,
+      server: github.serverResolution ?? null,
+      runtime: github.runtimeResolution ?? null,
+      domain: github.domainResolution ?? null,
+      observedAt: generatedAt
+    });
+    // D1: the proven project scope inherits the constraints of the authorities
+    // that own them; nothing is copied, nothing is authorized.
+    const branchGovernance = await safeRead(
+      async () => parseBranchGovernancePolicy(
+        await (options.readBranchGovernance ?? readBranchGovernancePolicy)()
+      ),
+      unavailableBranchGovernance('GOVERNANCE_POLICY_UNREADABLE')
+    );
+    const governanceInheritance = deriveProjectGovernanceInheritance({
+      projectReality,
+      project: github.projectResolution ?? null,
+      // Historical in-process contexts may carry no ruleset evidence: UNAVAILABLE.
+      ruleset: github.ruleset && github.evidence?.ruleset
+        ? {
+            repositoryId: `github:${HISTORICAL_REPOSITORY}`,
+            freshness: github.evidence.ruleset.freshness,
+            observedAt: github.evidence.ruleset.observedAt,
+            value: github.ruleset
+          }
+        : null,
+      policy: branchGovernance,
+      // Every active lock, not the bounded projection: an unseen lock must never permit.
+      locks: rawLocks,
+      governedSessionId: session?.governedSessionId ?? null,
+      gate: { mode: options.gateMode, existingWriteToolsEnabled: options.existingWriteToolsEnabled },
+      observedAt: generatedAt
+    });
 
     const foreignLock = activeLocks.some((lock) => (
       lock.status === 'ACTIVE'
@@ -312,7 +387,8 @@ export function createGovernedOperationalContextService(
       ?? null;
     const capabilityReality = projectRegisteredCapabilityRealities(
       currentState?.catalogue?.tools ?? [],
-      generatedAt
+      generatedAt,
+      session?.clientToolSurfaceAttestation ?? null
     );
     const githubWorkStateAvailable = github.status === 'CURRENT';
     const runtimeAligned = Boolean(
@@ -358,6 +434,7 @@ export function createGovernedOperationalContextService(
       liveState, session, bootstrapStatus,
       currentTask,
       firstExecutableTask,
+      currentState?.nextWork ?? null,
       github, foreignLock
     );
     const operation = computedNextAction ?? 'observe_operational_context';
@@ -419,17 +496,66 @@ export function createGovernedOperationalContextService(
           }
         : null
     });
+    // D2: each capability class of the proven scope, as the fail-closed
+    // intersection of the authorities above. The preconditions are the scoped
+    // WRITE gate's own inputs, over every active lock: its shadow verdict is
+    // reproduced, never changed, and nothing is authorized.
+    const effectiveCapabilities = deriveProjectEffectiveCapabilities({
+      projectReality,
+      governanceInheritance,
+      project: github.projectResolution ?? null,
+      identity: {
+        assurance: session?.identityAssurance ?? null,
+        principalId: session?.connectionContext?.principalId ?? null,
+        github: github.identity ?? null
+      },
+      github: { repositoryId: `github:${HISTORICAL_REPOSITORY}`, status: github.status },
+      preconditions: {
+        sessionPresent: Boolean(session),
+        currentStateVersion: liveState?.stateVersion ?? null,
+        currentFreshness: liveState?.freshness ?? null,
+        acknowledgedStateVersion: session?.lastAcknowledgedStateVersion ?? null,
+        activeLockConflicts: rawLocks
+          ? rawLocks.filter((lock) => (
+              lock.status === 'ACTIVE' && lock.governedSessionId !== session?.governedSessionId
+            )).length
+          : null,
+        bootstrapReceiptStatus: bootstrapStatus,
+        currentTaskStatus: currentTask?.status ?? null,
+        auditBaselineValid
+      },
+      observedAt: generatedAt
+    });
+    // E1: the mandatory inputs still missing after the automatic resolution
+    // above, the first one only, with the existing authority completing it.
+    const missingContext = deriveMissingContext({
+      generatedAt,
+      repository: session?.repository ?? HISTORICAL_REPOSITORY,
+      session,
+      github,
+      projectReality
+    });
+    // E2: that gap as one completion step, linked to the existing surface.
+    const contextCompletion = deriveContextCompletion(missingContext, {
+      baseUrl: options.publicBaseUrl ?? null,
+      repository: session?.repository ?? null
+    });
 
     const context: GovernedOperationalContext = {
       schemaVersion: 1,
       generatedAt,
       freshness,
-      repository: session?.repository ?? 'Patricked-code/MCP',
+      repository: session?.repository ?? HISTORICAL_REPOSITORY,
       governedBranch: session?.workBranch ?? 'main',
       targetContext: liveState?.targetContext ?? null,
       targetScope: session?.targetScope ?? null,
       liveState,
       github,
+      projectReality,
+      governanceInheritance,
+      effectiveCapabilities,
+      missingContext,
+      contextCompletion,
       session,
       bootstrap: {
         required: true,
@@ -471,7 +597,16 @@ export function createGovernedOperationalContextService(
         identityAssurance: session?.identityAssurance ?? null,
         runtimeRealtimeAvailable,
         limitations: [...new Set(limitations)].slice(0, 20),
-        clientEvidence: deriveClientEvidence(session?.connectionContext)
+        clientEvidence: deriveClientEvidence(session?.connectionContext),
+        toolSurface: deriveToolSurfaceProjection({
+          catalogueTools: currentState?.catalogue?.tools ?? [],
+          catalogueDigest: currentState?.source.catalogueDigest ?? liveState?.capabilities?.catalogueDigest ?? null,
+          attestation: session?.clientToolSurfaceAttestation ?? null,
+          now: generatedAt
+        }),
+        ...(options.clientPresence
+          ? { clientPresence: options.clientPresence.presenceFor(session?.ownerPrincipalId ?? null) }
+          : {})
       }
     };
     await audit.record({ type: 'context.read', context });

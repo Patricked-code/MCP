@@ -1,3 +1,6 @@
+import type { ClientToolSurfaceAttestation } from '../operationalMemory/types.js';
+import { attestedCallability } from './toolSurfaceAttestation.js';
+
 export type CallabilityStatus = 'CALLABLE' | 'NOT_CALLABLE' | 'UNKNOWN';
 export type CallabilitySource = 'SERVER' | 'TRANSPORT' | 'CLIENT_ATTESTATION';
 export type TriStateStatus = 'TRUE' | 'FALSE' | 'UNKNOWN';
@@ -83,17 +86,25 @@ export function deriveCapabilityReality(input: CapabilityRealityInput): Capabili
 
 export function projectRegisteredCapabilityRealities(
   tools: RegisteredToolProjection[],
-  observedAt: string
+  observedAt: string,
+  clientAttestation?: ClientToolSurfaceAttestation | null
 ): CapabilityReality[] {
   return [...tools]
     .sort((left, right) => left.name.localeCompare(right.name))
-    .map((tool) => deriveCapabilityReality({
-      toolName: tool.name,
-      registered: true,
-      governanceSafe: true,
-      observedAt,
-      provenance: ['runtime_catalogue']
-    }));
+    .map((tool) => {
+      // G3: a client attestation may only inform callability; authorization stays UNKNOWN.
+      const attested = attestedCallability(clientAttestation, tool.name, observedAt);
+      return deriveCapabilityReality({
+        toolName: tool.name,
+        registered: true,
+        governanceSafe: true,
+        observedAt,
+        ...(attested ? { callability: { status: attested.status, source: 'CLIENT_ATTESTATION' as const } } : {}),
+        provenance: attested
+          ? ['runtime_catalogue', attested.stale ? 'client_attestation:stale' : 'client_attestation']
+          : ['runtime_catalogue']
+      });
+    });
 }
 
 export type GovernancePreconditionInput = {

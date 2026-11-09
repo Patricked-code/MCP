@@ -1,0 +1,876 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB03_PR261_SOURCE_POLICY_EVIDENCE_SNAPSHOT_NON_AUTHORITATIVE",
+  "repository": "Patricked-code/MCP",
+  "exactMain": "0817f340dcd57f59b348b8a023082efd472342e3",
+  "ciRun": 38808611902,
+  "governedDeployRun": 38808612012,
+  "history": {
+    "pr": 261,
+    "mergeCommit": "6576b5287f23566684005adf6032734e2ecdea50",
+    "P1": 54,
+    "P2": 19,
+    "sourceArchive": "docs/governance/gwb03-pr-review-findings-triage-20261015.json",
+    "reviewStatus": "HISTORICAL_NOT_CURRENT_DEFECT_CERTIFICATE"
+  },
+  "coverage": {
+    "historicalFindings": 73,
+    "reviewedBySourceAnchor": 17,
+    "unreviewed": 56,
+    "sourcePolicyLimitations": 2,
+    "perFindingRuntimeCertifications": 0
+  },
+  "checks": [
+    {
+      "reviewCommentId": 4208798248,
+      "reviewTitle": "Bind consent to the resolved deployment target",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798248",
+      "sourcePath": "src/provisioning/consent.ts",
+      "sourceLine": 44,
+      "sourceAnchor": "provisioningConsentBinding",
+      "testPath": "tests/projectRuntimeSurface.test.ts",
+      "testLine": 97,
+      "testTitle": "test('the provisioning consent is explicit, same-origin and bound to the session and the exact target', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4208798277,
+      "reviewTitle": "Verify the created checkout before later activation",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798277",
+      "sourcePath": "src/provisioning/runtimeExecutor.ts",
+      "sourceLine": 422,
+      "sourceAnchor": "buildActivateScript",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 686,
+      "testTitle": "test('the checkout is verified against its creation digest before any activation', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848099,
+      "reviewTitle": "Enforce GitRegistry deployment bans before activation",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848099",
+      "sourcePath": "src/provisioning/runtimeExecutor.ts",
+      "sourceLine": 607,
+      "sourceAnchor": "readRegistry",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 1259,
+      "testTitle": "test('a mapping the registry does not let deploy is never provisioned', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848119,
+      "reviewTitle": "Propagate file-read failures from the tree digest",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848119",
+      "sourcePath": "src/provisioning/projectRuntime.ts",
+      "sourceLine": 171,
+      "sourceAnchor": "PROVISIONING_TREE_DIGEST_SHELL",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 735,
+      "testTitle": "test('the tree digest ignores the provisioning files and changes with any content, mode or link change', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848136,
+      "reviewTitle": "Bound the extracted archive, not only the download",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848136",
+      "sourcePath": "src/provisioning/runtimeExecutor.ts",
+      "sourceLine": 131,
+      "sourceAnchor": "buildArchiveBoundsLines",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 1320,
+      "testTitle": "test('an unsafe compose model or a bad archive is discarded to quarantine, never deleted', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4211071222,
+      "reviewTitle": "Parse Compose before blocking host file inputs",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071222",
+      "sourcePath": "src/provisioning/runtimeExecutor.ts",
+      "sourceLine": 966,
+      "sourceAnchor": "const checkCompose =",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 582,
+      "testTitle": "test('a compose source that loads a host file is refused before Compose ever reads it', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213204474,
+      "reviewTitle": "Bound Compose service replication",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204474",
+      "sourcePath": "src/provisioning/composePolicy.ts",
+      "sourceLine": 111,
+      "sourceAnchor": "MAX_CONTAINERS =",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 126,
+      "testTitle": "test('the compose safety policy admits only a project-contained, locally bound runtime', () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213278817,
+      "reviewTitle": "Reject custom IPAM drivers and options",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278817",
+      "sourcePath": "src/provisioning/composePolicy.ts",
+      "sourceLine": 348,
+      "sourceAnchor": "ipam &&",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 1108,
+      "testTitle": "test('logs are bounded, address pools stay default and no-new-privileges is never disabled', () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213445674,
+      "reviewTitle": "Hold coordination authority through the first host write",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445674",
+      "sourcePath": "src/provisioning/runtimeExecutor.ts",
+      "sourceLine": 868,
+      "sourceAnchor": "const recheck = async",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 997,
+      "testTitle": "test('a rollback reads the coordination authorities again and never writes over newly claimed work', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213644008,
+      "reviewTitle": "Require health status before declaring success",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644008",
+      "sourcePath": "src/provisioning/runtimeExecutor.ts",
+      "sourceLine": 422,
+      "sourceAnchor": "buildActivateScript",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 1099,
+      "testTitle": "test('activation succeeds only with the checkout unchanged and an image for every container', () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216769980,
+      "reviewTitle": "Allow only validated Dockerfile frontends",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769980",
+      "sourcePath": "src/provisioning/dockerfilePolicy.ts",
+      "sourceLine": 16,
+      "sourceAnchor": "DOCKERFILE_FRONTEND",
+      "testPath": "tests/dockerfilePolicy.test.ts",
+      "testLine": 32,
+      "testTitle": "test('the frontend is pinned too, and an unreadable Dockerfile fails closed', () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216890720,
+      "reviewTitle": "Re-admit the revision before each later write",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890720",
+      "sourcePath": "src/provisioning/runtimeExecutor.ts",
+      "sourceLine": 858,
+      "sourceAnchor": "const readmit = async",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 1026,
+      "testTitle": "test('the revision is admitted again after the download, and the host preflight runs before it', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217047792,
+      "reviewTitle": "Require bounded container logging",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047792",
+      "sourcePath": "src/provisioning/composePolicy.ts",
+      "sourceLine": 232,
+      "sourceAnchor": "const boundedLogs =",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 1108,
+      "testTitle": "test('logs are bounded, address pools stay default and no-new-privileges is never disabled', () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217047807,
+      "reviewTitle": "Reject unapproved custom IPAM address pools",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047807",
+      "sourcePath": "src/provisioning/composePolicy.ts",
+      "sourceLine": 348,
+      "sourceAnchor": "ipam &&",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 1108,
+      "testTitle": "test('logs are bounded, address pools stay default and no-new-privileges is never disabled', () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217316137,
+      "reviewTitle": "Reject newline-bearing paths in the tree digest",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316137",
+      "sourcePath": "src/provisioning/projectRuntime.ts",
+      "sourceLine": 176,
+      "sourceAnchor": "LC_ALL=C find \"$1\" -name",
+      "testPath": "tests/projectRuntimeExecutor.test.ts",
+      "testLine": 1174,
+      "testTitle": "test('stop grace periods stay within the rollback budget, and a newline in a path fails the digest', async () => {",
+      "observation": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216890728,
+      "reviewTitle": "Enforce safe upper bounds on resource limits",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890728",
+      "sourcePath": "src/provisioning/composePolicy.ts",
+      "sourceLine": 241,
+      "sourceAnchor": "const bounded = (value: unknown) =>",
+      "testPath": null,
+      "testLine": null,
+      "testTitle": null,
+      "observation": "STATIC_POLICY_LIMITATION_NEEDS_NEGATIVE_REGRESSION_TEST",
+      "resolved": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4222289799,
+      "reviewTitle": "Enforce upper bounds on logging rotation",
+      "severity": "P1",
+      "reviewUrl": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289799",
+      "sourcePath": "src/provisioning/composePolicy.ts",
+      "sourceLine": 232,
+      "sourceAnchor": "const boundedLogs =",
+      "testPath": null,
+      "testLine": null,
+      "testTitle": null,
+      "observation": "STATIC_POLICY_LIMITATION_NEEDS_NEGATIVE_REGRESSION_TEST",
+      "resolved": "UNKNOWN"
+    }
+  ],
+  "knownPolicyRisks": {
+    "4216890728": {
+      "issue262AlreadyTracks": true,
+      "detail": "composePolicy.ts bounded(value) accepts finite positive numeric/string limits, with no S1-scaled maxima; example memory 1099511627776, cpu 128, pids 1000000000 pass its scalar predicate",
+      "testNeeded": "A negative pure-policy test on resource ceilings, calibrated to an authoritative S1 host budget; issue #262 already records this known limit"
+    },
+    "4222289799": {
+      "issue262AlreadyTracksExplicitly": false,
+      "detail": "composePolicy.ts boundedLogs for json-file tests only presence of 'max-size' and 'max-file'; local driver does not require bounded option validation; e.g 1g/100000 pass that predicate",
+      "testNeeded": "A negative pure-policy test for extreme retained log rotation values and appropriate upper limits on json-file/local; avoid duplicate runtime Task and add evidence to existing F-03 issue #262"
+    }
+  },
+  "allHistoricalFindings": [
+    {
+      "reviewCommentId": 4208798248,
+      "priority": "P1",
+      "title": "Bind consent to the resolved deployment target",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798248",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4208798277,
+      "priority": "P1",
+      "title": "Verify the created checkout before later activation",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798277",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4208798297,
+      "priority": "P1",
+      "title": "Keep component runtimes distinct for shared repositories",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798297",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848082,
+      "priority": "P1",
+      "title": "Gate web provisioning through runtime and UAC authorities",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848082",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848099,
+      "priority": "P1",
+      "title": "Enforce GitRegistry deployment bans before activation",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848099",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848110,
+      "priority": "P1",
+      "title": "Reject named volumes that bind host paths",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848110",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848119,
+      "priority": "P1",
+      "title": "Propagate file-read failures from the tree digest",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848119",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848136,
+      "priority": "P1",
+      "title": "Bound the extracted archive, not only the download",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848136",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4211071205,
+      "priority": "P1",
+      "title": "Reject Compose API-socket delegation",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071205",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4211071222,
+      "priority": "P1",
+      "title": "Parse Compose before blocking host file inputs",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071222",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4211575344,
+      "priority": "P1",
+      "title": "Exclude foreign image tags from builds",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575344",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4211575360,
+      "priority": "P1",
+      "title": "Hash the complete executable mode",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575360",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4211575369,
+      "priority": "P1",
+      "title": "Treat retained volumes as existing runtime state",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211575369",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213204474,
+      "priority": "P1",
+      "title": "Bound Compose service replication",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204474",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213204482,
+      "priority": "P1",
+      "title": "Include ownership in the checkout digest",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204482",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213204487,
+      "priority": "P1",
+      "title": "Rehash running checkouts before returning NO_OP",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204487",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213204491,
+      "priority": "P1",
+      "title": "Pin external images before activation",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213204491",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213278799,
+      "priority": "P1",
+      "title": "Store the trusted tree digest outside the writable checkout",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278799",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213278807,
+      "priority": "P1",
+      "title": "Pin every input used by built services",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278807",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213278810,
+      "priority": "P1",
+      "title": "Block creation when the Compose network survives rollback",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278810",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213278817,
+      "priority": "P1",
+      "title": "Reject custom IPAM drivers and options",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278817",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213356767,
+      "priority": "P1",
+      "title": "Revalidate Compose before rollback",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356767",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213356774,
+      "priority": "P1",
+      "title": "Include special filesystem entries in the tree digest",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356774",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213356785,
+      "priority": "P1",
+      "title": "Resolve target parents before writing",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356785",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213356794,
+      "priority": "P1",
+      "title": "Bound Docker build storage consumption",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356794",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213445674,
+      "priority": "P1",
+      "title": "Hold coordination authority through the first host write",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445674",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213445684,
+      "priority": "P1",
+      "title": "Record hard-link topology in the checkout digest",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445684",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213445701,
+      "priority": "P1",
+      "title": "Admit revisions from the mapping's official branch",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445701",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213568170,
+      "priority": "P1",
+      "title": "Neutralize restart policies in fallback rollback",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568170",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213568175,
+      "priority": "P1",
+      "title": "Recheck coordination before executing rollback writes",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568175",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213568181,
+      "priority": "P1",
+      "title": "Include extended attributes in the checkout digest",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568181",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213644008,
+      "priority": "P1",
+      "title": "Require health status before declaring success",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644008",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213644011,
+      "priority": "P1",
+      "title": "Include stopped containers in fallback rollback",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644011",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213644023,
+      "priority": "P1",
+      "title": "Revalidate revision admission after downloading",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644023",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213644027,
+      "priority": "P1",
+      "title": "Enforce runtime resource ceilings",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644027",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216769963,
+      "priority": "P1",
+      "title": "Verify image IDs before returning NO_OP",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769963",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216769980,
+      "priority": "P1",
+      "title": "Allow only validated Dockerfile frontends",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769980",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216769986,
+      "priority": "P1",
+      "title": "Bound resources consumed by image builds",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769986",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216890720,
+      "priority": "P1",
+      "title": "Re-admit the revision before each later write",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890720",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216890728,
+      "priority": "P1",
+      "title": "Enforce safe upper bounds on resource limits",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890728",
+      "currentAuditState": "STATIC_POLICY_LIMITATION_NEEDS_NEGATIVE_REGRESSION_TEST",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216890738,
+      "priority": "P1",
+      "title": "Rehash the checkout after the health gate",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890738",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216890752,
+      "priority": "P1",
+      "title": "Do not mutate the host after detecting a coordination collision",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890752",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217047792,
+      "priority": "P1",
+      "title": "Require bounded container logging",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047792",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217047807,
+      "priority": "P1",
+      "title": "Reject unapproved custom IPAM address pools",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047807",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217047834,
+      "priority": "P1",
+      "title": "Replan against live target and runtime state before each write",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047834",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217179879,
+      "priority": "P1",
+      "title": "Compare replacement images with the existing record",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179879",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217179889,
+      "priority": "P1",
+      "title": "Verify live container limits before returning NO_OP",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179889",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217179904,
+      "priority": "P1",
+      "title": "Re-read the mapping's official branch before each write",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217179904",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217316098,
+      "priority": "P1",
+      "title": "Bound writable storage for every admitted service",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316098",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217316105,
+      "priority": "P1",
+      "title": "Recheck coordination before every discard write",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316105",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217316137,
+      "priority": "P1",
+      "title": "Reject newline-bearing paths in the tree digest",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316137",
+      "currentAuditState": "SOURCE_AND_TEST_ANCHORS_EXIST_BEHAVIOR_E2E_UNVERIFIED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217316144,
+      "priority": "P1",
+      "title": "Bound stop grace periods below the rollback timeout",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316144",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217316157,
+      "priority": "P1",
+      "title": "Preserve the service-to-image mapping in runtime attestations",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316157",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4222289799,
+      "priority": "P1",
+      "title": "Enforce upper bounds on logging rotation",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289799",
+      "currentAuditState": "STATIC_POLICY_LIMITATION_NEEDS_NEGATIVE_REGRESSION_TEST",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4208798258,
+      "priority": "P2",
+      "title": "Encode slash-bearing branch names as one path parameter",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798258",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4208798290,
+      "priority": "P2",
+      "title": "Preserve unavailable target evidence in the listing",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4208798290",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848153,
+      "priority": "P2",
+      "title": "Do not report unwritten attestations as successful",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848153",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848164,
+      "priority": "P2",
+      "title": "Preserve configured GitHub API paths for archive downloads",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848164",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4210848175,
+      "priority": "P2",
+      "title": "Require the complete Compose service set before NO_OP",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4210848175",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4211071241,
+      "priority": "P2",
+      "title": "Reject the engine-wide default bridge network",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4211071241",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213278811,
+      "priority": "P2",
+      "title": "Track expected container counts, not just service names",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278811",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213278815,
+      "priority": "P2",
+      "title": "Bound retained artifacts before accepting repeat submissions",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213278815",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213356779,
+      "priority": "P2",
+      "title": "Reject or activate profiled services",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213356779",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213445692,
+      "priority": "P2",
+      "title": "Check capacity on the target filesystem",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213445692",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213568187,
+      "priority": "P2",
+      "title": "Materialize bind sources before recording the tree digest",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213568187",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4213644019,
+      "priority": "P2",
+      "title": "Run retention and capacity checks before downloading",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4213644019",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216769973,
+      "priority": "P2",
+      "title": "Attest the final revision admission",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216769973",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4216890746,
+      "priority": "P2",
+      "title": "Fail activation when image inspection is incomplete",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4216890746",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217047816,
+      "priority": "P2",
+      "title": "Reject disabling no-new-privileges",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047816",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217047826,
+      "priority": "P2",
+      "title": "Fail activation when the image record cannot be written",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047826",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217047841,
+      "priority": "P2",
+      "title": "Revalidate the marker after the health gate",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217047841",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4217316122,
+      "priority": "P2",
+      "title": "Fail activation when the trusted marker record is unreadable",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4217316122",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    },
+    {
+      "reviewCommentId": 4222289810,
+      "priority": "P2",
+      "title": "Propagate the completed job status from the polling route",
+      "url": "https://github.com/Patricked-code/MCP/pull/261#discussion_r4222289810",
+      "currentAuditState": "NOT_YET_INDIVIDUALLY_RECONCILED",
+      "resolution": "UNKNOWN"
+    }
+  ],
+  "authority": {
+    "reconcileWithIssue262": "https://github.com/Patricked-code/MCP/issues/262",
+    "supervisor": "https://github.com/Patricked-code/MCP/issues/235",
+    "runtimeOwnership": "UNOBSERVED_DO_NOT_CLAIM",
+    "authorization": "READ_ONLY_SOURCE_AUDIT",
+    "noNewRuntimeTasks": true
+  },
+  "nextAction": "Validate logging rotation and resource maxima with negative pure Compose policy tests by existing F-03 owner; classify the rest against exact code, checks and receipts; then GWB03-02 PR #267. Do not assert a production exploit or fully resolved bug based solely on these anchors.",
+  "caveats": [
+    "Static source predicate observations are not an end-to-end runtime exploit or an accepted defect fix",
+    "Existing issue #262 records resource maxima, build/storage quota and archive permissions; never configure first S1 target without owner evidence",
+    "Historical reviewers' P1/P2 labels and reply counts are not current vulnerabilities",
+    "Issue #207 OAuth remains an independent owned scope, untouched",
+    "No live Task Queue/Session/Lock claim or S1 direct write"
+  ]
+}

@@ -18,6 +18,11 @@ import {
 } from './types.js';
 
 const TERMINAL = new Set<GovernedTaskStatus>(['DONE', 'CANCELLED', 'SUPERSEDED']);
+// DISPATCH-02: owned work a session resumes before claiming anything new
+// (BLOCKED work waits on its blocker and never stalls the session).
+const RESUMABLE = new Set<GovernedTaskStatus>([
+  'CLAIMED', 'IN_PROGRESS', 'REVIEW', 'MERGE_READY', 'DEPLOYING', 'VERIFYING'
+]);
 const ACTIVE = new Set<GovernedTaskStatus>([
   'READY', 'CLAIMED', 'IN_PROGRESS', 'REVIEW', 'MERGE_READY', 'DEPLOYING', 'VERIFYING', 'BLOCKED'
 ]);
@@ -66,6 +71,24 @@ export type ReconcileIntentInput = {
   priority: number;
   dependencies: string[];
   resourceScopes: string[];
+  /**
+   * DISPATCH-01: server-built program intents treat an active task holding
+   * exactly the same scopes (same repository and TargetScope) as the
+   * equivalent task to reuse instead of a mere collision.
+   */
+  equivalence?: 'EXACT_ACTIVE_SCOPE_SET';
+};
+
+export type ClaimNextTaskOptions = {
+  /**
+   * DISPATCH-02: when stated (null = unscoped session), only tasks eligible
+   * for this session TargetScope can be claimed. Absent keeps the
+   * historical, scope-agnostic selection for internal callers.
+   */
+  sessionTargetScope?: TargetScope | null;
+  /** Restrict selection to this exact task, without fallback to another candidate. */
+  expectedTaskId?: string;
+  expectedTaskRevision?: number;
 };
 
 export type TransitionTaskInput = {
@@ -107,7 +130,12 @@ export type GovernedTaskQueue = {
     storeRevision: number;
     reasonCode: string;
   }>;
-  claimNextTask(governedSessionId: string, expectedStoreRevision: number): Promise<GovernedTaskRecord | null>;
+  claimNextTask(
+    governedSessionId: string,
+    expectedStoreRevision: number,
+    options?: ClaimNextTaskOptions
+  ): Promise<GovernedTaskRecord | null>;
+  claimTaskById(governedSessionId: string, taskId: string, expectedTaskRevision: number, expectedStoreRevision: number, options?: ClaimNextTaskOptions): Promise<GovernedTaskRecord>;
   transitionTask(input: TransitionTaskInput): Promise<GovernedTaskRecord>;
   requeueTerminalSessionTasks(): Promise<number>;
   readCollisionState(): Promise<GovernedTaskCollisionState>;
@@ -143,20 +171,98 @@ function fail(code: string): never {
   throw new Error(code);
 }
 
-function firstExecutable(tasks: GovernedTaskRecord[]): GovernedTaskRecord | null {
-  const byId = new Map(tasks.map((task) => [task.taskId, task]));
-  return [...tasks]
-    .filter((task) => task.status === 'READY')
-    .filter((task) => task.dependencies.every((dependency) => byId.get(dependency)?.status === 'DONE'))
-    .sort((left, right) => right.priority - left.priority || left.sequence - right.sequence || left.taskId.localeCompare(right.taskId))[0]
-    ?? null;
+// DISPATCH-03: the selection rules below are shared, side-effect free, by the
+// claim path and the read-only next-work projection so both always agree.
+export const TERMINAL_TASK_STATUSES: ReadonlySet<GovernedTaskStatus> = TERMINAL;
+export const RESUMABLE_TASK_STATUSES: ReadonlySet<GovernedTaskStatus> = RESUMABLE;
+
+export type TaskClaimConflict = 'TASK_RESOURCE_CONFLICT' | 'TASK_LOCK_CONFLICT';
+
+export function taskEligibleForSession(task: GovernedTaskRecord, options?: ClaimNextTaskOptions): boolean {
+  if (!options || !Object.prototype.hasOwnProperty.call(options, 'sessionTargetScope')) return true;
+  const scope = options.sessionTargetScope ?? null;
+  if (!scope) return task.targetScope === undefined;
+  if (!task.targetScope) return false;
+  if (task.targetScope.targetId !== scope.targetId || task.targetScope.projectId !== scope.projectId) return false;
+  const allowed = new Map(scope.components.map((component) => [component.mappingId, component]));
+  return task.targetScope.components.every((component) => {
+    const granted = allowed.get(component.mappingId);
+    return Boolean(granted && granted.repositoryId === component.repositoryId && granted.role === component.role);
+  });
 }
 
-function activeScopeConflict(tasks: GovernedTaskRecord[], scopes: string[], taskId?: string): GovernedTaskRecord | null {
+function byPriority(left: GovernedTaskRecord, right: GovernedTaskRecord): number {
+  return right.priority - left.priority || left.sequence - right.sequence || left.taskId.localeCompare(right.taskId);
+}
+
+/** The session's own active work, resumed before anything new (DISPATCH-02). */
+export function ownedResumableTask(
+  tasks: readonly GovernedTaskRecord[],
+  governedSessionId: string
+): GovernedTaskRecord | null {
+  return tasks
+    .filter((task) => task.ownerGovernedSessionId === governedSessionId && RESUMABLE.has(task.status))
+    .sort(byPriority)[0] ?? null;
+}
+
+/** READY, eligible tasks whose dependencies are DONE, in claim order. */
+export function executableTaskCandidates(
+  tasks: readonly GovernedTaskRecord[],
+  eligible: (task: GovernedTaskRecord) => boolean = () => true
+): GovernedTaskRecord[] {
+  const byId = new Map(tasks.map((task) => [task.taskId, task]));
+  return tasks
+    .filter((task) => task.status === 'READY')
+    .filter(eligible)
+    .filter((task) => task.dependencies.every((dependency) => byId.get(dependency)?.status === 'DONE'))
+    .sort(byPriority);
+}
+
+function firstExecutable(tasks: GovernedTaskRecord[]): GovernedTaskRecord | null {
+  return executableTaskCandidates(tasks)[0] ?? null;
+}
+
+function sameScopeSet(left: readonly string[], right: readonly string[]): boolean {
+  const a = [...new Set(left)].sort();
+  const b = [...new Set(right)].sort();
+  return a.length === b.length && a.every((scope, index) => scope === b[index]);
+}
+
+/** Whether a task still holds its resource scopes: non-terminal, as the queue's own collision rule counts it. */
+export function isActiveGovernedTaskStatus(status: GovernedTaskStatus): boolean {
+  return ACTIVE.has(status);
+}
+
+export function activeScopeConflict(
+  tasks: readonly GovernedTaskRecord[],
+  scopes: readonly string[],
+  taskId?: string
+): GovernedTaskRecord | null {
   const requested = new Set(scopes);
   return tasks.find((task) => task.taskId !== taskId
     && ACTIVE.has(task.status)
     && task.resourceScopes.some((scope) => requested.has(scope))) ?? null;
+}
+
+export function foreignLockConflict(
+  locks: readonly ActiveLockProjection[],
+  scopes: readonly string[],
+  governedSessionId: string
+): boolean {
+  const requested = new Set(scopes);
+  return locks.some((lock) => lock.governedSessionId !== governedSessionId && requested.has(lock.scope));
+}
+
+/** Why a candidate cannot be claimed by this session now, resource scope first. */
+export function taskClaimConflict(
+  tasks: readonly GovernedTaskRecord[],
+  candidate: GovernedTaskRecord,
+  locks: readonly ActiveLockProjection[],
+  governedSessionId: string
+): TaskClaimConflict | null {
+  if (activeScopeConflict(tasks, candidate.resourceScopes, candidate.taskId)) return 'TASK_RESOURCE_CONFLICT';
+  if (foreignLockConflict(locks, candidate.resourceScopes, governedSessionId)) return 'TASK_LOCK_CONFLICT';
+  return null;
 }
 
 export function createGovernedTaskQueue(
@@ -278,7 +384,22 @@ export function createGovernedTaskQueue(
         }
         const conflict = activeScopeConflict(document.tasks, input.resourceScopes);
         if (conflict) {
-          result = { classification: 'CONFLICT', task: conflict, firstExecutableTask: firstExecutable(document.tasks), storeRevision: document.storeRevision, reasonCode: 'active_resource_scope_conflict' };
+          const equivalent = input.equivalence === 'EXACT_ACTIVE_SCOPE_SET'
+            && conflict.repository === input.repository
+            && sameScopeSet(conflict.resourceScopes, input.resourceScopes)
+            && targetScopeEquals(conflict.targetScope, input.targetScope);
+          const ownedElsewhere = Boolean(
+            conflict.ownerGovernedSessionId && conflict.ownerGovernedSessionId !== governedSessionId
+          );
+          result = equivalent
+            ? {
+                classification: ownedElsewhere ? 'CONFLICT' : 'CONTINUATION',
+                task: conflict,
+                firstExecutableTask: firstExecutable(document.tasks),
+                storeRevision: document.storeRevision,
+                reasonCode: ownedElsewhere ? 'equivalent_active_task_owned_elsewhere' : 'equivalent_active_task'
+              }
+            : { classification: 'CONFLICT', task: conflict, firstExecutableTask: firstExecutable(document.tasks), storeRevision: document.storeRevision, reasonCode: 'active_resource_scope_conflict' };
           return document;
         }
         if (document.tasks.length >= 5_000) fail('TASK_STORE_CAPACITY_EXCEEDED');
@@ -330,26 +451,59 @@ export function createGovernedTaskQueue(
       return reconciled;
     },
 
-    async claimNextTask(governedSessionId, expectedStoreRevision) {
+    async claimNextTask(governedSessionId, expectedStoreRevision, options) {
       let claimed: GovernedTaskRecord | null = null;
+      let resumed: GovernedTaskRecord | null = null;
       await store.update(async (document) => {
         if (document.storeRevision !== expectedStoreRevision) fail('TASK_STORE_REVISION_MISMATCH');
-        const candidate = firstExecutable(document.tasks);
-        if (!candidate) return document;
-        if (activeScopeConflict(document.tasks, candidate.resourceScopes, candidate.taskId)) fail('TASK_RESOURCE_CONFLICT');
-        const candidateScopes = new Set(candidate.resourceScopes);
-        const externalLockConflict = (await listActiveLocks()).some((lock) => (
-          lock.governedSessionId !== governedSessionId && candidateScopes.has(lock.scope)
-        ));
-        if (externalLockConflict) fail('TASK_LOCK_CONFLICT');
+        // DISPATCH-02: the session's own active work comes first; resuming it
+        // is a read, never a new claim.
+        const targeted = options?.expectedTaskId !== undefined;
+        const target = targeted ? document.tasks.find((task) => task.taskId === options.expectedTaskId) : undefined;
+        if (targeted && !target) fail('TASK_NOT_FOUND');
+        if (targeted && target!.taskRevision !== options?.expectedTaskRevision) fail('TASK_REVISION_MISMATCH');
+        if (targeted && !taskEligibleForSession(target!, options)) fail('TASK_SCOPE_MISMATCH');
+        if (targeted && target!.ownerGovernedSessionId && target!.ownerGovernedSessionId !== governedSessionId) fail('TASK_OWNED_BY_OTHER_SESSION');
+        const owned = ownedResumableTask(document.tasks, governedSessionId);
+        if (owned && targeted && owned.taskId !== options?.expectedTaskId) fail('TASK_SESSION_ALREADY_OWNS_OTHER_TASK');
+        if (owned) {
+          resumed = owned;
+          return document;
+        }
+        const candidates = executableTaskCandidates(document.tasks, (task) => taskEligibleForSession(task, options) && (!targeted || task.taskId === options?.expectedTaskId));
+        if (targeted && candidates.length === 0) fail('TASK_NOT_EXECUTABLE');
+        if (candidates.length === 0) return document;
+        // DISPATCH-03: a locally blocked candidate (resource scope or foreign
+        // lock) is skipped when a compatible one exists; with none, the first
+        // candidate's historical conflict code is kept.
+        let locks: ActiveLockProjection[] | null = null;
+        let firstConflict: TaskClaimConflict | null = null;
+        let candidate: GovernedTaskRecord | null = null;
+        for (const entry of candidates) {
+          let conflict: TaskClaimConflict | null = activeScopeConflict(document.tasks, entry.resourceScopes, entry.taskId)
+            ? 'TASK_RESOURCE_CONFLICT'
+            : null;
+          if (!conflict) {
+            locks ??= await listActiveLocks();
+            if (foreignLockConflict(locks, entry.resourceScopes, governedSessionId)) conflict = 'TASK_LOCK_CONFLICT';
+          }
+          if (!conflict) {
+            candidate = entry;
+            break;
+          }
+          firstConflict ??= conflict;
+        }
+        if (!candidate) fail(firstConflict ?? 'TASK_RESOURCE_CONFLICT');
+        const selected: GovernedTaskRecord = candidate;
         const timestamp = now().toISOString();
-        claimed = { ...candidate, status: 'CLAIMED', ownerGovernedSessionId: governedSessionId, updatedAt: timestamp, nextAction: 'start_governed_task', taskRevision: candidate.taskRevision + 1 };
+        claimed = { ...selected, status: 'CLAIMED', ownerGovernedSessionId: governedSessionId, updatedAt: timestamp, nextAction: 'start_governed_task', taskRevision: selected.taskRevision + 1 };
         return {
           ...document,
           storeRevision: document.storeRevision + 1,
-          tasks: document.tasks.map((task) => task.taskId === candidate.taskId ? claimed as GovernedTaskRecord : task)
+          tasks: document.tasks.map((task) => task.taskId === selected.taskId ? claimed as GovernedTaskRecord : task)
         };
       });
+      if (resumed) return resumed;
       if (claimed) {
         await safeAudit({
           type: 'task.claimed', governedSessionId, task: claimed,
@@ -357,6 +511,14 @@ export function createGovernedTaskQueue(
         });
       }
       return claimed;
+    },
+
+    async claimTaskById(governedSessionId, taskId, expectedTaskRevision, expectedStoreRevision, options) {
+      const result = await this.claimNextTask(governedSessionId, expectedStoreRevision, {
+        ...options, expectedTaskId: taskId, expectedTaskRevision
+      });
+      if (!result || result.taskId !== taskId) fail('TASK_TARGET_CLAIM_FAILED');
+      return result;
     },
 
     async transitionTask(input) {

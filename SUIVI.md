@@ -1,4 +1,992 @@
 # SUIVI.md
+## 2026-10-23 — PR #350 : pilote GRT /gouvern et provisioning S1/S2, non fusionnés
+
+- Mandat : étendre sans migration le MCP existant, point d'ancrage issue #349 et PR #350. Baseline main/S1 `a3df3b0`, GRT `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Aucun déploiement S1 effectué.
+- Implémentation additive : planificateur Plesk S1/S2, aperçu MCP read-only, consentement web signé, portail privé `/gouvern`, staging GRT sous `/app/data/gouvern` (0700/0600, SHA-256 vérifié, exclusion concurrente), fournisseur de jetons GitHub App optionnel.
+- Gouvernance : Plesk et GRT n'acceptent pas d'écritures sans admission runtime session/claim/locks attestée ; câblage actuel `authorizeRuntimeWrite: async () => false`. Aucune création Plesk, archive ni changement de production n'a eu lieu. OAuth #346/#207 inchangé.
+- Tests : RED → GREEN, CI et analyses de sécurité dans PR #350, notamment refus du consentement non autorisé, concurrence, intégrité et rejet des chemins dangereux. L'approbation ancienne ne certifie pas automatiquement le HEAD nouveau. Les fils et la CI finale restent à recontrôler.
+- Traçabilité complémentaire `docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md` ; décision associée `DECISIONS_LOG.md` et changements `CHANGELOG.md`.
+- NEXT_ACTION : résoudre les fils de revue, actualiser l'approbation du HEAD, obtenir la CI verte, fusionner seulement si le ruleset GitHub l'admet, vérifier Governed Deploy exact SHA, puis préparer l'activation cible avec autorité runtime valide et tests HTTPS /mcp /gouvern.
+
+
+
+## 2026-10-22 — PR #329 : primitive de claim ciblé (GitHub-only, non déployée)
+
+- **Portée** : branche `fix/governed-targeted-task-claim-20261022`, PR #329 ; ajout de `claimTaskById` à la Governed Task Queue existante, sans seconde queue, sans nouvelle identité ni session, sans écriture directe sur S1, sans modification de `main` ni de la PR OAuth #207.
+- **Sécurité** : taskId exact et compare-and-swap des révisions task/store ; préservation des dépendances, TargetScope, verrous, collisions, ownership de session et de la reprise en lecture seule du même propriétaire. Aucun endpoint OIDC ni acquisition runtime par GitHub Actions à ce stade.
+- **Tests** : `tests/governedTaskQueue.test.ts` (révisions périmées, mauvais identifiant, locks, concurrence, propriétaire étranger et reprise idempotente) désormais exécuté explicitement par `.github/workflows/mcp-ci.yml`.
+- **Preuves** : GitHub Actions #39726267487 SUCCESS au SHA `d234f48eefb19240dc3d6e6b26a18a83cf39e695` ; le renforcement propriétaire `3ffb84b68fc1029a523dd9e899601b7d2abab935` attend encore son verdict CI exact-head. Une CI verte ne constitue pas une autorisation runtime.
+- **NEXT_ACTION** : confirmer CI sur le HEAD final, revue indépendante, corriger les remarques, puis seulement examiner l'admission OIDC bornée par autorités existantes. Ne pas fusionner/déployer sans ces preuves.
+
+
+## 2026-10-16 — INTAKE commun : publication de la reprise inter-agents et du point d'arrêt réel
+
+- **Directive publiée immédiatement** : [issue #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094) ; elle s'appuie sur les autorités existantes. Intervention GitHub directe uniquement, pas de Codex, de mutation S1/S2, de session ou de Task claim.
+- **Baseline recontrôlée** : `main@cc31ce12bea236b4cfb31d99ecee700c543f0c17`, PR #300 MERGED, CI principale #38812707495 SUCCESS, Governed Deploy #38812707629 SUCCESS exact SHA. Les 18 READY ne sont pas automatiquement certifiés ; matrice `docs/governance/gwb04-ready-ownership-20261015.json`.
+- **Snapshot runtime récent** : GitHub Actions/OIDC read-only issues #301, #302, #303, vers 00h35 CEST : Governed Sessions révision 803 (0 ACTIVE, 2 EXPIRED), Queue révision 243 (2 READY unowned), Locks révision 301 (0 actifs). Ces valeurs ne sont pas des droits courants et doivent être reobservées pour toute mutation.
+- **Amélioration documentaire proposée en PR** : pointer les agents vers un protocole vérifiable depuis `README.md`, `AGENTS.md`, `CLAUDE.md` et `docs/governance/README.md`, sans nouveau mécanisme de dispatch ni modif du programme existant. Vérifier CI exact-head avant toute fusion/déploiement.
+- **NEXT_ACTION** : reprise à froid vérifiable par un nouvel agent ; poursuite PCM-03/GWB-04 des vérifications `TB-W4-H-01` puis `TB-W4-K-01` ; activités indépendantes selon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, sans réapproprier PR #207, #88..90 ou les issues #262/#268 ; puis checkpoint.
+
+## 2026-10-15 — PCM-03/GWB04 : candidats READY, scopes et autorités runtime vérifiés
+
+- Cartographie `docs/governance/gwb04-ready-ownership-20261015.json` : 18 READY en ordre officiel du Program Backlog, 15 avec chevauchement possible de PR anciennes, 3 sans PR candidate identifiée (cette donnée n'est pas un état d'ownership).
+- Sources : GitHub `main@c7d33d4477db5c6a974a97e4280ab1056efcc5c9`, archives GWB04, six PR ouvertes, sondes GitHub OIDC #297–299 : Queue révision 243, deux Tasks READY sans propriétaire ; Session révision 803, aucune ACTIVE ; Locks révision 301, zéro actif. Hash SHA-256 des trois sorties vérifié. Les capacités runtime de claim restent non disponibles sans propre session autorisée.
+- Le chantier OAuth PR #207 conserve son périmètre ; la pile #88→#89→#90 conserve ses PR d'origine et leurs dépendances. Aucun des 18 READY n'est certifié DONE par existence de chemins.
+- NEXT_ACTION : vérifier les assertions fonctionnelles W4-H-01, K-01 et les autres READY par programme ; pour toute mutation, reprise/claim sous autorité réelle, pas seulement un commentaire GitHub. Après CI/Deploy du dossier, reobserver la queue avant toute tâche exécutée.
+
+
+## 2026-10-15 — PCM-02 / GWB03-02 : audit borné des domaines F-04
+
+- Baseline GitHub `main@773abe5542b3cd209943a648e750e2ec863b1e62` ; PR #267 fusionnée historiquement, issue #268 ouverte. GWB03-02 documente **26** constats P1/P2, **18** ancres code/test, **8** non vérifiés individuellement ; aucun certificat runtime.
+- Quatre limites existantes (timestamps, abonnements Plesk partagés, `realPathVerified`, schéma SQL) restent des sujets de l'issue #268, sans tâche concurrente. C5 doit demeurer UNVERIFIED si observation/propriété indisponible.
+- Sources : `src/liveState/servedDomains.ts`, `tests/servedDomainObservation.test.ts`; archive `docs/governance/gwb03-pr267-domain-evidence-20261015.json` ; test invariant `tests/gwb03Pr267DomainAudit.test.ts`.
+- NEXT_ACTION : après exact-head CI et merge de ce dossier, avancer GWB03 autres P1 et GWB04 acceptation comportementale ; vérifier ownership et données live via GitHub/OIDC avant de toucher F-04.
+
+
+## 2026-10-15 — PCM-02 / GWB03-01 : 73 constats PR #261, deux limites de politique à confirmer
+
+- Base GitHub `main@0817f340dcd57f59b348b8a023082efd472342e3`, CI `38808611902` et Governed Deploy `38808612012` réussis. Les six PR ouvertes #207/#90/#89/#88/#86/#85 restent des scopes historiques indépendants, aucune modification dans leurs branches.
+- Analyse additive : `docs/governance/gwb03-pr261-source-policy-evidence-20261015.json` et test `tests/gwb03Pr261AuditEvidence.test.ts`. Les **73** constats de PR #261 ont un référent d'origine ; **17** ont une ancre code/test retrouvée ; **56** restent sans spotcheck individuel et **0** sont déclarés certifiés runtime.
+- Risque source **#4216890728** : les limites CPU/RAM/PID exigent des valeurs positives sans maxima adaptés à S1. Ce point est déjà recensé dans l'issue F-03 #262 ; ne pas créer un deuxième lot concurrent.
+- Risque source **#4222289799** : la politique `json-file` teste la présence de `max-size` et `max-file` sans plafonner la rétention ; les options `local` ne sont pas bornées par cette condition. Tests RED de politique pure à préparer dans le scope F-03 possédé, sous autorité et sans accès serveur direct.
+- Pas de claim/task/session/lock inventé, pas de modification code applicatif, pas de régression OAuth ; la preuve de l'existence d'un contrôle dans le code n'est pas encore la résolution d'un constat. **NEXT_ACTION :** valider par tests négatifs les deux limitations via propriétaire F-03 ; reprendre les P1 de PR #261 par sous-périmètre et GWB03-02 PR #267, puis GWB04. Après chaque PR exact-head CI, checkpoint et recalcul `program:next` sous autorité.
+
+
+## 2026-10-15 — PRIORITÉ FONDATRICE : carte PCM-00..14 pour ne plus perdre la continuité
+
+- Directive propriétaire : organiser le retour à l'objectif initial par **15 jalons chronologiques** et la liste complète des **94 blueprints** ; toute nouvelle arrivée doit voir immédiatement les tâches, dépendances, résultats, owners réels et scopes de collision, avec preuves de checkpoint avant et après.
+- Artefact : `docs/governance/mcp-priority-convergence-map-20261015.json` (machine-readable, NON_AUTHORITATIVE, 15 jalons PCM-00..14 ; 94 blueprints dans l'ordre du Program Backlog à `main@92f4e51c1e7e3489b5d6e5c78369dcf0249e8703`). Index humain dans `docs/governance/README.md` ; liens obligatoires dans `README.md`, `AGENTS.md`, `CLAUDE.md`, `TASKS.md`.
+- Priorité d'audit sans répétition : GWB03-01 PR #261 → GWB03-02 PR #267 → autres P1/P2, GWB04 validation fonctionnelle des 94, GWB05 convergence des résidus prouvés ; ne pas comptabiliser automatiquement 158 constats comme bugs actuels.
+- Priorité d'exécution parallèle : le parcours OAuth PR #207 et les tâches W3/W4 déjà admissibles ont leurs propres droits. `PCM-09` reprend la queue live dès PCM-00 sans attendre l'audit complet, uniquement si Task/Session/Lock et permissions sont établis. Aucune appropriation du travail d'autrui, ni second dispatcher.
+- **NEXT_ACTION** : finaliser la PR gouvernée de cette carte avec tests de DAG, liens et 94 IDs ; vérifier CI exacte, merge/deploy autorisés, puis reobserver readiness/Queue/Locks avant démarrage des chantiers. Ne pas inventer un état runtime de l'agent.
+
+
+## 2026-10-15 — Audit : reprise inter-agents vérifiée, navigation et checkpoint GWB corrigés
+
+- **Vérification de reprise froide** depuis GitHub, sans conversation : lecture des points d'entrée `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/governance/README.md`, de `MASTER_RESUME_MEMORY.md`, du bloc `GWB-00..09`, de `Program Backlog V2`, des résultats d'audit et de l'issue #235. Constat : les informations étaient persistées mais les références racine n'orientaient pas suffisamment vers les nouvelles archives ; le checkpoint GWB et le résumé du 5 octobre étaient anciens.
+- **Correctif documentaire non régressif** : ajout de l'index de reprise dans `docs/governance/README.md`, pointeurs depuis les entrées `README.md` / `AGENTS.md`, avertissement de fraîcheur dans `MASTER_RESUME_MEMORY.md`, conservation de l'ancien `currentCheckpoint` GWB sous `checkpointHistory` et nouveau `currentCheckpoint` fondé sur les preuves du 15 octobre ; aucune tâche documentaire GWB promue comme tâche runtime.
+- **Baseline observée, pas vérité éternelle** : GitHub `main@b187953de89d8f6529e2af97abc1de4570c53146`, CI run `38789597872` SUCCESS et Governed Deploy run `38789597877` SUCCESS ; Program Backlog V2 : 94 blueprints, 36 DONE, 18 READY, 28 BLOCKED, 5 CONDITIONAL, 7 DEFERRED.
+- **Audit partiellement réalisé** : GWB-02 corpus livrable PR #291, GWB-04 cartographie des chemins PR #290, GWB-03 triage PR #292 avec trois contrôles sources/tests sur 158 constats historiques, sans certification de résolution. Les commentaires sur commits, la revue complète des symboles/assertions et les tests end-to-end restent à prouver.
+- **Pacte conservé** : prioriser GitHub direct et GitHub Actions/OIDC selon la politique existante ; aucune écriture directe S1, aucun nouveau dispatcher, queue, identité, session, Task, Claim, Lock ou gate humaine artificielle. La PR OAuth #207 et son propriétaire restent inchangés ; préserver la page de consentement actuelle en rapprochant l'existant refresh tokens.
+- **Traçabilité** : cette PR documentaire, son exact HEAD/CI, l'issue maîtresse #235, `SUIVI.md`, `CHANGELOG.md` et les checkpoints versionnés sont des traces vérifiables. Les lectures simples et actions non instrumentées ne sont pas automatiquement enregistrées comme événements runtime ; aucune preuve non observée n'est inventée.
+- **NEXT_ACTION unique** : `GWB03-01` — reconstituer les résolutions réelles des P1 de la PR #261 contre code du HEAD, tests et attestations ; puis `GWB03-02` (#267), certification fonctionnelle GWB-04, réconciliation GWB-05..09 via les seules autorités existantes. Réobserver GitHub et Queue/Session/Locks avant toute mutation.
+
+
+## 2026-10-15 — GWB-02/GWB-04 : archives de revue et traçabilité 94 blueprints, GWB-03 repris
+
+- **Contexte canoniquement admis** : GitHub main `dec94d9892a1fe56af91845bde4a85f3327f90cb` après [PR #290](https://github.com/Patricked-code/MCP/pull/290) et [PR #291](https://github.com/Patricked-code/MCP/pull/291) ; reobserver HEAD/CI/deploy à chaque reprise. Ne pas présumer l'alignement S1 sans attestation exact-SHA.
+- **GWB-04** : PR #290 fusionnée `b3454eab0cdac60332365dc0edabbd93bde514ae`, CI main `38787800931` SUCCESS, Governed Deploy `38787800896` SUCCESS. `docs/governance/gwb04-94-blueprint-source-test-trace-20261015.json` documente les 94 slots et fichiers existants. **C'est une correspondance de chemins, pas une preuve de fonctionnalité ni de tests GREEN** : les 94 implémentations restent `UNVERIFIED_PENDING_SOURCE_REVIEW` dans ce document dérivé.
+- **GWB-02** : PR #291 fusionnée `dec94d9892a1fe56af91845bde4a85f3327f90cb`, deux CI PR `38788010095` / `38787999086` SUCCESS. Sources archivées dans `docs/governance/gwb02-*` : 282 commentaires inline, 215 reviews soumises sur 135 PR. Manifest de couverture conservé ; **commentaires directs sur commits non certifiés (endpoint non accessible)**. CI/deploy du merge sont à réobserver avant toute déclaration de déploiement.
+- **GWB-03** : [PR #292](https://github.com/Patricked-code/MCP/pull/292) candidate d'analyse des constats historiques : 158 labels de gravité (89 P1, 69 P2). Les comptes n'impliquent pas l'existence de défauts actuels. Les groupes prioritaires proviennent des PR #261 (provisioning) et #267 (F-04), mais aucune correction n'est attribuée sans examen du code courant, des tests et des permissions.
+- **Parallélisme gouverné** : revue des PR #261/#267 et vérification exacte des 18 blueprints planning-READY indépendantes en lecture GitHub ; toute écriture exige `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, Session/Task/Lock/consentement réobservés. La PR OAuth #207 conserve ses propriétaires et sa Task, sans reprise.
+- **NEXT_ACTION** : après validation/fusion de #292, GWB03-01 vérifier les P1 de #261 et leurs tests réels ; GWB03-02 vérifier #267 et F-04 ; poursuivre GWB04 inspection code/test ligne à ligne, puis réconcilier uniquement les résidus prouvés dans le Program Backlog et la Governed Task Queue existants. Pas de nouveau dispatcher ni tâche runtime inventée.
+
+
+## 2026-10-15 — Transport prioritaire GitHub/OIDC ; OAuth interactif toujours en échec, continuité conservée
+
+- **Décision du propriétaire / règle réutilisée** : le client doit **préférer GitHub + GitHub Actions OIDC** à la reconnexion interactive de `wealthtech_ssh_bridge` lorsque le périmètre dispose d'un fallback GitHub approuvé. Source canonique déjà existante : `.mcp/github-first-operational-policy.json` ; aucune nouvelle autorité ou queue.
+- **Incident OAuth (preuve utilisateur, 15/10)** : après saisie du token, `/oauth/authorize` renvoie `403 access_denied` « La décision d'autorisation doit provenir de la page de consentement. ». Dans `src/oauth.ts` ce message est émis par `isSameOriginSubmission`; la cause réelle (en-têtes du POST, `MCP_WEB_BASE_URL`, redirections, contexte du navigateur) est **à vérifier**. Conserver les protections CSRF et l'ownership de la PR [#207](https://github.com/Patricked-code/MCP/pull/207), ne récupérer aucun secret du navigateur.
+- **Chemin de repli opérationnel** : issue [#282](https://github.com/Patricked-code/MCP/issues/282), [run OIDC 38782659781](https://github.com/Patricked-code/MCP/actions/runs/38782659781), SUCCESS ; issue [#283](https://github.com/Patricked-code/MCP/issues/283), [run 38783515289](https://github.com/Patricked-code/MCP/actions/runs/38783515289), SUCCESS (disque relevé à 96 %, 3,6 Go libres à ce moment-là) ; [#284–#288](https://github.com/Patricked-code/MCP/issues/284) : observations post-déploiement Git/Docker/Task Queue/Sessions/Locks, SUCCESS et `mutationAllowed=false`. Rapports OIDC horodatés, non substituables à des claims runtime.
+- **Réparation de livraison** : PR [#275](https://github.com/Patricked-code/MCP/pull/275) fusionnée dans `main@54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2` ; [CI #38783796158](https://github.com/Patricked-code/MCP/actions/runs/38783796158) **success** et [Governed Deploy #38783796272](https://github.com/Patricked-code/MCP/actions/runs/38783796272) **success avec attestation SHA exact**. L'échec historique HTTP 502 ne prouve pas la cause racine et reste documenté comme incident rétabli, cause exacte indéterminée.
+- **NEXT_ACTION** : avancer GWB-02/GWB-04 (audit des revues et crosswalk code/tests 94 blueprints) par GitHub ; poursuivre l'analyse OAuth dans #207 sans claim concurrent ; lire les autorités Task Queue, Sessions, Locks via sondes OIDC avant sélection puis seulement utiliser les mutations autorisées ; ne pas déclarer `GLOBAL_MCP_COMPLETE` prématurément.
+
+
+## 2026-10-11 — Reprise gouvernée GWB-00/GWB-01, incident déploiement et S1 read-only
+
+- **Source** : [PR #275](https://github.com/Patricked-code/MCP/pull/275), bloc `docs/governance/governed-audit-continuation-workblock-20261009.json`; ce bloc est une projection de planification, non une Task Queue ni un claim.
+- **GitHub** : `main@c91c1a1191f40f20a6de841914947e94356658df` (PR #274 fusionnée) ; branche de PR #275 initialement `e66025f...` puis fusion gouvernée non destructive de `main` dans sa branche, nouvel HEAD `ebd087063cd7bd0fc8ad99dc4656f4473484c49e` avant rédaction du présent checkpoint. Les seuls écarts de la branche face à `main` sont le bloc et son test ; recontrôler HEAD, CI et politiques avant fusion.
+- **GWB-00, constat exact** : Governed Deploy [run 38158118349](https://github.com/Patricked-code/MCP/actions/runs/38158118349) sur `main@c91c1a...` FAIL ; CI [run 38158118306](https://github.com/Patricked-code/MCP/actions/runs/38158118306) SUCCESS. Journal du job : `curl: (22) The requested URL returned error: 502` à l'appel `/deploy/github/s1/start`, code de sortie 22. `src/deploy/routes.ts` retourne lui-même 502 `s1_deploy_start_failed` si `runWrite` échoue ou a un code non nul ; cela constitue une hypothèse ciblée, pas une preuve de provenance HTTP sans corps de réponse. Aucun accès direct ni mutation S1.
+- **GWB-01, sources live** : issues [#276](https://github.com/Patricked-code/MCP/issues/276) à [#280](https://github.com/Patricked-code/MCP/issues/280) : GitHub Actions OIDC read-only SUCCESS et artefacts attestant `mutationAllowed=false`. Le commentaire de preuve [PR #275](https://github.com/Patricked-code/MCP/pull/275#issuecomment-6112019731) rapporte S1 checkout propre `3df9778...`, Docker healthy, Task Queue revision 243 avec deux READY non attribuées, Sessions revision 803 avec deux expirées et aucune active dans la projection, Locks revision 301 zéro lock ; revalider contenu et fraîcheur avant toute attribution. S1 ≠ GitHub `main`.
+- **NON VALIDÉ** : cause racine HTTP 502 ; autorisation de déploiement actuel, SHA runtime exact et journal server-side ; existence de sessions runtime utilisables ; finalisation F-04 / `GLOBAL_MCP_COMPLETE`.
+- **Contrôle concurrent** : aucun claim runtime créé ; ne pas réattribuer tâches ni sessions. Ne pas contourner le CI ou le Deploy. La PR #275 doit passer les contrôles sur son HEAD mis à jour.
+- **NEXT_ACTION** : extraire de manière redacted et bornée le statut/corps d'erreur du endpoint de déploiement ainsi que la provenance serveur du `runWrite` via les canaux d'observation autorisés ; corriger seulement après preuve, tests RED/GREEN et approbation gouvernée applicable ; recontrôler CI PR #275 puis fusion éventuelle ; sélectionner ensuite le premier candidat `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` avec contrôles runtime.
+
+
+## 2026-10-09 — W3 `TB-W3-F-04` Domain binding, incrément 1 (observe-binding) — fusionné, déployé, attesté
+
+- **Fusion.** PR #267 fusionnée au head exact `6e7417f`, après accord du propriétaire, en `5b631eb5520ed06c52bf18169a38dd22171ba90e`. Neuf rounds de revue Codex.
+- **CI main** #2322 `37893614504` : verte.
+- **Governed Deploy** #138 `37893614512` : SUCCESS ; « Deployment attested for exact SHA 5b631eb5520ed06c52bf18169a38dd22171ba90e ». Le déploiement est parti de Git, sans action manuelle sur S1.
+- **Sondes OIDC en lecture seule sur S1** : toutes en succès (#199 à #203, runs `37893837541`, `37893840236`, `37893843227`, `37893845928`, `37893848542`). Elles couvrent `mcp_git_status`, `docker_status`, `mcp_governed_tasks`, `mcp_governed_sessions` et `mcp_governed_locks`. Le contenu des artefacts n'est pas téléchargeable via le proxy GitHub de cette session : Tasks, Sessions et Locks restent `UNKNOWN` en contenu.
+- **Décisions du propriétaire.**
+  - Pas de `www.` sur ce Plesk : les projets sont servis en `<domaine>.<ext>` (l'abonnement) ou `<sous-domaine>.<domaine>.<ext>`.
+  - L'horodatage commun de Live State est accepté comme limite connue.
+- **Limites connues** : issue #268 (horodatage commun, portée par sous-domaine, `realPath` non vérifiés, schéma Plesk à confirmer sur S1/S2).
+- **Effet actuel.** Aucun mapping n'a de `realPath` vérifié : C5 reste `UNVERIFIED` pour tous les projets. Aucune écriture S1.
+- **`TB-W3-F-04` n'est pas DONE.** Les étapes `backup`, `bind-domain`, `certificate`, `activate`, `health` et `rollback` restent à livrer.
+- **NEXT_ACTION.** Incrément 2 de F-04 : portée par sous-domaine (`/var/www/vhosts/<domaine>/<sous-domaine>/…`), puis vérification des `realPath` du registre, avant les étapes de binding consenties.
+
+## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (observe-binding) — GREEN candidate
+
+- **Reprise depuis `main@bc1d986`.** Les intakes ont été réobservées : aucune nouvelle `[PROGRAM INTAKE]` depuis #235/#236, et l'issue #262 reste ouverte. Les Governed Sessions, claims et verrous runtime sont `UNKNOWN` depuis cette session : le proxy GitHub refuse les artefacts, et le bridge n'est pas requis (GitHub-first). Aucun claim n'est pris ni repris.
+- **Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`.** `TB-W3-A3-02` reste réservé : il demande un claim runtime et entre en collision avec la PR #207 (`mcp/w3-a3-oauth-continuity`) d'un autre agent. Le lot suivant compatible est donc `TB-W3-F-04`.
+- **Livré (incrément 1, étape `observe-binding` du contrat `DOMAIN_BINDING`).**
+  - `src/liveState/servedDomains.ts` : Live State fait un inventaire en lecture seule et borné (1000 entrées) des domaines Plesk de chaque serveur géré. Il en tire l'observation de domaine C5.
+    - Une lecture en échec, malformée ou hors borne reste indisponible ; elle ne devient jamais une absence.
+    - Un serveur non géré n'obtient aucune observation.
+    - Un vhost prouve un binding sur le serveur, ni le DNS ni un certificat.
+  - `src/governedContext/github.ts` : `readDomainObservation` lit par défaut l'observation de Live State. C5 peut donc conclure `RESOLVED` ou `DOMAIN_NONE_CONFIRMED` au lieu de toujours rester `UNVERIFIED`.
+  - Tests : `tests/servedDomainObservation.test.ts`. RED : module absent. GREEN : 5/5. La chaîne CI locale passe (typecheck, build, docs:check, governance, gwc:verify, readonly-safety à 1006 tests).
+- **Revue Codex de la PR #267 (cinq constats, tous vérifiés et corrigés).**
+  - L'inventaire lit le niveau par domaine de Plesk (d'abord `/var/www/vhosts/system/<domaine>`, puis ses enregistrements au troisième round) : les domaines imbriqués sous une souscription sont vus.
+  - La commande n'a plus de pipe : un `find` en échec fait échouer la lecture au lieu de passer pour une absence.
+  - Toute entrée qui n'est pas un domaine (marqueur de troncature compris) rend l'inventaire indisponible.
+  - Un inventaire par serveur géré (S1 et S2) : un projet résolu sur S2 obtient aussi son observation.
+  - L'observation est restreinte aux domaines que GitRegistry déclare pour le projet sélectionné sur ce serveur : un autre locataire du serveur ne passe plus pour non déclaré.
+  - RED : 5 tests sur 6 échouent sur l'ancien source. GREEN : 6/6. La chaîne CI locale passe (1007 tests).
+- **Second round Codex (quatre constats).**
+  - Corrigés :
+    - le nom brut est validé avant toute normalisation ;
+    - les entrées wildcard sont exclues et ne sont plus prises pour une corruption ;
+    - un projet qui ne déclare aucun domaine n'obtient aucune observation (`UNKNOWN`) : l'inventaire n'établit aucune propriété, donc aucun `DOMAIN_NONE_CONFIRMED` supposé.
+  - Les alias Plesk n'étaient pas inventoriés ; c'est résolu au troisième round.
+- **Troisième round Codex (deux constats, corrigés).**
+  - Un site suspendu ou désactivé garde son répertoire `system/<domaine>` : la présence du répertoire ne prouve pas qu'il est servi. L'inventaire lit désormais les enregistrements Plesk (`plesk db`) : domaines au statut actif (`status = 0`) avec un service web (`htype <> 'none'`), et alias web actifs. Cela couvre aussi les alias du round précédent. Les sous-domaines wildcard (`*.`) sont exclus.
+  - Les noms internationalisés sont acceptés sous leur forme Punycode, TLD Punycode compris (`xn--…`).
+  - **À vérifier** sur S1 et S2 après le déploiement : que `plesk db` est disponible pour l'utilisateur SSH en lecture seule. Sinon l'inventaire est `UNAVAILABLE` et C5 reste `UNVERIFIED`, comme avant cette PR (échec fermé).
+- **Quatrième round Codex (quatre constats).**
+  - Corrigés :
+    - un domaine n'est servi que si son abonnement l'est aussi (`webspace_status = 0`) ; un alias seulement si son domaine l'est ;
+    - les labels Punycode sont validés par aller-retour IDNA (`domainToUnicode`/`domainToASCII`), et un faux label rend l'inventaire indisponible ;
+    - chaque inventaire vieillit depuis sa propre lecture (`observedAt`), pas depuis la réconciliation du snapshot.
+  - **Limite connue** : l'alias `www.` généré par Plesk n'est pas inventorié. Une déclaration `www.<domaine>` reste `DOMAIN_DECLARATION_UNOBSERVED`, donc `UNVERIFIED` : un faux négatif fermé, jamais un faux positif.
+- **Cinquième round Codex (un constat, corrigé).** Filtrer l'observation sur les seuls noms déclarés masquait un nom actif non déclaré servi par l'abonnement du projet : GW-09 pouvait conclure `RESOLVED` au lieu de `DOMAIN_OBSERVATION_UNDECLARED`. L'inventaire porte désormais l'abonnement Plesk de chaque nom (`webspace_id`). L'observation garde tous les noms actifs des abonnements qui servent un domaine déclaré du projet ; les autres abonnements sont exclus. Un nom sans abonnement lisible rend l'observation indisponible.
+- **Sixième round Codex (cinq constats, corrigés).**
+  - **Propriété** : un abonnement n'est plus attribué au projet parce qu'il sert un nom déclaré, car un nom rattaché par erreur à l'abonnement d'un autre client aurait suffi à `RESOLVED`. La propriété vient désormais du `serverPath` revu de chaque mapping GitRegistry (`/var/www/vhosts/<domaine principal>`), et l'inventaire porte le domaine principal de l'abonnement de chaque nom. Sans un tel binding, l'observation est indisponible.
+  - La requête est plafonnée à 1001 lignes : un inventaire trop grand est détecté sans être lu entièrement.
+  - Les inventaires de domaines sont collectés en même temps que les autres sources de Live State, sans retarder l'horodatage commun.
+  - GW-09 compare les déclarations Unicode sous leur forme Punycode (`domainToASCII`).
+  - `.mcp/provisioning-contracts.json` décrit l'observation livrée (preuve d'absence, étape `observe-binding`). L'étape reste portée par `TB-W3-F-04` jusqu'au déploiement attesté.
+  - RED : 6 tests sur 18 échouent sur l'ancien source. GREEN : 18/18. Chaîne CI locale : 1008 tests.
+- **Septième round Codex (trois constats, corrigés en échec fermé).**
+  - La propriété exige un `realPath` vérifié (`realPathVerified=true`) sous `/var/www/vhosts/<domaine principal>` : un `serverPath` seulement déclaré n'est pas une preuve.
+  - Un abonnement vérifié pour plusieurs projets du registre ne peut pas être découpé par cet inventaire : l'observation est indisponible pour chacun.
+  - Un nom n'est servi qu'avec son enregistrement `DomainServices` web actif ; une ligne incohérente n'est pas certifiée.
+  - **Effet actuel** : aucun mapping du registre (`data/mcp-git-registry.json`) n'a encore de `realPath` vérifié, et AfricaFunds et Stablecoin partagent l'abonnement `chainsolutions.fr` sur S2. L'observation est donc indisponible pour tous les projets actuels : C5 reste `UNVERIFIED`, comme avant cette PR. Le mécanisme devient effectif dès qu'un chemin réel est vérifié pour un abonnement non partagé.
+- **Huitième round Codex (un constat, corrigé).** L'enregistrement web `DomainServices` actif doit aussi être lié à une adresse IP (`IpAddressesCollections` puis `IP_Addresses`, comme la requête d'inventaire de Plesk) ; sans IP, le site ne peut pas être servi. Les colonnes Plesk lues restent **à vérifier** sur S1 et S2 ; une requête en échec rend l'inventaire `UNAVAILABLE`.
+- **Aucune écriture S1** : aucun binding, certificat ou DNS n'est créé ou modifié.
+- **NEXT_ACTION** : PR draft, CI verte, revue, fusion, Governed Deploy et attestation ; ensuite l'incrément 2 de F-04 (backup et bind-domain consentis).
+
+## 2026-10-08 — W3 F.2 Project runtime provisioning — clôture `TB-W3-F-03` (DONE)
+
+- **Incrément 3 livré.** PR #261 fusionnée au merge `6576b5287f23566684005adf6032734e2ecdea50` (head `d0bc1ee`, CI PR #2309 `37817615298`, 1001 tests). CI main #2310 `37817792888` verte.
+- **Governed Deploy** #136 `37817792904` SUCCESS, attesté pour le SHA exact `6576b52` (santé, OAuth et auth MCP vérifiées, rollback non nécessaire).
+- **Attestation OIDC read-only** : `mcp_git_status` #193 `37818111681` et `docker_status` #194 `37818115270` réussis (SHA et `mutationAllowed=false` validés par le workflow ; contenu des artefacts non téléchargeable via le proxy GitHub de cette session).
+- **Seize rounds de revue Codex** ; décisions du propriétaire : entrées de build épinglées et images attestées, plancher de stockage seul, fusion après le round 16 avec limites connues dépendantes de S1 suivies dans l'issue #262.
+- **`TB-W3-F-03` → DONE** (`completionEvidence`, `w3F03ProvisioningHandoff`), readiness recalculée (`npm run program:readiness:write`).
+- **Production inerte** tant que `servers.S1.targetProjectIds` est vide ; l'issue #262 doit être réglée avant la première cible.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` après réobservation des intakes et autorités runtime ; candidats : `TB-W3-A3-02` (blocage local connu), puis `TB-W3-F-04`.
+
+## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 — GREEN candidate
+
+- **Incrément 2 livré.**
+  - PR #260 fusionnée au merge `73bd0ff908ce53e2f177e1bc246cc62050b47a05`. CI PR `37414479092` (#2289, 958 tests) ; CI main `37414610066` (#2290).
+  - Governed Deploy `37414610072` (#135) SUCCESS.
+  - Attestation OIDC read-only : `mcp_git_status` `37641494346` (S1 `main@73bd0ff`, worktree propre) ; `docker_status` `37641499894` (conteneur healthy).
+- **Reprise.** Aucune nouvelle intake ni consigne propriétaire ; #235 et #236 sont déjà réconciliées. Les notifications en attente concernaient la PR #260, déjà fusionnée.
+- **Push.** GitHub a d'abord refusé la mise à jour de la branche (« Internal Server Error », même sans nouvel objet). Le push a réussi au deuxième essai, sans contourner la politique du proxy.
+- **Livré (incrément 3).**
+  - `src/provisioning/consent.ts` : consentement E3 du contrat `PROJECT_RUNTIME`, création et activation séparées, ticket lié à la session et à la cible exacte.
+  - `src/provisioning/revisionAdmission.ts` : admission de la révision, généralisée du Governed Deploy (historique revu de la branche officielle du mapping, CI ni en échec ni en cours ; sans aucune CI, admission manuelle par le consentement).
+  - `src/provisioning/runtimeExecutor.ts` :
+    - admission relue avant toute écriture, y compris pour activer un runtime créé plus tôt ;
+    - aperçu en lecture seule ;
+    - noms de la cible hors des lignes `docker compose`.
+  - `src/provisioning/wiring.ts` : câblage de production. L'inventaire est en lecture seule et les écritures passent par le canal S1 gardé. L'archive est bornée ; les fichiers de job restent dans le volume de données, sans écrasement.
+  - `src/provisioning/routes.ts` et `src/server.ts` : surface `/provisioning/project-runtime` derrière la connexion web (plan, soumission consentie, page de statut).
+  - `.mcp/provisioning-contracts.json` : la route est classée `COMPOSABLE` et comble les quatre lacunes du contrat `PROJECT_RUNTIME`, désormais provisionnable.
+- **Revue Codex de la PR #261 (cinq constats, tous vérifiés et corrigés).**
+  - Le consentement est lié à la cible résolue nommée par la page (dépôt, chemin, projet Compose). L'exécuteur refuse (`TARGET_CHANGED_SINCE_CONSENT`) si son plan frais en résout une autre.
+  - Le checkout créé est vérifié avant toute activation : la création enregistre l'empreinte de l'arbre dans le marqueur, et l'activation la recalcule avant de démarrer (`ACTIVATE_CHECKOUT_MODIFIED`). Un marqueur sans empreinte n'est pas un runtime créé.
+  - L'inventaire et la préparation ne regardent plus que le projet Compose du composant. Deux composants d'un même dépôt gardent ainsi des runtimes distincts ; avant, le second paraissait déjà en place.
+  - Des cibles illisibles s'affichent `UNKNOWN`, jamais « aucune cible ».
+  - Une branche par défaut contenant `/` est envoyée comme un seul paramètre encodé.
+- **Seconde revue Codex (huit constats, tous vérifiés et corrigés).**
+  - **UAC.** La Governed Task Queue et le Governed Lock Service sont relus juste avant toute écriture. Un travail réservé ou verrouillé sur le composant (règle de portée de D1) refuse (`TARGET_CLAIMED_BY_TASK`, `TARGET_LOCKED`). Une coordination illisible refuse aussi (`COORDINATION_UNAVAILABLE`).
+  - **Règle `DEPLOY` de GitRegistry.** Elle est extraite de D1 et partagée par le plan : capacité de déploiement déclarée, statut déployable et activation `READY`.
+  - **Politique Compose.** Les volumes et réseaux nommés gardent leur pilote par défaut, sans options. Un volume `local` avec des options de bind montait n'importe quel chemin de l'hôte.
+  - **Empreinte de l'arbre.** Chaque étape est capturée et vérifiée : un fichier illisible ou disparu fait échouer l'empreinte au lieu de produire un digest partiel.
+  - **Archive.** Elle est bornée avant toute extraction : au plus 100 000 entrées et 1 Gio une fois décompressée.
+  - **Attestation.** Une attestation non écrite est affichée comme telle (HTTP 500), jamais comme un succès attesté.
+  - **GitHub Enterprise Server.** Le chemin `/api/v3` de la base est conservé, et une redirection vers l'hôte de l'API est acceptée.
+  - **`NO_OP`.** Il exige le runtime complet : chaque service déclaré par le marqueur tourne, en bonne santé. Sinon le plan est `EXISTING_RUNTIME_DEGRADED`.
+- **Troisième revue Codex (trois constats, tous vérifiés et corrigés à la racine).**
+  - **Cause commune.** La politique Compose refusait une liste de clés connues, et une recherche ligne à ligne gardait les clés qui lisent des fichiers de l'hôte. Une clé entre guillemets ou dans un mapping en ligne lui échappait ; `use_api_socket` (moteur Docker confié au conteneur) n'était pas refusée.
+  - **Fichier Compose analysé avant Compose.** La préparation n'exécute plus Compose : elle imprime le fichier (régulier, jamais un lien, 100 000 octets au plus) avec son empreinte. Le MCP l'analyse avec `yaml` 2.9.1, épinglé, et n'admet que les clés Compose revues, quelle que soit leur écriture YAML. Toute ambiguïté échoue fermée : étiquette inconnue ou binaire, clé dupliquée ou non textuelle, plusieurs documents, trop d'alias.
+  - **Modèle construit depuis ce fichier exact.** Le script `config` vérifie l'empreinte du fichier analysé, puis construit le modèle, contrôlé avec les mêmes listes de clés. L'option `--no-env-resolution` est passée quand Compose la connaît, en seconde garde seulement : le contrôle reste l'analyse du fichier, qui refuse `env_file` avant que Compose ne le lise.
+  - **Runtime créé plus tôt.** Son fichier Compose est de nouveau analysé, depuis le checkout dont le marqueur garde l'empreinte, avant tout chargement par Compose.
+  - **Réseau.** `network_mode: bridge` ou `default` est refusé (`COMPOSE_SHARED_NETWORK`). Un réseau ou un volume nommé hors du projet est traité comme externe.
+  - **Même famille, même correction.** Option de sécurité limitée à `no-new-privileges` (un profil seccomp en fichier ou un type SELinux levaient le confinement) ; journalisation locale seulement ; réservation de périphérique refusée. Un constat nomme désormais la clé refusée.
+  - **Vérifié avec Compose réel (v5.1.1 en local, v2.38.2 en CI).**
+    - Sans l'option, la valeur d'un fichier d'environnement de l'hôte est injectée dans le modèle et `env_file` en disparaît. Avec l'option, v5.1.1 garde `env_file` dans le modèle, non lu ; v2.38.2 le lit quand même (l'option n'y saute qu'une seconde résolution).
+    - `label_file`, `extends` et `include` sont lus et ne laissent aucune trace dans le modèle : seule l'analyse du fichier les voit.
+    - Un projet typique (build, ports locaux, volumes, `depends_on`, santé, ancres YAML) passe les deux contrôles.
+    - Un test d'intégration rejoue ces comportements quand Compose est installé, et se déclare ignoré sinon.
+  - **CI #2295 (`37679310603`) rouge sur `3321dde`.** Ce test d'intégration supposait que l'option empêchait toute lecture ; Compose v2.38.2 du runner la lit quand même. L'option n'est plus exigée (elle ne garantissait rien) et le test fixe les deux comportements connus. Échec reproduit en local avec le binaire v2.38.2 officiel (empreinte vérifiée), correction verte avec v2.38.2 et v5.1.1.
+- **Quatrième revue Codex (trois constats, corrigés).**
+  - Volumes conservés par le rollback d'un job échoué : la préparation refuse désormais toute création tant que le projet Compose a encore des volumes (`compose_project_volumes_present`), sans rien supprimer.
+  - Nom d'image d'un build : `build.tags` et `image` sur un service construit sont refusés (`COMPOSE_BUILD_TAG`) ; une image construite garde le nom par défaut du projet.
+  - Empreinte de l'arbre : elle inclut le mode complet de chaque fichier et dossier, plus seulement le bit d'exécution du propriétaire.
+- **Cinquième revue Codex (quatre constats, corrigés).**
+  - Réplicas : `scale` et `deploy.replicas` sont bornés à 20 conteneurs au total (`COMPOSE_REPLICAS`), la limite de l'inventaire.
+  - Images tirées : une image sans build doit être épinglée par empreinte (`@sha256:`), sinon `COMPOSE_IMAGE_UNPINNED`.
+  - `NO_OP` vérifié : l'inventaire en lecture seule recalcule l'empreinte d'un checkout marqué ; un runtime en cours ne vaut `NO_OP` que si elle égale celle du marqueur.
+  - Empreinte : elle inclut aussi le propriétaire et le groupe de chaque fichier et dossier.
+- **Sixième revue Codex (six constats : cinq corrigés, un soumis au propriétaire).**
+  - Marqueur de confiance : la création enregistre le marqueur dans les données du job (volume du MCP) avant d'écrire le checkout ; un marqueur du checkout ne compte que s'il est identique à cet enregistrement. Un runtime qui réécrirait son propre marqueur n'est plus un runtime créé.
+  - Réseaux conservés : la préparation refuse aussi tant qu'un réseau du projet Compose subsiste (`compose_project_networks_present`).
+  - Réplicas : le marqueur enregistre les conteneurs attendus par service ; l'activation attend ce nombre et `NO_OP` l'exige exactement.
+  - IPAM : pilote par défaut sans options seulement.
+  - Capacité : la préparation exige 2 Gio et 200 000 inodes libres sous `/opt/apps` et refuse au-delà de 20 entrées en quarantaine.
+  - **En attente du propriétaire** : épingler toutes les entrées d'un build (`FROM`, réseau des `RUN`). Voir le fil de revue ; décision de politique, pas de correction unilatérale.
+- **Septième revue Codex (six constats : quatre corrigés, un sans reproduction, un partiel soumis au propriétaire).**
+  - Noms réservés : un dépôt contenant `.mcp-provisioning.json` ou `.mcp-provisioning.labels.json` est refusé (`reserved_name_present`).
+  - Parents de la cible : chaque script qui écrit résout le parent de la cible ; seul `/opt/apps` peut être un lien sur l'hôte, rien en dessous (`target_parent_outside`).
+  - Rollback : Compose ne recharge le fichier que si le checkout a encore son empreinte ; sinon les conteneurs du projet sont arrêtés par label, sans charger un fichier réécrit.
+  - Empreinte : un FIFO, socket ou périphérique dans le checkout fait échouer l'empreinte.
+  - Profils : non reproduit. Compose v5.1.1 et v2.38.2 retirent du modèle les services d'un profil inactif ; ils ne comptent donc pas dans les conteneurs attendus.
+  - Stockage des builds : plancher de 10 Gio libres sur le stockage Docker avant l'activation (`docker_capacity`). Une borne stricte par build relève de la configuration du démon : **décision propriétaire**, comme les entrées des builds.
+- **Huitième revue Codex (quatre constats, corrigés).**
+  - Coordination : la Task Queue et les verrous sont relus juste avant chaque écriture sur l'hôte (préparation, promotion, activation), plus seulement avant l'admission et le téléchargement. Un travail réservé ou verrouillé entre-temps arrête le job avant l'écriture suivante (`BLOCKED`), sans défaire ce qui est déjà créé ; une préparation non promue est mise en quarantaine. Le Lock Service n'accorde de verrou qu'à une Governed Session : un opérateur web n'en a pas, d'où une relecture au plus près plutôt qu'un verrou tenu (voir DECISIONS_LOG).
+  - Branche officielle : la révision est admise depuis la branche que nomme le mapping GitRegistry (règle `OFFICIAL_BRANCH` de D1), jamais depuis la seule branche par défaut (`REVISION_NOT_ON_OFFICIAL_BRANCH`).
+  - Liens physiques : un fichier à plusieurs liens fait échouer l'empreinte, donc l'activation et `NO_OP`.
+  - Capacité : les planchers (2 Gio, 200 000 inodes) sont mesurés sur le système de fichiers du parent de la cible et sur celui de la quarantaine, au plus proche dossier existant.
+- **Neuvième revue Codex (quatre constats, corrigés).**
+  - Rollback : la coordination est relue juste avant ; un travail réservé ou verrouillé pendant le contrôle de santé n'est jamais écrasé (rollback non exécuté, job `FAILED` avec la raison).
+  - Rollback par labels : la politique de redémarrage des conteneurs est effacée (`docker update --restart=no`) avant leur arrêt ; un redémarrage du démon ne les relance pas.
+  - Empreinte : les capacités de fichier (`getcap -r`) y entrent ; une ACL la fait échouer. Sans `getcap` sur l'hôte, l'empreinte échoue (fermé).
+  - Sources de bind : chacune doit exister dans le checkout avant la promotion et avant l'activation (`bind_source_missing`) ; Docker ne crée donc plus de dossier après l'empreinte.
+- **Dixième revue Codex (cinq constats, corrigés).**
+  - Rollback par labels : il voit aussi les conteneurs arrêtés (`docker ps -aq`).
+  - Santé : seul un conteneur `healthy` selon son propre contrôle de santé compte, à l'activation comme pour `NO_OP` ; un service sans contrôle de santé n'est jamais déclaré sain.
+  - Ressources : chaque service doit borner sa mémoire, son CPU et ses processus (`COMPOSE_RESOURCES_UNBOUNDED`).
+  - Pré-contrôle en lecture seule avant le téléchargement (parents, quarantaine, capacité, volume de données du MCP compris).
+  - Admission relue après le téléchargement, juste avant la première écriture.
+- **Production inchangée tant que S1 n'a pas de cible.** `servers.S1.targetProjectIds` est vide : la page n'offre aucune cible et toute soumission reste bloquée.
+- **Preuves.**
+  - RED `85a2315` : modules absents ; assertions d'admission, de sûreté des scripts et de la politique en échec.
+  - RED de la troisième revue `8e36322` : 12 tests en échec (analyse du fichier, listes de clés, réseau partagé, scripts et parcours).
+  - CI exact-head de la seconde revue : `3f1098b`, run `37673610028` (#2294), verte.
+  - CI exact-head des revues suivantes, toutes vertes : `372d5f3` run `37680073334` (#2296) ; `dd7746e` run `37703798530` (#2297) ; `c6f8921` run `37705027955` (#2298) ; `cbd93f9` run `37706373960` (#2299) ; `1268e1b` run `37707609873` (#2300).
+  - RED de la huitième revue `f7f3296` : 8 tests en échec (relecture de la coordination, liens physiques, capacité, branche officielle). GREEN `80cd60e`, CI run `37709709982` verte.
+  - RED de la neuvième revue `b384753` : 4 tests en échec (rollback, redémarrage, capacités et ACL, sources de bind). GREEN `341192e`, CI verte.
+  - RED de la dixième revue `cc4845d` : 4 tests en échec (conteneurs arrêtés, santé exigée, plafonds de ressources, pré-contrôle et réadmission).
+  - GREEN local après la décision sur les builds : typecheck, build et gates verts ; suite complète 1001/1001 (968 avant les revues), tests de l'exécuteur verts aussi avec Compose v2.38.2. Scripts hôte vérifiés sous `dash` et `bash` (`sh -n`), script `config` exercé contre Compose réel.
+- **Décision du propriétaire (2026-10-08)** : entrées des builds, options 1 + 3 ; stockage des builds, le plancher de 10 Gio suffit.
+  - Mise en œuvre (`src/provisioning/dockerfilePolicy.ts`) : chaque Dockerfile d'un service construit est lu depuis le checkout digéré (phase `dockerfiles`) ou pris en ligne ; `FROM`, `--from=`, `from=` d'un montage et le frontend `# syntax=` doivent être épinglés par empreinte (sinon `DOCKERFILE_IMAGE_UNPINNED` / `DOCKERFILE_FRONTEND_UNPINNED`), seuls les étapes déjà définies, `scratch` et les contextes nommés sont locaux. Lecture en échec fermé (jointures sous les deux caractères d'échappement et lignes physiques).
+  - `build.pull` et les arguments `BUILDKIT_*` sont refusés.
+  - Les images que le runtime exécute (`docker inspect`) sont enregistrées dans l'attestation (`builtImages`).
+- **Douzième revue Codex (quatre constats : trois corrigés, un soumis au propriétaire).**
+  - `NO_OP` compare les images exécutées à l'enregistrement de l'activation (`images.json` dans les données du job) ; sans enregistrement ou avec d'autres octets, le runtime est dégradé.
+  - Frontend : seul `docker/dockerfile` épinglé est admis (`DOCKERFILE_FRONTEND_UNSUPPORTED` sinon).
+  - L'attestation garde l'admission relue après téléchargement, celle qui autorise l'écriture.
+  - Ressources CPU et mémoire des builds : configuration du builder ou du démon sur S1, hors dépôt ; soumis au propriétaire.
+- **Treizième revue Codex (six constats : quatre corrigés, deux soumis au propriétaire).**
+  - Admission relue avant la promotion et avant l'activation, pas seulement avant la préparation.
+  - Empreinte recalculée après le contrôle de santé : un service qui réécrit le checkout au démarrage n'est jamais un succès.
+  - Une image valide exigée pour chaque conteneur attendu, sinon échec (`images_unknown`).
+  - Après une collision de coordination, plus aucune écriture, même le déplacement de la préparation en quarantaine.
+  - Soumis au propriétaire : plafonds maximaux de ressources par service (valeurs propres à S1) et droits des archives de sources (utilisateur du canal S1 à vérifier).
+- **Quatorzième revue Codex (six constats, corrigés).**
+  - Journaux bornés : pilote nommé, `local` ou `none`, ou `json-file` avec `max-size` et `max-file`.
+  - Plages d'adresses : `ipam.config` refusé.
+  - `no-new-privileges:false` refusé.
+  - Enregistrement des images non écrit : activation en échec et retour arrière.
+  - Marqueur comparé à l'enregistrement de confiance après le contrôle de santé (`marker_modified`).
+  - Cible et runtime replanifiés avant la promotion et avant l'activation.
+- **Quinzième revue Codex (trois constats, corrigés).**
+  - Branche officielle relue à chaque replanification (aussi avant la préparation) ; un changement arrête le job (`GOVERNANCE_OFFICIAL_BRANCH_CHANGED`).
+  - Réactivation : l'enregistrement d'images existant ne vaut que s'il est identique aux images exécutées, sinon échec et retour arrière.
+  - `NO_OP` vérifie les limites réelles de chaque conteneur (mémoire, CPU, PID) via `docker inspect`.
+- **Seizième revue Codex (sept constats : cinq corrigés, deux en limites connues).**
+  - Images enregistrées et comparées par service Compose (`service=sha256:…`), plus comme simple ensemble.
+  - `stop_grace_period` limité à 60 s, sous le budget du rollback (`COMPOSE_STOP_GRACE_PERIOD`).
+  - Un nom de chemin contenant un caractère de contrôle (saut de ligne) fait échouer l'empreinte.
+  - Activation d'un runtime créé : enregistrement de marqueur illisible → échec (`MARKER_RECORD_UNREADABLE`).
+  - L'abandon de la préparation relit la coordination ; si le composant est réservé entre-temps, la préparation reste en place.
+- **Décision du propriétaire (2026-10-08) : corriger ce round puis fusionner ; points dépendant de S1 en limites connues.** À vérifier avant de configurer la première cible S1 : plafonds maximaux par service (mémoire, CPU, PID), limites CPU et mémoire des builds, quota du stockage inscriptible des conteneurs et volumes, droits `0600`/`0700` des archives et dossiers de job selon l'utilisateur du canal S1. Les rounds Codex suivants alimentent une issue de suivi.
+- **NEXT_ACTION** : CI exact-head de la PR #261 et nouvelle revue Codex ; décisions du propriétaire puis leur mise en œuvre ; merge exact-head, Governed Deploy et attestation. Ensuite, PR de clôture de `TB-W3-F-03` : completionEvidence, handoff, readiness de PB-F.
+
+## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 — GREEN candidate
+
+- **Incrément 1 livré.**
+  - PR #259 fusionnée au merge `0d4f3d429026cc84dff340fada64bd3a5aec2b61`. CI PR `37392438549` (#2286, 948 tests) ; CI main `37392611476` (#2287).
+  - Governed Deploy `37392611525` (#134) SUCCESS.
+  - Attestation OIDC read-only : `mcp_git_status` `37392814336` (S1 `main@0d4f3d4`, worktree propre) ; `docker_status` `37392816627` (conteneur healthy).
+- **Reprise.** Aucune nouvelle intake ni consigne propriétaire. Les commentaires du bot Codex ne signalent qu'une limite d'usage.
+- **Livré (incrément 2, non relié à une surface).**
+  - `src/provisioning/runtimeExecutor.ts` :
+    - re-observation et replanification avant toute écriture ;
+    - préparation (absence reprouvée sur S1, empreinte vérifiée avant extraction, clés Compose lisant l'hôte et liens sortants refusés) ;
+    - création avec marqueur, puis activation sous son propre consentement avec contrôle de santé ;
+    - rollback non destructif (arrêt sans volumes, quarantaine) ;
+    - un seul job à la fois, chaque job attesté.
+  - `src/provisioning/composePolicy.ts` : politique de sûreté du modèle Compose.
+  - `src/provisioning/sourceArchive.ts` : archive GitHub de la révision exacte. L'identifiant ne part que vers l'API ; seule une redirection vers `codeload.github.com` est suivie ; taille bornée, empreinte calculée.
+  - `src/provisioning/projectRuntime.ts` : marqueur d'un runtime créé (`CHECKOUT_ONLY` pour C4) ; plan `ACTIVATE` pour un runtime créé, sous son seul consentement d'activation.
+- **Contrôle du garde des liens symboliques** : exécuté sous `dash` et sous `bash`. Un lien interne passe, un lien sortant bloque (`symlink_outside`).
+- **Preuves.**
+  - RED `0882f82` : modules absents.
+  - GREEN local : typecheck, build et gates verts ; suite complète 958/958.
+- **NEXT_ACTION** : CI exact-head de la PR #260, merge exact-head, Governed Deploy, attestation, puis incrément 3 de `TB-W3-F-03` : surface consentie (E3) et câblage de l'exécuteur.
+
+## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 1 — GREEN candidate
+
+- **Reprise current-first.** `main=3700bcb48188c1134d948d03504e94e6e905134c` (F.0 clôturé, PR #258). Aucune nouvelle intake ni consigne propriétaire. Les commentaires du bot Codex sur #256, #257 et #258 ne signalent qu'une limite d'usage, sans aucun constat. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-F-03` est retenu.
+- **Préflight runtime (00:03Z)** :
+  - tasks `37391887896` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37391890259` (2 EXPIRED) ;
+  - locks `37391892666` (0 actif).
+  Aucune collision sur `provisioning:project-runtime`.
+- **Constat.**
+  - Live State n'observe que le runtime du MCP lui-même. Pour un projet cible, C4 reste `UNVERIFIED`, et l'absence exigée par le contrat `PROJECT_RUNTIME` est donc improuvable.
+  - S1 n'a aucun identifiant pour récupérer un autre dépôt que le MCP, et le client SSH ne transmet pas de flux. L'exécuteur sera traité dans un incrément distinct.
+- **Livré (incrément 1, lecture seule).**
+  - `src/provisioning/projectRuntime.ts` :
+    - chemin gouverné (`/opt/apps`, hors checkout du MCP) ;
+    - inventaire en lecture seule du chemin déclaré et de l'espace Docker provisionné ;
+    - observations pour C4 (`NO_RUNTIME` positif, runtime provisionné ou indisponible) ;
+    - plan `BLOCKED`, `NO_OP`, `CONSENT_REQUIRED` ou `READY`, aux étapes alignées sur le contrat.
+  - `src/liveState/provisionedRuntime.ts` et Live State : l'inventaire n'est collecté que pour la cible configurée, et transmis à C4 avec la fraîcheur du snapshot.
+- **Preuves.**
+  - RED `86e8d1e` : module absent.
+  - GREEN local : typecheck, build et gates verts ; suite complète 948/948.
+- **NEXT_ACTION** : CI exact-head de la PR #259, merge exact-head, Governed Deploy, attestation OIDC read-only, puis incrément 2 de `TB-W3-F-03` : la surface consentie.
+
+## 2026-10-05 — W3 F.0 Provisioning capability decomposition — DONE et attesté
+
+- **Fusion et CI** : PR #257 fusionnée sous garde exact-head depuis `fe7b3024b5f00bc946b1bd6886edd1d24e3597f3` au merge `d34899b7ed72d7345af1d8ce88cdbe06fe8a7ad1`.
+  - RED CI #2279 (1 échec attendu) ; CI PR `37390269900` (#2280, 941 tests) ; CI main `37390441248` (#2281).
+  - Governed Deploy `37390442113` (#132) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37390662478` : S1 `main@d34899b`, worktree propre, push désactivé.
+  - `docker_status` run `37390664427` : conteneur healthy (redémarré par le deploy #132).
+- **Program Backlog** :
+  - `TB-W3-F-01 = DONE` ; `PB-F` passe à `PARTIALLY_IMPLEMENTED` (F.0 livré, aucun type de ressource encore provisionnable).
+  - Les contrats F.0 sont transmis à ADMIN-01, F-02 à F-05 et K-10. Deviennent READY : `TB-W3-ADMIN-01` (primitive de création de dépôt), `TB-W3-F-03` (projet/runtime) et `TB-W3-F-04` (binding de domaine). `TB-W3-F-02` attend ADMIN-01.
+  - Limite connue : toute nouvelle primitive d'écriture, route mutante ou workflow fait échouer la suite tant qu'elle n'est pas classée dans `.mcp/provisioning-contracts.json`.
+  - Aucun Task, session, lock ou mutation.
+- **Intakes** : aucune nouvelle intake ni consigne propriétaire.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-F-03` (A3.2 reste un blocage local).
+
+## 2026-10-05 — W3 F.0 Provisioning capability decomposition — GREEN candidate
+
+- **Reprise current-first.** `main=bf7312e6e8f52e660f2743b8ba40c779e98fe8d0` (E3 clôturé par la PR #256 ; `PB-E` DONE). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-F-01` est retenu.
+- **Préflight runtime (23:29Z)** :
+  - tasks `37388743442` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37388745496` (2 EXPIRED) ;
+  - locks `37388747546` (0 actif).
+  Aucune collision sur `provisioning:design`.
+- **Constat.** Il n'existait ni inventaire des primitives d'écriture ni contrat de provisioning.
+  - 62 outils MCP peuvent écrire, dont 10 enregistrés sur la surface de lecture avec un drapeau `allow_write`. Seules les écritures du cycle de vie GitHub sont génériques et bornées à une cible. Les autres sont liées à un projet, gèrent le MCP lui-même, sont destructives ou relèvent de la coordination.
+  - 12 routes HTTP mutent et 5 workflows s'exécutent.
+  - Les résolveurs C4 et C5 ne prouvent une absence que par une observation positive, et C5 n'a encore aucune autorité d'observation.
+- **Livré.**
+  - `.mcp/provisioning-contracts.json` : classement des 89 primitives et trois contrats (dépôt, projet/runtime, binding de domaine).
+  - `src/governance/provisioningContracts.ts` :
+    - `validateProvisioningContracts` échoue fermé sur : primitive non classée ou périmée, étape non composable, consentement absent, activation implicite, lacune non portée ou portée par un blueprint terminé, absence non observée en premier, santé, rollback ou sauvegarde manquants ;
+    - `deriveProvisioningCapabilities` montre qu'aucun type de ressource n'est provisionnable aujourd'hui.
+- **Preuves.**
+  - RED `5d8b93c`, CI #2279 (`37389622528`) : 938 tests, 1 échec attendu (module et politique absents).
+  - GREEN local : typecheck, build et gates verts ; suite complète 941/941.
+- **NEXT_ACTION** : CI exact-head de la PR #257, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-F-01`.
+
+## 2026-10-05 — W3 E3 Consent & Validation — DONE et attesté ; `PB-E` DONE
+
+- **Fusion et CI** : PR #255 fusionnée sous garde exact-head depuis `855e2954a912d98ad136f5ab0c6e229eda6c56a5` au merge `61b90a1eca532b088ec213b7ae6ad9e2241eece4`.
+  - RED CI #2273 (1 échec attendu) ; CI PR `37359371129` (#2274, 935 tests) ; CI main `37359562990` (#2275).
+  - Governed Deploy `37359563522` (#130) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37359797521` : S1 `main@61b90a1`, worktree propre, push désactivé.
+  - `docker_status` run `37359801316` : conteneur healthy (redémarré par le deploy #130).
+- **Program Backlog** :
+  - `TB-W3-E3-01 = DONE` ; c'était le dernier lot de `PB-E`, d'où `PB-E = DONE` (22 work items DONE).
+  - Deviennent READY : `TB-W3-F-01` (décomposition du provisioning, qui réutilise le consentement E3) et quatre couches GGCC GitHub (rulesets, webhooks, environnements/variables/secrets, organisation).
+  - Limite connue : un ticket de consentement reste réutilisable par la même session web pendant sa validité.
+  - Aucun Task, session, lock ou mutation.
+- **Intakes** : aucune nouvelle intake ni consigne propriétaire.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-F-01` (A3.2 reste un blocage local).
+
+## 2026-10-05 — W3 E3 Consent & Validation — GREEN candidate
+
+- **Reprise current-first.** `main=fecbb6fe178ef1ffd74416b565081ef1f299678e` (E2 clôturé, PR #254). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-E3-01` est retenu.
+- **Préflight runtime (18:49Z)** :
+  - tasks `37358791835` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37358795511` (2 EXPIRED) ;
+  - locks `37358798532` (0 actif).
+  Aucune collision sur `context:guided-completion:consent`.
+- **Constat.** Les formulaires de connexion GitHub de `/github` et `/git` sont les seules mutations atteignables depuis une étape de complétion. Une soumission y remplaçait l'identifiant, enregistrait le compte et découvrait automatiquement un mapping pour chaque dépôt visible, sans consentement distinct.
+- **Livré.**
+  - `src/github/connectConsent.ts` : deux consentements explicites, décochés par défaut, chacun nommant sa ressource et son autorité (identifiant dans le fichier secret du conteneur et dans GitRegistry ; découverte dans GitRegistry), et la décision `decideConnectConsent`.
+  - `src/oauth.ts` : le ticket de consentement OAuth est généralisé (`issueWebConsentTicket`, `verifyWebConsentTicket`). Le ticket signé et expirant est séparé du domaine OAuth et lié à son objet et à la session web ; `isSameOriginSubmission` est exporté.
+  - `/github/connect` et `/git/connect` décident du consentement avant tout appel GitHub ou toute écriture ; un refus (403) ne modifie rien. `recordGithubConnection` ne découvre qu'avec son consentement et l'enregistre dans l'audit.
+- **Preuves** : RED `3444400`, CI #2273 (`37359005082`) : 931 tests, 1 échec attendu (module absent). GREEN local : typecheck et build verts ; suite complète 935/935.
+- **NEXT_ACTION** : CI exact-head de la PR #255, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-E3-01` (dernier lot de `PB-E`).
+
+## 2026-10-05 — W3 E2 Context Completion Wizard — DONE et attesté
+
+- **Fusion et CI** : PR #253 fusionnée sous garde exact-head depuis `ec6f47342d9b7bd7b5c83f56478f112c6bb795b6` au merge `e51e9958b211186560b2054595fe7bc3fc564d19`.
+  - RED CI #2267 (1 échec attendu) ; CI PR `37357705265` (#2268, 928 tests) ; CI main `37357946975` (#2269).
+  - Governed Deploy `37357947034` (#128) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37358211199` : S1 `main@e51e995`, worktree propre, push désactivé.
+  - `docker_status` run `37358214601` : conteneur healthy (redémarré par le deploy #128).
+- **Program Backlog** :
+  - `TB-W3-E2-01 = DONE` ; `PB-E` reste `PARTIALLY_IMPLEMENTED` (E3 reste à livrer).
+  - Report : le consentement explicite de toute création ou mutation atteinte depuis une étape de complétion (mapping GitRegistry, connexion durable, binding d'identité, découverte automatique de dépôts) est porté par `TB-W3-E3-01`, qui devient READY ; son critère d'acceptation consomme la complétion E2.
+  - Limite connue : la session web à jeton partagé n'a pas de principal ; les surfaces web n'affichent donc jamais le contexte manquant d'une session.
+  - Aucun Task, session, lock ou mutation.
+- **Intakes** : aucune nouvelle intake ni consigne propriétaire.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E3-01` (A3.2 reste un blocage local).
+
+## 2026-10-05 — W3 E2 Context Completion Wizard — GREEN candidate
+
+- **Reprise current-first.** Le travail reprend après la réinitialisation de la limite d'usage, sur `main=59d02d590b0baeca8f5d5f75f90c9131e46aeff0` (E1 clôturé, PR #252).
+  - Réobservation à 18:25Z : aucune nouvelle intake ni consigne propriétaire depuis 14:00Z ; les PR ouvertes sont d'anciens brouillons d'autres lots.
+  - `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-E2-01` est retenu.
+- **Préflight runtime (18:24Z)** :
+  - tasks `37355631550` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37355635567` (2 EXPIRED) ;
+  - locks `37355639794` (0 actif).
+  Aucune collision sur `context:guided-completion:wizard`.
+- **Contrainte de conception.** Une session n'est visible que de son transport lié ou de son propriétaire OAuth. La session web à jeton partagé ne voit donc jamais le contexte manquant d'une session, et E2 n'élargit pas cette visibilité : E1 nomme la surface, la surface redérive ce qu'elle porte.
+- **Livré.**
+  - `GovernedOperationalContext.contextCompletion` (`src/governedContext/contextCompletion.ts`) donne l'étape unique de la lacune : `CALL_TOOL`, `ASK_OPERATOR` (lien absolu de `/github` ou `/git?repository=` sur l'origine de l'émetteur OAuth), `PROPOSE_GOVERNED_CHANGE`, `RECONCILE` ou `UNAVAILABLE`, avec `doNotAsk`.
+  - `/github` et `/git` (`src/github/credentialCompletion.ts`) ne demandent le token que s'il est absent, refusé (401) ou aveugle à l'organisation (403/404). Un identifiant valide est restauré et son remplacement devient facultatif ; une observation impossible ne demande rien. `validateGithubToken` enregistre les statuts HTTP.
+  - `/git?repository=Owner/Name` montre le mapping GitRegistry du dépôt avec la règle du résolveur (`projectMappingCandidates`).
+  - `/login` ne renvoie qu'à un chemin de la même origine.
+  - La liste fixe de questions de `/github` est remplacée par un renvoi vers `/git`.
+- **Preuves** : RED `a5e0186`, CI #2267 (`37356773083`) : 920 tests, 1 échec attendu (module absent). GREEN local : typecheck et build verts ; suite complète 928/928.
+- **NEXT_ACTION** : CI exact-head de la PR #253, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-E2-01`.
+
+## 2026-10-05 — W3 E1 Missing-context Detection — DONE et attesté
+
+- **Fusion et CI** : PR #251 fusionnée sous garde exact-head depuis `33803ec191dbbe92fca726017cb7ffc1b2c9f3d6` au merge `4dcc90d4296e380574acd0da68001b586992d5b5`.
+  - RED CI #2261 (1 échec attendu) ; CI PR `37321306246` (#2262, 917 tests) ; CI main `37321550003` (#2263).
+  - Governed Deploy `37321550025` (#126) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37321828298` : S1 `main@4dcc90d`, worktree propre, push désactivé.
+  - `docker_status` run `37321832535` : conteneur healthy (redémarré par le deploy #126).
+- **Program Backlog** :
+  - `TB-W3-E1-01 = DONE` ; `PB-E` passe `PARTIALLY_IMPLEMENTED` (E2 et E3 restent à livrer).
+  - Résiduel porté par `TB-W3-GGCC-GH-REPO-BRANCH` : les entrées d'une session liée à un dépôt TargetScope non observé (B3.2) restent `UNOBSERVABLE` jusqu'à l'observation de ce dépôt.
+  - `TB-W3-E2-01` (Context Completion Wizard) devient READY ; son critère d'acceptation consomme `missingContext` : restauration automatique sans question, seule la lacune `next` est demandée sur la surface existante nommée, les conflits vont à la réconciliation.
+  - Aucun Task, session, lock ou mutation.
+- **Intakes** : aucune nouvelle intake ni consigne propriétaire depuis la clarification #236 convergée.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E2-01` (A3.2 reste un blocage local).
+
+## 2026-10-05 — W3 E1 Missing-context Detection — GREEN candidate
+
+- **Reprise current-first.** `main=df4a99e5e3b953a595a7c3defc33471538b0dc57` (clarification #236 convergée, PR #250). Réobservation à 13:57Z : aucune nouvelle intake ni consigne propriétaire ; les intakes ouvertes #177, #235 et #236 sont réconciliées. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-E1-01` est retenu.
+- **Préflight runtime (13:40Z)** :
+  - tasks `37318531228` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY) ;
+  - sessions `37318535138` (2 EXPIRED) ;
+  - locks `37318539233` (0 actif).
+  Aucune collision sur `context:guided-completion:detection`.
+- **Livré.** `GovernedOperationalContext.missingContext` (`src/governedContext/missingContext.ts`) donne, dans l'ordre des dépendances, l'état des entrées obligatoires `OAUTH_IDENTITY`, `GITHUB_IDENTITY`, `REPOSITORY`, `PROJECT_MAPPING` et `SERVER_BINDING` :
+  - seule la première lacune est exposée (`next`), le contexte connu reste `RESOLVED`, l'aval attend (`BLOCKED_UPSTREAM`) ;
+  - nature de la lacune : `MISSING`, `AMBIGUOUS`, `CONFLICT` ou `UNOBSERVED` ; statut `COMPLETE`, `AUTOMATIC`, `INPUT_REQUIRED`, `RECONCILIATION_REQUIRED` ou `UNOBSERVABLE` ;
+  - autorité existante qui complète chaque lacune : `/oauth/authorize`, `.mcp/identity-policy.json`, `data/github-accounts.json`, `/github`, `/git`, `mcp_open_governed_session` ou `mcp_reconcile_governed_context` ;
+  - un dépôt TargetScope non observé (B3.2) est `UNOBSERVABLE`, jamais ré-observé en boucle ; seuls des codes de raison circulent.
+- **Réutilisation.** `isOauthConnectionContext` (autorité `ConnectionContext`) devient le prédicat unique du scope d'identité GitHub et d'E1.
+- **Preuves** : RED `b08dca3`, CI #2261 (`37320386619`) : 911 tests, 1 échec attendu (module absent). GREEN local : typecheck et build verts ; suite complète 917/917.
+- **NEXT_ACTION** : CI exact-head de la PR #251, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-E1-01`.
+
+## 2026-10-05 — Intake #236 : clarification propriétaire `EXISTING_MCP_EXPOSURE_FIRST` réconciliée
+
+- **Source.** Commentaire propriétaire du 2026-10-05T09:16Z sur l'issue #236 (`issue:236#issuecomment-5991560741`), observé à la reprise après D3. Il affine PB-K sans créer de chantier, d'architecture, de cible de déploiement, de domaine, de Task, de session, de claim ou de lock.
+- **Verdict.** `COMPLEMENT`, absorbé dans le slot existant `cockpit.super-admin` :
+  - l'entrée `CLARIFICATION-236-20261005` de `programIntakes` (comme `SUPERVISION-219-20261002`) porte la clarification, sa règle d'intégration et les 13 champs de preuve de déploiement attendus ; `INTAKE-236.refinedBy` y renvoie et `sourceCoverage.programIntakes` la rattache à PB-K ;
+  - `PB-K.nonRegression` gagne `EXISTING_MCP_EXPOSURE_FIRST`, `NO_NEW_DOMAIN_REVERSE_PROXY_RUNTIME_OR_CONTROL_PLANE_BY_DEFAULT`, `EXISTING_MCP_PUBLIC_ENDPOINTS_PRESERVED`, `NO_SPECULATIVE_ROUTE_BEFORE_ROUTE_AUTH_SECURITY_INVENTORY` et `PUBLIC_MCP_PROTOCOL_AND_PRIVILEGED_COCKPIT_SURFACES_SECURITY_SEPARATED` ;
+  - `TB-W4-K-01` gagne trois critères d'acceptation (réobservation de l'exposition avant toute décision de route, de domaine, de TLS ou de déploiement ; pas de domaine, reverse proxy ou route spéculative par défaut ; preuves de déploiement), un test RED (inventaire d'exposition et tests de régression des endpoints publics absents) et un critère de clôture.
+- **Supersession explicite.** Le `proposedRouteNamespace` `/cockpit` de l'inventaire dérivé du 2026-10-04 n'est qu'une proposition : la route ou l'exposition est décidée par K-01 après l'inventaire des routes, de l'authentification et de la sécurité.
+- **Effets.** Aucune readiness modifiée (drift vide), aucun Task, session, lock ou mutation. `CLAUDE.md` §7.4 rappelle l'invariant.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E1-01` (A3.2 reste un blocage local).
+
+## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment — DONE et attesté
+
+- **Fusion et CI** : PR #248 fusionnée sous garde exact-head depuis `884414ff68b7e4b381f99252cab55f9cdaad7011` au merge `7c9331695b034dea1c9f1fecfab775ff0e328358`.
+  - RED CI #2252 (1 échec attendu) ; CI PR `37316739836` (#2253, 905 tests) ; CI main `37317001429` (#2254).
+  - Governed Deploy `37317001064` (#123) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37317336321` : S1 `main@7c93316`, worktree propre, push désactivé.
+  - `docker_status` run `37317340325` : conteneur healthy (redémarré par le deploy #123).
+- **Program Backlog** :
+  - `TB-W3-D3-01 = DONE` ; c'est l'unique lot de `PB-D3`, d'où `PB-D3 = DONE` (21 work items DONE).
+  - Résiduel porté par `TB-W3-GGCC-GH-REPO-BRANCH` : les références prouvées d'une session liée à un dépôt TargetScope non observé (l'observateur GitHub ne couvre que MCP, B3.2) ; d'ici là son receipt garde `RECEIPT_REPOSITORY_UNVERIFIED` à côté de sa TargetScope.
+  - Deviennent READY : `TB-W3-E1-01` (Missing-context Detection) et `TB-W4-H-01` (Trace evidence inventory).
+  - Aucun Task, session, lock ou mutation.
+- **Intake #236** : une clarification propriétaire (`EXISTING_MCP_EXPOSURE_FIRST`, 2026-10-05T09:16Z) est à réconcilier avant toute nouvelle sélection.
+- **NEXT_ACTION** : réconcilier la clarification #236 dans PB-K / `TB-W4-K-01`, puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-E1-01`.
+
+## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment — GREEN candidate
+
+- **Reprise current-first.** `main=a22293fc78212e0375569c628af9964de2a28960` (D2 clôturé, PR #247). Aucune nouvelle intake ni consigne propriétaire, y compris après la reprise de limite d'usage. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-D3-01` est retenu.
+- **Préflight runtime (09:05Z)** : tasks `37287663409` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY), sessions `37287666548` (2 EXPIRED), locks `37287669617` (0 actif). Aucune collision sur `bootstrap:receipt-enrichment`.
+- **Livré (GW-12).** `BootstrapReceipt.references`, optionnel, borné et fermé, dans le receipt existant :
+  - `connection` : le `ConnectionContext` OAuth de la session (identifiant, assurance, source de preuve, date), sans principal ni client ;
+  - `repository`, `project`, `mapping` : `src/governedContext/receiptReferences.ts` ne les tire que des couches `VERIFIED` de la réalité projet du dépôt de la session et du périmètre D1, avec provenance et heure d'observation ; pas de projet sans dépôt, pas de mapping sans projet ;
+  - codes explicites : `RECEIPT_CONNECTION_UNVERIFIED`, `RECEIPT_REPOSITORY_UNVERIFIED`, `RECEIPT_PROJECT_UNVERIFIED`, `RECEIPT_MAPPING_UNVERIFIED`, `RECEIPT_REFERENCE_BINDING_MISMATCH`, `RECEIPT_PROJECT_REFERENCES_UNOBSERVED`.
+- **Câblage.** Le service de session reçoit un observateur optionnel, appelé seulement pour une session visible. En production, les outils de session lisent paresseusement le contexte gouverné de la même session. Une observation en échec ne bloque jamais l'acquittement ; sans observateur, la forme historique est inchangée.
+- **Preuves** : RED `fbcb140`, CI #2252 (`37288080576`) : 901 tests, 1 échec attendu (module absent). GREEN local : typecheck, build, docs, gouvernance, GWC, secrets, readiness et `git diff --check` verts ; suite complète 905/905.
+- **NEXT_ACTION** : CI exact-head de la PR #248, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-D3-01`.
+
+## 2026-10-05 — W3 D2 Effective Capabilities — DONE et attesté
+
+- **Fusion et CI** : PR #246 fusionnée sous garde exact-head depuis `28c1e0ca82892c20db731c050f68f1d8be2a50f8` au merge `1e4b78fd0c7958d4a1b6becc8a9f59f320836e5a`.
+  - RED CI #2246 (1 échec attendu) ; CI PR `37286750114` (#2247, 898 tests) ; CI main `37286964026` (#2248).
+  - Governed Deploy `37286964083` (#121) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37287158288` : S1 `main@1e4b78f`, worktree propre, push désactivé.
+  - `docker_status` run `37287161565` : conteneur healthy (redémarré par le deploy #121).
+- **Program Backlog** :
+  - `TB-W3-D2-01 = DONE` ; c'est l'unique lot de `PB-D2`, d'où `PB-D2 = DONE` (20 work items DONE).
+  - Portés par `TB-W3-OAUTH-WRITE-SCOPE-01` : l'autorisation attestée (preuve de scopes OAuth de la connexion ; d'ici là, chaque capacité reste `AUTHORIZATION_UNATTESTED`) et l'éligibilité de dispatch fondée sur les capacités (différée par DISPATCH-02/03 vers D2).
+  - Limite connue : le registre V1 migré (`migration_pending`) laisse les lectures déclarées `UNKNOWN` et `readLogs` et toutes les mutations `BLOCKED` jusqu'à un mapping validé.
+  - Deviennent READY : `TB-W3-D3-01`, `TB-W3-PRW-01`, `TB-W3-PRW-02` et les couches GGCC GitHub `REPO-BRANCH`, `COMMIT-FILE`, `PR-REVIEW`, `ACTIONS`, `RELEASES-DEPLOYMENTS`, `ISSUES-PROJECTS`. Restent READY : `TB-W3-A3-02` (blocage local), `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-D3-01`, Bootstrap Receipt Enrichment : références prouvées de connexion, dépôt, projet et mapping dans le receipt existant, sans secret.
+
+## 2026-10-05 — W3 D2 Effective Capabilities — GREEN candidate
+
+- **Reprise current-first.** `main=9936325c773de58c9e1114f0094b2e477a6fde12` (D1 clôturé, PR #245). Aucune nouvelle intake ni consigne propriétaire (#235/#236/#177 déjà réconciliées). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 reste un blocage local (claim runtime) ; `TB-W3-D2-01` est retenu.
+- **Préflight runtime (08:38Z)** : tasks `37284843087` (révision 242 : `TASK-20260920-003` BLOCKED, `TASK-20260929-001` READY), sessions `37284845657` (2 EXPIRED), locks `37284848385` (0 actif). Aucune collision sur `governance:effective-capabilities`.
+- **Livré (GW-11, SLOT-11).** `GovernedOperationalContext.effectiveCapabilities` (`src/governedWorkflow/governance/projectCapabilities.ts`) : une entrée par classe GitRegistry du périmètre prouvé (`READ`, `WRITE`, `PRODUCTION_EFFECT`, `DESTRUCTIVE` ; dépôt ou serveur), intersection en échec fermé de sept dimensions :
+  - `DECLARED` : mapping `validated`/`active` seulement ;
+  - `IDENTITY` : sujet OAuth et identité GitHub courante du même principal ;
+  - `TARGET` : couches de réalité ;
+  - `GITHUB` : état de travail de ce dépôt, pour les mutations du dépôt ;
+  - `GOVERNANCE` : règles D1, avec règles bloquantes et obligations nommées ;
+  - `PRECONDITIONS` : entrées exactes du WRITE gate, sur la liste complète des locks ;
+  - `AUTHORIZATION` : `UNKNOWN`, faute d'autorité qui l'atteste.
+- **Résultat sur MCP** (registre V1 migré, `migration_pending`) : lectures déclarées `UNVERIFIED` (déclaration non validée, autorisation inattestée), `readLogs` et toutes les mutations `BLOCKED`. Aucune capacité n'est effective ; le gate reste shadow.
+- **Preuves** : RED `699aaad`, CI #2246 (`37286285263`) : 892 tests, 1 échec attendu (module absent). GREEN local : typecheck, build, docs, gouvernance, GWC, secrets, readiness et `git diff --check` verts ; suite complète 898/898.
+- **NEXT_ACTION** : CI exact-head de la PR #246, merge exact-head, Governed Deploy, attestation OIDC read-only, puis clôture de `TB-W3-D2-01`.
+
+## 2026-10-05 — W3 D1 Existing Governance Inheritance — DONE et attesté
+
+- **Fusion et CI** : PR #244 fusionnée sous garde exact-head depuis `57a5ef852c9412a8bb3447f3991b8921be7c8abf` au merge `87109f4153cea8d208c861e7ba456e617e3e4d24`.
+  - RED CI #2240 (1 échec attendu) ; CI PR `37283787763` (#2241, 889 tests) ; CI main `37284001092` (#2242).
+  - Governed Deploy `37284001114` (#119) SUCCESS, « Deployment attested for exact SHA » (un 502 transitoire pendant le redémarrage, puis succès).
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37284270816` : S1 `main@87109f4`, worktree propre, push désactivé.
+  - `docker_status` run `37284273785` : conteneur healthy (redémarré par le deploy #119) ; l'image embarque désormais `.mcp/branch-governance.json`.
+- **Program Backlog** :
+  - `TB-W3-D1-01 = DONE` ; c'est l'unique lot de `PB-D1`, d'où `PB-D1 = DONE` (19 work items DONE).
+  - Résiduels sans autorité d'observation portés explicitement : rulesets et protections des dépôts cibles par `TB-W3-GGCC-GH-RULESETS` (règles PR/checks/revues héritées `UNKNOWN` avec `GOVERNANCE_RULESET_NOT_OBSERVED` jusque-là) ; canal Governed Deploy du MCP par `TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`.
+  - Limite connue : le registre V1 migré déclare des capacités candidates conservatrices (ni écriture ni déploiement) et un mapping MCP `migration_pending` ; `DEPLOY` et `WRITE_*` hérités restent `FORBID` tant que le registre ne déclare pas autre chose.
+  - `TB-W3-D2-01` devient READY. READY : `TB-W3-A3-02` (blocage local), `TB-W3-D2-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-D2-01`, Effective Capabilities : intersection fail-closed de l'identité, du contexte GitHub, de la réalité projet, de la gouvernance héritée et du WRITE gate.
+
+## 2026-10-05 — W3 D1 Existing Governance Inheritance — GREEN candidate
+
+- **Reprise current-first.** `main=c4fb286efb38bb084013b62c6bdce533725021aa` (C345-02 clôturé, PR #243). Aucune nouvelle intake ni consigne propriétaire, y compris après la pause de limite d'usage (réobservé à 08:24Z, HEAD inchangé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime), `TB-W3-D1-01` est retenu.
+- **Livré (GW-10, extension GWC-9).** `GovernedOperationalContext.governanceInheritance` projette, sur le périmètre prouvé par `projectReality`, les contraintes des autorités existantes, sans copie :
+  - Gouvernance déclarée du mapping GitRegistry : `GitRegistryProjectEvidence.governanceEvidence` (additif), portée par `selectedMapping.governance`, avec provenance candidate pour un registre V1 migré.
+  - Ruleset GitHub observé, pour son seul dépôt.
+  - `.mcp/branch-governance.json` : lecteur borné `src/governance/branchGovernance.ts`, livré dans l'image (`Dockerfile`), sans politique par défaut.
+  - Locks actifs (liste complète) et WRITE gate.
+- **Règles.** 17 règles (branche, PR, checks, revues, déploiement, écriture, locks, worktree), chacune `REQUIRE`/`FORBID`/`PERMIT`/`UNKNOWN` avec ses autorités.
+  - La contrainte la plus stricte l'emporte.
+  - Le silence ou une preuve périmée donne `UNKNOWN`.
+  - Des préfixes disjoints donnent `CONFLICT`.
+  - Le déploiement n'est hérité que sur un serveur prouvé.
+  - Sans périmètre prouvé : `UNVERIFIED`, aucune règle.
+- **Réalité courante.**
+  - MCP (`mcp-s1-production`) : branche `main`, push direct interdit (mapping, ruleset, politique), PR et brouillon requis, checks du ruleset, `DEPLOY`/`WRITE_*` interdits (capacités candidates par défaut).
+  - AfricaFunds : hérite de sa branche officielle déclarée `claude/code-review-improvements-ikvuj`, sans ruleset prêté (`GOVERNANCE_RULESET_NOT_OBSERVED`).
+- **Préflight runtime OIDC.**
+  - 04:10Z, puis rafraîchi à 08:25Z après la pause (`workflowSha=c4fb286`, `truncated=false`).
+  - File `storeRevision=242` (`37283486704`) ; 2 sessions EXPIRED (`37283489776`) ; 0 lock (`37283492893`).
+  - Aucune collision sur `governance:inheritance` ; aucun claim, session ou lock créé.
+- **Tests.**
+  - RED `15c0f88` : modules D1 absents.
+  - 8 tests d'acceptation, dont un lock de projet situé au-delà de la projection bornée.
+  - Suite locale verte ; gates typecheck, build, docs, gouvernance, GWC, secrets et readiness vertes.
+- **NEXT_ACTION.**
+  1. CI exact-head, merge, Governed Deploy (image avec la politique), attestation OIDC S1.
+  2. PR terminale D1 DONE.
+  3. Recalcul : `TB-W3-D2-01` devient READY.
+
+## 2026-10-05 — W3 C345-02 Project Reality acceptance — DONE et attesté
+
+- **Fusion et CI** : PR #242 fusionnée sous garde exact-head depuis `9baa2da768c7f904a67bf74fe812092111045659` au merge `d4a98988b6e5327cb1b802a3d2099f634d29b82d`.
+  - RED CI #2234 (1 échec attendu) ; CI PR `37261237037` (#2235) ; CI main `37261351989` (#2236).
+  - Governed Deploy `37261351824` (#117) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37261508259` : S1 `main@d4a9898`, worktree propre, push désactivé.
+  - `docker_status` run `37261509926` : conteneur healthy (redémarré par le deploy #117).
+- **Program Backlog** :
+  - `TB-W3-C345-02 = DONE` ; tous les lots `PB-C345` sont DONE, d'où `PB-C345 = DONE` (18 work items DONE).
+  - Résiduels sans autorité d'observation portés explicitement : observation d'ingress (domaine → reverse proxy → port → runtime) et service des domaines par `TB-W4-I1-01` ; tête exacte des composants du TargetContext par `TB-W3-GGCC-GIT-READ`.
+  - `TB-W3-D1-01` devient READY. READY : `TB-W3-A3-02` (blocage local), `TB-W3-D1-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-D1-01`, Existing Governance Inheritance (GW-10) sur la réalité projet prouvée.
+
+## 2026-10-05 — W3 C345-02 Project Reality acceptance — GREEN candidate
+
+- **Reprise current-first.** `main=9afadd753e9c4d4cf882ad5fc7e0d4154cb4a25d` (C5 clôturé, PR #241) ; CI main #2233 et Governed Deploy #116 réussis. Aucune nouvelle intake ni consigne propriétaire (#235/#236/#177 déjà réconciliées). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime) ; `TB-W3-C345-02` est retenu.
+- **Livré.** `src/github/projectReality.ts` compose les résolutions existantes en une réalité projet. Le service de contexte gouverné la projette (`GovernedOperationalContext.projectReality`), calculée une seule fois quel que soit le chemin de cache.
+  - Couches : `REPOSITORY` (GW-05), `PROJECT` (GW-06), `SERVER` (GW-07), `RUNTIME` (GW-08), `INGRESS` (sans autorité), `DOMAIN` (GW-09).
+  - États : `VERIFIED`/`UNVERIFIED`/`STALE`/`AMBIGUOUS`/`CONFLICT`/`NONE`, avec codes et provenance du résolveur, première couche bloquante, contradictions, et identifiants issus des seules couches vérifiées.
+- **Preuve en chaîne.** Une couche n'est `VERIFIED` que si sa résolution est courante, que les couches amont sont `VERIFIED` et qu'elle leur est liée. Sinon, `PROJECT_REALITY_UPSTREAM_UNVERIFIED` ou un `CONFLICT` sur `PROJECT_REALITY_*_BINDING_MISMATCH`. Les contradictions des résolveurs restent visibles.
+- **Acceptation sur fixtures réelles.**
+  - Registre versionné et carte serveur réels.
+  - AfricaFunds multi-dépôts (`api_opcv` + `front_end_opcvm` sur `s2`, MULTI_RUNTIME, surface API + FRONTEND observée) : les deux dépôts composent la même réalité. Elle reste `UNVERIFIED` sur `INGRESS`.
+  - Chaîne MCP réelle (mapping V1 sans rôle) : `RUNTIME_COMPONENT_UNVERIFIED`, domaine `DOMAIN_OBSERVATION_UNAVAILABLE`, ingress `INGRESS_OBSERVATION_UNAVAILABLE`.
+  - Chaîne MCP de bout en bout (session → service → collecteur) : miss, rafraîchissement, hit (`memory_cache`) et expiré (`STALE`).
+  - Session liée à un autre dépôt (B3.2) : aucune réalité empruntée.
+  - Absence prouvée (`NO_RUNTIME`, `DOMAIN_NONE_CONFIRMED`, `INGRESS_NONE_WITHOUT_DOMAIN`) : `VERIFIED`.
+- **Résiduels C4/C5.**
+  - Ingress `UNVERIFIED` faute d'autorité.
+  - Domaines prouvés seulement par observation courante.
+  - `TargetContext` Live State inchangé : aucun composant ne reçoit d'observation non prouvée. La tête exacte par composant relève d'une autorité Git par dépôt (GGCC Git READ).
+- **Préflight runtime OIDC** (03:48Z, `workflowSha=9afadd7`, `truncated=false`) :
+  - file `storeRevision=242` (`37260856626`) ;
+  - 2 sessions non closes, toutes EXPIRED (`37260858362`) ;
+  - 0 lock (`37260859925`).
+  - Aucune collision sur `project:reality-e2e` ; aucun claim, session ou lock créé.
+- **Tests.**
+  - RED `1556dfa` : module absent.
+  - 8 tests d'acceptation.
+  - Suite locale 879/879 ; gates typecheck, build, docs, gouvernance, GWC, secrets et readiness vertes.
+- **NEXT_ACTION.**
+  1. CI exact-head, merge, Governed Deploy, attestation OIDC S1.
+  2. PR terminale C345-02 DONE.
+  3. Recalcul : `TB-W3-D1-01` devient READY.
+
+## 2026-10-05 — W3 C5 Domain Resolution — DONE et attesté
+
+- **Fusion et CI** : PR #240 fusionnée sous garde exact-head depuis `12dda80aa3bbb6f3097a9aa1be3a4f5ba8b932ba` au merge `9131bd8c2983377a62afbdb559bc3cf2392f1b5d`.
+  - RED CI #2228 (1 échec attendu) ; CI PR `37259206625` (#2229) ; CI main `37259332125` (#2230).
+  - Governed Deploy `37259332214` (#115) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only** :
+  - `mcp_git_status` run `37259482198` : S1 `main@9131bd8`, worktree propre, push désactivé.
+  - `docker_status` run `37259484407` : conteneur healthy.
+- **Program Backlog** :
+  - `TB-W3-C5-01 = DONE` ; `PB-C345` reste `PARTIALLY_IMPLEMENTED`.
+  - Le résiduel « service des domaines » (aucune autorité d'observation de domaine) est porté explicitement par `TB-W3-C345-02` et `TB-W4-I1-01`.
+  - `TB-W3-C345-02` devient READY. READY : `TB-W3-A3-02` (blocage local), `TB-W3-C345-02`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION** : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C345-02`, acceptation Project Reality (repository → project → server → runtime → domain sur fixtures MCP et multi-dépôts, avec les résiduels C4/C5).
+
+## 2026-10-04 — W3 C5 Domain Resolution — GREEN candidate
+
+- **Reprise current-first.** `main=538394a290c6f461f3d6c87a173ef87d08751f56` (C4 clôturé, PR #239). Aucune nouvelle intake ni consigne propriétaire. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 est un blocage local (claim runtime), `TB-W3-C5-01` est retenu.
+- **Livré (chaîne C2 → C3 → C5 du collecteur GitHub gouverné).** `domainResolution` est projeté après les résolutions projet et serveur.
+  - `GitRegistryProjectEvidence.domainEvidence` (additif) porte les déclarations du GitRegistry V2 :
+    - côté projet : `publicDomain`, `publicApi`, `historicalVhosts` ;
+    - côté mapping : `domain`, `domainVerified`.
+  - `src/github/domainResolution.ts` appelle le résolveur GW-09 (`resolveDomain`) avec ces déclarations et l'observation courante du serveur résolu.
+- **Observation absente.** Aucune autorité d'observation de domaine n'existe dans le runtime. Le point d'injection `readDomainObservation` ne répond rien par défaut, d'où `DOMAIN_OBSERVATION_UNAVAILABLE` (`UNVERIFIED`, jamais `NONE`). Le résiduel est porté par C345-02 et I1.
+- **Fail-closed.**
+  - Projet `NONE`/`AMBIGUOUS`/non vérifié.
+  - Serveur non résolu → `DOMAIN_SERVER_UNVERIFIED`.
+  - Déclarations absentes ou invalides → `DOMAIN_REGISTRY_UNAVAILABLE`.
+  - Observation malformée → `DOMAIN_OBSERVATION_UNAVAILABLE`.
+  - Observation périmée → `DOMAIN_EVIDENCE_STALE`.
+  - Serveur observé différent → `DOMAIN_SERVER_MISMATCH`.
+  - Domaine observé non déclaré ou déclaré non observé → `UNVERIFIED`.
+  - Vhost historique déclaré actif → `DOMAIN_HISTORICAL_DECLARATION_CONFLICT`.
+  - `protectedApplications` n'est jamais lu.
+  - Cache : miss → `DOMAIN_PROJECT_UNVERIFIED` ; expiré → `UNVERIFIED/STALE` sans surface.
+- **Réalité courante (registre versionné).** Le mapping MCP migré `mcp-s1-production` déclare `mcp.wealthtechinnovations.com` ; AfricaFunds et Stablecoin déclarent leurs domaines publics. Tous restent `UNVERIFIED` faute d'observation.
+- **Préflight runtime OIDC** (23:22Z, `workflowSha=538394a`, `truncated=false`) : file `storeRevision=242` (`37243482320`) ; 2 sessions non closes, toutes EXPIRED (`37243484120`) ; 0 lock (`37243485726`). Aucune collision sur `project:domain-resolution` ; aucun claim, session ou lock créé.
+- **Tests.** RED `b02b58e` (module C5 absent). 6 tests ciblés : preuve registre, composition GW-09, absence d'autorité, fail-closed, lecture seule et listes protégées, collecteur miss/hit/stale/absence. Suite locale 869/869 ; gates typecheck, build, docs, gouvernance, GWC, secrets et readiness vertes.
+- **NEXT_ACTION.**
+  1. CI exact-head, merge, Governed Deploy, attestation OIDC S1.
+  2. PR terminale C5 DONE.
+  3. Recalcul : `TB-W3-C345-02` devient READY.
+
+## 2026-10-04 — W3 C4 Runtime Resolution — DONE et attesté
+
+- **Fusion.** PR #238 fusionnée sous garde exact-head : head `130a839d94eeacd521b9dde41ac75fba19c9215f`, merge `4654c9edb57e37806eb9783f2b5d863301b50d01`.
+- **CI et déploiement.** RED CI #2222 (1 échec attendu) ; CI PR `37242618489` (#2223) ; CI main `37242741995` (#2224) ; Governed Deploy `37242742016` (#113) SUCCESS, « Deployment attested for exact SHA ».
+- **Attestation OIDC read-only.**
+  - `mcp_git_status` run `37242868231` : S1 `main@4654c9e`, worktree propre, push désactivé.
+  - `docker_status` run `37242870056` : conteneur healthy, publié sur `127.0.0.1:8787` (preuve côté agent uniquement).
+- **Program Backlog.**
+  - `TB-W3-C4-01 = DONE` ; `PB-C345` reste `PARTIALLY_IMPLEMENTED`.
+  - Résiduels explicites portés par `TB-W3-C345-02` : lien d'ingress domaine → proxy → port → runtime, et composants TargetContext non déclarés.
+  - READY : `TB-W3-A3-02` (blocage local), `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, lock ou mutation.
+- **NEXT_ACTION.** `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C5-01` (résolution domaine GW-09, après C2/C3).
+
+## 2026-10-04 — W3 C4 Runtime Resolution — GREEN candidate
+
+- **Reprise current-first.**
+  - `main=e6ea0d853e03f3100c0cd13fad297650f688e936` : convergence #235/#236 fusionnée, CI main #2221 et Governed Deploy #112 SUCCESS.
+  - Commentaires de convergence postés sur #235 et #236, qui restent ouvertes ; aucune nouvelle intake.
+  - `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : `TB-W3-A3-02` reste un blocage local (`TASK-20260929-001` READY non réclamée, mais un claim exige une session runtime) ; `TB-W3-C4-01` est retenu.
+- **Livré (chaîne B1 → B2 → C2 → C3 → C4 du collecteur GitHub gouverné).** `runtimeResolution` est projeté après `serverResolution`.
+  - `src/github/runtimeResolution.ts` appelle le résolveur GW-08 (`resolveRuntime`) avec :
+    - les composants du projet déclarés par le GitRegistry V2 (projet enregistré, ou mapping sélectionné s'il déclare son rôle) ;
+    - les observations des autorités d'observation existantes, rattachées au composant de leur dépôt.
+  - Live State fournit l'observation du runtime MCP (`src/liveState/runtimeObservation.ts`, lu sans nouvelle collecte). `parseRuntimeObservation` conserve le label compose borné (`composeProject`), d'où `DOCKER_COMPOSE` ou `DOCKER`. L'identifiant du serveur lu par Live State devient une constante partagée.
+  - Le GitRegistry V2 ne déclare aucun runtime : rien n'est recoupé ni inventé.
+  - Ports et reverse proxy : aucune autorité d'observation runtime (l'attestation exclut le réseau). Résiduel explicite pour C5/C345.
+- **Fail-closed.** Chaque cas reste `UNVERIFIED`, jamais `NO_RUNTIME` :
+  - serveur non résolu → `RUNTIME_SERVER_UNVERIFIED` ;
+  - composant non prouvable (mapping V1 sans rôle, projets multiples, dépôt partagé par deux composants) → `RUNTIME_COMPONENT_UNVERIFIED` ;
+  - aucune observation pour le projet → `RUNTIME_OBSERVATION_MISSING` ;
+  - observation illisible ou malformée → `RUNTIME_OBSERVATION_UNAVAILABLE` ;
+  - Live State périmée → `RUNTIME_EVIDENCE_STALE` ;
+  - serveur du registre différent du serveur observé → `RUNTIME_SERVER_MISMATCH` ;
+  - cache miss → `RUNTIME_SERVER_UNVERIFIED` ; cache expiré → `UNVERIFIED/STALE` sans liaisons.
+- **Réalité courante.** Le mapping `Patricked-code/MCP` du registre versionné est V1, sans `componentRole` ni projet enregistré : sa résolution runtime reste `RUNTIME_COMPONENT_UNVERIFIED` tant que le registre ne déclare pas ce composant. Les projets S2 n'ont aucune autorité d'observation runtime.
+- **Préflight runtime OIDC** (22:55Z, `workflowSha=e6ea0d8`, `truncated=false`) :
+  - file `storeRevision=242` (`37241845033`) ;
+  - 2 sessions non closes, toutes EXPIRED (`37241846646`) ;
+  - 0 lock (`37241848464`) ;
+  - aucune collision sur `project:runtime-resolution`. Aucun claim, session ou lock créé.
+- **Tests.**
+  - RED `5957c69` : modules C4 absents.
+  - 7 tests ciblés : label compose, adaptateur Live State, composants, composition GW-08, fail-closed, lecture seule, collecteur miss/hit/stale/indisponible.
+  - Suite locale 861/861 ; gates typecheck, build, docs, gouvernance, GWC, secrets et readiness vertes.
+- **NEXT_ACTION.**
+  1. CI exact-head, merge, Governed Deploy, attestation OIDC S1.
+  2. PR terminale C4 DONE.
+  3. Recalcul : C345-02 dépend de C4 et C5 ; prochain lot `TB-W3-C5-01`.
+
+## 2026-10-04 — Convergence des intakes #235 (finalisation continue) et #236 (Super Admin Cockpit) — GREEN candidate
+
+- **Reprise current-first** (`main=0ac9ecf70adab117f2175ef2451fc62fe15abac7`, C3 clôturé ; CI main #2218 `37239857289` et Governed Deploy #111 `37239857290` SUCCESS).
+  - Réobservation des intakes : #235 et #236 ouvertes et non consommées. CLAUDE.md §7.1 étape 3 impose de les réconcilier avant tout autre lot ; C4 attend donc cette convergence.
+  - PR ouvertes : #207 (A3.2, autre session) et des drafts historiques, sans collision.
+- **#235** (`INTAKE-235`, `ACCEPT_WITH_ADAPTATION`) : renforcement de `PROGRAM_AUTO_CONTINUE`, sans seconde boucle.
+  - Les 22 sections sont cartographiées sur les autorités existantes : 19 `DUPLICATE`, 3 `COMPLEMENT`.
+  - Complément §16/§22 : `executionModel.terminalCondition`, dont la déclaration est `GLOBAL_MCP_COMPLETE`. Elle compte 4 dimensions et 13 critères de succès. Le chemin positif et les chemins négatifs y sont explicites.
+  - Complément §16 : `PB-MCP-TERMINAL` / `TB-W4-MCP-FINAL-ACCEPTANCE`, qui dépend des preuves des dimensions : `TB-W3-F-05`, `TB-W4-I3-01`, `TB-W4-J1-01`, `TB-W4-J2-01`, `TB-W4-K-12`, `TB-W4-GGCC-E2E` et `TB-W3-OAUTH-WRITE-SCOPE-01`.
+  - Complément §21 : `agentHandoffContract.globalStopReport`, avec 17 champs obligatoires et 7 conditions d'arrêt. Il affine `globalStopOnlyWhen` sans le remplacer.
+- **#236** (`INTAKE-236`, `ACCEPT_WITH_ADAPTATION`) : `PB-K` (slot `cockpit.super-admin`, mode `EXTEND`) reçoit `TB-W4-K-01..12` en W4. Chaque lot a un collision domain `cockpit:*` dédié.
+  - K-01 (shell, design system, baseline sécurité, Command Center read-only) est READY : il ne dépend que de `TB-W3-DISPATCH-03` et `TB-W4-G3-01`, tous deux DONE.
+  - Vues read-only après leurs projections : K-05 après C345/GGCC Git READ, K-06 après C4, K-07 après D2/A3.2/`mcp:write`.
+  - Actions après D2/PRW/GGCC (K-08/K-09), provisioning après E/F (K-10), observabilité après H/I/audit GGCC (K-11), acceptation E2E en K-12.
+  - Inventaire §44 : `docs/governance/super-admin-cockpit-convergence-20261004.json`. Stack Express SSR conservée : 5 helpers d'échappement à factoriser, CSP seulement sur la page de consentement OAuth, aucun script client. Déploiement : serveur MCP existant via le Governed Deploy.
+- **Contrôle machine** : `validateProgramBacklogConvergence` → `terminalAcceptanceGaps`. Il signale :
+  - un blueprint obligatoire qui n'est pas un ancêtre de l'acceptation terminale ;
+  - un lot `CONDITIONAL`/`DEFERRED` qui la bloquerait ;
+  - un blueprint terminal absent.
+  L'extracteur ROADMAP couvre aussi `CHANTIER K` (`ROADMAP:34`).
+- **Program Backlog** : 94 blueprints (25 DONE, 5 READY, 52 BLOCKED, 7 DEFERRED, 5 CONDITIONAL) ; 41 work items (17 DONE). Contrôle structurel : aucun blueprint ni work item existant modifié.
+  - READY dérivés : `TB-W3-A3-02` (blocage local), `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+  - Aucun Task, session, claim, lock ou mutation serveur.
+- **Tests** : RED `cfc922c` (`tests/programIntakes235to236Convergence.test.ts`, 7/7 en échec attendu) ; GREEN 7/7 en local.
+- **NEXT_ACTION** :
+  1. CI exact-head, puis merge.
+  2. Commentaires de convergence sur #235 et #236, qui restent ouvertes : #235 jusqu'à `GLOBAL_MCP_COMPLETE`, #236 jusqu'à `PB-K` DONE.
+  3. Ensuite `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C4-01`.
+
+## 2026-10-04 — W3 C3 Server Resolution — DONE et attesté
+
+- PR #233 fusionnée sous garde exact-head depuis `eaacf048f50ab9ecbaec252b55b0492a43ff0629` au merge `dbc5a5062716ae2fd186d36c4f54e97204ede9a3` ; RED CI #2213 (1 échec attendu), CI PR `37224921479` (#2214), CI main `37225005005` (#2215), Governed Deploy `37225005052` (#110) SUCCESS (« Deployment attested for exact SHA »).
+- Attestation OIDC read-only : `mcp_git_status` run `37225118082` → S1 `main@dbc5a50`, worktree propre, push désactivé ; `docker_status` run `37225120093` → conteneur healthy.
+- Program Backlog : `TB-W3-C3-01 = DONE` ; `PB-C345` passe `PARTIALLY_IMPLEMENTED` ; dépendants directs recalculés : `TB-W3-C4-01` et `TB-W3-C5-01` READY (`TB-W3-C345-02` reste BLOCKED). READY : `TB-W3-A3-02`, `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`. Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C4-01` (résolution runtime GW-08 consommant `serverResolution`), A3.2 restant réservé à une session runtime.
+
+## 2026-10-04 — W3 C3 Server Resolution — GREEN candidate
+
+- Reprise current-first : `main=9a79c7a1b822e5717f2931c069369516f94a241a` (DISPATCH-03 et `PB-DISPATCH` clôturés, #222 fermée). Réobservation des intakes : aucune intake ouverte ni supervision nouvelle. `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-C3-01` retenu.
+- Livré (chaîne B1 → B2 → C2 → C3 du collecteur GitHub gouverné existant) : `serverResolution` est projeté juste après `projectResolution` en appelant le résolveur GWC GW-07 (`resolveServer`) ; `src/github/serverResolution.ts` compose les liaisons serveur du GitRegistry V2 (`GitRegistryProjectEvidence.serverBindings`, additif), l'identité serveur canonique (serveurs gérés par le runtime également déclarés dans `.mcp/server-map.json`, sans renommer les ids stockés) et la preuve registre lue en direct. Chemin déclaré ≠ chemin vérifié : seul `realPathVerified` du registre atteste un chemin réel ; un registre V1 migré en mémoire est signalé (`git_registry_v2_candidate_from_v1`).
+- Fail-closed : registre absent ou invalide → `SERVER_REGISTRY_UNAVAILABLE` ; serveur inconnu ou non déclaré → `SERVER_ID_UNVERIFIED` ; carte serveur absente → `SERVER_CANONICAL_ID_SET_INVALID` (le résolveur GW-07 retourne désormais cette raison pour un ensemble canonique vide au lieu d'une exception) ; cache miss → `SERVER_PROJECT_UNVERIFIED` ; preuve expirée → `UNVERIFIED/STALE` sans serveur ni candidats. Aucun appel SSH, aucune écriture GitRegistry, aucune autorisation inférée, aucune donnée de connexion projetée.
+- Préflight runtime OIDC (18:29Z, `truncated=false`) : file `storeRevision=242` (`37224598839`), 2 sessions non closes toutes EXPIRED (`37224600485`), 0 lock (`37224602027`) ; aucune collision sur `project:server-resolution`. Aucun claim/session/lock créé.
+- Tests : RED `a8b8670` (CI #2213 : 839/840, 1 échec attendu) ; 6 tests ciblés (preuve registre, composition GW-07, désaccord registre/configuration, fail-closed, lecture seule, collecteur miss/hit/stale) ; suite locale 845/845.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale C3 DONE, puis recalcul (C4/C5 dépendent de C3).
+
+## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection — DONE et attesté ; PB-DISPATCH DONE
+
+- PR #231 fusionnée sous garde exact-head depuis `ed100d68e7d8204c5c66761f5efe3c8055f86099` au merge `6df23b91551a97cdf10968c22071036d5942f11b` ; RED CI #2207 (1 échec attendu), CI PR `37223273561` (#2208, 837/837), CI main `37223380722` (#2209), Governed Deploy `37223380611` (#108) SUCCESS (« Deployment attested for exact SHA »).
+- Attestation OIDC read-only : `mcp_git_status` run `37223532065` → S1 `main@6df23b9`, worktree propre, push désactivé ; `docker_status` run `37223533843` → conteneur healthy.
+- Program Backlog : `TB-W3-DISPATCH-03 = DONE` ; `PB-DISPATCH = DONE` (DISPATCH-01..03 attestés) ; couverture `issue:222` DONE ; READY recalculés : `TB-W3-A3-02`, `TB-W3-C3-01`, `TB-W3-GGCC-GIT-READ`. Évolutions différées conservées chez leurs propriétaires (D2, MULTI_PROJECT_LIVE_STATE, H/I, DONE runtime → blueprint). Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : clôturer l'intake #222 après fusion, puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-C3-01` (A3.2 restant réservé à une session runtime).
+
+## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection — GREEN candidate
+
+- Reprise current-first : `main=3177919faabc2fe4615746651d1ab26de9b62682` (DISPATCH-02 clôturé). Réobservation des intakes : aucune nouvelle intake ni supervision propriétaire (#222 ne porte que le commentaire de convergence). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-03` retenu.
+- Livré : `src/governance/nextWorkProjection.ts` (`deriveNextWork`, fonction pure) projette pour la session demandeuse, dans l'ordre, la reprise de sa tâche active, le claim de la première tâche exécutable compatible, puis la matérialisation du premier blueprint READY sans collision ; un candidat bloqué localement (scope actif, lock d'une autre session, intention terminale ou équivalente active) est sauté et listé (20 au plus). Les règles de sélection sont celles de la file (exports partagés de `taskQueue.ts`) et l'intention est celle de `mcp_materialize_program_blueprint` : aucune logique parallèle.
+- Current-State Inventory : champ `nextWork` (projection chargée une fois par processus depuis la révision déployée ; échec → `PROGRAM_PROJECTION_UNAVAILABLE`, jamais d'inventaire en échec) ; `mcp_materialize_program_blueprint` ajouté à `bootstrap.order` avant le claim. `claimNextTask` saute un candidat bloqué localement si un autre est compatible et conserve sinon `TASK_RESOURCE_CONFLICT` / `TASK_LOCK_CONFLICT`. Le `nextAction` du contexte gouverné suit `nextWork` lorsqu'il a été calculé pour sa session ; une tâche possédée reprenable garde sa propre action, une tâche possédée BLOCKED ne bloque plus la session ; sans `nextWork`, comportement historique.
+- Préflight runtime OIDC (17:58Z, `truncated=false`) : file `storeRevision=242` (`37222548025`), 2 sessions non closes toutes EXPIRED (`37222549516`), 0 lock (`37222551125`) ; aucune collision sur `orchestration:task-dispatch`. Aucun claim/session/lock créé.
+- Tests : RED `8e772a9` (CI #2207 : 826/827, 1 échec attendu) ; 11 tests ciblés (projection pure, cohérence avec l'outil de matérialisation, file atomique réelle bout-en-bout, inventaire, contexte gouverné) ; suite locale 837/837.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale DISPATCH-03 DONE (et `PB-DISPATCH` DONE), fermeture de #222, puis `TB-W3-C3-01`.
+
+## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim — DONE et attesté
+
+- PR #229 fusionnée sous garde exact-head depuis `95783727c9c18ee48846a02d4a4d1a1b1aad8af3` au merge `870305fc814773d8fb10f0a4fc2480a74885e46f` ; RED CI #2201 (4 échecs attendus), CI PR `37221364113`, CI main `37221468356` (#2203), Governed Deploy `37221468346` (#106) SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `37221611227` → S1 `main@870305f`, worktree propre, push désactivé ; `docker_status` run `37221613056` → conteneur healthy.
+- Program Backlog : `TB-W3-DISPATCH-02 = DONE` ; `PB-DISPATCH` reste `PARTIALLY_IMPLEMENTED` ; `TB-W3-DISPATCH-03` devient READY. Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-DISPATCH-03` (projection next-work), A3.2 restant réservé à une session runtime.
+
+## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim — GREEN candidate
+
+- Reprise current-first : `main=ef22f55ed715c664154f1b9ee550888a82654f00` (DISPATCH-01 clôturé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-02` retenu ; aucune nouvelle intake.
+- Livré (extension de `queue.claimNextTask` / `mcp_claim_next_governed_task`) : une session reprend d'abord sa tâche active possédée (CLAIMED à VERIFYING) — lecture sans mutation — avant tout nouveau claim ; une tâche possédée BLOCKED ne la bloque pas ; aucune tâche possédée n'est prise par une autre session ; l'outil transmet le TargetScope de la session (sans scope : tâches historiques seulement ; avec scope : tâches incluses dans le scope). Appel interne sans option : comportement inchangé.
+- Préflight runtime OIDC (17:37Z, `truncated=false`) : file `storeRevision=242` (`37221201045`), aucune session active (`37221202752`), 0 lock (`37221204492`) ; aucune collision sur `orchestration:task-dispatch`. Aucun claim/session/lock créé.
+- Tests : RED `fd1bfdd` (4 échecs ciblés, 1 garde-fou déjà vert) ; 5 tests ciblés sur une vraie file atomique ; suite locale 825/825.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale DISPATCH-02 DONE, puis `TB-W3-DISPATCH-03`.
+
+## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization — DONE et attesté
+
+- PR #227 fusionnée sous garde exact-head depuis `66bd5b768296217a195fc5119e3b778e87a2f348` au merge `c5fc1d78ea4213791fa38ba67f3fcf4b7ed535d0` ; RED CI #2195 (2 échecs attendus), CI PR `37220630483`, CI main `37220729943` (#2197), Governed Deploy `37220729894` (#104) SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `37220863383` → S1 `main@c5fc1d7`, worktree propre, push désactivé ; `docker_status` run `37220865029` → conteneur healthy.
+- Program Backlog : `TB-W3-DISPATCH-01 = DONE` ; `PB-DISPATCH = PARTIALLY_IMPLEMENTED` ; `TB-W3-DISPATCH-02` devient READY. Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-DISPATCH-02` (claim resume-owned-first), A3.2 restant réservé à une session runtime.
+
+## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization — GREEN candidate
+
+- Reprise current-first : `main=21dc3e43984fd684f5013991dc4de57885b9fd4e` (B3.2 clôturé, #220 fermé). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime local), `TB-W3-DISPATCH-01` retenu ; aucune nouvelle intake ni consigne propriétaire.
+- Livré (intake #222, EXPOSE sur l'autorité existante) : outil `mcp_materialize_program_blueprint` → `queue.reconcileIntent` avec une intention construite par le serveur (`intentKey = program:<id>`, scopes = collision domains du blueprint, résumé portant le digest de la projection). La readiness est recalculée depuis la projection déployée avec la bibliothèque du dépôt (copiées dans l'image) ; BLOCKED/DEFERRED/CONDITIONAL/DONE/inconnu/sans domaine → refus fail-closed.
+- Idempotence : relance → `CONTINUATION` ; tâche active équivalente (même ensemble exact de scopes) réutilisée ; tâche terminale → `DUPLICATE` ; tâche tenue par une autre session → `CONFLICT`. Jamais de claim implicite ; session MCP non ciblée et bootstrappée exigée.
+- Préflight runtime OIDC (17:23Z, `truncated=false`) : file `storeRevision=242` (`37220297251`), aucune session active (`37220298984`), 0 lock (`37220300886`) ; aucune collision sur `orchestration:task-dispatch`. Aucun claim/session/lock créé.
+- Tests : RED `63ebe38` (module et outil absents) ; 7 tests ciblés sur une vraie file atomique ; suite locale 819/819 ; cartographie régénérée (137 outils) ; liste AF-32 des mutations observées en shadow mise à jour.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale DISPATCH-01 DONE, puis `TB-W3-DISPATCH-02`.
+
+## 2026-10-04 — W3 B3.2 Operator-configured server target — DONE et attesté ; PB-B3 DONE
+
+- PR #225 fusionnée sous garde exact-head depuis `2d3d6ab4cae9ba65d80bab52066da2f8ddd84f14` au merge `93d631e5dbc61354047f0847b96d23d5cb23ba21` ; RED CI #2189 (2 échecs attendus), CI PR `37219464215`, CI main `37219562852` (#2191), Governed Deploy `37219562851` (#102) SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `37219684472` → S1 `main@93d631e`, worktree propre, push désactivé ; `docker_status` run `37219686641` → conteneur healthy (redémarré par le déploiement).
+- Program Backlog : `TB-W3-B3-02 = DONE`, `PB-B3 = DONE` (DONE 16) ; aucune cible n'est configurée sur `main` (`targetProjectIds: []`), le runtime reste donc historique jusqu'à une PR de configuration revue. Couverture multi-dépôt : acceptance GW-73 + tests B3.2. Résidus routés : observation GitHub multi-dépôt (GGCC GitHub, C3.1), preuves de composants (C3/C4), multi-projet (`MULTI_PROJECT_LIVE_STATE`).
+- READY recalculé : `TB-W3-A3-02` (claim runtime `TASK-20260929-001`, local), `TB-W3-DISPATCH-01`, `TB-W3-C3-01`, `TB-W3-GGCC-GIT-READ`.
+- Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-DISPATCH-01` (matérialisation liée au blueprint, intake #222), A3.2 restant réservé à une session runtime.
+
+## 2026-10-04 — W3 B3.2 Operator-configured server target — GREEN candidate
+
+- Reprise current-first : `main=5bf4b799e2feefd4ddff82d525177d04b9e3fe8c` (convergence #220/#221/#222 fusionnée, CI main #2188 et Governed Deploy #101 SUCCESS). `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : A3.2 écarté (claim runtime `TASK-20260929-001` / PR #207), `TB-W3-B3-02` retenu.
+- Préflight runtime OIDC (16:57Z, `truncated=false`) : S1 `main@5bf4b79` propre (`37218643822`) ; file `storeRevision=242`, 2 tâches non terminales hors périmètre (`37218645430`) ; aucune session active (`37218647193`) ; 0 lock (`37218648802`). Aucune collision sur `context:multi-repository`. Aucun claim/session/lock créé.
+- Livré (décision #220, V1 additive) : `.mcp/server-map.json > servers.S1.targetProjectIds` (vide = comportement historique, copié dans l'image comme `identity-policy.json`) ; `src/liveState/targetProject.ts` dérive le `TargetContext` singulier depuis le projet GitRegistry V2 configuré (composants non observés `UNVERIFIED`) ; cible non résolue → pas de `TargetContext` + contradiction `TARGET_PROJECT_*` ; snapshot inchangé octet pour octet sans configuration.
+- Surface d'outils : `targetMappingIds` sur ouverture/reprise de session et réconciliation d'intention, scope de lock `component` — le `TargetScope` est toujours construit par le serveur (Live State ou session), jamais fourni par l'agent ; sans scope, seul `Patricked-code/MCP` est accepté (`REPOSITORY_OUT_OF_SCOPE`). Attestations client limitées au dépôt MCP ou au scope de session. Contexte gouverné : état GitHub `UNAVAILABLE` (`github_target_repository_not_observed`) pour une session sur un autre dépôt.
+- Classification : `docs/governance/multi-repository-target-scope-20261004.json` remplace la classification B3.1 pour le garde-fou des littéraux (inventaire B3.1 conservé immuable) ; `currentState/service.ts` reclassé frontière d'auto-gestion ; observation GitHub multi-dépôt routée vers les lots GGCC GitHub et C3/C4.
+- Tests : RED `5f14005` (module producteur et `narrowTargetScope` absents) ; 17 tests ciblés ; suite locale verte ; cartographie régénérée (136 outils, schémas open/resume/lock/intent/attestation élargis).
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, puis PR terminale B3.2 DONE et recalcul (C3.1, GGCC-GIT-READ, DISPATCH-01).
+
+## 2026-10-04 — Intakes #220/#221/#222 et supervision #219 — convergence dans le Program Backlog
+
+- Reprise current-first : `main=0f8ceebbae386832f66028fd9163e81871e746f0` (HEAD des intakes : `52f6129`, seule la PR documentaire #223 est intervenue). Trois intakes ouverts le 2026-10-01 et un commentaire de supervision (#219, 2026-10-02 00:01Z) n'avaient pas été consommés ; la PR #223 consignait encore B3.2 comme « décision propriétaire en attente ».
+- Classification #219 (preuves dans `SUPERVISION-219-20261002`) : `ENROLMENT_WAKE_REOBSERVE_GAP` — l'accès GitHub était disponible, mais ni `CLAUDE.md` §7.1 ni `agentHandoffContract.steps` n'imposaient de relire les issues `[PROGRAM INTAKE]` ouvertes. Correction : étape `REOBSERVE_PROGRAM_INTAKES` et §7.1 enrichi. État runtime des autres agents : `UNKNOWN`.
+- #220 (`ACCEPT`) : décision propriétaire enregistrée dans `w3B3TargetSelectionGate` (`OWNER_DECISION_RECORDED`) — `OPERATOR_CONFIGURED_SERVER_TARGET` en V1 additive, minimale, réversible et rétrocompatible, sans figer « un serveur = un projet », extensible vers `MULTI_PROJECT_LIVE_STATE`. `TB-W3-B3-02` repasse en readiness dérivée : **READY**.
+- #221 (`ACCEPT`) : règle `NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS` (`CLAUDE.md` §7.3, `executionModel.humanGatePolicy`). Les 22 gates existantes sont cataloguées (6 `HUMAN_DECISION` avec condition admissible et source préexistante, 16 preuve/besoin/politique) ; `validateProgramBacklogConvergence` échoue désormais sur une gate non cataloguée ou une gate humaine auto-créée. La gate B3.2 est consignée comme finding de gate auto-créée ; `mcp:write` est requalifié en lot technique (`TB-W3-OAUTH-WRITE-SCOPE-01`, après A3.2), pas en décision propriétaire.
+- #222 (`ACCEPT_WITH_ADAPTATION`) : cartographie existant/partiel/gaps/différé ; `PB-DISPATCH` et `TB-W3-DISPATCH-01..03` (matérialisation liée au blueprint via `mcp_reconcile_agent_intent`, claim resume-owned-first, projection next-work) séquencés juste après B3.2. `createsRuntimeTask=false` inchangé.
+- Readiness : `TB-W3-A3-02`, `TB-W3-B3-02`. Aucun Task, session, lock ou mutation runtime.
+- NEXT_ACTION : CI exact-head et merge de la convergence, puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-B3-02` (A3.2 reste réservé à une session runtime capable de réclamer `TASK-20260929-001`).
+
+## 2026-10-02 — Lecture intégrale read-only et mémoire maître de reprise
+
+- Lecture seule de l'intégralité du dépôt (`main@52f6129`, 599 fichiers suivis), classée en autorité actuelle / projection / provenance historique / superseded / projets spécifiques.
+- Livré : `docs/governance/MASTER_RESUME_MEMORY.md` (projection non autoritative) et son entrée dans `markdown-inventory.json`. Aucun code, Task, session, lock ou mutation runtime.
+- Findings consignés : `PRODUCTION_STATE.json` figé à `ba9acd1` ; `ACTIVITY_LOG.md` arrêté au 2026-08-28 ; `.mcp/agents.json` (`canDeploy=false`) à réconcilier avec le Governed Deploy (À vérifier) ; 20 doublons `docs/*.md` périmés.
+- NEXT_ACTION : inchangée — décision propriétaire B3.2 (`OWNER_DECISION_B3_TARGET_PROJECT_SELECTION`) et décision `mcp:write` ; A3.2 via session runtime réclamant `TASK-20260929-001` / PR #207.
+
+## 2026-10-01 — W4 G3 Tool Surface Attestation — DONE et attesté ; PB-G3 DONE
+
+- PR #218 fusionnée sous garde exact-head depuis `603bd4810902402da408aa4ffb736a814da26cb5` au merge `02f2da91741da4ff36eea3f138b00155ff49bad7` ; CI PR `36941087506`, CI main `36941224841`, Governed Deploy `36941224817` SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `36941423280` → S1 `main@02f2da9`, worktree propre, push désactivé ; `docker_status` run `36941426233` → conteneur healthy.
+- Program Backlog : `TB-W4-G3-01 = DONE`, `PB-G3 = DONE` (DONE 15) ; le lien à un « head » Git n'est pas applicable à une surface d'outils client (liaison session/contexte/heure serveur, validité ≤ 300 s, comparaison au digest courant du catalogue). Ses dépendants (I1, J1, J2) restent bloqués par la chaîne H/B3.2.
+- État du programme : seul `TB-W3-A3-02` reste READY, mais sa tâche runtime `TASK-20260929-001` n'est réclamée par personne et sa réclamation exige la Governed Task Queue runtime, indisponible pour cet agent GitHub-only ; la PR draft #207 porte le travail. `TB-W3-B3-02` attend la décision propriétaire `OWNER_DECISION_B3_TARGET_PROJECT_SELECTION`. Aucun autre lot n'est exécutable.
+- Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : décision propriétaire sur B3.2 (option recommandée : configuration opérateur d'un projet cible par serveur) ; reprise de A3.2 par une session runtime capable de réclamer `TASK-20260929-001` (ou relance de la PR #207) ; puis recalcul du programme.
+
+## 2026-10-01 — W4 G3 Tool Surface Attestation (résiduel) — GREEN candidate
+
+- Reprise current-first : `main=ba950c51462e7e2076afaafe412429860ff744ae`. Sélection : A3.2 (collision PR #207), B3.2 (gate propriétaire) écartés ; `TB-W4-G3-01` retenu.
+- Préflight runtime OIDC (runs `36940483774` / `36940487533` / `36940490728`, 23:23Z, `truncated=false`) : 0 lock, aucune session active, aucune collision sur `attestation:tool-surface`. PR #207 ne modifie que le type `RequestIdentity` et `requestIdentity()` : aucun chevauchement avec ce lot. Aucun claim/session/lock créé.
+- Réconciliation de G3 V1 (PR #87) : le schéma d'attestation et les contrats `CapabilityReality` existaient, mais rien n'écrivait ni ne consommait l'attestation.
+- Livré : outil `mcp_attest_client_tool_surface` (le client déclare la surface et la callabilité par outil ; le serveur fixe identifiant, horodatage, expiration ≤ 300 s, liaison session/contexte de connexion et provenance) ; méthode de session avec révision attendue et événement d'audit `client.tool_surface_attested` ; fusion de la callabilité attestée dans la réalité des capacités (périmée → `UNKNOWN`) ; projection `proof.toolSurface` (catalogue serveur vs attestation client). Une attestation ne vaut jamais autorisation : `safeNow` et `mayMutate` restent faux.
+- Catalogue : 135 → 136 outils, cartographie régénérée avec l'outillage du dépôt.
+- Tests : RED vérifié pour les bonnes raisons (module absent, projection absente, 12e outil absent) ; suite locale 785/785 ; tous les gates verts.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale G3 DONE.
+
+## 2026-10-01 — B3.2 : gate de décision propriétaire (sélection du projet cible)
+
+- Reprise current-first : `main=18e227fa08178272c0f5d678379351377425af0a`. Réexamen de B3.2 (finding d'interblocage) avant toute exécution.
+- Constats : (1) le document d'architecture canonique classe « B3 TargetScope migration pour Session/Task/Receipt » en **question ouverte** ; (2) GWC-10 a livré les primitives (TargetScope/TargetContext, optionnels) mais aucun producteur ne remplit le `targetContext` de Live State et aucun outil n'expose de scope ; (3) le registre S1 (C1.1) contient des projets applicatifs, le dépôt MCP y est un mapping mais pas établi comme composant de projet, donc un producteur « projet contenant le dépôt observé » ne produirait rien ; (4) exiger des mappings activés crée un interblocage avec `TB-COND-C1-ACTIVATE`.
+- Conclusion : le choix du projet cible d'un serveur est une décision d'architecture non déductible. `TB-W3-B3-02` passe `CONDITIONAL` (`autoPromotable=false`, gate `OWNER_DECISION_B3_TARGET_PROJECT_SELECTION`), avec 4 options documentées et une recommandation dans `w3B3TargetSelectionGate`. Blocage local uniquement : `TB-W4-G3-01` reste exécutable.
+- Aucun Task, session, lock ou mutation ; aucune modification runtime.
+- NEXT_ACTION : obtenir la décision du propriétaire sur la sélection du projet cible ; en attendant, `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W4-G3-01` (A3.2 reste en collision avec PR #207).
+
+## 2026-10-01 — W4 G2 Two-clock Presence — DONE et attesté ; PB-G12 DONE
+
+- PR #215 fusionnée sous garde exact-head depuis `15320ecc925aae36fafd56ee19d6a16cd6ad3a82` au merge `e21320990a4e8534f4c261b3bec6021417b4efb6` ; CI PR `36938833569`, CI main `36938973433`, Governed Deploy `36938973474` SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `36939139244` → S1 `main@e213209`, worktree propre, push désactivé ; `docker_status` run `36939142926` → conteneur healthy.
+- Program Backlog : `TB-W4-G2-01 = DONE` ; `PB-G12 = DONE` (tous ses blueprints attestés, sous-objectifs et non-régressions couverts) ; compteurs de disposition recalculés (DONE 14). `TB-W4-G3-01` (Tool Surface Attestation) devient READY. Aucun Task, session, lock ou mutation.
+- Finding de planification à réconcilier : B3.2 est en amont de presque tout le reste du programme (C3→C4/C5→C345→D→E→F, H, I, J). Ma condition « TargetContext validé par le registre » ne peut être satisfaite qu'après `TB-COND-C1-ACTIVATE`, qui dépend lui-même de C345-02, donc de B3.2 : la lecture stricte crée un interblocage. À réexaminer avant toute exécution de B3.2.
+- NEXT_ACTION : réexaminer B3.2 (sens de « validated » vs autorité GitRegistry V2 et absence d'élargissement de permission) ; sinon `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W4-G3-01`.
+
+## 2026-10-01 — W4 G2 Two-clock Presence — GREEN candidate
+
+- Reprise current-first après une interruption d'environ 4 h (limite d'usage) : `main=261d2976bf373a097a080becda48f5df1c97c84d` inchangé, PR #207 inchangée, aucune nouvelle PR. Sélection : A3.2 (collision PR #207), B3.2 (attente TargetContext validé) écartés ; `TB-W4-G2-01` retenu.
+- Préflight runtime OIDC **rafraîchi** (runs `36938631259` / `36938634495` / `36938636965`, 23:03Z, `truncated=false`) : 0 lock, aucune session active, file inchangée (`storeRevision=242`), aucune collision sur `presence:two-clock`. Le préflight de 19:00Z n'a pas été réutilisé comme preuve courante. Aucun claim/session/lock créé.
+- Implémentation : deux horloges en mémoire, séparées. `lastClientObservedAt` n'avance que sur le trafic `/mcp` OAuth ; `lastSyntheticProbeAt` n'avance que sur `/health` et sur le token partagé (automatisation, attestation de déploiement). États dérivés : `ACTIVE_OBSERVED` (≤ 5 min), `RECENTLY_OBSERVED` (≤ 60 min), `STALE` (jamais « déconnecté »), `UNKNOWN`, `AUTH_EXPIRED` (dernier jeton observé expiré) ; `REVOKED` n'est jamais produit sans preuve de révocation.
+- Projection lecture seule `proof.clientPresence` dans le contexte gouverné, pour le principal OAuth propriétaire de la session ; `authoritative=false`, aucune décision d'ownership, de claim ou de liveness n'en dépend.
+- Tests : 5 tests ciblés (RED : fonctions absentes) ; suite locale verte ; tous les gates verts.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale G2 DONE, puis recalcul du programme.
+
+## 2026-10-01 — W4 G1 Client Presence — DONE et attesté
+
+- PR #213 fusionnée sous garde exact-head depuis `4d8009bbb9ba15fc04902a7ee859e7b7fdcacb46` au merge `90df50b2497cdc17eb01a60c9223ca06fc715893` ; CI PR `36909784123`, CI main `36909975085`, Governed Deploy `36909975077` SUCCESS.
+- Attestation OIDC read-only : `mcp_git_status` run `36910252863` → S1 `main@90df50b`, worktree propre, push désactivé ; `docker_status` run `36910256304` → conteneur healthy.
+- Program Backlog : `TB-W4-G1-01 = DONE` ; `TB-W4-G2-01` (Two-clock Presence) devient READY. Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → A3.2 (collision PR #207), B3.2 (attente TargetContext validé), puis `TB-W4-G2-01`.
+
+## 2026-10-01 — W4 G1 Client Presence (observation client réelle) — GREEN candidate
+
+- Reprise current-first : `main=1a2303722b4e30f02d056c455ff5088739bd57ac`. Sélection : A3.2 (collision PR #207), B3.2 (attente TargetContext validé) écartés ; `TB-W4-G1-01` retenu.
+- Préflight runtime OIDC (runs `36909543905` / `36909548006` / `36909552129`, `truncated=false`) : 0 lock, aucune session active, aucune collision sur `presence:client-observation`. PR #207 ne touche ni `server.ts`, ni le journal. Aucun claim/session/lock créé.
+- Constat : aujourd'hui, `heartbeat` met à jour ensemble `lastHeartbeatAt` (liveness agent) et `currentTransport.lastSeenAt` ; aucune preuve ne distingue un client réel d'un appel d'automatisation ou d'une sonde.
+- Implémentation : `src/operationalMemory/clientPresence.ts` classe chaque requête `/mcp` ; seules les requêtes OAuth (`oauth_subject`) sont une observation client réelle. Le token partagé (automatisation, attestation de déploiement) et `/health` ne le sont jamais. Événement `client.observed` dans le journal opérationnel existant (digest du principal, une écriture par principal et par 60 s, best-effort sans jamais bloquer la requête).
+- Reporté à G2 : horloge `lastSyntheticProbeAt`, états de présence et projection dans le contexte gouverné.
+- Tests : 7 tests ciblés (RED : module absent) ; suite locale 767/767 ; tous les gates verts.
+- NEXT_ACTION : CI exact-head, merge, Governed Deploy, attestation OIDC S1, PR terminale G1 DONE, puis G2.
+
+## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence — DONE et attesté
+
+- PR #211 fusionnée sous garde exact-head depuis `fe4331f64674915f290bb0452e974625f999fc51` au merge `e7143506ea30acc666805f67f3a186eea4d1060b` ; CI PR `36908240855`, CI main `36908452378` et Governed Deploy `36908452245` SUCCESS.
+- Probe `mcp_git_registry_readiness` run `36908751224` (`mutationAllowed=false`, `truncated=false`) : registre S1 encore en schéma V1 ; 5 mappings, 2 projets, 0 READY, 5 BLOCKED. Raisons : statut non validé, chemin, remote, credential et rollback non vérifiés (5/5), health checks (4/5), domaine et migration en attente (1/5). 4 identifiants de mapping non conformes publiés uniquement en digest.
+- `mcp_git_status` run `36908755029` : S1 `main@e714350`, worktree propre, push désactivé.
+- Program Backlog : `TB-W3-C1-01 = DONE` ; dépendants réévalués sans promotion : `TB-COND-C1-ACTIVATE` reste CONDITIONAL (aucun mapping READY, dépend aussi de C345-02), `TB-W3-C3-01` et `TB-W3-GGCC-GIT-READ` restent BLOCKED (B3.2). Aucun Task, session, lock ou mutation.
+- NEXT_ACTION : `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` → `TB-W3-A3-02` (collision PR #207), `TB-W3-B3-02` (attente TargetContext validé), puis `TB-W4-G1-01` (Client Presence).
+
+## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence probe — GREEN candidate
+
+- Reprise current-first : `main=153ef45218285bbfe9586755854e2937a021d85e`. Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : `TB-W3-A3-02` écarté (collision `TASK-20260929-001` / PR #207) ; `TB-W3-B3-02` écarté pour autorité manquante (`NO_VALIDATED_TARGET_CONTEXT_PRODUCER`) ; `TB-W3-C1-01` retenu.
+- Constat B3.2 : Live State ne remplit jamais `targetContext` et GitRegistry V2 n'est disponible qu'en dry-run ; exposer `TargetScope` sur les outils accepterait un scope fourni par l'agent (élargissement de permission caché, interdit par l'acceptance B3.2). B3.2 reprend après qu'un TargetContext validé par le registre existe (chemin C1).
+- Préflight runtime OIDC read-only (runs `36907737336` / `36907741192` / `36907744688`, `truncated=false`) : 0 lock, aucune session active, tâches non terminales `TASK-20260920-003` (BLOCKED, écriture `gitregistry:stablecoin`, session expirée) et `TASK-20260929-001` (READY non claimée). Aucune collision sur `project:gitregistry-verification` ; aucun claim/session/lock créé.
+- Implémentation : probe OIDC `mcp_git_registry_readiness` (S1 uniquement, lecture in-process via `readGitRegistryProjectEvidence`, jamais via SSH ; fallback SSH fail-closed). Sortie bornée : digests registre/candidat, compteurs, totaux de reason codes, et par mapping `mappingId` + digest du dépôt + statut + reason codes ; aucun nom de dépôt/projet, chemin, domaine ni référence de credential ; 200 mappings max avec `truncated`.
+- Tests : 5 tests ciblés (RED : module absent) ; suite locale 759/759 ; typecheck, build, docs, gouvernance, GWC, secrets verts.
+- NEXT_ACTION : CI exact-head, merge exact-head, Governed Deploy, exécuter `mcp_git_registry_readiness` sur S1 et enregistrer les reason codes ; puis PR terminale C1.1 DONE.
+
+## 2026-10-01 — W3 B3.1 multi-repository residual inventory — GREEN candidate
+
+- Reprise current-first : `main=661a0517aebb3bc6dafe4eec4afc3677820ed510`. Sélection `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : `TB-W3-A3-02` écarté pour collision (tâche runtime `TASK-20260929-001` + PR #207 d'un autre agent sur `connection:oauth-attempt-correlation`) ; `TB-W3-B3-01` retenu (GitHub-only, `runtimeRequired=false`).
+- Constat : les autorités cœur (Governed Session, Task Queue, Lock, Bootstrap Receipt, Governed Context) acceptent déjà `TargetScope`, mais aucun outil MCP ne l'expose ; les entrées `mcp_open/resume_governed_session`, `mcp_acquire_governed_lock` et `mcp_reconcile_agent_intent` figent `Patricked-code/MCP`.
+- Inventaire `docs/governance/multi-repository-inventory-20261001.json` : 8 consommateurs résiduels (5 `GENERALIZE_IN_B3_2` : outils session/lock, outil tâche, attestation client, Current State, observateur GitHub du contexte ; 3 défauts historiques conservés : task queue sans scope, auto-reprise transport, repli du contexte) et 7 frontières d'auto-gestion acceptées (OIDC/deploy/Live State/self-management/git sync/candidate PRECODE).
+- Le test vérifie par machine que chaque littéral `Patricked-code/MCP` de `src/` est classé exactement une fois ; tout nouveau littéral non classé fera échouer la CI.
+- Program Backlog : `TB-W3-B3-01 = DONE`, `TB-W3-B3-02` READY ; aucun Task, session, lock ou mutation.
+- NEXT_ACTION : CI exact-head, merge ; puis `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` (B3.2 ou C1.1 selon l'ordre et les collisions).
+
+
+## 2026-10-01 — OAuth authorization consent — DONE et attesté
+
+- PR #208 fusionnée sous garde exact-head depuis `ee78ec1cecea5d21de9f2fbccfdfaa5a53140945` au merge `2febc46dda1ddfbe275658957ebfd8c5bdbc7128` ; `main=9511d43` et PR #207 réobservés inchangés juste avant.
+- CI PR #2158 / run `36905443559` SUCCESS ; CI main #2159 / run `36905634628` SUCCESS ; Governed Deploy #88 / run `36905634643` SUCCESS (révision runtime, santé, OAuth, auth MCP attestés).
+- Attestation OIDC read-only : `mcp_git_status` run `36905914920` → S1 `main@2febc46`, worktree propre, push désactivé ; `docker_status` run `36905918563` → healthy. Observation publique : `POST /oauth/authorize` sans session → 401.
+- Program Backlog : `TB-W3-OAUTH-CONSENT-01 = DONE`, `PB-OAUTH-CONSENT = DONE`. Aucun Task runtime, session ou lock créé.
+- Impact utilisateur : la prochaine connexion ChatGPT/Claude affiche « Autoriser une connexion MCP ».
+- NEXT_ACTION : PR #207 (A3.2/A3.3) doit fusionner `main` (le bloc d'émission est inchangé) puis suivre son gate runtime `TASK-20260929-001` ; prochains READY sans collision : `TB-W3-B3-01`, `TB-W3-C1-01`, `TB-W4-G1-01`. Lot séparé à décider : application réelle du scope `mcp:write`.
+
+
+## 2026-10-01 — OAuth authorization consent (option 1 propriétaire) — GREEN candidate
+
+- Reprise current-first : `HEAD_MOVED` constaté (`eb1667d` → `9511d434f3a66a2b92e847eabfd26596200e5f5c`, 19 commits) ; lecture complète des lots A3.1, A3.2 (probes runtime #200, TLS #201/#203) et de la PR draft #207 (refresh tokens / corrélation A3.2) avant toute écriture.
+- TLS public rétabli : `/health` répond 200 avec un certificat valide ; le Governed Deploy est de nouveau opérationnel (Deploy #87 selon la PR #207).
+- Décision propriétaire : option 1 — consentement explicite avant toute émission de code OAuth. Convergence existing-first : `INTAKE-OAUTH-CONSENT-20260930` → `PB-OAUTH-CONSENT` / `TB-W3-OAUTH-CONSENT-01` (`connection.oauth-authorization-consent`), sans programme, store, registre client ni autorité parallèle.
+- Préflight runtime GitHub OIDC read-only (runs #71–#75, `truncated=false`, `mutationAllowed=false`) : Task Queue = `TASK-20260929-001` (A3.2, READY, non claimée, `connection:oauth-attempt-correlation`) + une tâche Stablecoin BLOCKED ; aucune session active ; 0 lock ; S1 `main@9511d43` propre ; conteneur healthy. Aucun conflit sur `connection:oauth-authorization-consent`. Aucun claim/lock/session créé (pas de voie runtime gouvernée disponible depuis cet agent) ; même modèle que A2.2.2.
+- Implémentation : GET `/oauth/authorize` authentifié rend une page de consentement (no-store, non framable, CSP) au lieu d'émettre un code ; POST `/oauth/authorize` exige session opérateur, soumission same-origin et ticket HMAC (10 min) lié à la demande exacte ; `approve` émet le code par le bloc d'émission inchangé, `deny` renvoie `access_denied` ; ticket absent/altéré/expiré → 400.
+- Compatibilité PR #207 : le bloc d'émission du code reste textuellement identique ; #207 pourra fusionner `main` et conserver sa référence d'attempt dans la branche approuvée.
+- Non-régression : échange `authorization_code` + PKCE inchangé et testé de bout en bout ; redirection login et validations existantes inchangées ; aucun code/state/verifier/token persisté ou journalisé.
+- Tests : 10 tests OAuth ciblés (8 RED attendus + 2 garde-fous) et convergence backlog ; suite locale 750/750, tous les gates verts.
+- NEXT_ACTION : CI exact-head verte, merge exact-head, Governed Deploy, preuves OIDC S1, PR terminale DONE ; les connecteurs ChatGPT/Claude afficheront désormais un écran « Autoriser » à la prochaine connexion.
+
 
 ## 2026-09-30 — W3 A3.2 — RUNTIME TASK MATERIALIZED / claim intentionally pending
 

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "id": "GD-U-02D-B3G-TRUSTED-CONSUMPTION-CLOCK-20261028",
+  "parentIssue": 349,
+  "pullRequest": 355,
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "scope": "src/provisioning/pleskE3GovernedConsumption.ts and tests/pleskE3GovernedConsumption.test.ts only",
+  "status": "IMPLEMENTED_GREEN_EXACT_CODE_SHA_PENDING_FINAL_DOCUMENTATION_HEAD_CI",
+  "rationale": "Existing assessPleskGovernedRelease measures runtime lock and snapshot freshness relative to evidence.at; when E3 is consumed later this may be stale. Consent must never be burned based on expired governed proof.",
+  "changes": [
+    "Evaluate existing release gate with server-owned ports.now() rather than historical evidence.at",
+    "Repeat same existing release check inside the existing atomic single-use consumer's verifyPreAdmission callback, immediately before exclusive receipt creation",
+    "Reject invalid clock, stale runtime observation, expired lock, stale/failed independent GitHub attestation, provider errors; no receipt on rejection",
+    "Retain E3 signature/expiry checks and durable exclusive-create behavior; return runtimeWriteAuthorized=false and operationExecuted=false",
+    "No modification of Plesk route, server.ts, GitHub credential, OAuth, GWC, Regulatory, BUS, Task Queue, Session or Lock implementations"
+  ],
+  "evidence": {
+    "redCommit": "d474f3f42da3d251186baa53ed3cba6b033a4b31",
+    "redWorkflowRun": 40646759652,
+    "redConclusion": "failure",
+    "redObservedFailures": [
+      "lock expired 07:02, consumption clock 07:03 wrongly consumed",
+      "snapshot 31s old wrongly consumed",
+      "clock moved during pre-admission wrongly consumed"
+    ],
+    "greenCommit": "a0fe00d140b727a2a699ca30195e7d350c3f2298",
+    "greenWorkflowRun": 40646971012,
+    "greenConclusion": "success",
+    "greenJobSteps": 24
+  },
+  "runtime": {
+    "productionWriteAuthorized": false,
+    "productionRouteGuard": "src/server.ts authorizeRuntimeWrite: async () => false",
+    "runtimeRegistered": false,
+    "merged": false,
+    "deployed": false,
+    "mainAndS1Sha": "48a529889517aa1c11974802d23acc3f35e0f187",
+    "latestTaskStoreRevision": 244,
+    "activePleskClaim": false,
+    "independentApprovalPresent": false,
+    "alignment": "DOCUMENTATION_DRIFT / RECONCILIATION_REQUIRED"
+  },
+  "limitations": [
+    "Existing evidence snapshot is not refreshed from live stores inside this module; it is bounded by 30s freshness and must be reread at actual runtime admission before write",
+    "Single-use E3 consumer remains unwired to production route and requires server-owned receipt directory",
+    "A green CI or read-only proof is not permission to create a subdomain",
+    "GitHub independent review on current PR head is absent; no merge/deploy"
+  ],
+  "nextAction": "GD-U-02D-B3h: separately test and harden independent review/CI observation semantics and add a real trusted web↔MCP transport correlation design within existing session authority. Preserve production fail-closed, do not bypass blocked router editing or use Codex/Copilot. Reconcile doc drift, obtain independent review, only then consider governed merge/deploy.",
+  "methodology": [
+    "GITHUB_FIRST",
+    "NO_REGRESSION",
+    "INDEPENDENT_SLICES",
+    "RED_GREEN_REGRESSION_EXACT_HEAD"
+  ]
+}

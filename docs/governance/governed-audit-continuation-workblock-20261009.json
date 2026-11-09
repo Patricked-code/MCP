@@ -1,0 +1,353 @@
+{
+  "schemaVersion": 1,
+  "id": "GWB-AUDIT-CONTINUITY-20261009-01",
+  "kind": "NON_AUTHORITATIVE_GOVERNED_WORKBLOCK_PROJECTION",
+  "repo": "Patricked-code/MCP",
+  "baselineMain": "765eecf8c9dc86280a51a41cbb888432037bfeeb",
+  "canonical": [
+    "CLAUDE.md §7",
+    "docs/governance/program-backlog-convergence.json",
+    "Governed Task Queue/Session/Lock runtime",
+    "nextWork",
+    "ARCHITECTURE.md",
+    "SUIVI.md"
+  ],
+  "purpose": "Complete architecture/issue #65+ audit, reconcile existing backlog and auto-continue toward GLOBAL_MCP_COMPLETE without duplicate planning queue",
+  "policy": {
+    "selection": "FIRST_COLLISION_FREE_IN_PROGRAM_ORDER",
+    "algorithm": "REOBSERVE -> RECONCILE -> DERIVE_READY -> CHECK_OWNERSHIP_LOCKS -> RESUME_OR_GOVERNED_MATERIALIZE -> CLAIM -> EXECUTE -> VERIFY -> CHECKPOINT -> RECOMPUTE",
+    "parallel": "Only independent read/evidence and non-overlapping resource scopes; serialized governed mutations",
+    "stop": "Governed blocker only, local blockers skip",
+    "authority": "This file never creates or claims Tasks, changes permissions, or marks blueprints DONE"
+  },
+  "tasks": [
+    {
+      "ordinal": 0,
+      "id": "GWB-00",
+      "title": "Diagnose failed exact-SHA Governed Deploy",
+      "mode": "READ_ONLY_EVIDENCE",
+      "dependsOn": [],
+      "work": "Inspect run 37975655618 failure, approved OIDC git/docker probes, isolate recoverable error; never assert deployed until exact-sha success and health",
+      "acceptance": "deployment diagnosis, root cause, immutable evidence links",
+      "guard": "S1 live read-only; deploy authority for fix",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 1,
+      "id": "GWB-01",
+      "title": "Reobserve authorities and resume",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [],
+      "work": "Read CLAUDE.md, SUIVI.md, CURRENT, Program Backlog, GitHub main open PRs and program intakes; read runtime queue/session/locks via authorized OIDC",
+      "acceptance": "up-to-date exact head and potential ownership blockers",
+      "guard": "runtime unknown must remain unknown",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 2,
+      "id": "GWB-02",
+      "title": "Complete GitHub issue/PR review corpus",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-01"
+      ],
+      "work": "All PR #65+ inline threads, review submissions, commit comments; reconcile archived issue conversation comments",
+      "acceptance": "cross-linked auditable corpus with coverage manifest and unresolved findings",
+      "guard": "do not rewrite historic discussions",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 3,
+      "id": "GWB-03",
+      "title": "Classify decisions and checkpoints",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-02"
+      ],
+      "work": "Extract architecturally normative decisions, superseded claims, branch/PR/commit SHA and actual handoffs; classify evidence vs opinion",
+      "acceptance": "dated authority chain with exact source links",
+      "guard": "avoid guessed runtime state",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 4,
+      "id": "GWB-04",
+      "title": "Map 94 blueprints to code, tests and evidence",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-01"
+      ],
+      "work": "For each blueprint integrate slot to tracked source/test/CI/PR/commit/attestation; classify DONE_PROVEN / PARTIAL / UNKNOWN / GAP",
+      "acceptance": "94-row verified traceability and gaps",
+      "guard": "do not auto-mark DONE",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 5,
+      "id": "GWB-05",
+      "title": "Reconcile non-regression architecture gaps",
+      "mode": "GITHUB_ONLY",
+      "dependsOn": [
+        "GWB-03",
+        "GWB-04"
+      ],
+      "work": "Crosswalk target control plane, GWC/UAC, Bootstrap, Task Queue, Live State, Project Reality, GitHub capabilities, F-04, cockpit, OAuth and client certification",
+      "acceptance": "architecture-gap work packets scoped to existing integration slots",
+      "guard": "no new authorities",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 6,
+      "id": "GWB-06",
+      "title": "Recompute program readiness, first collision-free",
+      "mode": "RUNTIME_IF_MUTATION",
+      "dependsOn": [
+        "GWB-01",
+        "GWB-05"
+      ],
+      "work": "Use program:readiness / program:next, nextWork; check existing intent/claims/locks before governed materialization; preserve existing #207 ownership",
+      "acceptance": "accepted task choice with exact collision/permission evidence",
+      "guard": "never materialize from audit file directly",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 7,
+      "id": "GWB-07",
+      "title": "Execute admissible engineering increments",
+      "mode": "GITHUB_THEN_GOVERNED_RUNTIME",
+      "dependsOn": [
+        "GWB-06"
+      ],
+      "work": "bounded RED/GREEN, regression, PR, exact-head CI/review/merge, governed deploy, health, rollback evidence; resume next work",
+      "acceptance": "delivered increment with durable checkpoint",
+      "guard": "local blockers skip, global only on valid stop",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 8,
+      "id": "GWB-08",
+      "title": "Certify live autonomous agent handoff",
+      "mode": "RUNTIME_REQUIRED",
+      "dependsOn": [
+        "GWB-06"
+      ],
+      "work": "Prove connected authorized agent arrival, bootstrap receipt, owner resume, queue materialization idempotence, CAS claims, two independent sessions, liveness semantics",
+      "acceptance": "real E2E receipts, audit events, no collision",
+      "guard": "no simulated sessions/provider ID",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    },
+    {
+      "ordinal": 9,
+      "id": "GWB-09",
+      "title": "Recompute and iterate to global terminal acceptance",
+      "mode": "GOVERNED_CONTINUATION",
+      "dependsOn": [
+        "GWB-07",
+        "GWB-08"
+      ],
+      "work": "Repeat latest readiness and eligible tasks, review required acceptance dimensions in #235/#236, record blockers, produce globalStopReport only under legitimate stop",
+      "acceptance": "GLOBAL_MCP_COMPLETE only on all exact authority evidence",
+      "guard": "conditional/deferred not auto-promoted",
+      "status": "PLANNED_NOT_RUNTIME_TASK",
+      "owner": "UNASSIGNED",
+      "nextAction": "Check authoritative runtime and current program before any claim"
+    }
+  ],
+  "anchors": {
+    "masterIssue": "https://github.com/Patricked-code/MCP/issues/235",
+    "dispatch": "https://github.com/Patricked-code/MCP/issues/222",
+    "cockpit": "https://github.com/Patricked-code/MCP/issues/236",
+    "auditMerged": "https://github.com/Patricked-code/MCP/pull/273",
+    "reviewsPending": "https://github.com/Patricked-code/MCP/pull/274",
+    "deployFailure": "https://github.com/Patricked-code/MCP/actions/runs/37975655618"
+  },
+  "nextCheckpoint": "Diagnose failed deploy, inspect live task/session/lock evidence by GitHub OIDC probes; report exact head drift; review #274 CI then continue.",
+  "observedContinuation": {
+    "date": "2026-10-11",
+    "gitHubMainAtObservation": "c91c1a1191f40f20a6de841914947e94356658df",
+    "workblockBranchMergedMainAt": "ebd087063cd7bd0fc8ad99dc4656f4473484c49e",
+    "workblockBranchCIRun": "Must verify current SHA after SUIVI/CHANGELOG/workblock changes before merge",
+    "deploy": {
+      "workflowRun": 38158118349,
+      "ciRun": 38158118306,
+      "requestedSha": "c91c1a1191f40f20a6de841914947e94356658df",
+      "status": "FAILURE",
+      "httpCode": 502,
+      "stage": "POST /deploy/github/s1/start",
+      "rootCause": "UNVERIFIED",
+      "internalSourceRoute": "src/deploy/routes.ts: returns 502 s1_deploy_start_failed on runWrite throw/nonzero; cannot distinguish upstream from application without sanitized HTTP error body or server logs"
+    },
+    "readonly": {
+      "issueNumbers": [
+        276,
+        277,
+        278,
+        279,
+        280
+      ],
+      "transport": "github_oidc_mcp_readonly",
+      "probeRunsRecorded": true,
+      "contentFrom": "https://github.com/Patricked-code/MCP/pull/275#issuecomment-6112019731",
+      "s1GitShaReported": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+      "gitWorkspaceReported": "CLEAN",
+      "containerReported": "HEALTHY",
+      "runtimeTasksReported": "2 READY UNOWNED, revision 243",
+      "sessionsReported": "0 ACTIVE (2 EXPIRED), revision 803",
+      "locksReported": "0 ACTIVE, revision 301",
+      "freshness": "Snapshot, not live authoritative indefinitely"
+    },
+    "nextAction": "Diagnose 502 via allowed, redacted status/body and write transport/server logs without bypass; reobserve live runtime and branch CI before governed merge/deploy; then first collision-free planning READY",
+    "runtimeMutationPerformed": false
+  },
+  "currentCheckpoint": {
+    "date": "2026-10-15",
+    "kind": "NON_AUTHORITATIVE_AUDIT_CONTINUATION_SNAPSHOT",
+    "observedGitHubMain": "b187953de89d8f6529e2af97abc1de4570c53146",
+    "ci": {
+      "runId": 38789597872,
+      "conclusion": "success",
+      "exactSha": "b187953de89d8f6529e2af97abc1de4570c53146"
+    },
+    "deploy": {
+      "runId": 38789597877,
+      "conclusion": "success",
+      "exactSha": "b187953de89d8f6529e2af97abc1de4570c53146",
+      "runtimeObservation": "See governed deploy attestation; do not treat as perpetual live state"
+    },
+    "auditProgress": {
+      "GWB00": "DEPLOY_RECOVERED_HISTORICAL_502_ROOT_CAUSE_UNVERIFIED",
+      "GWB01": "S1_EVIDENCE_OBSERVED_OIDC_REOBSERVE_WHEN_NEEDED",
+      "GWB02": "PR_REVIEW_CORPUS_DELIVERED_PR291_COMMIT_DISCUSSION_COMMENTS_UNVERIFIED",
+      "GWB03": "HISTORICAL_FINDINGS_TRIAGED_PR292_3_OF_158_SOURCE_SPOTCHECKS_NOT_TERMINAL_VERDICTS",
+      "GWB04": "PATH_LEVEL_CROSSWALK_DELIVERED_PR290_FUNCTIONAL_AND_TEST_PROOF_PENDING",
+      "GWB05": "PENDING_VERIFIED_GAP_RECONCILIATION",
+      "GWB06": "PENDING_LIVE_GOVERNED_READINESS_COLLISION_CHECK",
+      "GWB07": "PENDING_AUTHORIZED_INCREMENTAL_WORK",
+      "GWB08": "PENDING_E2E_MULTI_AGENT_RUNTIME_CERTIFICATION",
+      "GWB09": "PENDING_GLOBAL_MCP_COMPLETE_TERMINAL_EVIDENCE"
+    },
+    "programBacklogPlanningSnapshot": {
+      "total": 94,
+      "DONE": 36,
+      "READY": 18,
+      "BLOCKED": 28,
+      "CONDITIONAL": 5,
+      "DEFERRED": 7,
+      "authority": "docs/governance/program-backlog-convergence.json; planning only, rederive"
+    },
+    "evidence": [
+      {
+        "pr": 290,
+        "purpose": "94-blueprint path existence; not functional certification"
+      },
+      {
+        "pr": 291,
+        "purpose": "282 inline comments, 215 submitted reviews, 135 PR"
+      },
+      {
+        "pr": 292,
+        "purpose": "158 historical P1/P2 labels and 3 partial source/test spotchecks"
+      }
+    ],
+    "readerEntrypoints": [
+      "README.md",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "docs/governance/README.md",
+      "docs/governance/MASTER_RESUME_MEMORY.md",
+      "SUIVI.md",
+      "TASKS.md",
+      "issue:235"
+    ],
+    "oauth": {
+      "pr": 207,
+      "state": "DRAFT_CONFLICT",
+      "owner": "EXISTING_UNCHANGED",
+      "action": "Diagnose observed same-origin consent failure, preserve current security, integrate existing refresh token work without takeover"
+    },
+    "nextAction": "GWB03-01: classify PR #261 historical P1s against current source, final accepted diff, targeted tests and deployed runtime; reconcile verified residuals only, then GWB03-02 #267 and GWB04 functional evidence.",
+    "limits": [
+      "Never promote PLANNED_NOT_RUNTIME_TASK to a Governed Task",
+      "All dated observations require reobservation for live decisions",
+      "No new Task/Claim/Lock, OAuth takeover or direct S1 mutation",
+      "Any unverified code behavior remains UNVERIFIED",
+      "This checkpoint is a navigation projection, not authoritative execution state"
+    ]
+  },
+  "checkpointHistory": [
+    {
+      "date": "2026-10-15",
+      "kind": "NON_AUTHORITATIVE_SUPERVISOR_RESUME",
+      "githubMainSha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2",
+      "transportPriorityAuthority": ".mcp/github-first-operational-policy.json",
+      "preferredSequence": [
+        "GITHUB_ONLY",
+        "GITHUB_ACTION_READONLY_EVIDENCE",
+        "GITHUB_ACTION_BOUNDED_WRITE_WITH_PRIOR_AUTHORITY",
+        "RUNTIME_REQUIRED_ONLY_IF_NO_APPROVED_FALLBACK"
+      ],
+      "oauthInteractive": {
+        "status": "BLOCKED_USER_OBSERVED",
+        "route": "POST /oauth/authorize",
+        "error": "access_denied",
+        "check": "isSameOriginSubmission (sec-fetch-site and origin)",
+        "realHeaders": "UNKNOWN",
+        "issuerRuntime": "UNKNOWN",
+        "protectedPr": 207,
+        "ownerClaim": "UNTOUCHED",
+        "safeNext": "Investigate actual non-secret headers/issuer + tests, do not bypass CSRF"
+      },
+      "ci": {
+        "runId": 38783796158,
+        "conclusion": "success",
+        "sha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2"
+      },
+      "deploy": {
+        "runId": 38783796272,
+        "conclusion": "success",
+        "attestedExactSha": "54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2",
+        "historical502RootCause": "UNDETERMINED"
+      },
+      "s1ReadOnly": {
+        "issues": [
+          282,
+          283,
+          284,
+          285,
+          286,
+          287,
+          288
+        ],
+        "transport": "GITHUB_ACTION_READONLY_EVIDENCE",
+        "results": "SUCCESS",
+        "mutationAllowed": false,
+        "githubMainAlignedAtLastSnapshot": true
+      },
+      "workblockStatus": {
+        "GWB00": "DEPLOY_PATH_RECOVERED_HISTORICAL_CAUSE_UNPROVEN",
+        "GWB01": "EVIDENCE_OBSERVED_AS_OF_LAST_SNAPSHOT",
+        "GWB02": "PENDING_FULL_PR_REVIEWS",
+        "GWB04": "PENDING_EXACT_SOURCE_AND_TEST_CROSSWALK"
+      },
+      "nextAction": "GWB02 and GWB04 via GitHub direct in collision-free scopes; OAuth investigation reserved for PR207 owner. Reobserve Task Queue/Session/Locks before runtime tasks. No bypass, no automatic DONE declaration."
+    }
+  ]
+}

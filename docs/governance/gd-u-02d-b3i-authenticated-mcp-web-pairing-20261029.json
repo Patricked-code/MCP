@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "continuityId": "GD-U-02D-CONT-20261029-B3I-ROOT-01",
+  "rootIssue": "https://github.com/Patricked-code/MCP/issues/349",
+  "pullRequest": "https://github.com/Patricked-code/MCP/pull/355",
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "phase": "GD-U-02D-B3i",
+  "classification": "OWNER_AUTHORIZED_REVIEWED_ADDITIVE_CODE; RELEASE_AND_RUNTIME_WRITE_STILL_BLOCKED",
+  "ownerDecision": {
+    "functionalConsent": "Owner explicitly authorizes additive development and counter-review without an additional external human reviewer.",
+    "independentHumanReviewerRequiredByOwner": false,
+    "independentHumanReviewPerformed": false,
+    "provenanceRule": "Do not characterize machine self-review or second user-controlled GitHub login as an independent human security approval.",
+    "githubBranchProtectionStillBinding": true
+  },
+  "implemented": {
+    "modules": [
+      "src/provisioning/pleskWebTransportPairing.ts",
+      "src/provisioning/pleskMcpPairingTool.ts",
+      "src/provisioning/pleskWebRoutes.ts",
+      "src/server.ts"
+    ],
+    "tests": [
+      "tests/pleskWebTransportPairing.test.ts",
+      "tests/pleskWebTransportPairingIntegration.test.ts",
+      "tests/pleskWebConsent.test.ts"
+    ],
+    "summary": [
+      "Only actual authenticated MCP ToolExtra with OAuth mcp:write and existing GovernedSessionService lookup can mint a proof.",
+      "One-use 32-byte random browser-entered proof, scoped by exact server/parent/label/documentRoot, expires after at most 180 seconds.",
+      "Server checks web-cookie signature, signed E3 target/session, same origin and exact FQDN before invoking pairing redemption.",
+      "Server verifies OAuth principal/client/expiry and live MCP transport binding again when redeeming the proof.",
+      "One-use pairing state is process-local with bounded capacity; broker caches the bearer encrypted under a process-local AES-256-GCM key and discards it on consume/expiry.",
+      "Existing B3f runtime reader is called with server-authenticated MCP transport, never a browser-supplied ID, principal, claim or lock.",
+      "Existing Plesk SSH executor and E3 issuer retained; no parallel task/session/lock authority introduced.",
+      "Original router behavior remains compatible for legacy tests when requireMcpPairing is unset."
+    ],
+    "observationOnly": true,
+    "runtimeWriteAuthorized": false,
+    "operationExecuted": false
+  },
+  "securityCounterReview": {
+    "findingsClosedAtCodeLevel": [
+      "Browser cannot assert or forge transportSessionId through the Plesk form.",
+      "Browser proof cannot be replayed or carried to a different server, parent, label or document root.",
+      "Expired proof, expired OAuth token and unbound governed session fail closed.",
+      "Compromised or invalid pairing proof produces a generic failure with no bearer or E3 secret echoed.",
+      "No privileged operation is executed by the new MCP pairing tool; OAuth mcp:write is required to issue it.",
+      "Past 7 review findings retain regression tests and a separate 8th historical comment regression."
+    ],
+    "limitationsAndOpenRisks": [
+      "The web dashboard uses a shared-secret signed cookie, not an individually verified user principal; the bearer pairing proves MCP session possession but cannot claim a universal human identity guarantee.",
+      "Process-local pairing state is not multi-worker; a worker restart or cross-host pairing fails closed rather than transferring authority.",
+      "Even encrypted transient bearer storage remains sensitive to full process-memory compromise; no plaintext bearer is written to disk or audit records.",
+      "The B3f runtime admission module still explicitly returns runtimeWriteAuthorized:false even if all read-only proofs are observed.",
+      "Existing B3d durable single-use signed E3 receipt is not installed into a production write-admission path. A pairing proof is NOT an E3 atomic consumption receipt.",
+      "No actual Plesk subscription/admin permissions for the target server and domain have been observed by an authorized write-capable provider.",
+      "Existing GitHub review/CI release policy requires evidence that has not been obtained. Owner's waiver cannot be labeled an independent GitHub APPROVED.",
+      "Current MCP bridge write-context is project-scoped, with free_shell:false, run_command_s1:false, run_command_s2:false, and no generic Plesk create-subdomain tool.",
+      "The existing server and Plesk write command remain unmodified in production because PR #355 is not merged or deployed."
+    ]
+  },
+  "evidence": {
+    "initialE3PairingValidation": {
+      "head": "0b2d7315bfcf4c05f55cde4fde8e3cfe2fee71cd",
+      "ciRun": 40943442169,
+      "status": "completed/SUCCESS",
+      "steps": 24
+    },
+    "encryptedPairingCommit": "e7d6ecf23f0caac2c3ff4dc939413c755895c21b",
+    "catalogueWiringCommit": "0924047a34fb3ddba5994ed51972e3fbbeeb8f40",
+    "finalDocumentationCommitPending": true
+  },
+  "nextAction": [
+    "Verify final exact HEAD CI after this documentation commit, reconcile PR and comments.",
+    "Under authenticated MCP session, issue and redeem the pairing proof in a scoped real integration test, without attempting Plesk mutation until release gates available.",
+    "Install mandatory B3d E3 single-use admission and revalidate Task/Session/Lock and actual Plesk permission at time of operation.",
+    "Obtain verified repository branch/ruleset policy and an explicitly authorized release decision, without forging an independent reviewer.",
+    "Only then governed merge/deploy S1, post-deploy health check and isolated subdomain preflight/consent/rollback, retaining HOLD_WRITE when any proof is missing."
+  ],
+  "guidingPolicy": [
+    "GITHUB_FIRST",
+    "NO_REGRESSION",
+    "ADDITIVE_PUZZLE",
+    "SAME_TASK_SESSION_LOCK_AUTHORITY",
+    "EXACT_HEAD",
+    "RED_GREEN_REGRESSION",
+    "NO_CODEX_OR_COPILOT",
+    "NO_E3_SECURITY_BYPASS"
+  ]
+}

@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 219,
+  "trackedCount": 231,
   "categories": {
     "canonical": 7,
-    "documentation": 68,
+    "documentation": 80,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -211,11 +211,55 @@
       "category": "documentation"
     },
     {
+      "path": "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/F04_DISPATCH_PARALLEL_RESUME_20261009.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/MASTER_RESUME_MEMORY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/pilots/E2-MCP-ENTRY-RECONCILIATION-PROTOCOL.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/governance/README.md",
       "category": "documentation"
     },
     {
       "path": "docs/governance/universal-agent-coordination-plan.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/universal-program-history/00-fondations-issue349-pr350.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/universal-program-history/01-gd-u-01-compositions.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/universal-program-history/02-gd-u-02-branches.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/universal-program-history/03-pr-associees.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/universal-program-history/04-sources-et-regles.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/universal-program-history/README.md",
       "category": "documentation"
     },
     {
@@ -320,6 +364,10 @@
     },
     {
       "path": "docs/ROADMAP.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md",
       "category": "documentation"
     },
     {

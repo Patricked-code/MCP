@@ -85,7 +85,8 @@ Le moteur incrémente `stateVersion` uniquement lorsque la preuve sémantique ch
 - inventaire Markdown, audits et historique ;
 - digests des politiques `.mcp/` ;
 - version et digest de la task registry ;
-- contradictions de gouvernance détectées.
+- contradictions de gouvernance détectées ;
+- projection read-only `nextWork` de la session demandeuse (reprise, claim compatible ou blueprint READY sans collision), dérivée des règles de la queue et de la matérialisation, sans claim ni tâche créée.
 
 Le collecteur ne lit que les fichiers suivis par Git, refuse les sorties de racine et les fichiers trop volumineux, n’ouvre aucun réseau et ne lit aucun secret.
 
@@ -100,7 +101,7 @@ Le collecteur ne lit que les fichiers suivis par Git, refuse les sorties de raci
 - le journal d’événements append-only et sanitizé ;
 - la Governed Task Queue persistante et révisée atomiquement.
 
-La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendances et conflits de scope, et applique une machine d’états allowlistée. Une intention identique est réconciliée de manière idempotente au lieu de créer un doublon.
+La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendances et conflits de scope, et applique une machine d’états allowlistée. Un candidat bloqué localement (scope actif ou lock d'une autre session) est sauté au profit du suivant compatible ; sans candidat compatible, le code de conflit historique est conservé. Une intention identique est réconciliée de manière idempotente au lieu de créer un doublon.
 
 ### Governed Context et bootstrap
 
@@ -112,10 +113,20 @@ La queue ordonne les tâches par priorité puis FIFO, vérifie leurs dépendance
 4. lecture ou reprise de la session ;
 5. acquittement du contexte et création d’un Bootstrap Receipt ;
 6. réconciliation de la nouvelle intention avec la queue ;
-7. claim de la première tâche exécutable antérieure ou courante ;
+7. reprise de la tâche active possédée, sinon claim de la première tâche exécutable compatible ;
 8. exécution depuis le dernier checkpoint.
 
 Le receipt relie la session, l’identité agent/client, la version Live State, les SHA GitHub/runtime et les digests catalogue, gouvernance et task registry. Il ne contient ni prompt brut, ni jeton, ni secret de reprise.
+
+D3 (GW-12, `src/governedContext/receiptReferences.ts`) enrichit ce même receipt d'un champ optionnel et borné `references`. Il ne crée pas de second type de receipt.
+
+- **Connexion.** Le `ConnectionContext` OAuth de la session, sans le principal ni le client.
+- **Dépôt, projet et mapping.** Ils ne viennent que des couches `VERIFIED` de la réalité projet du dépôt de la session et du périmètre D1, chacun avec sa provenance et son heure d'observation.
+- **Pas de promotion.** Une couche non prouvée n'est jamais promue, et ce qui est sous elle n'est pas promu non plus.
+- **Autre dépôt.** Des références observées pour un autre dépôt sont écartées (`RECEIPT_REFERENCE_BINDING_MISMATCH`).
+- **Observation en échec.** Elle n'empêche jamais l'acquittement (`RECEIPT_PROJECT_REFERENCES_UNOBSERVED`).
+- **Compatibilité.** Un receipt sans `references` reste valide.
+- **Câblage.** L'observation passe par le contexte gouverné de la même session, chargé paresseusement par les outils de session, et seulement pour une session visible de l'appelant.
 
 Pour l'observation GitHub d'un travail en cours, la branche est résolue dans cet ordre : branche déjà liée à la Governed Session, puis branche portée par la tâche courante, puis branche explicitement fournie à l'entrée. Une session d'intake sans branche ne perd donc pas la continuité de la tâche déjà gouvernée.
 
@@ -162,6 +173,394 @@ normaliser avant validation, afin qu'un contexte invalide ne puisse pas partager
 la collecte d'un contexte valide. La vue d'évidence GitRegistry V1 borne enfin la
 lecture à 1 MiB et 1 000 mappings avant toute résolution.
 
+La résolution C3 prolonge la même chaîne au contrat GW-07 : après la résolution
+projet C2, `serverResolution` appelle le résolveur GWC existant avec les liaisons
+serveur du GitRegistry V2 (chemin déclaré ; seul `realPathVerified` atteste un
+chemin réel), l'identité serveur canonique (serveurs gérés par le runtime et
+déclarés dans `.mcp/server-map.json`, sans renommer les ids stockés) et la preuve
+registre lue en direct. Elle reste en lecture seule : aucun appel SSH, aucune
+écriture GitRegistry, aucune autorisation inférée, aucune donnée de connexion
+projetée ; une preuve absente, invalide ou expirée reste `UNVERIFIED` avec une
+raison bornée. Le cache GitHub existant reste l'unique cache.
+
+La résolution C4 prolonge la chaîne au contrat GW-08 : après `serverResolution`,
+`runtimeResolution` appelle le résolveur GWC existant avec les composants du
+projet déclarés par le GitRegistry V2 (composants du projet enregistré, ou le
+seul mapping sélectionné s'il déclare son rôle) et les observations runtime des
+autorités d'observation existantes. Aujourd'hui, seule Live State observe un
+runtime : celui du MCP sur le serveur qu'elle lit. Le type
+(`DOCKER_COMPOSE`/`DOCKER`) vient du label compose observé sur le conteneur.
+Une observation n'est rattachée qu'au composant de son dépôt (OD-04 :
+l'observation fait foi, une déclaration ne la remplace jamais ; le GitRegistry
+V2 ne déclare aucun runtime). Ports et reverse proxy n'ont pas d'autorité
+d'observation runtime, car l'attestation exclut volontairement le réseau : ils
+ne sont pas inventés. Une observation absente, périmée, indisponible, ambiguë
+ou contradictoire reste `UNVERIFIED`, jamais `NO_RUNTIME`. Lecture seule : aucun
+SSH, redémarrage, rebuild ni store ; Live State est lue sans nouvelle collecte.
+
+La résolution C5 prolonge la chaîne au contrat GW-09 : après C2/C3,
+`domainResolution` appelle le résolveur GWC existant avec les déclarations de
+domaine du GitRegistry V2 (`publicDomain`, `publicApi` et `historicalVhosts` du
+projet ; `domain`/`domainVerified` des mappings) et l'observation courante de ce
+que sert le serveur résolu. Aucune autorité d'observation de domaine n'existe
+encore dans le runtime : le point d'injection ne répond rien par défaut et la
+surface reste `UNVERIFIED` (`DOMAIN_OBSERVATION_UNAVAILABLE`), jamais `NONE`.
+Les vhosts historiques ne deviennent jamais actifs. La liste
+`protectedApplications` de la carte serveur reste une liste de sécurité et
+jamais le modèle de domaine. Lecture seule : aucune sonde DNS/TLS/HTTP, aucun
+store, aucune modification de vhost.
+
+L'acceptation C345-02 compose ces résolutions en une **réalité projet**
+(`src/github/projectReality.ts`, `GovernedOperationalContext.projectReality`).
+La composition est calculée une seule fois par le service de contexte gouverné,
+quel que soit le chemin de cache qui a produit les résolutions. Les couches
+ordonnées sont `REPOSITORY` (GW-05), `PROJECT` (GW-06), `SERVER` (GW-07),
+`RUNTIME` (GW-08), `INGRESS` (domaine → reverse proxy → port → runtime, sans
+autorité) et `DOMAIN` (GW-09). Chaque couche a pour état `VERIFIED`,
+`UNVERIFIED`, `STALE`, `AMBIGUOUS`, `CONFLICT` ou `NONE` et garde les codes et
+la provenance de son résolveur.
+
+- **Vérification.** Une couche n'est `VERIFIED` que si sa résolution est
+  courante, si les couches sur lesquelles elle se compose sont `VERIFIED` et si
+  elle leur est liée (même dépôt, même projet, même serveur).
+- **En aval d'une couche non prouvée.** Une telle couche n'est jamais vérifiée
+  ni prouvée absente : elle prend `PROJECT_REALITY_UPSTREAM_UNVERIFIED`.
+- **Contradictions.** Les contradictions des résolveurs et les liaisons
+  incohérentes restent visibles et rendent la réalité `CONFLICT`.
+- **Absences acceptées.** Seules sont acceptées comme `NONE` l'absence de
+  runtime observée, l'absence confirmée de surface publique et l'absence
+  d'ingress qui en découle.
+- **Ingress.** Faute d'observation, l'ingress reste `UNVERIFIED`
+  (`INGRESS_OBSERVATION_UNAVAILABLE`).
+- **TargetContext.** Le `TargetContext` Live State n'est pas enrichi.
+- **Lecture seule.** La composition n'infère aucune autorisation.
+
+L'héritage de gouvernance D1 (GW-10, `src/governedWorkflow/governance/projectInheritance.ts`,
+`GovernedOperationalContext.governanceInheritance`) projette sur le périmètre
+projet prouvé par la réalité projet les contraintes que portent déjà les
+autorités existantes, sans les copier :
+
+- **Mapping GitRegistry.** La gouvernance déclarée du mapping sélectionné
+  (`selectedMapping.governance` : branche officielle, préfixes, push direct
+  interdit, statut, capacités, sauvegarde), issue de
+  `GitRegistryProjectEvidence.governanceEvidence`.
+- **Ruleset GitHub.** Observé pour le seul dépôt qu'il couvre ; il n'est
+  jamais prêté à un autre dépôt (`GOVERNANCE_RULESET_NOT_OBSERVED`).
+- **Politique de branches MCP.** `.mcp/branch-governance.json`, lue de façon
+  bornée et livrée dans l'image ; ses règles de `main` ne parlent que pour une
+  branche officielle `main`.
+- **Governed Lock Service.** Seuls les locks actifs d'une autre session sur le
+  périmètre du projet contraignent.
+- **WRITE gate.** Mode et activation des outils d'écriture.
+
+Chaque règle (`OFFICIAL_BRANCH`, `DIRECT_PUSH_TO_OFFICIAL_BRANCH`,
+`BRANCH_PREFIXES`, `PULL_REQUEST`, `DRAFT_PULL_REQUEST`,
+`REQUIRED_STATUS_CHECKS`, `REQUIRED_APPROVALS`, `CONVERSATION_RESOLUTION`,
+`DEPLOY`, `BACKUP_BEFORE_DEPLOY`, `WRITE_FILES`, `CREATE_BRANCH`, `COMMIT`,
+`PUSH_BRANCH`, `WRITE_TOOLS`, `PROJECT_LOCKS`, `CLEAN_WORKTREE`) a pour effet
+`REQUIRE`, `FORBID`, `PERMIT` ou `UNKNOWN` et nomme les autorités qui l'ont
+déterminée.
+
+- **Composition stricte.** La contrainte la plus stricte l'emporte : une seule
+  autorité qui interdit suffit, le silence ne permet jamais, et une preuve
+  périmée ou non observée reste `UNKNOWN`.
+- **Déploiement.** Il n'est hérité que sur un serveur prouvé.
+- **Périmètre non prouvé.** Rien n'est hérité (`UNVERIFIED`), jamais un
+  défaut global.
+- **Lecture seule.** Aucune autorisation n'est dérivée ; D2 compose ensuite
+  les capacités effectives.
+
+Les capacités effectives D2 (GW-11, SLOT-11 de `MCP_PERMISSIONS_MODEL.md`,
+`src/governedWorkflow/governance/projectCapabilities.ts`,
+`GovernedOperationalContext.effectiveCapabilities`) projettent, sur le
+périmètre prouvé par la réalité projet et hérité par D1, une entrée par classe
+de capacité du vocabulaire GitRegistry. Les classes sont `inventory`,
+`readFiles`, `searchCode`, `readLogs`, `gitStatus`, `writeFiles`,
+`createBranch`, `commit`, `pushBranch`, `build`, `deploy`, `rollback`,
+`quarantine` et `purge`. Chaque entrée est classée `READ`, `WRITE`,
+`PRODUCTION_EFFECT` ou `DESTRUCTIVE`, et liée au dépôt ou au serveur.
+
+Une capacité est l'intersection, en échec fermé, de sept dimensions. Chacune
+vaut `SATISFIED`, `UNSATISFIED`, `UNKNOWN` ou `NOT_REQUIRED` :
+
+| Dimension | Source |
+|---|---|
+| `DECLARED` | Déclaration du mapping, retenue seulement pour un mapping `validated` ou `active`. Un candidat V1 n'est pas une déclaration. |
+| `IDENTITY` | Sujet OAuth de la session, et identité GitHub courante liée au même principal. |
+| `TARGET` | Couches dépôt et projet, plus serveur pour les classes liées au serveur. |
+| `GITHUB` | État de travail courant observé pour ce dépôt. Requis pour les mutations du dépôt seulement. |
+| `GOVERNANCE` | Règles héritées D1 de la classe. |
+| `PRECONDITIONS` | Préconditions observées par le WRITE gate scoped : session, version d'état, acquittement, locks, receipt, tâche, baseline d'audit. |
+| `AUTHORIZATION` | Autorisation attestée. |
+
+- **Statut.** Une dimension prouvée insatisfaite rend la capacité `BLOCKED`.
+  Sinon, une dimension inconnue la laisse `UNVERIFIED`.
+- **Règles bloquantes et obligations.** Les règles héritées qui interdisent ou
+  restent inconnues sont nommées. Les obligations (branche, PR, checks,
+  sauvegarde, worktree propre) sont des contraintes à honorer, jamais des
+  permissions.
+- **Autorisation.** Aucune autorité n'atteste encore l'autorisation : elle
+  reste `UNKNOWN` (`AUTHORIZATION_UNATTESTED`). La capacité technique,
+  l'identité, la déclaration du registre et la présence d'un outil ne
+  l'impliquent jamais.
+- **WRITE gate.** Le gate reste `shadow`. Ses préconditions sont reproduites
+  par la même dérivation, jamais modifiées.
+- **Périmètre non prouvé.** Aucune capacité (`UNVERIFIED`).
+- **Contradictions.** Une contradiction de gouvernance ou de réalité rend
+  l'ensemble `CONFLICT`.
+
+La détection du contexte manquant E1 (`TB-W3-E1-01`,
+`src/governedContext/missingContext.ts`,
+`GovernedOperationalContext.missingContext`) calcule les entrées obligatoires
+encore absentes après la résolution gouvernée automatique. Elle ne lit que les
+preuves que le contexte gouverné compose déjà. Les cinq entrées sont évaluées
+dans l'ordre de leurs dépendances :
+
+| Entrée | Preuve lue | Autorité existante qui la complète |
+|---|---|---|
+| `OAUTH_IDENTITY` | `ConnectionContext` OAuth de la session, avec le prédicat du scope d'identité GitHub | `mcp_open_governed_session` (automatique) ; `/oauth/authorize` pour un client non OAuth |
+| `GITHUB_IDENTITY` | Résolution d'identité GitHub B1 | `.mcp/identity-policy.json` (binding) ; `data/github-accounts.json` (connexion configurée) ; `/github` (credential et compte) |
+| `REPOSITORY` | Couche dépôt de la réalité projet, liée au dépôt de la session | `mcp_open_governed_session` (dépôt demandé) ; `/github` (accès) |
+| `PROJECT_MAPPING` | Couche projet de la réalité projet | `/git` (mappings GitRegistry) |
+| `SERVER_BINDING` | Couche serveur de la réalité projet | `/git` (mappings GitRegistry) |
+
+- **Première lacune seulement.** Une entrée connue reste `RESOLVED` et n'est
+  jamais redemandée. Seule la première entrée non résolue est exposée
+  (`next`). Les suivantes attendent (`BLOCKED_UPSTREAM`) sans être demandées.
+- **Nature de la lacune.** Quatre natures :
+  - `MISSING` : saisie de l'opérateur ;
+  - `AMBIGUOUS` : choix de l'opérateur ;
+  - `CONFLICT` : réconciliation d'autorités qui se contredisent, jamais redemandée ni ré-observée en boucle ;
+  - `UNOBSERVED` : ré-observation automatique par `mcp_reconcile_governed_context`.
+- **Statut.** `COMPLETE`, `AUTOMATIC`, `INPUT_REQUIRED`,
+  `RECONCILIATION_REQUIRED` ou `UNOBSERVABLE`.
+- **Dépôt non observé.** Pour un dépôt TargetScope que l'observateur GitHub ne
+  couvre pas (B3.2), E1 dit `UNOBSERVABLE`. Il ne prétend jamais qu'une
+  ré-observation y suffit.
+- **Observations, pas des entrées.** Le runtime, l'ingress et le domaine sont
+  des observations dont l'absence prouvée est acceptée. Ils ne sont jamais
+  demandés.
+- **Lecture seule.** Aucune question n'est posée, aucune autorisation n'est
+  déduite et rien n'est écrit. Seuls des codes de raison circulent, jamais un
+  principal, un login ou un identifiant. La complétion guidée (E2) et le
+  consentement explicite (E3) restent à livrer.
+
+La complétion guidée E2 (`TB-W3-E2-01`,
+`src/governedContext/contextCompletion.ts`,
+`src/github/credentialCompletion.ts`) fait évoluer les surfaces existantes
+`/login`, `/git` et `/github` sans créer de second frontend. Une session
+gouvernée n'est visible que de son transport lié ou de son propriétaire OAuth.
+La session web à jeton partagé ne voit donc jamais le contexte manquant d'une
+session, et E2 n'élargit pas cette visibilité. Le lien entre les deux passe
+par la surface que nomme E1.
+
+- **Côté agent.** `GovernedOperationalContext.contextCompletion` traduit la
+  première lacune d'E1 en une seule étape :
+  - `CALL_TOOL` : une lacune automatique est restaurée par l'outil nommé,
+    sans question ;
+  - `ASK_OPERATOR` : seule cette lacune est demandée, avec le lien absolu de
+    la surface web existante sur l'origine publique configurée (l'émetteur
+    OAuth) : `/github`, ou `/git?repository=Owner/Name` ;
+  - `PROPOSE_GOVERNED_CHANGE` : `.mcp/identity-policy.json` par PR
+    gouvernée, ou `data/github-accounts.json` ;
+  - `RECONCILE` ou `UNAVAILABLE`.
+  `doNotAsk` liste les entrées jamais demandées : le contexte connu et
+  l'aval qui attend.
+- **`/github` et `/git`.** Chaque surface redérive côté serveur l'identifiant
+  GitHub qu'elle porte (les statuts HTTP de `GET /user` et du contrôle de
+  l'organisation).
+  - **Demandé seulement s'il le faut.** Le token n'est demandé que s'il est
+    absent, refusé (401) ou aveugle à l'organisation (403/404).
+  - **Contexte restauré.** Un identifiant valide est affiché comme restauré ;
+    son remplacement reste facultatif.
+  - **Observation impossible.** Une observation que GitHub n'a pas pu
+    fournir ne demande rien.
+  - **Questions statiques.** La liste fixe de questions de paramétrage de
+    `/github` est remplacée par un renvoi vers `/git`.
+- **`/git?repository=Owner/Name`.** La page affiche le mapping GitRegistry de
+  ce dépôt avec la règle d'appariement du résolveur de projet
+  (`projectMappingCandidates`) :
+  - mapping présent : affiché, jamais redemandé ;
+  - mapping absent : demandé, par le chemin gouverné du registre ;
+  - plusieurs mappings : choix à faire ;
+  - registre illisible : rien n'est demandé.
+- **`/login`.** La connexion ne renvoie qu'à un chemin de la même origine et
+  affiche la surface à laquelle elle ramène.
+- **Hors périmètre.** E2 ne crée ni ne modifie aucune ressource. Le
+  consentement explicite avant toute création ou mutation relève d'E3.
+
+Le consentement E3 (`TB-W3-E3-01`, `src/github/connectConsent.ts`) protège les
+seules mutations atteignables depuis une étape de complétion : les
+formulaires de connexion GitHub de `/github` et `/git`.
+
+- **Deux consentements, chacun nommant sa ressource et son autorité.**
+  - Remplacer l'identifiant GitHub stocké dans le fichier secret du conteneur
+    et enregistrer la connexion dans GitRegistry (`REPLACE_GITHUB_CREDENTIAL`).
+  - Facultatif : ajouter à GitRegistry un mapping par dépôt visible encore
+    inconnu (`ADD_DISCOVERED_MAPPINGS`).
+  Les deux cases sont décochées par défaut.
+- **Validation côté serveur, avant tout appel GitHub ou toute écriture.** La
+  soumission doit :
+  - venir de la même origine (le contrôle de la page de consentement OAuth) ;
+  - porter un ticket de consentement signé et expirant (10 minutes),
+    séparé du domaine OAuth et lié à son objet (`github-connect`) et à la
+    session web qui a rendu le formulaire ;
+  - porter le consentement explicite de l'identifiant.
+  Sinon la requête est refusée (403) sans aucune modification.
+- **Découverte automatique.** Elle ne s'exécute plus à chaque connexion,
+  seulement avec son propre consentement. Le consentement est enregistré
+  dans l'événement d'audit GitRegistry `github.connection.recorded`.
+- **Limite connue.** Un ticket reste réutilisable par la même session web
+  pendant sa durée de validité.
+
+### Provisioning gouverné : décomposition F.0
+
+La décomposition du provisioning (`TB-W3-F-01`) est une politique machine
+versionnée, `.mcp/provisioning-contracts.json`, contrôlée par le validateur
+pur `src/governance/provisioningContracts.ts`. Elle n'ajoute aucune
+primitive, n'accorde aucune permission et ne crée aucune tâche.
+
+- **Inventaire.** Sont classés : chaque outil MCP capable d'écrire (surface
+  d'écriture ou drapeau `allow_write`), chaque route HTTP mutante et chaque
+  workflow. Six classes : composable, observation, lié à un projet existant,
+  auto-gestion du MCP, destructif, hors provisioning. Seules les écritures
+  du cycle de vie GitHub sont composables. Le validateur échoue dès qu'une
+  primitive d'écriture enregistrée n'est pas classée ou qu'une entrée n'est
+  plus enregistrée.
+- **Contrats.** Un contrat par type de ressource (dépôt, projet/runtime,
+  binding de domaine) fixe :
+  - la cible exacte ;
+  - la preuve d'absence, par le résolveur existant ; une preuve manquante
+    n'est jamais une absence ;
+  - le comportement sur une ressource existante : no-op si elle est
+    identique, blocage si elle est en conflit ;
+  - le consentement E3, qui nomme la ressource et son autorité ;
+    l'activation exige toujours son propre consentement ;
+  - les étapes bornées, la santé et un rollback non destructif.
+- **Lacunes.** Une étape sans primitive composable est une lacune portée par
+  un blueprint ouvert du Program Backlog, avec ce qu'il faut réutiliser ou
+  généraliser. Depuis F.2, seul le runtime de projet est provisionnable ;
+  les dépôts et les bindings de domaine restent bloqués par leurs lacunes.
+
+Le provisioning d'un runtime de projet (F.2, `TB-W3-F-03`) est livré par
+incréments sous le contrat `PROJECT_RUNTIME`. Le premier incrément est en
+lecture seule ; il établit la preuve d'absence et le plan
+(`src/provisioning/projectRuntime.ts`).
+
+- **Cible exacte.** Un composant est provisionné au chemin que GitRegistry
+  déclare pour lui sur S1, seulement sous `/opt/apps` et hors du checkout du
+  MCP. Le serveur S2 (migration source, applications protégées) n'est jamais
+  ciblé.
+- **Preuve d'absence.** Live State inventorie, en lecture seule et seulement
+  pour la cible configurée de `.mcp/server-map.json`, deux choses :
+  - le chemin déclaré ;
+  - l'espace Docker provisionné du composant (les conteneurs de son projet
+    Compose, propre au composant même quand deux composants partagent un
+    dépôt).
+
+  C4 reçoit soit le runtime trouvé, soit un `NO_RUNTIME` positif quand les
+  deux sont vides. Un chemin présent sans runtime provisionné, un Docker
+  illisible ou une réponse malformée ne prouvent rien.
+- **Plan.** Le plan d'un composant est :
+  - `BLOCKED` à la première porte qui échoue ;
+  - `NO_OP` quand la même révision tourne déjà ;
+  - `CONSENT_REQUIRED` tant que le consentement de création manque ;
+  - `READY` sinon.
+
+  L'activation garde son propre consentement. Un runtime existant n'est
+  jamais écrasé.
+
+Le deuxième incrément livre l'exécuteur borné à la cible
+(`src/provisioning/runtimeExecutor.ts`). Le troisième incrément le relie à
+une surface consentie.
+
+- **Re-observation avant toute écriture.** Juste avant d'écrire,
+  l'exécuteur relit la cible, le registre et l'inventaire, puis replanifie.
+  Seul un plan `READY` s'exécute, avec le mode écriture actif et un seul
+  provisioning à la fois.
+- **Création.**
+  - La révision exacte est téléchargée depuis GitHub
+    (`src/provisioning/sourceArchive.ts`). L'identifiant ne part que vers
+    l'API, et seule une redirection vers `codeload.github.com` est suivie.
+  - Sur S1, l'absence est reprouvée et l'empreinte de l'archive vérifiée
+    avant l'extraction, faite à côté de la cible.
+  - Le fichier Compose est d'abord analysé, avant que Compose ne charge quoi
+    que ce soit. Compose construit ensuite le modèle depuis ce fichier exact
+    (avec `--no-env-resolution` quand il la connaît, en seconde garde
+    seulement). Ce modèle est contrôlé (`src/provisioning/composePolicy.ts`),
+    puis promu avec un marqueur.
+- **Activation, sous son propre consentement.** Le fichier Compose du
+  checkout inchangé est analysé et son modèle contrôlé à nouveau. Elle
+  étiquette ensuite les services, démarre le projet Compose et attend la
+  santé. Un runtime créé mais non activé reste un checkout (`CHECKOUT_ONLY`
+  pour C4).
+- **Politique Compose.** Tout reste dans le projet.
+  - **Clés revues seulement.** Le fichier et le modèle n'emploient que des
+    clés Compose revues ; toute autre clé est refusée, y compris une clé que
+    Compose ajoutera plus tard. Compose résout `include`, `extends`,
+    `env_file` et `label_file` en chargeant le projet, sans en garder trace
+    dans le modèle : seule l'analyse du fichier les voit, quelle que soit
+    leur écriture YAML (clé entre guillemets, mapping en ligne, échappement,
+    fusion ou alias).
+  - Sont aussi refusés :
+    - le mode privilégié, les capacités ajoutées, les périphériques (même
+      réservés par `deploy`) et les espaces de noms de l'hôte ;
+    - le pont par défaut du moteur (`network_mode: bridge`), partagé avec
+      tous les conteneurs de l'hôte ;
+    - un port publié ailleurs que sur la boucle locale ;
+    - un montage, une construction ou un Dockerfile hors du projet ;
+    - un réseau, un volume ou un lien externe, un réseau ou un volume nommé
+      hors du projet, et un nom de conteneur fixe ;
+    - un pilote de volume ou de réseau autre que celui par défaut, ou des
+      options de pilote ;
+    - une option de sécurité autre que `no-new-privileges`, et un pilote de
+      journalisation autre que local ;
+    - les liens symboliques sortant du projet.
+- **Échec non destructif.** Le projet Compose est arrêté sans ses volumes,
+  et les fichiers créés par le job partent en quarantaine
+  (`/opt/apps/mcp-provisioning-quarantine`). Rien n'est supprimé. Chaque job
+  est attesté.
+
+Le troisième incrément relie l'exécuteur à une surface de l'exposition
+existante : `/provisioning/project-runtime`, derrière la connexion web
+(`src/provisioning/routes.ts`).
+
+- **Plan sans exécution.** La page liste les composants des projets cibles de
+  S1, puis observe et planifie une révision exacte sans rien écrire.
+- **Consentement E3.** La soumission exige une origine identique, un ticket
+  lié à la session et à la cible exacte, et des valeurs explicites. Création
+  et activation restent séparées (`src/provisioning/consent.ts`).
+- **Admission de la révision.** Juste avant toute écriture, la révision doit
+  appartenir à l'historique revu de la branche officielle que nomme son
+  mapping GitRegistry (règle `OFFICIAL_BRANCH` de D1), jamais seulement de la
+  branche par défaut, avec une CI ni en échec ni en cours
+  (`src/provisioning/revisionAdmission.ts`).
+- **Cible résolue.** Le ticket lie aussi le dépôt, le chemin et le projet
+  Compose que la page a nommés. L'exécuteur refuse si son plan frais en
+  résout d'autres.
+- **Autorités relues avant toute écriture.**
+  - La règle `DEPLOY` de GitRegistry, partagée avec D1.
+  - La Governed Task Queue et le Governed Lock Service, lus avant le job puis
+    de nouveau juste avant chaque écriture sur l'hôte : un travail réservé ou
+    verrouillé sur le composant refuse le job, ou l'arrête avant l'écriture
+    suivante.
+  - L'archive, bornée avant extraction, et les planchers de capacité, mesurés
+    sur chaque système de fichiers écrit (parent de la cible, quarantaine).
+- **Checkout vérifié.** La création enregistre l'empreinte de l'arbre dans le
+  marqueur ; l'activation la recalcule avant tout démarrage et refuse un
+  checkout modifié. Une entrée spéciale, un lien physique ou une ACL fait
+  échouer l'empreinte ; les capacités de fichier y entrent. Chaque source de
+  bind doit exister dans le checkout.
+- **Entrées des builds.** Les images d'un Dockerfile (`FROM`, `--from`, montages,
+  frontend) sont épinglées par empreinte ; les images exécutées sont attestées.
+- **Santé et ressources.** Seul un conteneur `healthy` par son contrôle de
+  santé compte ; chaque service borne sa mémoire, son CPU et ses processus.
+- **Câblage.** L'inventaire est lu en lecture seule sur S1 et les écritures
+  passent par le canal S1 gardé. Le mode écriture du serveur reste requis
+  (`src/provisioning/wiring.ts`).
+- **Job long.** La réponse renvoie vers une page de statut ; chaque job reste
+  attesté.
+
 ### Unified Operational Work State
 
 `src/governance/operationalDecision.ts` et les enrichissements de `src/governedContext/` dérivent trois projections additives.
@@ -200,6 +599,7 @@ Les surfaces current-state et orchestration exposent notamment :
 - `mcp_get_current_state_inventory` ;
 - `mcp_get_work_queue` et `mcp_get_governed_task` ;
 - `mcp_reconcile_agent_intent` ;
+- `mcp_materialize_program_blueprint` (au plus une tâche par blueprint READY du Program Backlog déployé, sans claim) ;
 - `mcp_claim_next_governed_task` ;
 - `mcp_transition_governed_task` ;
 - les outils Live State, Governed Context, sessions, checkpoints et locks existants.

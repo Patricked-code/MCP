@@ -1,5 +1,29 @@
 # CLAUDE.md — Porte d’entrée Claude Code
 
+## Accueil commun obligatoire avant toute admission de travail
+
+Si l'utilisateur demande de se connecter à `Patricked-code/MCP`, suivre **d'abord** [l'INTAKE global GitHub → MCP d'AGENTS.md](AGENTS.md#intake-global--arrivée-github--mcp--point-de-choix) : connexion GitHub, lecture des instructions, connexion au MCP existant, observation live, correction gouvernée seulement en cas de divergence admissible, réattestation, cartographie des continuités puis arrêt au choix nouveau/reprise. Ce parcours **n'est pas une entrée E2** et ne choisit aucun profil de travail ; les règles particulières ci-dessous n'interviennent qu'après la décision du propriétaire et le contrôle des autorisations.
+
+
+## Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression
+
+Profil `EXTERNAL_GOVERNED_RECOVERY` : utiliser éventuellement le contexte en lecture seule `get_project_context` lorsque le MCP répond ; sinon emprunter GitHub sans attribution préalable de tâche interne pour les actions GitHub autorisées. L'aperçu ne crée ni task ni droit de déploiement.
+
+**Convergence obligatoire :** mode initial = tâche MCP attribuée ; bifurcation = travail sélectionné dans le mandat autorisé sans tâche GWC préalable pour les opérations GitHub. Une fois le travail choisi, **un seul cycle** pour le code additif, les tests, la CI, les revues, le merge, Governed Deploy, l'attestation et le checkpoint. Voir [E2-00 à E2-07](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md). Ni second MCP ni second pipeline.
+
+## Sélection explicite de la bifurcation externe gouvernée
+
+Si la mission MCP demande `EXTERNAL_GOVERNED_RECOVERY`, suivre [le runbook GitHub-first / OIDC](docs/runbooks/GITHUB_FIRST_GOVERNED_RECOVERY.md) et [la politique MCP existante](.mcp/github-first-operational-policy.json) ; appliquer d'abord l'INTAKE de `AGENTS.md`, la réobservation de GitHub et les contrôles anti-collision. **Sélectionner le chemin de travail, pas la méthode de construction :** sur GD-U #349 conserver séparément `GD-U-METHOD-20261028-01` ; sur tout autre chantier, sa méthode et ses propres autorités. Inscrire le profil choisi dans le checkpoint existant. Ce profil n'est **pas automatiquement activé par le runtime** et n'est ni un mode privilégié ni un worker autonome ; il ne contourne jamais E3/OAuth, Task Queue, Sessions, Locks, CI, revues ou Governed Deploy. Aucun Codex/Copilot et aucune nouvelle PR ou autorité parallèle.
+
+## Coordination inter-agents et reprise à froid — directive du 16 octobre 2026
+
+Avant une nouvelle implémentation ou une reprise, suivre le **protocole commun du fichier [AGENTS.md](AGENTS.md)** et lire la [directive de coordination de l'issue maîtresse #235](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094). La PR #300 et son déploiement ont été validés, **pas** les tests fonctionnels GWB-04 ni l'ensemble du MCP. Point de reprise PCM-03/GWB-04 : `TB-W4-H-01` puis `TB-W4-K-01`, après relecture du HEAD et des preuves ; travaux indépendants admissibles possibles en parallèle. GitHub-first / Actions OIDC ; aucun claim/session/ownership fictif et aucune reprise automatique d'une conversation existante.
+
+## Carte de priorité avant toute nouvelle implémentation
+
+Après lecture de cette porte d'entrée et de `SUIVI.md`, consulter **`docs/governance/mcp-priority-convergence-map-20261015.json`** et son index `docs/governance/README.md` (15 jalons PCM-00..14, 94 blueprints, dépendances, anti-collision et preuves). Cette carte complète le **Program Backlog V2 existant** et le workblock GWB-00..09, sans être une autorité d'exécution : reprise OWNED_FIRST, `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`, Queue/Session/Locks live puis seulement write gouverné. Les vérifications GWB-03/GWB-04 peuvent se faire en parallèle des tâches indépendantes déjà admissibles ; ne jamais transformer l'audit en gate globale nouvelle. Maintenir le scope OAuth de PR #207 réservé à son détenteur. Toute arrivée doit laisser dans le canal déjà existant son checkpoint et `NEXT_ACTION` ; n'inventer ni Task runtime ni receipt.
+
+
 ## 1. Rôle du fichier
 
 Ce fichier indique à Claude Code comment intervenir sur le dépôt MCP sans régression, sans action aveugle et sans écriture de secrets.
@@ -57,7 +81,7 @@ Pour toute nouvelle connexion/reprise sur `main` après UAC, l'agent doit charge
 
 1. lire `CLAUDE.md` puis le début courant de `SUIVI.md` ;
 2. lire `docs/governance/program-backlog-convergence.json` (**Program Backlog V2**) ;
-3. réobserver GitHub `main`, PR/branches actives et les autorités runtime réellement nécessaires ;
+3. réobserver GitHub `main`, PR/branches actives, les issues ouvertes `[PROGRAM INTAKE]` et les commentaires de supervision du propriétaire, puis les autorités runtime réellement nécessaires ; tout intake non consommé est réconcilié via `programIntakes` avant de sélectionner un autre lot ;
 4. appliquer `SELECT_READY_BLUEPRINT` uniquement sur un blueprint dont `readiness.state = READY` ;
 5. recontrôler dépendances, collision domains, Governed Task Queue, Governed Session et Governed Lock Service avant toute matérialisation/claim runtime ;
 6. ne jamais transformer un Task Blueprint en permission : `createsRuntimeTask=false` reste invariant ;
@@ -76,6 +100,31 @@ Tant qu'un candidat compatible existe et qu'aucun blocker gouverné réel n'est 
 
 Un agent ne marque jamais automatiquement un blueprint `DONE`. Le passage à `DONE` exige les preuves définies par le blueprint, le head exact/revue/CI/déploiement/attestation applicables et le checkpoint durable. Après ce `DONE` prouvé, le recalcul des dépendants est automatique et déterministe.
 
+### 7.3 Gates humaines — `NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS` (intake #221)
+
+`HUMAN_GATE_EXISTING != AGENT_MAY_CREATE_HUMAN_GATE`. Un agent ne transforme jamais de sa propre initiative un choix technique déductible en gate humaine/propriétaire pour interrompre `PROGRAM_AUTO_CONTINUE`. Plusieurs implémentations possibles ne constituent pas, à elles seules, une ambiguïté humaine.
+
+Avant toute escalade, résoudre dans l'ordre : décision/autorité canonique → architecture cible → invariants → dépendances et Program Backlog → `REUSE → COMPOSE → WRAP → EXPOSE → GENERALIZE → EXTEND → NEW` → solution minimale additive → non-régression → réversibilité → tests → gouvernance/sécurité → preuves exact-head/CI → collisions Task/Session/Claim/Lock → `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER`. Si une solution conforme, sûre, réversible et testable en sort : `AUTO_DECIDE → EXECUTE → VERIFY → CHECKPOINT → RECOMPUTE → CONTINUE`.
+
+Une gate humaine n'est admissible que si elle cite une condition admissible (autorité préexistante qui réserve la décision, contradiction d'autorités de même rang non départageable, absence de solution conforme déductible, choix destructif/irréversible non autorisé, consentement humain externe, secret inobtenable par les voies gouvernées, gate sécurité/compliance exigeant un humain, solutions équivalentes modifiant une politique propriétaire non définie) **et** une source d'autorité préexistante extérieure à la projection du programme. Écrire `OWNER_DECISION_REQUIRED` ne rend jamais une décision humaine.
+
+Contrôle machine : chaque gate de `requiredExplicitGates` est cataloguée dans `executionModel.humanGatePolicy.gateCatalog` ; `validateProgramBacklogConvergence` échoue (`uncataloguedGates` / `inadmissibleHumanGates`) sur une gate non cataloguée ou une gate humaine auto-créée. Un blocker local reste local : l'agent passe au candidat compatible suivant ; l'arrêt global n'a lieu qu'en l'absence de tout travail compatible ou sur ordre d'une autorité globale.
+
+
+### 7.4 Condition terminale globale, rapport d'arrêt et invariants du Cockpit (intakes #235/#236)
+
+L'intake #235 renforce `PROGRAM_AUTO_CONTINUE` sans créer de seconde boucle : une fin de lot, une PR verte, un merge, un déploiement ou un checkpoint ne sont jamais un arrêt (`REOBSERVE → RECONCILE → RECOMPUTE → CONTINUE`).
+
+- **Condition terminale** : `executionModel.terminalCondition` (`GLOBAL_MCP_COMPLETE`) est portée par `TB-W4-MCP-FINAL-ACCEPTANCE`, qui dépend des preuves des dimensions `BACKEND_CONTROL_PLANE_ACCEPTANCE`, `CLIENT_CERTIFICATIONS` et `COCKPIT_ACCEPTANCE`. Tout blueprint obligatoire en est un ancêtre et un lot `CONDITIONAL`/`DEFERRED` non déclenché ne la bloque jamais ; sinon `validateProgramBacklogConvergence` échoue (`terminalAcceptanceGaps`). La déclaration n'est jamais automatique.
+- **Arrêt global** : uniquement dans les conditions de `agentHandoffContract.globalStopReport.allowedStopConditions`, en laissant durablement (SUIVI.md et PR/issue du lot bloqué) tous les champs de `globalStopReport.requiredFields` ; un simple « bloqué » est insuffisant et `HUMAN_ACTION_REQUIRED` n'est renseigné que si c'est réellement requis.
+- **Super Admin Cockpit** (#236, `PB-K`) : projection et surface d'action gouvernée du MCP sur la stack Express server-rendered existante, jamais une autorité supérieure. Invariants : `UI_VISIBILITY != CALLABLE != AUTHORIZED != SAFE_NOW` ; `SUPER ADMIN UI ≠ BYPASS GOVERNANCE` ; toute mutation est revalidée côté serveur via une capability gouvernée existante et n'est jamais autorisée par la seule session web à jeton partagé ; secrets write-only jamais rendus ; `UNKNOWN` jamais affiché comme `OFFLINE`/`INACTIVE`. Exposition : `EXISTING_MCP_EXPOSURE_FIRST` (clarification propriétaire du 2026-10-05 sur #236) : le cockpit se compose dans l'exposition MCP existante et le Governed Deploy, sans nouveau domaine, reverse proxy ou route spéculative avant l'inventaire des routes, de l'authentification et de la sécurité ; les endpoints publics MCP restent intacts et séparés des surfaces privilégiées.
+
+### 7.5 Continuité GitHub-first lors d'une panne OAuth interactive (confirmée le 2026-10-15)
+
+- **Autorité préexistante, à réutiliser** : `.mcp/github-first-operational-policy.json`, section `clientSurfacePreservation`. Préférer les fonctions GitHub directes, puis `.github/workflows/mcp-readonly-evidence.yml` (GitHub Actions OIDC, commandes allowlistées en lecture seule), puis les workflows OIDC de mutation strictement bornée déjà autorisés (par exemple le Governed Deploy). Ne demander le bridge interactif qu'avec la preuve que l'opération exige une autorité runtime sans fallback GitHub admissible.
+- **Signal de panne local** : l'écran de reconnexion ChatGPT `wealthtech_ssh_bridge` déclenche `POST /oauth/authorize` → `403 access_denied` « La décision d'autorisation doit provenir de la page de consentement. ». `src/oauth.ts:isSameOriginSubmission` refuse un `Sec-Fetch-Site` différent de `same-origin` ou un `Origin` différent de l'issuer configuré. Les en-têtes du navigateur et l'issuer effectif de S1 restent non observés : **ne pas conclure à la cause précise** et ne pas désactiver ce contrôle de sécurité. Continuité du correctif dans la PR #207 et son propriétaire, sans reprise de claim.
+- **Preuves live sans OAuth** : GitHub Actions OIDC #282 (Git S1) et #283 (disque) ont réussi, puis #284–#288 (Git, Docker, Task Queue, Sessions, Locks après déploiement). CI et Governed Deploy de `main@54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2` : runs `38783796158` et `38783796272`, conclusion `success`. Les relevés sont des snapshots, pas des droits permanents. Aucun SSH arbitraire ni écriture S1 directe.
+- **Reprise obligatoire** : `READ CLAUDE.md → SUIVI.md → Program Backlog V2 → HEAD/PR live → proof read-only GitHub/OIDC → runtime authorities if required → FIRST_COLLISION_FREE_IN_PROGRAM_ORDER → action gouvernée → CI/deploy/attestation → checkpoint`. Ne créer ni seconde queue ni gate humaine artificielle. Si la capacité live requise est inaccessible, conserver `RUNTIME_UNKNOWN` et avancer les travaux GitHub compatibles.
 
 ## 8. GWC — architecture et mémoire canonique de continuité
 

@@ -1,5 +1,35 @@
 # WealthTech MCP SSH Bridge
 
+## Arrivée universelle des agents — INTAKE global GitHub → MCP
+
+À la demande « Connecte-toi à Patricked-code/MCP », tout agent ayant accès aux connecteurs doit appliquer **en premier** le [parcours INTAKE global dans AGENTS.md](AGENTS.md#intake-global--arrivée-github--mcp--point-de-choix). La séquence commence par la connexion GitHub et la lecture des instructions ; elle raccorde ensuite le MCP existant (`ping`, `mcp_reconcile_governed_context`, `mcp_get_current_state_inventory`), contrôle GitHub/S1/runtime/documentation, corrige uniquement les divergences via les autorités déjà existantes, réatteste `FULLY_ALIGNED`, découvre les chantiers et **s'arrête au choix nouveau/reprise**.
+
+**Cet INTAKE est commun et précède les voies d'admission des travaux.** Il ne sélectionne aucun mode E1/E2, ne crée ni session/claim ni autorisation et ne remplace pas l'INTAKE historique ci-dessous. L'ouverture d'une connexion GitHub seule ne réveille pas automatiquement l'agent : celui-ci doit exécuter les consignes lorsqu'il reçoit la demande.
+
+
+## Fil d'Ariane historique permanent du programme MCP
+
+**À toute arrivée, avant de choisir du travail, lire [le fil d'Ariane historique MCP](docs/governance/agent-historical-continuity-breadcrumbs-20261016.md)** : origine de l'audit depuis l'issue #65, jalons des PR, constats historiques, acquis attestés, lacunes non certifiées, dépendances et contrat de checkpoint commun. Ce document renvoie aux sources existantes et ne devient ni une autorité runtime ni une seconde Task Queue. Un nouvel agent doit pouvoir retrouver le passé et le `NEXT_ACTION` sans cette conversation ; réobserver GitHub et les autorités live avant toute mutation.
+
+## Reprise immédiate : consigne INTAKE du 16 octobre 2026
+
+**Tout agent qui arrive ou reprend doit lire [la directive de coordination dans l'issue #235](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094)**, puis appliquer la section « Protocole vérifiable d'entrée et de reprise » de [AGENTS.md](AGENTS.md). Ne pas confondre la PR #300 livrée avec la fin du programme : le prochain contrôle GWB04 porte sur `TB-W4-H-01` et `TB-W4-K-01`, sous réserve de relecture de l'état live et des propriétaires. Aucun commentaire GitHub ne réveille automatiquement un agent, ne crée une Task runtime ni n'autorise une mutation.
+
+## Démarrage prioritaire des agents MCP
+
+**La feuille de route d'exécution commune est [la carte de priorité et de convergence](docs/governance/mcp-priority-convergence-map-20261015.json)**, expliquée dans l'[index des 15 jalons](docs/governance/README.md). Avant toute écriture, lire `CLAUDE.md`, `AGENTS.md`, `SUIVI.md`, puis la carte et le Program Backlog V2. Elle permet de reprendre le programme sans dépendre d'une conversation, tout en respectant les Task/Session/Locks existants. Les étapes sont liées chronologiquement mais les scopes indépendants peuvent avancer en parallèle sous contrôle de collision.
+
+
+
+## Reprendre l'audit et le programme gouverné (point d'entrée des nouveaux agents)
+
+Pour reprendre **le projet MCP uniquement** (ne pas confondre avec `Governed-Repository-Template`), lire d'abord `CLAUDE.md` et `AGENTS.md`, puis l'[index de reprise de la gouvernance](docs/governance/README.md). Cet index renvoie à l'architecture cible, au pacte, au bloc des dix travaux GWB-00..09, aux archives d'audit, au Program Backlog V2 et à l'[issue maîtresse #235](https://github.com/Patricked-code/MCP/issues/235).
+
+**Ne pas lire un ancien checkpoint comme l'état live :** réobserver le `main` actuel, les PR, les CI/déploiements et, quand nécessaire, les autorités Governed Task Queue / Sessions / Locks via des moyens autorisés. Les 94 blueprints sont de la planification et le workblock GWB ne crée aucune Task. Ordre de reprise : `READ → REOBSERVE → RECONCILE → RESUME_OWNED_FIRST → FIRST_COLLISION_FREE_IN_PROGRAM_ORDER → EXECUTE/VERIFY → CHECKPOINT → NEXT`.
+
+Pour les opérations réalisables depuis GitHub, appliquer `.mcp/github-first-operational-policy.json` et GitHub Actions/OIDC. La correction de consentement OAuth et la continuité des refresh tokens restent dans la PR #207, sans fusion régressive ni réattribution de son claim.
+
+
 Serveur MCP Node.js/TypeScript destiné à exposer à ChatGPT/Codex des outils contrôlés pour inventorier, documenter et préparer les opérations sur les serveurs WealthTech.
 
 ## Objectif
@@ -31,6 +61,7 @@ Pour être découvrable par les clients MCP sans exposer `MCP_AUTH_TOKEN`, le se
 GET  /.well-known/oauth-protected-resource
 GET  /.well-known/oauth-authorization-server
 GET  /oauth/authorize
+POST /oauth/authorize
 POST /oauth/token
 ```
 
@@ -45,7 +76,8 @@ Principes de sécurité :
 - le refresh token brut n'est jamais persisté : seul son hash courant et des références non secrètes de grant/corrélation sont stockés sous `/app/data` ;
 - les TTL refresh sont configurables, avec 30 jours d'inactivité et 90 jours maximum par défaut ;
 - `MCP_AUTH_TOKEN` n'est jamais renvoyé dans les réponses OAuth ;
-- le login web existant `/login` sert d'écran d'autorisation administrateur ;
+- le login web existant `/login` authentifie l'opérateur ;
+- chaque connexion OAuth affiche ensuite une page de consentement (client, hôte de redirection, accès demandé) : le code n'est émis qu'après un clic « Autoriser » sur cette page, via un POST same-origin lié à la demande exacte et valable 10 minutes ; « Refuser » renvoie `access_denied` au client ;
 - le serveur renvoie un header `WWW-Authenticate` sur les `401` MCP pour permettre à ChatGPT de découvrir `/.well-known/oauth-protected-resource`.
 
 Tests publics attendus :

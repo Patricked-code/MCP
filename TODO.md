@@ -28,19 +28,21 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-FOUNDATIONS-DONE` | `DONE` | `program.delivered-foundations` | Delivered connection/repository/project foundations |
 | `PB-A2.2` | `DONE` | `connection.client-evidence` | A2.2 Verified Client Evidence — A2.2.1 inventory + A2.2.2 bounded evidence projection DONE ; PR #194 merge/deploy exact-SHA attestés |
 | `PB-A3` | `PARTIALLY_IMPLEMENTED` | `connection.oauth-attempt-correlation` | A3 OAuth Auth Attempt Correlation — A3.1 inventory DONE, A3.2 bounded implementation READY |
-| `PB-B3` | `PARTIALLY_IMPLEMENTED` | `context.multi-repository` | B3 Multi-repository Governed Context |
-| `PB-C1` | `PARTIALLY_IMPLEMENTED` | `project.gitregistry-verification` | C1 GitRegistry V2 verification and activation path |
-| `PB-C345` | `DESIGNED_NOT_IMPLEMENTED` | `project.server-runtime-domain-resolution` | C3/C4/C5 Server, Runtime and Domain Resolution |
-| `PB-D1` | `DESIGNED_NOT_IMPLEMENTED` | `governance.inheritance` | D1 Existing Governance Inheritance |
-| `PB-D2` | `DESIGNED_NOT_IMPLEMENTED` | `governance.effective-capabilities` | D2 Effective Capabilities |
-| `PB-D3` | `PARTIALLY_IMPLEMENTED` | `bootstrap.receipt-enrichment` | D3 Bootstrap Receipt Enrichment |
-| `PB-E` | `KNOWN_NOT_ANALYZED` | `context.guided-completion` | E1/E2/E3 Guided Context Completion |
-| `PB-F` | `KNOWN_NOT_ANALYZED` | `provisioning.governed` | F Governed Provisioning |
-| `PB-G12` | `KNOWN_NOT_ANALYZED` | `presence.client-two-clock` | G1/G2 Client Presence and two-clock model |
-| `PB-G3` | `PARTIALLY_IMPLEMENTED` | `attestation.tool-surface` | G3 Tool Surface Attestation |
+| `PB-B3` | `DONE` | `context.multi-repository` | B3 Multi-repository Governed Context — B3.1 inventory DONE ; B3.2 DONE (PR #225, décision #220) : cible opérateur `.mcp/server-map.json`, `TargetContext` Live State, `targetMappingIds` construits par le serveur ; aucune cible configurée sur `main` |
+| `PB-DISPATCH` | `DONE` | `orchestration.autonomous-dispatch-loop` | Intake #222 — boucle autonome de dispatch : DISPATCH-01 DONE (`mcp_materialize_program_blueprint`, PR #227) ; DISPATCH-02 DONE (claim resume-owned-first, éligibilité par TargetScope, PR #229) ; DISPATCH-03 DONE (projection `nextWork` read-only, saut des blocages locaux, PR #231) |
+| `PB-C1` | `PARTIALLY_IMPLEMENTED` | `project.gitregistry-verification` | C1 GitRegistry V2 verification and activation path — C1.1 DONE (probe OIDC `mcp_git_registry_readiness` ; 5/5 mappings BLOCKED, registre S1 en schéma V1) |
+| `PB-C345` | `DONE` | `project.server-runtime-domain-resolution` | C3/C4/C5 Server, Runtime and Domain Resolution — C3 DONE (GW-07 `serverResolution`, PR #233) ; C4 DONE (GW-08 `runtimeResolution`, observations Live State, PR #238) ; C5 DONE (GW-09 `domainResolution`, PR #240) ; C345-02 DONE (`projectReality` dépôt → projet → serveur → runtime → ingress → domaine, PR #242) ; résiduels portés : ingress et service des domaines par `TB-W4-I1-01`, tête exacte des composants du TargetContext par `TB-W3-GGCC-GIT-READ` |
+| `PB-D1` | `DONE` | `governance.inheritance` | D1 Existing Governance Inheritance — DONE (`governanceInheritance` GW-10 sur le périmètre projet prouvé : mapping GitRegistry, ruleset observé, `.mcp/branch-governance.json`, locks, WRITE gate ; contrainte la plus stricte, `UNKNOWN` jamais permis, PR #244) ; résiduels : rulesets des dépôts cibles (`TB-W3-GGCC-GH-RULESETS`), canal Governed Deploy (`TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`) |
+| `PB-D2` | `DONE` | `governance.effective-capabilities` | D2 Effective Capabilities — DONE (`effectiveCapabilities` GW-11 : par classe GitRegistry du périmètre prouvé, intersection en échec fermé de déclaration validée, identité, réalité, GitHub, règles D1, préconditions du WRITE gate et autorisation attestée, PR #246) ; résiduels : autorisation attestée et éligibilité de dispatch par capacités (`TB-W3-OAUTH-WRITE-SCOPE-01`) |
+| `PB-D3` | `DONE` | `bootstrap.receipt-enrichment` | D3 Bootstrap Receipt Enrichment — DONE (`BootstrapReceipt.references` GW-12 : connexion OAuth de la session, dépôt/projet/mapping des seules couches `VERIFIED` et du périmètre D1, provenance et fraîcheur, sans secret ni second receipt, PR #248) ; résiduel : références des sessions TargetScope non observées (`TB-W3-GGCC-GH-REPO-BRANCH`) |
+| `PB-E` | `DONE` | `context.guided-completion` | E1/E2/E3 Guided Context Completion — DONE : E1 `missingContext` (première entrée obligatoire manquante, PR #251) ; E2 `contextCompletion` et complétion guidée de `/login`, `/git`, `/github` (PR #253) ; E3 consentement explicite et validé côté serveur sur les formulaires de connexion GitHub, découverte automatique sur consentement distinct (PR #255) ; résiduel : entrées des sessions TargetScope non observées (`TB-W3-GGCC-GH-REPO-BRANCH`) |
+| `PB-F` | `PARTIALLY_IMPLEMENTED` | `provisioning.governed` | F Governed Provisioning — F.0 DONE : décomposition en contrats `.mcp/provisioning-contracts.json` (inventaire des primitives d'écriture ; contrats dépôt, projet/runtime et binding de domaine, PR #257) ; F.2 en cours, runtime de projet provisionnable (incrément 1 : preuve d'absence et plan, PR #259 ; incrément 2 : exécuteur borné à la cible, PR #260 ; tous deux déployés et attestés ; incrément 3 candidate : surface consentie et câblage, PR #261) ; READY : `TB-W3-ADMIN-01` (création de dépôt), `TB-W3-F-04` (binding de domaine) ; `TB-W3-F-02` attend ADMIN-01 |
+| `PB-G12` | `DONE` | `presence.client-two-clock` | G1/G2 Client Presence and two-clock model — G1 DONE (`client.observed` OAuth uniquement), G2 DONE (deux horloges, `proof.clientPresence`) |
+| `PB-G3` | `DONE` | `attestation.tool-surface` | G3 Tool Surface Attestation — attestation client bornée (`mcp_attest_client_tool_surface`) et comparaison serveur/client (`proof.toolSurface`) |
 | `PB-H` | `KNOWN_NOT_ANALYZED` | `observability.end-to-end-tracing` | H End-to-End Tracing |
 | `PB-I` | `KNOWN_NOT_ANALYZED` | `observability.synthetic-monitoring` | I1/I2/I3 Synthetic Monitoring, connection dashboard and alerts |
 | `PB-J12` | `KNOWN_NOT_ANALYZED` | `certification.clients` | J1/J2 Claude and ChatGPT certification |
+| `PB-K` | `DESIGNED_NOT_IMPLEMENTED` | `cockpit.super-admin` | Intake #236 — Super Admin Cockpit : `TB-W4-K-01..12` étendent le dashboard Express SSR existant (aucun nouveau framework, aucune autorité parallèle) ; K-01 (shell, design system, baseline sécurité, Command Center read-only) READY ; vues read-only après leurs projections, actions gouvernées après D2/PR WRITE/GGCC ; inventaire `docs/governance/super-admin-cockpit-convergence-20261004.json` |
 | `PB-J3` | `KNOWN_NOT_ANALYZED` | `maintenance.github-actions-node24` | J3 GitHub Actions / Node 24 maintenance |
 | `PB-J4` | `CONDITIONAL` | `governance.write-gate-enforcement` | J4 WRITE gate shadow→enforce |
 | `PB-GITHUB-FIRST-PROGRAM` | `DONE` | `github-first.continuity-program` | GitHub-first Operational Continuity residual program |
@@ -52,6 +54,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-GITHUB-PRWRITE` | `DESIGNED_NOT_IMPLEMENTED` | `github.pr-write.extensions` | Governed PR write extensions |
 | `PB-GITHUB-DESTRUCTIVE` | `DEFERRED` | `github.destructive-writes` | Destructive GitHub file/branch operations |
 | `PB-GGCC` | `PARTIALLY_IMPLEMENTED` | `control-plane.git-github-capability-completion` | Intake #177 converged; residual typed Git/GitHub capability lots integrated into current waves |
+| `PB-OAUTH-WRITE-SCOPE` | `DESIGNED_NOT_IMPLEMENTED` | `connection.oauth-write-scope-enforcement` | Application du scope `mcp:write` après inventaire des scopes réels des tokens ; lot technique séquencé après A3.2 (PR #207 touche `requestIdentity`), jamais une gate propriétaire |
 | `PB-SSH-ACCESS` | `DONE` | `transport.repository-ssh` | PR #191 merged/deployed exact-SHA; V2.6.8 Gouvern BOTH E2E passed through ephemeral read-only SSH certificate fallback |
 | `PB-STABLECOIN-APPDEPLOY` | `CONDITIONAL` | `deployment.stablecoin-application` | Stablecoin application-changing deploy path |
 | `PB-UAC` | `DONE` | `coordination.universal` | Universal Agent Coordination / heartbeat and claim observability |
@@ -61,6 +64,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 | `PB-OD-RECONCILE` | `PARTIALLY_IMPLEMENTED` | `governance.open-decisions-reconciliation` | OD-01..12 decision-state convergence |
 | `PB-TASKREG-RECONCILE` | `DONE` | `governance.task-registry-reconciliation` | Static task-registry drift reconciliation |
 | `PB-LEGACY-CONVERGENCE-DONE` | `DONE` | `governance.historical-pr-intents` | Historical PR intent reconciliation |
+| `PB-MCP-TERMINAL` | `DESIGNED_NOT_IMPLEMENTED` | `program.global-terminal-acceptance` | Intake #235 — acceptation terminale globale `TB-W4-MCP-FINAL-ACCEPTANCE` (`GLOBAL_MCP_COMPLETE`) : dépend des preuves des quatre dimensions (backend/control plane, certifications clients, cockpit, global) ; tout blueprint obligatoire en est un ancêtre (`terminalAcceptanceGaps`) ; jamais déclarée automatiquement |
 
 ### Ordonnancement courant
 
@@ -68,6 +72,8 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 - **DONE — W1 Program State Convergence** : `TB-W1-01..07` sont terminés ; GWC/AF/OD/task-registry/planning ont été réconciliés current-first.
 - **DONE — W2 GitHub READ** : `TB-W2-01`, `TB-W2-02`, `TB-W2-03` sont terminés et validés exact-head ; les trois capacités restent strictement READ et aucun runtime Task/Session/Lock n'a été créé par W2.
 - **ACTIVE planning wave — W3** : A2.2 est clôturé et `TB-W3-A3-01` est DONE avec inventaire OAuth correlation ; `TB-W3-A3-02`, `TB-W3-B3-01`, `TB-W3-C1-01` sont planning-ready, ainsi que `TB-W4-G1-01` ; `TB-W3-SSH-ACCESS-01` est DONE ; les autres W3 et W4 restent bloqués par leurs dépendances.
+- **CONVERGED — intakes #220/#221/#222** : décision B3.2 enregistrée (B3.2 READY) ; règle `NO_SELF_CREATED_HUMAN_GATE_FOR_DEDUCIBLE_TECHNICAL_DECISIONS` contrôlée par la lib du programme ; boucle de dispatch séquencée après B3.2. B3.2 (PR #225), DISPATCH-01 (PR #227) et DISPATCH-02 (PR #229) sont DONE ; prochain lot exécutable par un agent GitHub-only : `TB-W3-DISPATCH-03` (A3.2 attend une session runtime capable de réclamer `TASK-20260929-001`).
+- **CONVERGED — intakes #235/#236** (PR #237, `main@0ac9ecf`) : #235 renforce `PROGRAM_AUTO_CONTINUE` sans seconde boucle (22 sections cartographiées) et ajoute la condition terminale `GLOBAL_MCP_COMPLETE` + le rapport d'arrêt global (`agentHandoffContract.globalStopReport`) ; #236 devient `PB-K` (`TB-W4-K-01..12`, W4). READY : `TB-W3-A3-02` (blocage local, claim runtime ailleurs), `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01` ; prochain lot : `TB-W3-C4-01`.
 - **CONVERGED — intake #177** : 164 capacités Git/GitHub ont été classées current-first et routées dans le Program Backlog V2 ; les lots GGCC résiduels restent BLOCKED/DEFERRED/CONDITIONAL et ne créent aucune Task runtime.
 - **DONE — intake #192 / repository SSH** : PR #191 fusionnée/déployée exact-SHA ; Gouvern V2.6.8 run `36255238655` a obtenu le certificat OIDC SSH éphémère read-only et a franchi MCP discovery vers `Q_DOMAIN_BINDING`.
 - **Chaîne produit/connexion à construire additivement** : A2.2 → A3/B3/C1 → C3/C4/C5 → D1/D2/D3 → E → F.
@@ -79,7 +85,7 @@ Règle permanente : avant toute création de tâche ou tout nouveau code, recher
 
 Les Task Blueprints machine-readable sont portés par `docs/governance/program-backlog-convergence.json`. Ils décrivent à l'avance objectifs, dépendances, Integration Slots, collision domains, autorités, RED/GREEN, régressions et DONE. Ils ne sont pas des `TASK-*` et ne sont jamais chargés automatiquement dans Operational Memory.
 
-Ordre courant : **W1 convergence → W2 GitHub READ → W3 connection/resolution/governance/provisioning → W4 observability/certification**. Maintenance et lots conditionnels restent séparés.
+Ordre courant : **W1 convergence → W2 GitHub READ → W3 connection/resolution/governance/provisioning → W4 observability/cockpit/certification → acceptation terminale globale**. Maintenance et lots conditionnels restent séparés et ne bloquent jamais `GLOBAL_MCP_COMPLETE` tant qu'ils ne sont pas déclenchés.
 
 ### Règle anti-régression / anti-doublon
 

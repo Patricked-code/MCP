@@ -2,12 +2,20 @@ import type { LiveStateSnapshot } from '../liveState/types.js';
 import type { GithubIdentityResolution } from '../github/identityResolution.js';
 import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
 import type { GithubProjectResolution } from '../github/projectResolution.js';
+import type { ProjectReality } from '../github/projectReality.js';
+import type { ProjectEffectiveCapabilities } from '../governedWorkflow/governance/projectCapabilities.js';
+import type { ProjectGovernanceInheritance } from '../governedWorkflow/governance/projectInheritance.js';
+import type { DomainResolution } from '../governedWorkflow/resolvers/domain.js';
+import type { RuntimeResolution } from '../governedWorkflow/resolvers/runtime.js';
+import type { ServerResolution } from '../governedWorkflow/resolvers/server.js';
 import type {
   CapabilityReality,
   GovernanceDecision,
   TaskReality
 } from '../governance/operationalDecision.js';
 import type { ClientEvidence } from '../operationalMemory/connectionContext.js';
+import type { ClientPresence } from '../operationalMemory/clientPresence.js';
+import type { ToolSurfaceProjection } from '../governance/toolSurfaceAttestation.js';
 import type {
   GovernedCheckpoint,
   GovernedLockRecord,
@@ -18,6 +26,8 @@ import type {
 } from '../operationalMemory/types.js';
 import type { GovernedRepositoryTarget } from '../operationalMemory/sessionService.js';
 import type { TargetContext, TargetScope } from '../operationalMemory/targetScope.js';
+import type { ContextCompletion } from './contextCompletion.js';
+import type { MissingContext } from './missingContext.js';
 
 export type GithubEvidenceFreshness = 'CURRENT' | 'STALE' | 'UNAVAILABLE' | 'NOT_APPLICABLE';
 export type GithubEvidenceProvenance = 'github_api' | 'memory_cache';
@@ -105,6 +115,12 @@ export type GithubOperationalContext = {
   repositoryResolution?: GithubRepositoryResolution;
   /** Always projected with an identity scope after C2; optional for historical consumers. */
   projectResolution?: GithubProjectResolution;
+  /** C3: GW-07 server resolution, projected with an identity scope after C3. */
+  serverResolution?: ServerResolution;
+  /** C4: GW-08 runtime resolution chained after the server resolution. */
+  runtimeResolution?: RuntimeResolution;
+  /** C5: GW-09 domain resolution chained after the project and server resolutions. */
+  domainResolution?: DomainResolution;
   cache: {
     status: 'MISS' | 'HIT' | 'REFRESHED';
     observedAt: string;
@@ -135,6 +151,40 @@ export type GovernedOperationalContext = {
   targetScope: TargetScope | null;
   liveState: LiveStateSnapshot | null;
   github: GithubOperationalContext;
+  /**
+   * C345-02: repository -> project -> server -> runtime -> ingress -> domain
+   * composed from the GitHub context resolutions. Always projected by the
+   * governed service; optional for historical in-process consumers.
+   */
+  projectReality?: ProjectReality;
+  /**
+   * D1: branch, pull-request, test, deploy, lock and write constraints the
+   * proven project scope inherits from existing authorities. Always projected
+   * by the governed service; optional for historical in-process consumers.
+   */
+  governanceInheritance?: ProjectGovernanceInheritance;
+  /**
+   * D2: per capability class of the proven project scope, the fail-closed
+   * intersection of declaration, identity, target, GitHub, inherited
+   * governance, WRITE gate preconditions and attested authorization. Always
+   * projected by the governed service; optional for historical consumers.
+   */
+  effectiveCapabilities?: ProjectEffectiveCapabilities;
+  /**
+   * E1: the mandatory inputs (OAuth identity, GitHub identity, repository,
+   * project mapping, server binding) still missing after automatic governed
+   * resolution; only the first one is surfaced, with the existing authority
+   * that completes it. Always projected by the governed service; optional for
+   * historical consumers.
+   */
+  missingContext?: MissingContext;
+  /**
+   * E2: that first gap as one completion step (call the named tool, ask the
+   * operator on the existing surface, propose a governed change, reconcile)
+   * and the inputs never asked. Always projected by the governed service;
+   * optional for historical consumers.
+   */
+  contextCompletion?: ContextCompletion;
   session: PublicGovernedSession | null;
   bootstrap: {
     required: true;
@@ -178,5 +228,7 @@ export type GovernedOperationalContext = {
     limitations: string[];
     /** Always projected by the governed service after A2.2.2; optional for historical consumers. */
     clientEvidence?: ClientEvidence;
+    clientPresence?: ClientPresence;
+    toolSurface?: ToolSurfaceProjection;
   };
 };

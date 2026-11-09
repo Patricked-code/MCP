@@ -18,17 +18,21 @@ export type GithubReadonlyEvidenceProbe =
   | 'docker_status'
   | 'mcp_governed_tasks'
   | 'mcp_governed_sessions'
-  | 'mcp_governed_locks';
+  | 'mcp_governed_locks'
+  | 'mcp_git_registry_readiness'
+  | 'mcp_oauth_consent_provenance';
 
 export type GithubOperationalAuthorityProbe =
   | 'mcp_governed_tasks'
   | 'mcp_governed_sessions'
-  | 'mcp_governed_locks';
+  | 'mcp_governed_locks'
+  | 'mcp_oauth_consent_provenance';
 
 const OPERATIONAL_AUTHORITY_PROBES = new Set<GithubReadonlyEvidenceProbe>([
   'mcp_governed_tasks',
   'mcp_governed_sessions',
-  'mcp_governed_locks'
+  'mcp_governed_locks',
+  'mcp_oauth_consent_provenance'
 ]);
 
 export function isGithubOperationalAuthorityProbe(
@@ -50,6 +54,7 @@ export interface GithubReadonlyEvidenceRouteDependencies {
     command: string
   ) => Promise<CommandResultLike>;
   runOperationalRead?: (probe: GithubOperationalAuthorityProbe) => Promise<string>;
+  runRegistryRead?: () => Promise<string>;
 }
 
 function bearerToken(value: string | undefined): string | null {
@@ -87,6 +92,8 @@ function exactRequest(value: unknown): {
     && probe !== 'mcp_governed_tasks'
     && probe !== 'mcp_governed_sessions'
     && probe !== 'mcp_governed_locks'
+    && probe !== 'mcp_git_registry_readiness'
+    && probe !== 'mcp_oauth_consent_provenance'
   ) return null;
   if (typeof requestId !== 'string' || !REQUEST_ID_PATTERN.test(requestId)) return null;
   if (probe === 'mcp_git_status' && target !== 's1') return null;
@@ -95,6 +102,8 @@ function exactRequest(value: unknown): {
       probe === 'mcp_governed_tasks'
       || probe === 'mcp_governed_sessions'
       || probe === 'mcp_governed_locks'
+      || probe === 'mcp_git_registry_readiness'
+      || probe === 'mcp_oauth_consent_provenance'
     )
     && target !== 's1'
   ) return null;
@@ -449,15 +458,22 @@ export function createGithubReadonlyEvidenceRouter(
       return jsonError(response, 403, 'github_oidc_invalid');
     }
 
-    if (isGithubOperationalAuthorityProbe(body.probe)) {
-      if (!dependencies.runOperationalRead) {
+    const inProcessRead = body.probe === 'mcp_git_registry_readiness'
+      ? dependencies.runRegistryRead
+      : isGithubOperationalAuthorityProbe(body.probe)
+        ? (dependencies.runOperationalRead
+          ? () => dependencies.runOperationalRead!(body.probe as GithubOperationalAuthorityProbe)
+          : undefined)
+        : null;
+    if (inProcessRead !== null) {
+      if (!inProcessRead) {
         return response.status(502).json({
           error: 'readonly_evidence_collection_failed',
           reasonCode: 'read_transport_failed'
         });
       }
       try {
-        const output = await dependencies.runOperationalRead(body.probe);
+        const output = await inProcessRead();
         if (typeof output !== 'string' || Buffer.byteLength(output, 'utf8') > 32_768) {
           throw new Error('operational_read_output_invalid');
         }

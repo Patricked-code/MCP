@@ -1,14 +1,23 @@
 import express from 'express';
+import { readFile, stat } from 'node:fs/promises';
 import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { env } from './config/env.js';
 import { requireBearerToken } from './auth.js';
-import { registerOauthRoutes } from './oauth.js';
+import {
+  isSameOriginSubmission,
+  issueWebConsentTicket,
+  inspectOauthAccessToken,
+  registerOauthRoutes,
+  verifyWebConsentTicket
+} from './oauth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
+import { registerE2AutomaticActivationTool } from './tools/e2Activation.js';
+import { registerE2OwnerTools } from './tools/e2OwnerTools.js';
 import { governedContextInstructions } from './tools/governedContext.js';
 import { getGovernedContextToolDependencies } from './tools/governedContext.js';
 import { getGovernedSessionToolDependencies, sessionRequestFromToolExtra } from './tools/governedSessions.js';
@@ -23,9 +32,27 @@ import {
 } from './governance/scopedWriteGate.js';
 import { operationalMemoryConfig } from './operationalMemory/config.js';
 import { getDefaultOperationalEventJournal } from './operationalMemory/eventJournal.js';
+import {
+  getDefaultClientObservationRecorder,
+  getDefaultSyntheticProbeClock
+} from './operationalMemory/clientPresence.js';
 import { startOperationalMemoryMaintenance } from './operationalMemory/maintenance.js';
-import { getGithubConnectionStatus, renderGithubConnectionPage, saveGithubToken, validateGithubToken } from './github/connection.js';
-import { readGitRegistry, recordGithubConnection, renderGitSettingsPage } from './github/registry.js';
+import {
+  downloadGithubArchiveWithServerCredential,
+  getGithubConnectionStatus,
+  githubJsonRequestWithServerCredential,
+  renderGithubConnectionPage,
+  saveGithubToken,
+  validateGithubToken
+} from './github/connection.js';
+import {
+  readGitRegistry,
+  readGitRegistryProjectEvidence,
+  recordGithubConnection,
+  renderGitSettingsPage
+} from './github/registry.js';
+import { deriveRepositoryMappingCompletion, safeWebReturnPath } from './governedContext/contextCompletion.js';
+import { decideConnectConsent } from './github/connectConsent.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
 import {
   verifyGithubOidcToken,
@@ -35,12 +62,34 @@ import {
   verifyGithubRepositorySshCaBootstrapOidcToken
 } from './deploy/githubOidc.js';
 import { createGithubReadonlyEvidenceRouter } from './evidence/githubReadonlyRoutes.js';
+import { getOauthConsentProvenanceEvidence } from './oauth.js';
+import { projectGitRegistryReadinessEvidence } from './evidence/gitRegistryReadinessProbe.js';
 import { createStablecoinFastForwardRouter } from './stablecoin/githubFastForward.js';
 import { createGithubRepositorySshAccessRouter } from './ssh/githubRepositoryAccessRoutes.js';
 import { createGithubRepositorySshCaBootstrapRouter } from './ssh/githubRepositoryCaBootstrapRoutes.js';
 import { signRepositorySshCertificate } from './ssh/repositoryCertificate.js';
 import { runGuardedCommand, runReadOnlyCommand } from './ssh/client.js';
 import { decorateRegistrationCatalogServer } from './currentState/toolCatalog.js';
+import { readServerMapConfiguration } from './liveState/targetProject.js';
+import { createProjectRuntimeProvisioningRouter } from './provisioning/routes.js';
+import { createPleskSubdomainRouter } from './provisioning/pleskWebRoutes.js';
+import { createPleskGovernedWebExecutionBridge } from './provisioning/pleskGovernedWebExecutionBridge.js';
+import type { PleskVerifiedMcpAuthorityProof } from './provisioning/pleskHttpToMcpAdmission.js';
+import type { PleskGovernedReleaseEvidence } from './provisioning/pleskGovernedReleaseGate.js';
+import {
+  createPleskWebTransportPairing,
+  type PleskWebTransportPairing
+} from './provisioning/pleskWebTransportPairing.js';
+import { registerPleskWebMcpPairingTool } from './provisioning/pleskMcpPairingTool.js';
+import { createGovernPilotRouter } from './provisioning/governPilotRoutes.js';
+import { mintGithubAppRepoToken } from './github/appInstallationToken.js';
+import { downloadGovernPilotArchive } from './github/governPilotArchiveSource.js';
+import { downloadGithubArchive } from './provisioning/sourceArchive.js';
+import { stageGovernPilot, readGovernPilot, GOUVERN_RUNTIME_ROOT, GOUVERN_SHA } from './provisioning/governPilot.js';
+import { parseAllowedPleskParents } from './tools/pleskProvisioning.js';
+import { executeProjectRuntimeProvisioning } from './provisioning/runtimeExecutor.js';
+import { createProjectRuntimeExecutionDependencies } from './provisioning/wiring.js';
+import { isActiveGovernedTaskStatus } from './operationalMemory/taskQueue.js';
 import {
   getGovernedTaskToolDependencies,
   registerGovernedTaskMutationTools,
@@ -119,6 +168,11 @@ function clearWebSessionCookie(): string {
   return `${WEB_SESSION_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0${secureCookieAttribute()}`;
 }
 
+/** E3: consent tickets are bound to the web session that rendered the consent. */
+function webConsentBinding(req: express.Request): string {
+  return parseCookies(req.header('cookie'))[WEB_SESSION_COOKIE] ?? '';
+}
+
 function isWebAuthenticated(req: express.Request): boolean {
   const authorization = req.header('authorization') ?? '';
 
@@ -145,6 +199,10 @@ function requireWebLogin(req: express.Request, res: express.Response, next: expr
 
 function renderLoginPage(error?: string, next = '/dashboard'): string {
   const safeError = error ? `<p style="color:#b91c1c;font-weight:700">${escapeHtml(error)}</p>` : '';
+  // E2: a completion link returns to the surface that asks for the missing context.
+  const destination = next === '/dashboard'
+    ? ''
+    : `<p>Après connexion : retour à <code>${escapeHtml(next)}</code> pour compléter le contexte demandé.</p>`;
 
   return `<!doctype html>
 <html lang="fr">
@@ -157,6 +215,7 @@ function renderLoginPage(error?: string, next = '/dashboard'): string {
   <main style="max-width:540px;margin:10vh auto;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:28px">
     <h1>Connexion MCP WealthTech</h1>
     <p>Entre le token MCP pour accéder au tableau de bord.</p>
+    ${destination}
     ${safeError}
     <form method="post" action="/login">
       <input type="hidden" name="next" value="${escapeHtml(next)}" />
@@ -181,6 +240,7 @@ function nav(): string {
     <a href="/github/status">Statut JSON</a> ·
     <a href="/github/Patricked-code">Patricked-code</a> ·
     <a href="/github/chainsolutions-wealthtech">chainsolutions-wealthtech</a> ·
+    <a href="/provisioning/project-runtime">Provisioning</a> ·
     <a href="/logout">Déconnexion</a>
   </p>`;
 }
@@ -295,7 +355,7 @@ function renderAccountPage(account: string, githubPageHtml: string): string {
   );
 }
 
-export function buildMcpServer(): McpServer {
+export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   const server = new McpServer({
     name: 'wealthtech_ssh_bridge',
     version: '0.1.0'
@@ -304,6 +364,15 @@ export function buildMcpServer(): McpServer {
   });
 
   registerReadOnlyTools(decorateRegistrationCatalogServer(server, 'read'));
+  if(pairing){
+    // Authenticated ToolExtra, not a browser field, is the only transport source.
+    registerPleskWebMcpPairingTool(
+      decorateScopedWriteServer(
+        decorateRegistrationCatalogServer(server, 'operational-write'),
+        getDefaultScopedWriteGateDependencies()
+      ),pairing
+    );
+  }
   const taskDependencies = getGovernedTaskToolDependencies();
   registerGovernedTaskReadTools(
     decorateRegistrationCatalogServer(server, 'read'),
@@ -315,6 +384,21 @@ export function buildMcpServer(): McpServer {
       getDefaultScopedWriteGateDependencies()
     ),
     taskDependencies
+  );
+  // E2 owner selection is available even in read-only mode. The operation is
+  // classified as operational-write because its correction branch CAN mutate
+  // S1, but the callback separately enforces ENABLE_WRITE_TOOLS + allow_write.
+  registerE2AutomaticActivationTool(
+    decorateScopedWriteServer(
+      decorateRegistrationCatalogServer(server, 'operational-write'),
+      getDefaultScopedWriteGateDependencies()
+    )
+  );
+  registerE2OwnerTools(
+    decorateScopedWriteServer(
+      decorateRegistrationCatalogServer(server, 'operational-write'),
+      getDefaultScopedWriteGateDependencies()
+    )
   );
   if (env.ENABLE_WRITE_TOOLS) {
     registerScopedWriteTools(decorateScopedWriteServer(
@@ -379,6 +463,11 @@ export async function startHttpServer(): Promise<void> {
     await getGovernedTaskToolDependencies().ready();
   }
   startGovernedOperationalMemoryMaintenance();
+  const pairing=createPleskWebTransportPairing({
+    now:()=>Date.now(),
+    lookupSessionId:id=>getGovernedSessionToolDependencies().sessions.lookupGovernedSessionId(id),
+    inspectOauth:inspectOauthAccessToken
+  });
   const app = express();
   app.use(createGithubDeployRouter({
     verifyOidc: verifyGithubOidcToken,
@@ -395,7 +484,13 @@ export async function startHttpServer(): Promise<void> {
     runRead: async (target, command) => (
       runReadOnlyCommand(target, command, 15_000, 32_768)
     ),
+    runRegistryRead: async () => (
+      projectGitRegistryReadinessEvidence(await readGitRegistryProjectEvidence())
+    ),
     runOperationalRead: async (probe) => {
+      if (probe === 'mcp_oauth_consent_provenance') {
+        return getOauthConsentProvenanceEvidence();
+      }
       if (!operationalMemoryConfig.enabled) {
         return JSON.stringify({
           schemaVersion: 1,
@@ -459,7 +554,293 @@ export async function startHttpServer(): Promise<void> {
     isAuthenticated: isWebAuthenticated
   });
 
+  // F.2 (TB-W3-F-03): project runtime provisioning under the E3 consent, behind the web login.
+  const projectRuntimeProvisioning = createProjectRuntimeExecutionDependencies({
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    readServerMap: () => readServerMapConfiguration(),
+    readRegistry: () => readGitRegistryProjectEvidence(),
+    runReadOnly: (command) => runReadOnlyCommand('s1', command),
+    runGuarded: (command, options) => runGuardedCommand('s1', command, options),
+    downloadArchive: downloadGithubArchiveWithServerCredential,
+    githubRequest: (endpoint) => githubJsonRequestWithServerCredential(endpoint),
+    // UAC: the work claimed or locked by agents is re-read before any provisioning write.
+    readCoordination: async () => {
+      if (!operationalMemoryConfig.enabled) return null;
+      const [taskDocument, locks] = await Promise.all([
+        getGovernedTaskToolDependencies().queue.listVisibleTasks(),
+        getGovernedSessionToolDependencies().locks.listActiveLocks()
+      ]);
+      return {
+        complete: true,
+        tasks: taskDocument.tasks
+          .filter((task) => isActiveGovernedTaskStatus(task.status))
+          .map((task) => ({ taskId: task.taskId, resourceScopes: task.resourceScopes })),
+        locks: locks.map((lock) => ({ scope: lock.scope, projectId: lock.targetScope?.projectId ?? null }))
+      };
+    }
+  });
+  app.use(createProjectRuntimeProvisioningRouter({
+    requireLogin: requireWebLogin,
+    consentSession: webConsentBinding,
+    isSameOrigin: isSameOriginSubmission,
+    issueTicket: issueWebConsentTicket,
+    verifyTicket: verifyWebConsentTicket,
+    listTargets: projectRuntimeProvisioning.listTargets,
+    preview: projectRuntimeProvisioning.preview,
+    execute: (input) => executeProjectRuntimeProvisioning(input, projectRuntimeProvisioning)
+  }));
+
+  // B3j: enable REAL Plesk admission through existing authorities when verified.
+  // Server-controlled release settings are mandatory; missing or invalid
+  // proof never turns an owner instruction into an implicit SSH privilege.
+  const pleskReleaseConfiguration=()=>{
+    const pr=Number(process.env.MCP_PLESK_RELEASE_PR_NUMBER);
+    const head=process.env.MCP_PLESK_RELEASE_HEAD_SHA??'';
+    return Number.isSafeInteger(pr)&&pr>0
+      &&/^[a-f0-9]{40}$/.test(head)?{pr,head}:null;
+  };
+  const trustedPleskRelease=async(expectedDeployedSha:string)=>{
+    const configured=pleskReleaseConfiguration();
+    if(!configured)return null;
+    const {observeGithubReviewAndCiUsingExistingCredential}=await import(
+      './github/observeGithubReviewAndCi.js'
+    );
+    const observed=await observeGithubReviewAndCiUsingExistingCredential({
+      repository:'Patricked-code/MCP',
+      pullRequestNumber:configured.pr,
+      expectedHeadSha:configured.head,
+      expectedDeployedSha,
+      expectedWorkflow:'MCP CI'
+    });
+    return observed.attestation;
+  };
+  type VerifiedPleskRequest=Readonly<{
+    verified:PleskVerifiedMcpAuthorityProof;
+    evidence:PleskGovernedReleaseEvidence;
+  }>;
+  const pleskExecutionBridge=createPleskGovernedWebExecutionBridge<VerifiedPleskRequest>({
+    prepare:async(input,context)=>{
+      const configured=pleskReleaseConfiguration();
+      if(!configured||!isValidWebSession(webConsentBinding(context.req))
+        ||!env.ENABLE_WRITE_TOOLS||!env.MCP_PLESK_PROVISIONING_ENABLED
+        ||!parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)[input.serverId]
+          ?.includes(input.parentDomain))return null;
+      const linked=pairing.redeem({
+        proof:context.pairingProof,
+        target:{
+          serverId:input.serverId,parentDomain:input.parentDomain,
+          label:input.label,documentRoot:input.documentRoot
+        },
+        webSessionBinding:webConsentBinding(context.req)
+      });
+      if(!linked)return null;
+      const {inspectPleskHttpToMcpAdmissionFromRuntime}=await import(
+        './provisioning/pleskHttpToMcpAdmission.js'
+      );
+      let verified:PleskVerifiedMcpAuthorityProof|null=null;
+      const observation=await inspectPleskHttpToMcpAdmissionFromRuntime({
+        target:{
+          serverId:input.serverId,parentDomain:input.parentDomain,
+          label:input.label,documentRoot:input.documentRoot
+        },
+        webSessionBinding:webConsentBinding(context.req),
+        consentTicket:context.consentTicket,
+        confirmFqdn:input.label+'.'+input.parentDomain,
+        explicitConsent:'CREATE_SUBDOMAIN',
+        sameOrigin:isSameOriginSubmission(context.req),
+        oauthAuthorization:linked.oauthAuthorization,
+        trustedMcpTransport:linked.transport
+      },proof=>{verified=proof;});
+      if(observation.status!=='READ_ONLY_PROOFS_OBSERVED'||!verified)return null;
+      const verifiedProof=verified as PleskVerifiedMcpAuthorityProof;
+      const {consent,candidate,transportLink,authority}=verifiedProof;
+      const evidence:PleskGovernedReleaseEvidence={
+        at:new Date().toISOString(),
+        mcpRepository:'Patricked-code/MCP',
+        pullRequestNumber:configured.pr,
+        proposedHeadSha:configured.head,
+        scope:consent.targetScope!,
+        principalId:consent.principalId!,
+        taskId:candidate.taskId!,
+        sessionId:candidate.sessionId!,
+        sha:candidate.expectedHeadSha!,
+        signedConsent:consent,
+        ownedCandidate:candidate,
+        transportBinding:transportLink,
+        runtimeAuthority:authority.snapshot
+      };
+      return {verified:verifiedProof,evidence};
+    },
+    consume:async(proof,signed)=>{
+      const {consumeGovernedPleskE3ForExistingRoute}=await import(
+        './provisioning/pleskE3GovernedConsumption.js'
+      );
+      const e=proof.evidence;
+      const result=await consumeGovernedPleskE3ForExistingRoute(e,{
+        ticket:signed.ticket,binding:signed.binding,
+        scope:e.scope,principalId:e.principalId,
+        governedSessionId:e.sessionId,taskId:e.taskId
+      },{
+        receiptDirectory:process.env.MCP_PLESK_E3_RECEIPT_DIR
+          ??'/app/data/plesk-e3-consumed',
+        now:()=>Date.now(),
+        verifyTicket:(purpose,ticket,binding,at)=>
+          verifyWebConsentTicket(purpose,ticket,binding,at),
+        readTrustedReleaseAttestation:()=>trustedPleskRelease(e.sha)
+      });
+      return result.status==='E3_CONSUMED_PENDING_RUNTIME_GATE'
+        &&result.reason==='RECEIPT_CONSUMED';
+    },
+    execute:async(proof,input)=>{
+      const {readExistingPleskAuthorityFromRuntime}=await import(
+        './provisioning/existingPleskAuthorityReader.js'
+      );
+      const {executeGovernedPleskSubdomainOnExistingSsh}=await import(
+        './provisioning/governedPleskSubdomainExecutor.js'
+      );
+      const e=proof.evidence;
+      const request={
+        target:input,
+        policy:{
+          enabled:env.ENABLE_WRITE_TOOLS&&env.MCP_PLESK_PROVISIONING_ENABLED,
+          allowedParents:parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
+        },
+        expectedTaskId:e.taskId,expectedSessionId:e.sessionId,
+        expectedPrincipalId:e.principalId,expectedHeadSha:e.sha,
+        now:new Date().toISOString()
+      };
+      // Always re-observe the real runtime authority, Github release state
+      // and root/Plesk CLI availability at the guarded write boundary.
+      const readAuthority=async()=>{
+        const inspected=await readExistingPleskAuthorityFromRuntime({
+          ...request,now:new Date().toISOString()
+        },proof.verified.transport);
+        const snapshot=inspected.snapshot;
+        if(inspected.blockers.length!==1
+          ||inspected.blockers[0]!=='E3_AND_CI_ATTESTATION_UNAVAILABLE'
+          ||snapshot.source!=='EXISTING_GOVERNED_RUNTIME')return snapshot;
+        const [review,user,plesk]=await Promise.all([
+          trustedPleskRelease(e.sha),
+          runReadOnlyCommand(input.serverId,'id -u',5_000,128),
+          runReadOnlyCommand(input.serverId,'plesk version',5_000,1_024)
+        ]);
+        // GitHub/SSH probes above are asynchronous. Re-read the real task,
+        // owned session, bootstrap receipt, lock and Live State after those
+        // calls, and bind the receipt to the earlier signed E3 admission.
+        // The executor repeats this check immediately before guarded write.
+        const atBoundary=await readExistingPleskAuthorityFromRuntime({
+          ...request,now:new Date().toISOString()
+        },proof.verified.transport);
+        const latest=atBoundary.snapshot;
+        if(atBoundary.blockers.length!==1
+          ||atBoundary.blockers[0]!=='E3_AND_CI_ATTESTATION_UNAVAILABLE'
+          ||latest.source!=='EXISTING_GOVERNED_RUNTIME'
+          ||latest.bootstrapReceiptId!==snapshot.bootstrapReceiptId
+          ||latest.bootstrapReceiptId!==e.runtimeAuthority.bootstrapReceiptId
+          ||latest.sessionRevision!==snapshot.sessionRevision
+          ||latest.sessionRevision!==e.runtimeAuthority.sessionRevision){
+          return latest;
+        }
+        const releaseOk=review?.source==='SERVER_VALIDATED_GITHUB_API'
+          &&review.repository==='Patricked-code/MCP'
+          &&review.pr===e.pullRequestNumber
+          &&review.headSha===e.proposedHeadSha
+          &&review.approvalHeadSha===e.proposedHeadSha
+          &&review.independentReviewApproved===true
+          &&review.workflowConcludedSuccess===true
+          &&Date.parse(review.at)<=Date.now()
+          &&Date.now()-Date.parse(review.at)<=300_000;
+        if(!releaseOk||user.code!==0||user.stdout.trim()!=='0'
+          ||plesk.code!==0)return latest;
+        return {...latest,consent:'CREATE_SUBDOMAIN' as const,
+          reviewAndCiApproved:true};
+      };
+      return executeGovernedPleskSubdomainOnExistingSsh(request,readAuthority);
+    }
+  });
+  app.use(createPleskSubdomainRouter({
+    requireLogin:requireWebLogin,
+    session:webConsentBinding,
+    sameOrigin:isSameOriginSubmission,
+    issueTicket:issueWebConsentTicket,
+    verifyTicket:verifyWebConsentTicket,
+    policy:()=>({
+      enabled:env.MCP_PLESK_PROVISIONING_ENABLED,
+      allowedParents:parseAllowedPleskParents(env.MCP_PLESK_ALLOWED_PARENTS)
+    }),
+    writeEnabled:()=>env.ENABLE_WRITE_TOOLS&&env.MCP_PLESK_PROVISIONING_ENABLED,
+    requireMcpPairing:true,
+    ...pleskExecutionBridge,
+    // Direct generic guarded SSH is never a fallback for OAuth-paired writes.
+    io:{
+      readonly:async(serverId,command)=>runReadOnlyCommand(serverId,command),
+      guarded:async()=>({code:1,stdout:'',stderr:''})
+    }
+  }));
+
+  // S1 isolated GRT archive pilot: this is NOT a public git tree or a second runtime.
+  // Reuses the authenticated E3 operator session; opt-in storage only under /app/data.
+  app.use(createGovernPilotRouter({
+    requireLogin: requireWebLogin,
+    session: webConsentBinding,
+    sameOrigin: isSameOriginSubmission,
+    issueTicket: issueWebConsentTicket,
+    verifyTicket: verifyWebConsentTicket,
+    enabled: () => env.MCP_GOUVERN_PILOT_ENABLED,
+    writeEnabled: () => env.ENABLE_WRITE_TOOLS,
+    // Fail closed until the existing session/claim/lock gate attests this new scope.
+    authorizeRuntimeWrite: async () => false,
+    read: () => readGovernPilot(GOUVERN_RUNTIME_ROOT),
+    stage: () => stageGovernPilot(
+      {root:GOUVERN_RUNTIME_ROOT,approved:true,revision:GOUVERN_SHA},
+      async (request) => {
+        const entries = [
+          env.MCP_GRT_GITHUB_APP_ID,
+          env.MCP_GRT_GITHUB_INSTALLATION_ID,
+          env.MCP_GRT_GITHUB_APP_KEY_FILE
+        ];
+        const app = entries.every((entry) => entry === '') ? null : {
+          appId: env.MCP_GRT_GITHUB_APP_ID,
+          installationId: Number(env.MCP_GRT_GITHUB_INSTALLATION_ID),
+          privateKeyFile: env.MCP_GRT_GITHUB_APP_KEY_FILE
+        };
+        return downloadGovernPilotArchive(request, app, {
+          legacy: downloadGithubArchiveWithServerCredential,
+          mint: async (input) => {
+            const file = env.MCP_GRT_GITHUB_APP_KEY_FILE;
+            if (!file.startsWith('/app/secrets/')) {
+              throw new Error('GITHUB_APP_KEY_SCOPE_INVALID');
+            }
+            const info = await stat(file);
+            if (!info.isFile() || (info.mode & 0o077) !== 0) {
+              throw new Error('GITHUB_APP_KEY_PERMISSIONS_INVALID');
+            }
+            const issued = await mintGithubAppRepoToken({
+              installation: {
+                appId: input.appId,
+                installationId: input.installationId,
+                accountLogin: 'chainsolutions-wealthtech'
+              },
+              repository: input.repository,
+              contentsPermission: 'read'
+            }, {
+              readPrivateKey: () => readFile(file,'utf8'),
+              fetchImpl: fetch,
+              now: () => new Date()
+            });
+            return issued.token;
+          },
+          download: async (input) => downloadGithubArchive({
+            ...input,apiBase:'https://api.github.com'
+          })
+        });
+      }
+    )
+  }));
+
+  const syntheticProbeClock = getDefaultSyntheticProbeClock();
   app.get('/health', (_req, res) => {
+    syntheticProbeClock.record('health_probe');
     res.json({
       ok: true,
       service: 'wealthtech_ssh_bridge',
@@ -475,13 +856,13 @@ export async function startHttpServer(): Promise<void> {
   });
 
   app.get('/login', (req, res) => {
-    const next = typeof req.query.next === 'string' ? req.query.next : '/dashboard';
+    const next = safeWebReturnPath(req.query.next);
     res.type('html').send(renderLoginPage(undefined, next));
   });
 
   app.post('/login', (req, res) => {
     const token = typeof req.body.token === 'string' ? req.body.token : '';
-    const next = typeof req.body.next === 'string' && req.body.next.startsWith('/') ? req.body.next : '/dashboard';
+    const next = safeWebReturnPath(req.body.next);
 
     if (!tokenMatches(token)) {
       res.status(401).type('html').send(renderLoginPage('Token MCP invalide.', next));
@@ -506,11 +887,18 @@ export async function startHttpServer(): Promise<void> {
     }
   });
 
-  app.get('/git', requireWebLogin, async (_req, res) => {
+  app.get('/git', requireWebLogin, async (req, res) => {
     try {
       const status = await getGithubConnectionStatus();
       const registry = await readGitRegistry();
-      res.type('html').send(renderGitSettingsPage(status, registry));
+      // E2: a completion link names the repository whose mapping is shown.
+      const mapping = typeof req.query.repository === 'string'
+        ? deriveRepositoryMappingCompletion(req.query.repository, await readGitRegistryProjectEvidence())
+        : undefined;
+      res.type('html').send(renderGitSettingsPage(status, registry, {
+        ...(mapping ? { mapping } : {}),
+        consentTicket: issueWebConsentTicket('github-connect', webConsentBinding(req))
+      }));
     } catch (error) {
       logger.error({ error }, 'Erreur page /git');
       res.status(500).type('text').send('Erreur page paramétrage Git.');
@@ -530,6 +918,18 @@ export async function startHttpServer(): Promise<void> {
 
   app.post('/git/connect', requireWebLogin, async (req, res) => {
     try {
+      // E3: explicit consent, decided before any GitHub call or write.
+      const consent = decideConnectConsent({
+        sameOrigin: isSameOriginSubmission(req),
+        ticketValid: verifyWebConsentTicket('github-connect', req.body.consent_ticket, webConsentBinding(req)),
+        credentialConsent: req.body.consent_credential,
+        discoveryConsent: req.body.consent_discovery
+      });
+      if (!consent.allowed) {
+        res.status(403).type('text').send(`Consentement explicite requis (${consent.reasonCode}) : aucune donnée n’a été modifiée.`);
+        return;
+      }
+
       const token = typeof req.body.token === 'string' ? req.body.token.trim() : '';
       const org = typeof req.body.org === 'string' ? req.body.org.trim() : env.GITHUB_ORG;
       const mode = typeof req.body.mode === 'string' ? req.body.mode : 'read';
@@ -546,7 +946,9 @@ export async function startHttpServer(): Promise<void> {
       }
 
       await saveGithubToken(token);
-      await recordGithubConnection(validation, mode, 'mcp-web:/git/connect');
+      await recordGithubConnection(validation, mode, 'mcp-web:/git/connect', {
+        consent: { credential: true, discovery: consent.discover }
+      });
       logger.info({ org, login: validation.login, mode }, 'Token GitHub MCP connecté depuis la page /git');
       res.redirect('/git');
     } catch (error) {
@@ -564,10 +966,12 @@ export async function startHttpServer(): Promise<void> {
     }
   });
 
-  app.get('/github', requireWebLogin, async (_req, res) => {
+  app.get('/github', requireWebLogin, async (req, res) => {
     try {
       const status = await getGithubConnectionStatus();
-      res.type('html').send(addGithubNav(renderGithubConnectionPage(status)));
+      res.type('html').send(addGithubNav(renderGithubConnectionPage(status, {
+        consentTicket: issueWebConsentTicket('github-connect', webConsentBinding(req))
+      })));
     } catch (error) {
       logger.error({ error }, 'Erreur GitHub page');
       res.status(500).type('text').send('Erreur GitHub page');
@@ -583,7 +987,9 @@ export async function startHttpServer(): Promise<void> {
       }
 
       const status = await getGithubConnectionStatus();
-      res.type('html').send(renderAccountPage(account, renderGithubConnectionPage(status)));
+      res.type('html').send(renderAccountPage(account, renderGithubConnectionPage(status, {
+        consentTicket: issueWebConsentTicket('github-connect', webConsentBinding(req))
+      })));
     } catch (error) {
       logger.error({ error }, 'Erreur GitHub account page');
       res.status(500).type('text').send('Erreur page compte GitHub.');
@@ -592,6 +998,18 @@ export async function startHttpServer(): Promise<void> {
 
   app.post('/github/connect', requireWebLogin, async (req, res) => {
     try {
+      // E3: explicit consent, decided before any GitHub call or write.
+      const consent = decideConnectConsent({
+        sameOrigin: isSameOriginSubmission(req),
+        ticketValid: verifyWebConsentTicket('github-connect', req.body.consent_ticket, webConsentBinding(req)),
+        credentialConsent: req.body.consent_credential,
+        discoveryConsent: req.body.consent_discovery
+      });
+      if (!consent.allowed) {
+        res.status(403).type('text').send(`Consentement explicite requis (${consent.reasonCode}) : aucune donnée n’a été modifiée.`);
+        return;
+      }
+
       const token = typeof req.body.token === 'string' ? req.body.token.trim() : '';
       const org = typeof req.body.org === 'string' ? req.body.org.trim() : env.GITHUB_ORG;
       const mode = typeof req.body.mode === 'string' ? req.body.mode : 'read';
@@ -608,7 +1026,9 @@ export async function startHttpServer(): Promise<void> {
       }
 
       await saveGithubToken(token);
-      await recordGithubConnection(validation, mode, 'mcp-web:/github/connect');
+      await recordGithubConnection(validation, mode, 'mcp-web:/github/connect', {
+        consent: { credential: true, discovery: consent.discover }
+      });
       logger.info({ org, login: validation.login, mode }, 'Token GitHub MCP connecté depuis la page /github');
       res.redirect(`/github/${encodeURIComponent(validation.login ?? org ?? 'github')}`);
     } catch (error) {
@@ -618,6 +1038,25 @@ export async function startHttpServer(): Promise<void> {
   });
 
   app.use('/mcp', requireBearerToken);
+
+  // G1 Client Presence: only OAuth-authenticated MCP traffic is journaled as a
+  // real client observation; it never blocks or fails the request.
+  const clientObservationRecorder = operationalMemoryConfig.enabled
+    ? getDefaultClientObservationRecorder(getDefaultOperationalEventJournal({
+        filePath: operationalMemoryConfig.eventJournalPath,
+        maxBytes: operationalMemoryConfig.eventMaxBytes,
+        archives: operationalMemoryConfig.eventArchives
+      }))
+    : null;
+  app.use('/mcp', (req, _res, next) => {
+    if (clientObservationRecorder) {
+      const authInfo = (req as express.Request & {
+        auth?: import('@modelcontextprotocol/sdk/server/auth/types.js').AuthInfo;
+      }).auth;
+      void clientObservationRecorder.observe(authInfo);
+    }
+    next();
+  });
 
   const transports: Record<string, StreamableHTTPServerTransport> = {};
   const transportBootstraps: Record<string, Promise<void>> = {};
@@ -656,7 +1095,7 @@ export async function startHttpServer(): Promise<void> {
           }
         };
 
-        const mcpServer = buildMcpServer();
+        const mcpServer = buildMcpServer(pairing);
         await mcpServer.connect(transport);
       } else {
         res.status(400).json({ error: 'Invalid or missing MCP session' });

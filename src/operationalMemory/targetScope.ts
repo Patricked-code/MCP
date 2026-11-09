@@ -203,6 +203,28 @@ export function createTargetScope(
   });
 }
 
+/**
+ * B3.2: an exact component subset of an existing (server-built) scope. The
+ * subset never reaches outside the scope it narrows.
+ */
+export function narrowTargetScope(
+  rawScope: TargetScope,
+  mappingIds: readonly string[]
+): TargetScope {
+  const scope = TargetScopeSchema.parse(rawScope);
+  const wanted = uniqueSorted(mappingIds);
+  if (wanted.length < 1 || wanted.length > 20) {
+    throw new Error('TARGET_SCOPE_COMPONENT_SET_INVALID');
+  }
+  const byMapping = new Map(scope.components.map((component) => [component.mappingId, component]));
+  const components = wanted.map((mappingId) => {
+    const component = byMapping.get(mappingId);
+    if (!component) throw new Error('TARGET_SCOPE_COMPONENT_OUTSIDE_SESSION');
+    return component;
+  });
+  return TargetScopeSchema.parse({ ...scope, components });
+}
+
 export function projectTargetContext(
   rawContext: TargetContext,
   rawScope: TargetScope

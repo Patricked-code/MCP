@@ -1,3 +1,4 @@
+import type { ServerId } from '../config/servers.js';
 import { readFile } from 'node:fs/promises';
 
 import type {
@@ -12,6 +13,11 @@ import type {
   S1LiveObservation
 } from './types.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
+import { readGitRegistryProjectEvidence } from '../github/registry.js';
+import { collectServedDomainInventories } from './servedDomains.js';
+import { collectProvisionedRuntimes } from './provisionedRuntime.js';
+import { collectTargetProjectObservation } from './targetProject.js';
+import { LIVE_STATE_SERVER_ID } from './runtimeObservation.js';
 
 const REPOSITORY = 'Patricked-code/MCP';
 const BRANCH = 'main';
@@ -23,6 +29,7 @@ const DEFAULT_GITHUB_ALLOWED_HOSTS = 'api.github.com';
 const DEFAULT_GITHUB_TIMEOUT_MS = 15_000;
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const DIGEST_PATTERN = /^[0-9a-f]{64}$/i;
+const COMPOSE_PROJECT_PATTERN = /^[a-z0-9][a-z0-9_-]{0,62}$/;
 
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'"'"'`)}'`;
@@ -124,6 +131,7 @@ export function parseRuntimeObservation(output: string): RuntimeLiveObservation 
   const containerName = (values.container_name || MCP_CONTAINER).replace(/^\//, '');
   const revision = shaOrNull(values['container_label.org.opencontainers.image.revision'])
     ?? shaOrNull(values['image_label.org.opencontainers.image.revision']);
+  const composeProject = values['container_label.com.docker.compose.project'];
 
   return {
     status: 'CURRENT',
@@ -131,7 +139,8 @@ export function parseRuntimeObservation(output: string): RuntimeLiveObservation 
     containerStatus: values.container_status || null,
     health: values.container_health || null,
     imageId: values.container_image_id || values.image_id || null,
-    revision
+    revision,
+    composeProject: composeProject && COMPOSE_PROJECT_PATTERN.test(composeProject) ? composeProject : null
   };
 }
 
@@ -386,9 +395,14 @@ export async function collectGithubObservation(): Promise<GithubLiveObservation>
   }
 }
 
+async function runServerReadOnly(serverId: ServerId, command: string) {
+  const { runReadOnlyCommand } = await import('../ssh/client.js');
+  return runReadOnlyCommand(serverId, command);
+}
+
 async function runS1ReadOnly(command: string) {
   const { runReadOnlyCommand } = await import('../ssh/client.js');
-  return runReadOnlyCommand('s1', command);
+  return runReadOnlyCommand(LIVE_STATE_SERVER_ID, command);
 }
 
 export async function collectS1Observation(): Promise<S1LiveObservation> {
@@ -453,13 +467,30 @@ export async function collectDocumentationObservation(
 }
 
 export async function collectLiveStateObservations(): Promise<LiveStateObservations> {
-  const [github, s1, runtime, inventory] = await Promise.all([
+  // Every source is read concurrently, so none ages behind another before reconciliation.
+  const [github, s1, runtime, inventory, targetProject, servedDomains] = await Promise.all([
     collectGithubObservation(),
     collectS1Observation(),
     collectRuntimeObservation(),
-    collectCurrentStateEvidence()
+    collectCurrentStateEvidence(),
+    collectTargetProjectObservation().catch(() => ({
+      targetSelection: {
+        source: 'server_map' as const,
+        serverId: 'S1',
+        status: 'UNRESOLVED' as const,
+        projectIds: [],
+        reasonCodes: ['TARGET_PROJECT_COLLECTION_FAILED']
+      }
+    })),
+    collectServedDomainInventories({ runReadOnly: runServerReadOnly, now: () => new Date() }).catch(() => undefined)
   ]);
   const documentation = await collectDocumentationObservation(github.head, s1.head);
+  const provisionedRuntimes = await collectProvisionedRuntimes({
+    targetProject,
+    readRegistry: readGitRegistryProjectEvidence,
+    runReadOnly: runS1ReadOnly,
+    now: () => new Date()
+  }).catch(() => undefined);
   const capabilities = collectCapabilityObservation();
   const inventoryContradictions = inventory.contradictions.map((entry) => entry.code);
   const governance: CurrentStateGovernanceObservation = {
@@ -488,7 +519,11 @@ export async function collectLiveStateObservations(): Promise<LiveStateObservati
     ...(inventory.error ? { error: inventory.error } : {})
   };
   return {
-    repository: REPOSITORY, github, s1, runtime, documentation,
+    repository: REPOSITORY,
+    ...targetProject,
+    ...(provisionedRuntimes ? { provisionedRuntimes } : {}),
+    ...(servedDomains ? { servedDomains } : {}),
+    github, s1, runtime, documentation,
     capabilities, governance, auditBaseline, inventory
   };
 }

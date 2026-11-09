@@ -18,6 +18,17 @@ import {
 } from '../operationalMemory/types.js';
 import type { GovernedSessionService } from '../operationalMemory/sessionService.js';
 import {
+  RepositoryTargetSchema,
+  narrowTargetScope
+} from '../operationalMemory/targetScope.js';
+import {
+  PROGRAM_REPOSITORY,
+  buildProgramBlueprintIntent,
+  loadProgramProjection,
+  loadReadinessLibrary,
+  type ProgramProjectionSnapshot
+} from '../governance/programBlueprintMaterialization.js';
+import {
   NOOP_TASK_LIFECYCLE_COORDINATOR,
   type TaskLifecycleCoordinator
 } from '../operationalMemory/taskLifecycleCoordinator.js';
@@ -39,6 +50,9 @@ export type GovernedTaskToolDependencies = {
   lifecycle: TaskLifecycleCoordinator;
   ready: () => Promise<unknown>;
   now?: () => Date;
+  /** DISPATCH-01: the program projection deployed with this revision. */
+  loadProgram?: () => Promise<ProgramProjectionSnapshot>;
+  loadReadiness?: typeof loadReadinessLibrary;
 };
 
 let sharedDependencies: GovernedTaskToolDependencies | null = null;
@@ -155,10 +169,12 @@ function registerGovernedTaskMutationToolsWithDependencies(
   const mutationAnnotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false } as const;
 
   server.registerTool('mcp_reconcile_agent_intent', {
-    description: 'Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre.',
+    description: 'Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre. Une session ciblée transmet son TargetScope, restreint au besoin par targetMappingIds.',
     inputSchema: {
       ...BootstrapInputShape,
-      repository: z.literal('Patricked-code/MCP'),
+      repository: RepositoryTargetSchema,
+      // B3.2: narrows the session's server-built TargetScope; never an agent scope.
+      targetMappingIds: z.array(z.string().trim().min(1).max(300)).min(1).max(20).optional(),
       taskId: TaskIdSchema.optional(),
       intentKey: z.string().trim().min(3).max(160).regex(/^[a-z0-9][a-z0-9:._/-]+$/),
       title: z.string().trim().min(1).max(160),
@@ -169,9 +185,49 @@ function registerGovernedTaskMutationToolsWithDependencies(
     },
     annotations: mutationAnnotations
   }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
-      await assertBootstrap(input, extra, active);
-      const { governedSessionId, expectedSessionRevision: _revision, expectedBootstrapReceiptId: _receipt, expectedStateVersion: _state, ...intent } = input;
-      return active.queue.reconcileIntent(intent, governedSessionId);
+      const session = await assertBootstrap(input, extra, active);
+      const {
+        governedSessionId,
+        expectedSessionRevision: _revision,
+        expectedBootstrapReceiptId: _receipt,
+        expectedStateVersion: _state,
+        targetMappingIds,
+        ...intent
+      } = input;
+      let targetScope = session.targetScope;
+      if (targetMappingIds !== undefined) {
+        if (!targetScope) throw new Error('TARGET_SCOPE_REQUIRES_SCOPED_SESSION');
+        targetScope = narrowTargetScope(targetScope, targetMappingIds);
+      }
+      return active.queue.reconcileIntent(
+        { ...intent, ...(targetScope ? { targetScope } : {}) },
+        governedSessionId
+      );
+    })));
+
+  server.registerTool('mcp_materialize_program_blueprint', {
+    description: 'Matérialise au plus une tâche runtime gouvernée pour un blueprint READY du Program Backlog déployé : idempotent, sans claim, scopes issus des collision domains du blueprint. Réservé à une session MCP non ciblée et bootstrappée.',
+    inputSchema: {
+      ...BootstrapInputShape,
+      programBlueprintId: z.string().regex(/^TB-[A-Z0-9][A-Z0-9-]{1,80}$/)
+    },
+    annotations: mutationAnnotations
+  }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
+      const session = await assertBootstrap(input, extra, active);
+      if (session.targetScope || session.repository !== PROGRAM_REPOSITORY) {
+        throw new Error('PROGRAM_BLUEPRINT_REQUIRES_MCP_SESSION');
+      }
+      let snapshot: ProgramProjectionSnapshot;
+      let library: Awaited<ReturnType<typeof loadReadinessLibrary>>;
+      try {
+        snapshot = await (active.loadProgram ?? (() => loadProgramProjection()))();
+        library = await (active.loadReadiness ?? loadReadinessLibrary)();
+      } catch {
+        throw new Error('PROGRAM_PROJECTION_UNAVAILABLE');
+      }
+      const { intent, binding } = buildProgramBlueprintIntent(snapshot, input.programBlueprintId, library);
+      const reconciled = await active.queue.reconcileIntent(intent, input.governedSessionId);
+      return { ...reconciled, blueprint: binding };
     })));
 
   server.registerTool('mcp_claim_next_governed_task', {
@@ -179,8 +235,10 @@ function registerGovernedTaskMutationToolsWithDependencies(
     inputSchema: { ...BootstrapInputShape, expectedStoreRevision: ExpectedRevisionSchema },
     annotations: mutationAnnotations
   }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
-      await assertBootstrap(input, extra, active);
-      return active.queue.claimNextTask(input.governedSessionId, input.expectedStoreRevision);
+      const session = await assertBootstrap(input, extra, active);
+      return active.queue.claimNextTask(input.governedSessionId, input.expectedStoreRevision, {
+        sessionTargetScope: session.targetScope ?? null
+      });
     })));
 
   server.registerTool('mcp_transition_governed_task', {

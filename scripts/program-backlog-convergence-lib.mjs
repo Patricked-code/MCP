@@ -52,7 +52,7 @@ export function extractRoadmapProgramHeadings(markdown) {
     const title = match[2].trim();
     if (
       /^(?:A1|A2\.[12]|A3|B[1-3]|C[0-5]|D[1-3]|E[1-3]|G[1-3]|I[1-3]|J[1-4])\s+—/.test(title)
-      || /^CHANTIER (?:F|H)\s+—/.test(title)
+      || /^CHANTIER (?:F|H|K)\s+—/.test(title)
       || /^GitHub-first Operational Continuity V1\s+—/.test(title)
       || /^Programme post-intégration\s+—/.test(title)
     ) {
@@ -69,6 +69,106 @@ function sourceKey(record) {
 const ALLOWED_BLUEPRINT_READINESS = new Set(['DONE', 'READY', 'BLOCKED', 'DEFERRED', 'CONDITIONAL']);
 
 const GUARDED_BLUEPRINT_READINESS = new Set(['DEFERRED', 'CONDITIONAL']);
+
+const NON_HUMAN_GATE_KINDS = new Set(['EVIDENCE', 'CONCRETE_NEED', 'POLICY_CONDITION']);
+
+// Human gate conditions that stay human even when a technically compliant solution is deducible.
+const HUMAN_RESERVED_GATE_CONDITIONS = new Set([
+  'PREEXISTING_AUTHORITY_RESERVES_DECISION',
+  'DESTRUCTIVE_OR_IRREVERSIBLE_NOT_AUTHORIZED',
+  'EXTERNAL_HUMAN_PERMISSION_OR_CONSENT_REQUIRED',
+  'REQUIRED_SECRET_UNOBTAINABLE',
+  'SECURITY_OR_COMPLIANCE_GATE_REQUIRES_HUMAN'
+]);
+
+function isSelfReference(source, selfReferences) {
+  return selfReferences.some((reference) => (
+    source === reference
+    || source.startsWith(`${reference}#`)
+    || source.startsWith(`${reference}:`)
+  ));
+}
+
+/**
+ * Intake #221: a gate may stop autonomy as a human gate only when it cites an
+ * admissible condition and a pre-existing authority outside the program
+ * projection itself. A deducible technical choice is decided, not escalated.
+ * Pure evaluation: no task, claim, lock or permission is ever produced.
+ */
+export function evaluateHumanGateAdmissibility(gate, policy) {
+  const base = {
+    gateId: gate?.id ?? null,
+    createsRuntimeTask: false,
+    grantsPermission: false
+  };
+  const kind = gate?.kind;
+  if (NON_HUMAN_GATE_KINDS.has(kind)) {
+    return { ...base, verdict: 'EVIDENCE_GATE', reasonCode: `${kind}_GATE` };
+  }
+  if (kind !== 'HUMAN_DECISION') {
+    return { ...base, verdict: 'INADMISSIBLE', reasonCode: 'UNKNOWN_GATE_KIND' };
+  }
+
+  const admissibleConditions = new Set(policy?.admissibleHumanGateConditions ?? []);
+  const condition = gate.admissibleCondition;
+  if (typeof condition !== 'string' || !admissibleConditions.has(condition)) {
+    return { ...base, verdict: 'INADMISSIBLE', reasonCode: 'NO_ADMISSIBLE_HUMAN_GATE_CONDITION' };
+  }
+
+  const selfReferences = (policy?.selfReferencesAreNotAuthority ?? [])
+    .filter((value) => typeof value === 'string' && value.length > 0);
+  const sources = (Array.isArray(gate.authoritySources) ? gate.authoritySources : [])
+    .filter((value) => typeof value === 'string' && value.trim().length > 0);
+  const preexisting = sources.filter((source) => !isSelfReference(source, selfReferences));
+  if (preexisting.length === 0) {
+    return {
+      ...base,
+      verdict: 'INADMISSIBLE',
+      reasonCode: sources.length === 0 ? 'NO_PREEXISTING_AUTHORITY_SOURCE' : 'SELF_CREATED_HUMAN_GATE'
+    };
+  }
+
+  if (gate.deducibleCompliantSolution === true && !HUMAN_RESERVED_GATE_CONDITIONS.has(condition)) {
+    return { ...base, verdict: 'AUTO_DECIDE', reasonCode: 'DEDUCIBLE_TECHNICAL_DECISION' };
+  }
+  if (condition === 'UNRESOLVABLE_SAME_RANK_AUTHORITY_CONTRADICTION') {
+    return { ...base, verdict: 'FAIL_CLOSED_HUMAN_GATE', reasonCode: condition };
+  }
+  return { ...base, verdict: 'HUMAN_GATE', reasonCode: condition };
+}
+
+const ADMISSIBLE_GATE_VERDICTS = new Set(['HUMAN_GATE', 'FAIL_CLOSED_HUMAN_GATE', 'EVIDENCE_GATE']);
+
+function validateExplicitGates(projection, blueprints) {
+  const policy = projection?.executionModel?.humanGatePolicy;
+  const catalog = policy?.gateCatalog && typeof policy.gateCatalog === 'object' ? policy.gateCatalog : {};
+  const uncataloguedGates = [];
+  const inadmissibleHumanGates = [];
+
+  for (const entry of blueprints) {
+    const gates = Array.isArray(entry?.readiness?.requiredExplicitGates)
+      ? entry.readiness.requiredExplicitGates
+      : [];
+    for (const gateId of gates) {
+      const gate = Object.prototype.hasOwnProperty.call(catalog, gateId) ? catalog[gateId] : null;
+      if (!gate) {
+        uncataloguedGates.push({ id: entry.id ?? null, gateId });
+        continue;
+      }
+      const evaluation = evaluateHumanGateAdmissibility({ id: gateId, ...gate }, policy);
+      if (!ADMISSIBLE_GATE_VERDICTS.has(evaluation.verdict)) {
+        inadmissibleHumanGates.push({
+          id: entry.id ?? null,
+          gateId,
+          verdict: evaluation.verdict,
+          reasonCode: evaluation.reasonCode
+        });
+      }
+    }
+  }
+
+  return { uncataloguedGates, inadmissibleHumanGates };
+}
 
 function programWaveOrder(projection) {
   return new Map(
@@ -245,6 +345,50 @@ function detectBlueprintCycles(blueprints) {
   return [...cycles].sort();
 }
 
+function isGuardedBlueprint(entry) {
+  return entry?.readiness?.state !== 'DONE' && (
+    GUARDED_BLUEPRINT_READINESS.has(entry?.readiness?.state)
+    || entry?.readiness?.autoPromotable === false
+  );
+}
+
+/**
+ * Intakes #235/#236: the global terminal acceptance must be reachable from
+ * every mandatory (non-DONE, non-guarded) blueprint, and an untriggered
+ * CONDITIONAL/DEFERRED lot must never gate it. Pure check: nothing is claimed.
+ */
+function validateTerminalAcceptance(projection, blueprints) {
+  const terminalId = projection?.executionModel?.terminalCondition?.globalAcceptanceBlueprintId;
+  if (terminalId === undefined) return [];
+  const byId = new Map(blueprints.map((entry) => [entry.id, entry]));
+  const terminal = typeof terminalId === 'string' ? byId.get(terminalId) : undefined;
+  if (!terminal) return [{ id: terminalId ?? null, reasonCode: 'TERMINAL_ACCEPTANCE_BLUEPRINT_MISSING' }];
+  if (isGuardedBlueprint(terminal)) return [{ id: terminalId, reasonCode: 'TERMINAL_ACCEPTANCE_BLUEPRINT_GUARDED' }];
+
+  const dependencies = (entry) => (Array.isArray(entry?.dependsOn) ? entry.dependsOn : []);
+  const ancestors = new Set();
+  const pending = [...dependencies(terminal)];
+  while (pending.length > 0) {
+    const id = pending.pop();
+    if (ancestors.has(id)) continue;
+    ancestors.add(id);
+    pending.push(...dependencies(byId.get(id)));
+  }
+
+  const gaps = [];
+  for (const entry of blueprints) {
+    if (entry.id === terminalId || entry?.readiness?.state === 'DONE') continue;
+    if (isGuardedBlueprint(entry)) {
+      if (ancestors.has(entry.id)) {
+        gaps.push({ id: entry.id, reasonCode: 'GUARDED_BLUEPRINT_BLOCKS_TERMINAL_ACCEPTANCE' });
+      }
+    } else if (!ancestors.has(entry.id)) {
+      gaps.push({ id: entry.id ?? null, reasonCode: 'NOT_ANCESTOR_OF_TERMINAL_ACCEPTANCE' });
+    }
+  }
+  return gaps.sort((left, right) => String(left.id).localeCompare(String(right.id)));
+}
+
 function validateTaskBlueprints(projection, workItems) {
   const blueprints = Array.isArray(projection?.taskBlueprints) ? projection.taskBlueprints : [];
   const waves = Array.isArray(projection?.executionModel?.waves) ? projection.executionModel.waves : [];
@@ -315,6 +459,8 @@ function validateTaskBlueprints(projection, workItems) {
     ))
     .map((entry) => entry.id ?? null);
   const blueprintCycles = detectBlueprintCycles(blueprints);
+  const { uncataloguedGates, inadmissibleHumanGates } = validateExplicitGates(projection, blueprints);
+  const terminalAcceptanceGaps = validateTerminalAcceptance(projection, blueprints);
 
   const covered = new Set(blueprints.map((entry) => entry.workItemId));
   const missingFutureBlueprintCoverage = workItems
@@ -331,6 +477,9 @@ function validateTaskBlueprints(projection, workItems) {
     invalidBlueprintReadiness,
     invalidBlueprintMaterialization,
     invalidGuardedBlueprints,
+    uncataloguedGates,
+    inadmissibleHumanGates,
+    terminalAcceptanceGaps,
     blueprintCycles,
     missingFutureBlueprintCoverage
   };

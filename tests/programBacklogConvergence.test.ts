@@ -185,6 +185,7 @@ test('agent handoff contract requires authority reobservation before task materi
   assert.deepEqual(projection.agentHandoffContract?.steps, [
     'READ_AUTHORITIES',
     'REOBSERVE_MAIN',
+    'REOBSERVE_PROGRAM_INTAKES',
     'REOBSERVE_RUNTIME_STATE',
     'LOAD_PROGRAM_PLAN',
     'SELECT_READY_BLUEPRINT',

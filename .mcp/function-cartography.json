@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "8447f9dcc5078fdc9287068c9a791ab5366cc8f10ead5770f6830ed4aca34f1b",
-  "registeredToolCount": 135,
-  "readOnlyToolCount": 84,
-  "writeToolCount": 51,
+  "catalogueDigest": "16e61572e94fc9559c6af02101460ac0fab31d72f9037d6c5e7a73d9ad650ae1",
+  "registeredToolCount": 145,
+  "readOnlyToolCount": 89,
+  "writeToolCount": 56,
   "resourceCount": 2,
   "tools": [
     {
@@ -2609,7 +2609,7 @@
     {
       "name": "mcp_acquire_governed_lock",
       "title": null,
-      "description": "Acquiert un lock temporaire borné appartenant à la governed session.",
+      "description": "Acquiert un lock temporaire borné appartenant à la governed session. Les scopes component et les dépôts hors Patricked-code/MCP dérivent du TargetScope construit par le serveur pour la session.",
       "surface": "read",
       "annotations": {
         "readOnlyHint": null,
@@ -2640,12 +2640,33 @@
                   },
                   "key": {
                     "type": "string",
-                    "const": "Patricked-code/MCP"
+                    "minLength": 3,
+                    "maxLength": 300,
+                    "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
                   }
                 },
                 "required": [
                   "type",
                   "key"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "component"
+                  },
+                  "mappingId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 300
+                  }
+                },
+                "required": [
+                  "type",
+                  "mappingId"
                 ],
                 "additionalProperties": false
               },
@@ -2708,7 +2729,109 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "18f922dd066050a145cef5bc8920f82717270e4d9a0a42fe8efca7b6642317c9"
+      "contractDigest": "4e930712edcdb441f75d5bd6e9cece9131adc8463590ef80e7ce5a2681ee5eab"
+    },
+    {
+      "name": "mcp_attest_client_tool_surface",
+      "title": null,
+      "description": "Enregistre une attestation bornée (≤ 5 min, horodatée par le serveur) de la surface d’outils observée par le client. Elle informe la callabilité, ne vaut jamais autorisation.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "surface": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+          },
+          "capabilities": {
+            "minItems": 1,
+            "maxItems": 256,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+                },
+                "callability": {
+                  "type": "string",
+                  "enum": [
+                    "CALLABLE",
+                    "NOT_CALLABLE",
+                    "UNKNOWN"
+                  ]
+                },
+                "provider": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80,
+                  "pattern": "^[a-z0-9][a-z0-9._-]*$"
+                },
+                "repositoryScope": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 300,
+                  "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
+                }
+              },
+              "required": [
+                "name",
+                "callability",
+                "provider",
+                "repositoryScope"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "provenance": {
+            "default": [],
+            "maxItems": 19,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+            }
+          },
+          "validitySeconds": {
+            "default": 300,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "surface",
+          "capabilities",
+          "provenance",
+          "validitySeconds"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "54ff12b324b109689cdb026e92c1255cea7d99623b017606252b0733a58aa5c3"
     },
     {
       "name": "mcp_bridge",
@@ -2965,6 +3088,192 @@
       "contractDigest": "2ca1f2adf4b1373cec2da0a78a816daab2f4de5484718dec1176c136c71eed18"
     },
     {
+      "name": "mcp_e2_activate",
+      "title": null,
+      "description": "E2 EXTERNAL_GOVERNED_RECOVERY : automatiquement observer S1/GitHub; si divergence, demarrer mcp_reconcile_s1_to_main dans les limites de la gouvernance; si tout est aligne, poursuivre E2. Aucun effet E1.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a1508c2b51e045f5da9d1a1f90a69b9ec6c0ca523f6b6c56c4888884bdf13fdd"
+    },
+    {
+      "name": "mcp_e2_list_continuities",
+      "title": null,
+      "description": "E2 : apres le choix REPRISE du proprietaire, presente les Continuity IDs verifies par le registre GitHub, sans en creer aucun.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a30cc34e96b9828764548b14aa8f4d5035eee6f05a1ba29478a13f502b93ea5a"
+    },
+    {
+      "name": "mcp_e2_reconcile_preflight",
+      "title": null,
+      "description": "EXTERNAL_GOVERNED_RECOVERY explicit only: read-only S1 then GitHub main, runtime and documentation alignment; returns BLOCKED on any mismatch. No GWC task or write.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a48a03d30ca73e6377128df22a29f24033e2c6eec96b2df173d5c5406be048dc"
+    },
+    {
+      "name": "mcp_e2_recover_continuity",
+      "title": null,
+      "description": "E2 : recupere automatiquement un chantier depuis son Continuity ID, son issue et ses checkpoints, en distinguant preuve complete et historique partiel.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "continuity_id": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{5,110}$"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "continuity_id"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "649a995aa80144bb97e9cb2e7b46e262ca88ad6f6d20860fa1cba5ee6a293242"
+    },
+    {
+      "name": "mcp_e2_select_chantier",
+      "title": null,
+      "description": "E2 uniquement : apres reconciliation et question du proprietaire, creer un nouveau chantier avec Continuity ID et enregistrement GitHub, ou reprendre la Continuity ID choisie. Aucun GWC requis.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "entry_id": {
+            "type": "string",
+            "pattern": "^E2-[A-F0-9-]{36}$"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "RESUME"
+            ]
+          },
+          "owner_authorized_github_write": {
+            "type": "boolean",
+            "const": true
+          },
+          "mandate": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "continuity_id": {
+            "type": "string",
+            "maxLength": 110
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "entry_id",
+          "decision",
+          "owner_authorized_github_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "7d00fde37459086327ae7d7673dcf8af71955dae9fd7f5998b674100048290a8"
+    },
+    {
       "name": "mcp_get_current_state_inventory",
       "title": "Get Current-State Inventory",
       "description": "Retourne la dernière cartographie dérivée, la baseline d’audit, les sessions et la file de travail.",
@@ -3167,9 +3476,58 @@
       "contractDigest": "24e8acfcf06e5009cc3320a4ef5340839b8974d58f26afd5d809c356df025453"
     },
     {
+      "name": "mcp_materialize_program_blueprint",
+      "title": null,
+      "description": "Matérialise au plus une tâche runtime gouvernée pour un blueprint READY du Program Backlog déployé : idempotent, sans claim, scopes issus des collision domains du blueprint. Réservé à une session MCP non ciblée et bootstrappée.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expectedBootstrapReceiptId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedStateVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "programBlueprintId": {
+            "type": "string",
+            "pattern": "^TB-[A-Z0-9][A-Z0-9-]{1,80}$"
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision",
+          "expectedBootstrapReceiptId",
+          "expectedStateVersion",
+          "programBlueprintId"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "cc1e54e7c6d24dad04f5a49ab2db3a95a3acd7f1bc45854d4489ffc4e3b8b392"
+    },
+    {
       "name": "mcp_open_governed_session",
       "title": null,
-      "description": "Ouvre une governed session durable, distincte de la session de transport MCP.",
+      "description": "Ouvre une governed session durable, distincte de la session de transport MCP. targetMappingIds (optionnel) cible des composants du projet configuré ; sans eux, seul Patricked-code/MCP est accepté.",
       "surface": "read",
       "annotations": {
         "readOnlyHint": null,
@@ -3181,7 +3539,19 @@
         "properties": {
           "repository": {
             "type": "string",
-            "const": "Patricked-code/MCP"
+            "minLength": 3,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
+          },
+          "targetMappingIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
           },
           "taskScope": {
             "type": "string",
@@ -3240,7 +3610,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "7162ef851eb6e82d962f06a654c16b0f1257fe522b18ac0ef34366fda224d1f9"
+      "contractDigest": "db141f024faf2267a79eb8205e511b5b1c15aa59ce90941001f933f78fc100ba"
     },
     {
       "name": "mcp_pause_governed_session",
@@ -3277,7 +3647,7 @@
     {
       "name": "mcp_reconcile_agent_intent",
       "title": null,
-      "description": "Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre.",
+      "description": "Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre. Une session ciblée transmet son TargetScope, restreint au besoin par targetMappingIds.",
       "surface": "operational-write",
       "annotations": {
         "readOnlyHint": false,
@@ -3309,7 +3679,19 @@
           },
           "repository": {
             "type": "string",
-            "const": "Patricked-code/MCP"
+            "minLength": 3,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
+          },
+          "targetMappingIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
           },
           "taskId": {
             "type": "string",
@@ -3372,7 +3754,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "c03766ec1cfb8bc9a2a983a616b5528edb60146dbebac044cdb6335f152caed9"
+      "contractDigest": "4e57c2c4ed61b9f31c4ab473971b9349957e8f6627fc4e85ca06471aea4ca2f3"
     },
     {
       "name": "mcp_reconcile_governed_context",
@@ -3407,6 +3789,96 @@
         "additionalProperties": false
       },
       "contractDigest": "acf015ab4fcc62b805c078154b809f65a728328e1cd9bb38018350921ecc4b54"
+    },
+    {
+      "name": "mcp_reconcile_s1_approved_registry_to_main",
+      "title": null,
+      "description": "E2 seulement, compatibilite premier cas : rapproche le registre GitHub MCP strictement approuve depuis S1 sans supprimer le fichier. Ne remplace pas le reconcileur general.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "expected_s1_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "approved_main_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "expected_s1_sha",
+          "approved_main_sha",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "d19ef8fdf8d010a464d3e19c7d10772a27ffcddd4c1ccc6967bc6e4800dcbd99"
+    },
+    {
+      "name": "mcp_reconcile_s1_to_main",
+      "title": null,
+      "description": "E2 EXTERNAL_GOVERNED_RECOVERY seulement : rapproche le Git S1 avec le main approuve pour plusieurs fichiers strictement identiques, sans les ecraser. N est ni un declencheur global, ni une fusion, ni un deploy.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entry_profile": {
+            "type": "string",
+            "const": "EXTERNAL_GOVERNED_RECOVERY"
+          },
+          "e2_explicitly_selected": {
+            "type": "boolean",
+            "const": true
+          },
+          "expected_s1_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "approved_main_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entry_profile",
+          "e2_explicitly_selected",
+          "expected_s1_sha",
+          "approved_main_sha",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "59246a88e4d6fc81d09b38f3f2750627f4677c9a4072565b962fdc7ba87caf60"
     },
     {
       "name": "mcp_release_governed_lock",
@@ -3449,7 +3921,7 @@
     {
       "name": "mcp_resume_governed_session",
       "title": null,
-      "description": "Reprend une governed session légitime sur le transport MCP courant.",
+      "description": "Reprend une governed session légitime sur le transport MCP courant. Une session ciblée se reprend avec les mêmes targetMappingIds.",
       "surface": "read",
       "annotations": {
         "readOnlyHint": null,
@@ -3471,7 +3943,19 @@
           },
           "repository": {
             "type": "string",
-            "const": "Patricked-code/MCP"
+            "minLength": 3,
+            "maxLength": 300,
+            "pattern": "^[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+$"
+          },
+          "targetMappingIds": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            }
           },
           "taskScope": {
             "type": "string",
@@ -3492,7 +3976,7 @@
         ],
         "additionalProperties": false
       },
-      "contractDigest": "6f2f10186e7887272232f88e2d110d3a10ecfc44ca7eb50b21e45bb78d41193b"
+      "contractDigest": "fc027da949a023b992a0992689ee6eff34d4e9027e332ded82ad89033da980d0"
     },
     {
       "name": "mcp_runtime_image_attestation_s1",
@@ -3913,6 +4397,52 @@
         "additionalProperties": false
       },
       "contractDigest": "1896e5f6e4998a517bf8cebc31925d30e2d9adc373bc1f2190501be1c56f8dcc"
+    },
+    {
+      "name": "plesk_subdomain_preview_s1s2",
+      "title": null,
+      "description": "Prévisualise sans écriture la création Plesk d’un sous-domaine S1/S2 dans une subscription explicitement autorisée.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "enum": [
+              "s1",
+              "s2"
+            ]
+          },
+          "parentDomain": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 253
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 63
+          },
+          "documentRoot": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 150
+          }
+        },
+        "required": [
+          "serverId",
+          "parentDomain",
+          "label",
+          "documentRoot"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "390178812be843e92000238201d832012c9d9280828d8f5380d23792927a6a70"
     },
     {
       "name": "pm2_status_s1",

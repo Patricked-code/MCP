@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "scope": "Issue/PR conversation comments only",
+  "repo": "Patricked-code/MCP",
+  "baseline": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+  "records": [
+    {
+      "number": 175,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/175#issuecomment-5821227710",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=w1-postmerge-3d5dd39f\ntarget=s1\nprobe=mcp_git_status\nrunId=36051505985\nartifact=mcp-readonly-evidence-w1-postmerge-3d5dd39f\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 179,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/179#issuecomment-5827305360",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=intake-177-convergence-git-20260925\ntarget=s1\nprobe=mcp_git_status\nrunId=36098627391\nartifact=mcp-readonly-evidence-intake-177-convergence-git-20260925\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 180,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/180#issuecomment-5827305368",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=intake-177-convergence-docker-20260925\ntarget=s1\nprobe=docker_status\nrunId=36098630064\nartifact=mcp-readonly-evidence-intake-177-convergence-docker-20260925\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 181,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/181#issuecomment-5827620368",
+          "body": "PROGRAM AUTO-CONTINUATION — TERMINAL HANDOFF\n\n- functional PR #181 merged\n- terminal docs PR #184 merged\n- final main: `001ed65dc84d9f70694d2b2ceea84b3b1fc82523`\n- MCP CI main #1936 / run `36100763474`: SUCCESS\n- Governed Deploy #75 / run `36100763467`: SUCCESS\n- OIDC git #185 / run `36100893732`: SUCCESS, mutationAllowed=false\n- OIDC docker #186 / run `36100894994`: SUCCESS, mutationAllowed=false\n- S1 exact `main@001ed65dc84d9f70694d2b2ceea84b3b1fc82523`, worktree clean, fetch read-only, push disabled\n- Docker healthy\n\nAutomatic planning loop:\n`program:readiness` -> `program:next` -> live UAC collision/runtime checks -> materialize/claim one candidate -> execute/verify/checkpoint -> `program:readiness:write` after proved DONE -> repeat.\n\nAuthority boundary:\n- readiness/order only are automatic\n- DONE is never automatic\n- runtime Task/claim/lock/permission/human gates are never bypassed\n\nCurrent planning-ready candidates remain:\n1. `TB-W3-A22-01`\n2. `TB-W3-A3-01`\n3. `TB-W3-B3-01`\n4. `TB-W3-C1-01`\n\nConnected agents continue without routine confirmation while a dependency-safe, collision-safe candidate exists; stop only on a governed blocker or explicit gate."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 182,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/182#issuecomment-5827554805",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=program-auto-continuation-git-20260925\ntarget=s1\nprobe=mcp_git_status\nrunId=36100492906\nartifact=mcp-readonly-evidence-program-auto-continuation-git-20260925\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 183,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/183#issuecomment-5827554834",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=program-auto-continuation-docker-20260925\ntarget=s1\nprobe=docker_status\nrunId=36100495144\nartifact=mcp-readonly-evidence-program-auto-continuation-docker-20260925\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 185,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/185#issuecomment-5827610002",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=program-auto-continuation-terminal-git-20260925\ntarget=s1\nprobe=mcp_git_status\nrunId=36100893732\nartifact=mcp-readonly-evidence-program-auto-continuation-terminal-git-20260925\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 186,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/186#issuecomment-5827610162",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=program-auto-continuation-terminal-docker-20260925\ntarget=s1\nprobe=docker_status\nrunId=36100894994\nartifact=mcp-readonly-evidence-program-auto-continuation-terminal-docker-20260925\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 188,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/188#issuecomment-5831440176",
+          "body": "Self-review exact-head `82c480af1bc183e22b32f9e9e0a407de779c583c`:\n\n- OIDC est lié au repository/ref/workflow exact.\n- aucune clé privée cliente n'entre dans le broker ni dans Git.\n- certificat <= 10 min, principal root, extensions cleared, force-command fixe.\n- gateway SSH allowlisté, aucun shell arbitraire.\n- exécution du gateway déplacée dans le conteneur canonique `wealthtech_mcp_ssh_bridge`.\n- bootstrap CA séparé, manuel, OIDC et scoped-write gated.\n- secret scan, read-only safety, typecheck/build/docs/governance/GWC/whitespace verts.\n- aucun finding bloquant restant avant merge."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 192,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/192#issuecomment-5849267568",
+          "body": "Resolved under the existing repository SSH workstream.\n\nTerminal evidence:\n- functional fix PR #191 merged at `0eb55a511c821bb4082e147325cf211404a8e5f6`;\n- main CI `36255009457`: SUCCESS;\n- Governed Deploy `36255009423`: SUCCESS;\n- Governed-Repository-Template control-plane retry `36255225239`: SUCCESS;\n- Gouvern exact-head E2E `36255238655`: SUCCESS with GitHub OIDC ephemeral SSH read-only fallback, `mutationAllowed=false`, all bounded probes PASS;\n- terminal reconciliation PR #193 merged at `b3eb823429a4357b3a7abc49421bd8bd5cbf232a`;\n- terminal main CI `36266654445`: SUCCESS;\n- terminal Governed Deploy `36266654506`: SUCCESS.\n\nProgram state on main: `PB-SSH-ACCESS=DONE`, `TB-W3-SSH-ACCESS-01=DONE`, intake #192 `CONVERGED_CURRENT_MAIN`.\n\nNo parallel transport, Task Queue, registry, shell or permission authority was introduced."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 197,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/197#issuecomment-5875354642",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=a3-02-mcp-git-c65a83f2\ntarget=s1\nprobe=mcp_git_status\nrunId=36459819473\nartifact=mcp-readonly-evidence-a3-02-mcp-git-c65a83f2\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 198,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/198#issuecomment-5875354833",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=a3-02-docker-c65a83f2\ntarget=s1\nprobe=docker_status\nrunId=36459821439\nartifact=mcp-readonly-evidence-a3-02-docker-c65a83f2\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 201,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/201#issuecomment-5898048061",
+          "body": "Program convergence completed without widening authority.\n\n- Convergence PR: #203\n- Merge: `9511d434f3a66a2b92e847eabfd26596200e5f5c`\n- Main CI #2112: SUCCESS\n- Governed Deploy #87: FAILURE, same blocker confirmed: `curl: (60) SSL certificate problem: certificate has expired`\n- Existing destination: `PB-GITHUB-FIRST-WRITE / TB-COND-SERVER-WRITE`\n- `CONCRETE_BOUNDED_OPERATION_REQUIRED`: evidenced by #201 for `s1_public_tls_certificate_restore`\n- `DEDICATED_IDENTITY_AND_ROLLBACK_DESIGN`: NOT SATISFIED\n- `TB-W3-D2-01`: NOT DONE\n- Blueprint remains `DEFERRED`\n- No runtime Task, Governed Session, lock, write authority, arbitrary shell, TLS verification bypass, or read-only SSH privilege widening was introduced.\n\nThe issue stays open because remediation is not complete. The next valid step is a dedicated governed TLS-recovery identity + rollback design inside the existing server-write integration slot, or restoration through an already-authorized human/infrastructure path. After TLS is valid: redeploy exact main, collect fresh `mcp_governed_tasks`, `mcp_governed_sessions`, `mcp_governed_locks` evidence, then re-evaluate A3.2 collision/ownership before any materialization."
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/201#issuecomment-5900673979",
+          "body": "Remediation completed; closing this intake.\n\n- Public TLS for `mcp.wealthtechinnovations.com` has been restored through the authorized infrastructure path.\n- Governed Deploy #87, attempt 2: **SUCCESS** on exact `main@9511d434f3a66a2b92e847eabfd26596200e5f5c`.\n- Deployment job accepted as `mcp-s1-36625479517-9511d434f3a6` and final exact-SHA attestation succeeded.\n- A transient HTTP 502 occurred during restart polling, then recovery completed normally; no TLS bypass was used.\n- Fresh runtime authority evidence collected through the approved GitHub OIDC read-only path:\n  - `mcp_governed_tasks` — run #68 — SUCCESS\n  - `mcp_governed_sessions` — run #69 — SUCCESS\n  - `mcp_governed_locks` — run #70 — SUCCESS\n- Evidence is bounded/read-only (`mutationAllowed=false`), `truncated=false`, with no active lock or ownership collision on `connection:oauth-attempt-correlation`.\n- The TLS blocker recorded by #201 is therefore resolved. A3.2 can now return to the normal governed materialization/collision-check flow.\n\nNo read-only SSH privilege widening, arbitrary shell, force-push, TLS verification bypass, or parallel authority was introduced."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 204,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/204#issuecomment-5900599601",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=a32-tasks-20260930-0053\ntarget=s1\nprobe=mcp_governed_tasks\nrunId=36642161060\nartifact=mcp-readonly-evidence-a32-tasks-20260930-0053\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 205,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/205#issuecomment-5900600538",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=a32-sessions-20260930-0053\ntarget=s1\nprobe=mcp_governed_sessions\nrunId=36642163866\nartifact=mcp-readonly-evidence-a32-sessions-20260930-0053\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 206,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/issues/206#issuecomment-5900600044",
+          "body": "MCP_READONLY_EVIDENCE_RESULT\nrequestId=a32-locks-20260930-0053\ntarget=s1\nprobe=mcp_governed_locks\nrunId=36642167257\nartifact=mcp-readonly-evidence-a32-locks-20260930-0053\ntransport=github_oidc_mcp_readonly\nstatus=SUCCESS\nmutationAllowed=false"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 207,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/207#issuecomment-5901153914",
+          "body": "CHECKPOINT — OAuth continuity candidate GREEN (no merge)\n\n- Exact candidate HEAD: `37954b36c624f56cf7b3ead0bf26634ba431467f`\n- Base: `main@9511d434f3a66a2b92e847eabfd26596200e5f5c`\n- MCP CI push #2152 / run `36646351135`: SUCCESS\n- MCP CI PR #2153 / run `36646355872`: SUCCESS\n- Gates green: typecheck, build, docs/program readiness, governance, GWC, secret scan, full read-only safety, whitespace.\n- Program Backlog: 77 blueprints; new `TB-W3-A3-03` is BLOCKED behind `TB-W3-A3-02`; READY set remains A3.2/B3.1/C1.1/G1.\n- TLS #201: remediated/closed; Deploy #87 attempt 2 SUCCESS; runtime probes Tasks/Sessions/Locks #68/#69/#70 SUCCESS, `truncated=false`, no active A3 collision.\n- PR remains DRAFT intentionally.\n- Governed blocker: A3.2 still requires runtime Task Queue materialization/claim. The approved GitHub fallback is read-only and no approved GitHub path may create/claim the runtime task.\n- No runtime Task, Governed Session, claim, lock, merge or deploy was created by this candidate.\n\nNEXT_ACTION: obtain an authorized Governed Session/runtime path, materialize+claim A3.2, reobserve exact HEAD/collisions, then review/merge/deploy/attest this candidate. Only after A3.2 is DONE may A3.3 become READY."
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/207#issuecomment-5901222732",
+          "body": "RUNTIME MATERIALIZATION CHECKPOINT — A3.2\n\n- Live State reobserved: stateVersion 847.\n- GitHub/S1/runtime aligned on `9511d434f3a66a2b92e847eabfd26596200e5f5c`; runtime healthy.\n- Current MCP transport was already bound to the active Stablecoin Governed Session; opening a second session correctly failed with `TRANSPORT_BINDING_CONFLICT`.\n- No Stablecoin task/session ownership was changed.\n- Fresh bootstrap acknowledged on the bound authenticated session: receipt `5d0c9ee3-2f38-4312-afff-24f6520f5966`, session revision 49.\n- A3.2 materialized through the existing Governed Task Queue:\n  - taskId: `TASK-20260929-001`\n  - status: `READY`\n  - taskRevision: 1\n  - queue storeRevision: 242\n  - ownerGovernedSessionId: null\n  - resourceScopes: `connection:oauth-attempt-correlation`\n  - nextAction: `claim_governed_task`\n- No claim or lock was taken from the Stablecoin-scoped session.\n\nNEXT_ACTION: on a dedicated non-conflicting A3.2 Governed Session, reobserve Live State/Task Queue/locks, acknowledge the fresh bootstrap receipt, then claim `TASK-20260929-001` and continue exact-head review/merge/deploy/attestation.\n\nCandidate branch checkpoint HEAD after recording materialization: `253d23c42423ab52a4ea0d042abec5dafa17d3fc` (will advance with checkpoint docs)."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 219,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/219#issuecomment-5942999775",
+          "body": "SUPERVISION / INFORMATION INTAKE — reobserve and resume through existing governance\n\nThis is informational continuity evidence only. It creates no new authority, Task, claim, lock, session, architecture, or permission.\n\nFresh supervision reconfirmed that the repository already contains continuity/agent-observability primitives that must be reused rather than rediscovered or rebuilt:\n- Governed Session Continuity V1 (#44): durable resume, lifecycle/checkpoints, bounded locks, sanitized event journal and audit events.\n- Mandatory Agent Bootstrap & Work Orchestration V1 (#49): current-state bundle, Bootstrap Receipt, intent reconciliation and governed work-queue orchestration.\n- Automatic governed connection/session binding (#60): MCP initialize binds the compatible authenticated connection to the Governed Session via existing auth / Transport Bindings / Operational Memory authorities, fail-closed on ambiguity.\n- GWC durable autonomous continuity traces and traced peer-agent ownership/handoff rules.\n- Universal Agent Coordination (#154): universal agent snapshot plus generalized heartbeat/claim observability.\n- Supervision exposed through Current-State Inventory (c747f9d6).\n- G3 bounded client tool-surface attestation bound to session + connection context + server time.\n\nNON-REGRESSION / EXISTING-FIRST:\nBefore creating any new audit, continuity/GACR-like component, agent-identification/wake mechanism, trace/session store, coordination layer or parallel authority, consult maintained canonical inventories/cartographies/verifiers and search equivalence against these primitives. If an expected primitive is absent from the current projection, or present but no longer wired/exposed, treat it as potential regression/integration drift and reconcile through the existing Program/finding machinery.\n\nWAKE / REOBSERVE NOTIFICATION:\nAny compatible worker/agent associated with this work should now reobserve rather than wait for another human prompt:\n1. reobserve current main and canonical authorities;\n2. reconcile Program Intakes #220, #221 and #222 through the existing intake/program convergence mechanism;\n3. inspect Current-State Inventory / UAC / Governed Session + Bootstrap Receipt / Task Queue / claim / heartbeat / checkpoint / NEXT_ACTION as available;\n4. resume owned compatible work first; otherwise follow PROGRAM_AUTO_CONTINUE and FIRST_COLLISION_FREE_IN_PROGRAM_ORDER;\n5. do not manufacture a Human Gate for a deducible technical decision;\n6. do not steal/transfer ownership because heartbeat is stale/absent;\n7. checkpoint durable evidence and recompute after each proven terminal step.\n\nObserved concern to resolve from maintained evidence, not by redoing a full audit: an agent may appear connected while no newer GitHub trace proves consumption of #220-#222. Classify from evidence whether this is (a) missing required runtime authority, (b) enrolment/wake/reobserve gap, or (c) regression/integration drift. Preserve UNKNOWN where evidence is unavailable.\n\nContinue toward the existing canonical target architecture and chronological Program. Do not create a parallel program or replacement architecture."
+        }
+      ],
+      "error": null
+    }
+  ]
+}

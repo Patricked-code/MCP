@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "inventoryId": "w3-b32-target-scope-classification-20261004",
+  "repository": "Patricked-code/MCP",
+  "observedMainSha": "5bf4b799e2feefd4ddff82d525177d04b9e3fe8c",
+  "observedAt": "2026-10-04T17:00:00Z",
+  "blueprintId": "TB-W3-B3-02",
+  "workItemId": "PB-B3",
+  "lotId": "B3.2",
+  "integrationSlot": "context.multi-repository",
+  "decisionSource": "issue:220",
+  "status": "CURRENT_CLASSIFICATION",
+  "supersedesClassificationOf": "docs/governance/multi-repository-inventory-20261001.json",
+  "historicalInventoryKeptImmutable": true,
+  "targetSelection": {
+    "operatorConfiguration": ".mcp/server-map.json servers.S1.targetProjectIds",
+    "configuredOnObservedMain": [],
+    "producer": "src/liveState/targetProject.ts",
+    "observationAuthority": "Live State",
+    "projectComponentAuthority": "GitRegistry V2",
+    "absentConfiguration": "HISTORICAL_SINGLE_REPOSITORY_UNCHANGED",
+    "v1Cardinality": "AT_MOST_ONE_PROJECT",
+    "extensionPath": "MULTI_PROJECT_LIVE_STATE"
+  },
+  "toolSurface": {
+    "targetScopeExposedByAnyTool": true,
+    "scopeSource": "SERVER_BUILT_FROM_REGISTERED_MAPPING_IDS",
+    "agentSuppliedTargetScopeAccepted": false,
+    "mappingIdInputs": [
+      "mcp_open_governed_session.targetMappingIds",
+      "mcp_resume_governed_session.targetMappingIds",
+      "mcp_reconcile_agent_intent.targetMappingIds",
+      "mcp_acquire_governed_lock.scope{type=component}.mappingId"
+    ],
+    "historicalDefault": "Without targetMappingIds only Patricked-code/MCP is accepted (REPOSITORY_OUT_OF_SCOPE otherwise)."
+  },
+  "residualSingleRepositoryConsumers": [
+    {
+      "path": "src/tools/governedSessions.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Open/resume/lock keep Patricked-code/MCP as the only repository without a TargetScope; other repositories require server-built mapping-id scopes."
+    },
+    {
+      "path": "src/operationalMemory/sessionService.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Client tool attestations may name the MCP governance repository or a repository inside the session TargetScope only."
+    },
+    {
+      "path": "src/operationalMemory/taskQueue.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Without TargetScope the historical MCP repository is the only in-scope target; with TargetScope membership is checked."
+    },
+    {
+      "path": "src/server.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Transport auto-resume asks for MCP-repository sessions only; scoped sessions resume explicitly with their mapping ids."
+    },
+    {
+      "path": "src/governedContext/service.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Falls back to the MCP repository only without a bound session; a session bound to another repository gets an explicit UNAVAILABLE GitHub work state."
+    },
+    {
+      "path": "src/governedContext/github.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "The GitHub work-state observer covers the MCP governance repository; multi-repository GitHub observation is routed to the GGCC GitHub capability lots and C3/C4 component evidence."
+    }
+  ],
+  "legitimateSelfManagementBoundaries": [
+    {
+      "path": "src/currentState/service.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Reclassified by B3.2: the Current-State Inventory describes the MCP server itself; target identity is exposed by Live State TargetContext through the governed context."
+    },
+    {
+      "path": "src/deploy/githubOidc.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "OIDC policies bind MCP own workflows (deploy, evidence, CA bootstrap, stablecoin dispatcher) to this exact repository by design."
+    },
+    {
+      "path": "src/deploy/s1Deploy.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Governed deploy of the MCP runtime itself on S1."
+    },
+    {
+      "path": "src/governance/e2EntryFlow.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2 external governed recovery reconciles the MCP repository itself against its own S1 runtime before owner orientation; never selects or grants TargetScope or server authority."
+    },
+    {
+      "path": "src/governance/e2EntryJournal.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
+    },
+    {
+      "path": "src/governance/e2GitHubEvidence.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2 read-only parser accepts machine-readable checkpoint evidence exclusively from the MCP repository's own GitHub issues; it never grants cross-repository or runtime authority."
+    },
+    {
+      "path": "src/governance/e2LivePreflight.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Read-only explicit E2 preflight for this exact Patricked-code/MCP repository and its S1 runtime; never selects a third-party repository or performs writes."
+    },
+    {
+      "path": "src/governance/e2OwnerLifecycle.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
+    },
+    {
+      "path": "src/governance/e2S1GithubProposal.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Only explicit E2 for Patricked-code/MCP; fixed read-only S1 code snapshot with secret checks, exact Git blob comparison and governed GitHub draft PR via credential separate from S1 fetch-only key. No direct main push/merge/deploy."
+    },
+    {
+      "path": "src/governance/mcpS1ToMainPolicy.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Pure MCP-only bidirectional drift classifier; no write or target-project permission."
+    },
+    {
+      "path": "src/governance/programBlueprintMaterialization.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Added by TB-W3-DISPATCH-01: Program Backlog V2 is the MCP repository's own program, so its blueprints materialize MCP-repository tasks only."
+    },
+    {
+      "path": "src/governance/workEntryTrace.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "PILOT-E2-01 scope guard: read-only trace of the MCP repository's own work entry; never generalizes runtime repository admission or grants rights."
+    },
+    {
+      "path": "src/governedContext/candidateContinuity.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Historical PRECODE candidate continuity bound to the PR #95 branch; not a runtime multi-repository consumer."
+    },
+    {
+      "path": "src/liveState/collect.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Live State collectors for the MCP runtime."
+    },
+    {
+      "path": "src/liveState/engine.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Live State observes the MCP runtime/repository alignment; the target project is an additive TargetContext."
+    },
+    {
+      "path": "src/tools/e2Activation.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Owner explicitly selected E2 entry for Patricked-code/MCP only; auto-triggered S1 Git correction is guarded and cannot write third-party repositories or bypass E1/CI/deploy."
+    },
+    {
+      "path": "src/tools/e2OwnerTools.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2-only append-only GitHub journal, owner-first continuity registry and verified recovery for Patricked-code/MCP; does not grant GWC claims or cross-repository write permissions."
+    },
+    {
+      "path": "src/tools/mcpGitSync.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Read-only/guarded git sync of the MCP checkout on S1."
+    },
+    {
+      "path": "src/tools/mcpReconcileS1ToMain.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "MCP S1↔approved GitHub main exact-content multi-file recovery, self-management only; never manages third-party application target scopes."
+    },
+    {
+      "path": "src/tools/mcpS1ExactContentReconcile.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "E2 S1 recovery is explicitly limited to the MCP repository and a single versioned account-registry path; it checks exact GitHub/S1 commit ancestry and identical contents before Git metadata updates, never grants target-project operations."
+    },
+    {
+      "path": "src/tools/selfManagement.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Self-management project card of the MCP bridge."
+    }
+  ],
+  "resolvedConsumers": [
+    {
+      "path": "src/tools/governedTasks.ts",
+      "resolution": "mcp_reconcile_agent_intent accepts any repository; the TargetScope is inherited from, or narrowed within, the session's server-built scope."
+    },
+    {
+      "path": "src/operationalMemory/types.ts",
+      "resolution": "ClientToolSurfaceCapability.repositoryScope accepts any owner/repo; the session service restricts it to MCP or the session TargetScope."
+    }
+  ],
+  "forbiddenSimplifications": [
+    "PROJECT_SHA_SIMPLIFICATION",
+    "PARALLEL_REGISTRY",
+    "REINTERPRETING_RECORDS_WITHOUT_TARGET_SCOPE",
+    "AGENT_SUPPLIED_TARGET_SCOPE"
+  ],
+  "runtimeSideEffects": {
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  }
+}

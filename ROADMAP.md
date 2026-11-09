@@ -487,6 +487,27 @@ Optionnel. Exige un GO distinct, décision architecturale, TDD, PR séparée et 
 
 ---
 
+## CHANTIER K — Super Admin Cockpit
+
+Source : intake propriétaire #236, convergé dans le Program Backlog V2 (`PB-K`, slot `cockpit.super-admin`, PR #237) avec l'inventaire `docs/governance/super-admin-cockpit-convergence-20261004.json`.
+
+Le Cockpit est une **projection + surface d'action gouvernée** du MCP : il étend le dashboard Express server-rendered existant, réutilise la session web existante et compose les projections existantes. Il ne crée aucune autorité, aucun store, aucun backend parallèle ni nouveau framework frontend sans besoin prouvé.
+
+Invariants : `UI_VISIBILITY != CALLABLE != AUTHORIZED != SAFE_NOW` ; `SUPER ADMIN UI ≠ BYPASS GOVERNANCE` ; secrets write-only jamais rendus ; `UNKNOWN` jamais affiché comme `OFFLINE`/`INACTIVE`.
+
+Lots (vague W4, dependency-gated) :
+- K-01 shell, design system, baseline sécurité et Command Center read-only — READY dès la convergence ;
+- K-02..K-07 explorateurs read-only (programme/sessions/tâches/claims-locks, agents/outils, PR/CI, Project Reality, déploiements/preuves, identité/capacités/gouvernance) après leurs projections ;
+- K-08..K-10 pipeline d'actions gouvernées, plan de contrôle GitHub/Git/déploiement et provisioning après D2, PR WRITE, GGCC et E/F ;
+- K-11 traces/monitoring/alertes/drift en composant H, I1/I2/I3 et l'audit GGCC ;
+- K-12 parcours E2E, certification navigateur et documentation opérationnelle.
+
+## Condition terminale globale — GLOBAL_MCP_COMPLETE
+
+Source : intakes #235 et #236. `TB-W4-MCP-FINAL-ACCEPTANCE` (`PB-MCP-TERMINAL`) n'est exécutable qu'après les preuves des dimensions backend/control plane, certifications clients et cockpit ; tout blueprint obligatoire en est un ancêtre (contrôle machine `terminalAcceptanceGaps`). Les capacités `CONDITIONAL`/`DEFERRED` non déclenchées ne bloquent jamais la complétion et ne sont jamais activées pour « finir le programme ». La déclaration n'est jamais automatique.
+
+---
+
 ## Convergence exhaustive du backlog — 2026-09-23
 
 La roadmap reste la vision du programme. La couverture exhaustive et la classification current-first sont projetées dans `docs/governance/program-backlog-convergence.json` sans remplacer ROADMAP, TODO, Operational Memory ni Governed Task Queue.
@@ -513,11 +534,15 @@ W3 READY — CONTINUITÉ / RÉSOLUTION / GOUVERNANCE
   repository SSH / intake #192 : DONE — PR #191 merge/deploy exact-SHA + Gouvern V2.6.8 E2E read-only PASS
   aval dependency-gated : C3/C4/C5 + D1/D2/D3 + E1/E2/E3 + F
         ↓
-W4 OBSERVABILITÉ / CERTIFICATION
+W4 OBSERVABILITÉ / COCKPIT / CERTIFICATION
   G1/G2 + G3
   H
   I1/I2/I3
+  K-01..K-12 Super Admin Cockpit (intake #236)
   J1/J2
+        ↓
+ACCEPTATION TERMINALE GLOBALE
+  TB-W4-MCP-FINAL-ACCEPTANCE → GLOBAL_MCP_COMPLETE (intake #235)
 ```
 
 Les lots J3, J4, fallbacks SSH read-only, écritures serveur additionnelles, GitHub destructif et Stablecoin applicatif restent séparés ou conditionnels. Leur présence dans le backlog n'est jamais une autorisation d'exécution.

@@ -1,0 +1,950 @@
+{
+  "schemaVersion": 1,
+  "documentType": "NON_AUTHORITATIVE_GAP_QUALIFICATION_MAP",
+  "repository": "Patricked-code/MCP",
+  "canonicalProgram": "docs/governance/program-backlog-convergence.json",
+  "canonicalTaskAuthority": "Governed Task Queue",
+  "authority": "NONE",
+  "createdFor": "MCP_GLOBAL_AUTOMATION_CONVERGENCE_20261105",
+  "historicalFamilies": [
+    "GWC",
+    "UAC",
+    "Program Backlog V2"
+  ],
+  "scope": "QUALIFY_AND_LINK_EXISTING_WORK_NOT_TO_CREATE_RUNTIME_TASKS",
+  "executionPolicy": {
+    "automaticReadOnlyObservation": true,
+    "automaticTaskCreation": false,
+    "automaticTaskClaim": false,
+    "automaticMerge": false,
+    "automaticDeploy": false,
+    "requiresPriorMandate": true,
+    "requiresLiveSessionClaimLocksAndPermissions": true,
+    "mergeReviewRequired": true,
+    "failedGate": "STOP_AND_CHECKPOINT"
+  },
+  "statusRule": "All entries are candidates for evidence reconciliation, never READY runtime tasks or claims.",
+  "gaps": [
+    {
+      "gapId": "A01",
+      "order": 1,
+      "level": "FOUNDATIONS",
+      "title": "Rassembler les baselines historiques, SHA, PR, CI et attestations",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
+        "docs/governance/README.md"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/235"
+      ],
+      "dependsOn": [],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Chaque preuve historique porte une provenance et l'absence d'attestation runtime reste UNKNOWN."
+    },
+    {
+      "gapId": "A02",
+      "order": 2,
+      "level": "FOUNDATIONS",
+      "title": "Réconcilier catalogue d'outils et capacités réelles",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        ".mcp/function-cartography.json",
+        "src/governance/toolSurfaceAttestation.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/177"
+      ],
+      "dependsOn": [
+        "A01"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Inventaire courant des capacités et permissions, sans transformer callable en authorized."
+    },
+    {
+      "gapId": "A03",
+      "order": 3,
+      "level": "FOUNDATIONS",
+      "title": "Tester identité GitHub, liaison repo/projet et session MCP",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/operationalMemory/connectionContext.ts",
+        "src/operationalMemory/sessionService.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/70"
+      ],
+      "dependsOn": [
+        "A01"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Preuves d'identité et de repo distinctes du droit runtime; reprise inter-client sans usurpation."
+    },
+    {
+      "gapId": "A04",
+      "order": 4,
+      "level": "FOUNDATIONS",
+      "title": "Observer l'alignement S1, GitHub, runtime et documentation",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/liveState/reconcile.ts",
+        "src/currentState/service.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/368"
+      ],
+      "dependsOn": [
+        "A03"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Verdict global frais FULLY_ALIGNED ou blocage explicite avec SHA de chaque source."
+    },
+    {
+      "gapId": "A05",
+      "order": 5,
+      "level": "FOUNDATIONS",
+      "title": "Lever les écarts documentaires de production par gouvernance",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "PRODUCTION_STATE.json",
+        "src/liveState/reconcile.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/375"
+      ],
+      "dependsOn": [
+        "A04"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "PR revue/fusionnée, CI et Governed Deploy observés et nouvel état documentaire sans drift."
+    },
+    {
+      "gapId": "A06",
+      "order": 6,
+      "level": "INTAKE",
+      "title": "Raccorder connexion GitHub, lecture des instructions et MCP",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "README.md"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/376"
+      ],
+      "dependsOn": [
+        "A03",
+        "A04"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Nouvel agent invoqué: login/HEAD, consignes, ping, réconciliation et inventaire sans deuxième demande."
+    },
+    {
+      "gapId": "A07",
+      "order": 7,
+      "level": "INTAKE",
+      "title": "Qualifier et corriger les divergences sans régression",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/governance/mcpS1ReconciliationCycle.ts",
+        "src/governance/mcpS1ToMainPolicy.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/359"
+      ],
+      "dependsOn": [
+        "A04"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Scénarios aligné, S1 en avance, GitHub en avance, runtime ou docs en retard et preuve indisponible; arrêt sûr ou réattestation."
+    },
+    {
+      "gapId": "A08",
+      "order": 8,
+      "level": "INTAKE",
+      "title": "Découvrir mandats et racines de continuité sans collisions",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/governance/workEntryContinuityIndex.ts",
+        "src/tools/governedContext.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/369"
+      ],
+      "dependsOn": [
+        "A06",
+        "A07"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Carte issue/PR/Continuity ID exhaustive pour le périmètre accessible, ou marquée PARTIAL."
+    },
+    {
+      "gapId": "A09",
+      "order": 9,
+      "level": "INTAKE",
+      "title": "Présenter et arrêter au choix NEW/RESUME",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "AGENTS.md",
+        "src/governance/workEntryContinuityIndex.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/235"
+      ],
+      "dependsOn": [
+        "A08"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Aucun chantier, Task, claim ou session attribué avant le choix du propriétaire."
+    },
+    {
+      "gapId": "B10",
+      "order": 10,
+      "level": "GWC",
+      "title": "Recertifier les contrats GWC-0..17 et le candidat PRECODE",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        ".mcp/gwc-blueprints.json",
+        "docs/gwc/canonical-memory/current.json"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/354"
+      ],
+      "dependsOn": [
+        "A01"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Couverture GWC PRE-F-02 et chemin complet RED/GREEN avec acceptation non simulée."
+    },
+    {
+      "gapId": "B11",
+      "order": 11,
+      "level": "UAC",
+      "title": "Réconcilier UAC, présence, sessions, claims et locks",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/governance/nextWorkProjection.ts",
+        "src/operationalMemory/clientPresence.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/154"
+      ],
+      "dependsOn": [
+        "A01",
+        "A03"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Deux sessions réellement autorisées observées; aucun transfert de travail par heartbeat stale."
+    },
+    {
+      "gapId": "B12",
+      "order": 12,
+      "level": "BACKLOG",
+      "title": "Réconcilier les 94 blueprints du Program Backlog V2",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/program-backlog-convergence.json",
+        "scripts/program-backlog-convergence-lib.mjs"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/171"
+      ],
+      "dependsOn": [
+        "A01"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Readiness dérivée égale à la projection, dépendances validées, DONE seulement avec preuve."
+    },
+    {
+      "gapId": "B13",
+      "order": 13,
+      "level": "MANDATE",
+      "title": "Lier le choix du propriétaire à un mandat canonique vivant N",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/README.md",
+        "src/governance/workEntryContinuityIndex.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/235"
+      ],
+      "dependsOn": [
+        "A09",
+        "B12"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Un mandat versionné et sourcé, sans nouvelle autorité ni perte des décisions passées."
+    },
+    {
+      "gapId": "B14",
+      "order": 14,
+      "level": "PROGRAM",
+      "title": "Transformer N en Work Items, Waves, Lots et Task Blueprints P1",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/program-backlog-convergence.json",
+        "scripts/program-backlog-readiness.mjs"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/235"
+      ],
+      "dependsOn": [
+        "B12",
+        "B13"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Décomposition exhaustive et dédupliquée, liens parent/enfant et readiness recalculée."
+    },
+    {
+      "gapId": "B15",
+      "order": 15,
+      "level": "ADMISSION",
+      "title": "Raccorder P1 au P2 historique de matérialisation des tâches",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/governance/programBlueprintMaterialization.ts",
+        "src/operationalMemory/taskQueue.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/222"
+      ],
+      "dependsOn": [
+        "B14",
+        "B11"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Chaque blueprint admissible est admis une fois sous l'autorité Task Queue existante, sinon refus."
+    },
+    {
+      "gapId": "B16",
+      "order": 16,
+      "level": "ADMISSION",
+      "title": "Certifier les contrôles Session/Claim/Lock/CAS",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/operationalMemory/taskQueue.ts",
+        "src/operationalMemory/lockService.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/222"
+      ],
+      "dependsOn": [
+        "B15"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Pas de double claim, pas de lock étranger écrasé, refus de la révision stale."
+    },
+    {
+      "gapId": "B17",
+      "order": 17,
+      "level": "DISPATCH",
+      "title": "Distribuer automatiquement le premier travail autorisé sans collision",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/governance/nextWorkProjection.ts",
+        "src/operationalMemory/taskQueue.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/222"
+      ],
+      "dependsOn": [
+        "B16"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "RESUME_OWNED_FIRST puis FIRST_COLLISION_FREE_IN_PROGRAM_ORDER; preuve inter-agents."
+    },
+    {
+      "gapId": "B18",
+      "order": 18,
+      "level": "UTL",
+      "title": "Constituer les unités UTL sans inventer d'autorité",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/program-backlog-convergence.json",
+        "src/governance/nextWorkProjection.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/372"
+      ],
+      "dependsOn": [
+        "B10",
+        "B14",
+        "B17"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "UTL avec parent, dépendances, scopes, ordre, garde et circuit, reliées aux tâches réelles."
+    },
+    {
+      "gapId": "B19",
+      "order": 19,
+      "level": "UTL",
+      "title": "Exécuter les UTL par le cycle commun existant",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/operationalMemory/taskLifecycleCoordinator.ts",
+        "docs/gwc/BLUEPRINTS.md"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/354"
+      ],
+      "dependsOn": [
+        "B18"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Transitions testées avec échec, retry idempotent, checkpoint et non-régression."
+    },
+    {
+      "gapId": "B20",
+      "order": 20,
+      "level": "DELIVERY",
+      "title": "Valider tests, PR, CI, revue et merge protégés",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        ".github/workflows/mcp-ci.yml",
+        "src/governance/branchGovernance.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/235"
+      ],
+      "dependsOn": [
+        "B19"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Merge seulement après CI exacte et revue indépendante, sans push direct main."
+    },
+    {
+      "gapId": "B21",
+      "order": 21,
+      "level": "DELIVERY",
+      "title": "Attester le Governed Deploy et la version runtime exacte",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        ".github/workflows/mcp-deploy.yml",
+        "src/liveState/reconcile.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/368"
+      ],
+      "dependsOn": [
+        "B20"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Merge SHA, run CI, deploy, runtime et santé corrélés; pas de faux DONE."
+    },
+    {
+      "gapId": "B22",
+      "order": 22,
+      "level": "EVIDENCE",
+      "title": "Relier mandat, tâche, UTL, commit, PR, CI, Deploy, runtime",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/operationalMemory/eventJournal.ts",
+        "src/operationalMemory/operationalAudit.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/372"
+      ],
+      "dependsOn": [
+        "B18",
+        "B21"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Chaîne parent/enfant attestée, lacunes historiques UNKNOWN et aucune preuve reconstruite."
+    },
+    {
+      "gapId": "B23",
+      "order": 23,
+      "level": "BUS",
+      "title": "Rendre la communication live et le rejeu inter-agents vérifiables",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/operationalMemory/eventJournal.ts",
+        "src/operationalMemory/clientPresence.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/313",
+        "https://github.com/Patricked-code/MCP/pull/320"
+      ],
+      "dependsOn": [
+        "B11"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Deux clients distincts: émission, autorisation, réception, replay après déconnexion, ACK."
+    },
+    {
+      "gapId": "B24",
+      "order": 24,
+      "level": "CONTINUITY",
+      "title": "Reprendre les checkpoints, recomposer NEXT_ACTION et relancer readiness",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/operationalMemory/operationalAudit.ts",
+        "src/governance/nextWorkProjection.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/235"
+      ],
+      "dependsOn": [
+        "B22",
+        "B23"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Un agent froid retrouve dernier état et poursuit sans voler le travail."
+    },
+    {
+      "gapId": "C25",
+      "order": 25,
+      "level": "AUTOMATION",
+      "title": "Observer automatiquement chaque nouveau commit main",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        ".github/workflows/mcp-auto-intake-discovery.yml",
+        "scripts/mcp-auto-intake-discovery.mjs"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/235"
+      ],
+      "dependsOn": [
+        "B12"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Chaque push main crée un artefact de réobservation versionné par SHA, sans claim ni secrets."
+    },
+    {
+      "gapId": "C26",
+      "order": 26,
+      "level": "AUTOMATION",
+      "title": "Raccorder événement, réévaluation, admissibilité et réveil d'agent",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/governance/nextWorkProjection.ts",
+        "src/governance/programBlueprintMaterialization.ts",
+        "scripts/mcp-autonomous-agent-continuation.mjs",
+        "tests/mcpAutonomousAgentContinuation.test.mjs",
+        "src/operationalMemory/sessionService.ts",
+        "src/operationalMemory/transportBindings.ts",
+        "src/operationalMemory/types.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/222",
+        "https://github.com/Patricked-code/MCP/issues/313"
+      ],
+      "dependsOn": [
+        "B17",
+        "B24",
+        "C25"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction",
+        "ownTransportBoundSessionAndAcknowledgedBootstrapReceipt"
+      ],
+      "acceptance": "Activation réelle d'un agent autorisé démontrée via transport supporté; pas de wake inventé."
+    },
+    {
+      "gapId": "C27",
+      "order": 27,
+      "level": "ACCEPTANCE",
+      "title": "Certifier le cycle autonome complet et la reprise sur incident",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/README.md",
+        "docs/gwc/canonical-memory/current.json",
+        "scripts/mcp-autonomy-e2e-certification.mjs",
+        "tests/mcpAutonomyE2ECertification.test.mjs",
+        "scripts/mcp-c27-github-proof-readers.mjs",
+        "tests/mcpC27GithubProofReaders.test.mjs"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/235"
+      ],
+      "dependsOn": [
+        "C26",
+        "B21"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Mandat choisi→P1/P2/UTL→CI/Deploy/attestation→prochaine tâche; E2E inter-session prouvé."
+    },
+    {
+      "gapId": "S28",
+      "order": 28,
+      "level": "PARALLEL_GDU",
+      "title": "Réconcilier les 165 capacités additionnelles GD-U et les permissions",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/gd-u-e2/capability-evidence-current-20261030.json"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/349"
+      ],
+      "dependsOn": [
+        "A02"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Outils additionnels réellement enregistrés et appelables, capacités et permissions attestées."
+    },
+    {
+      "gapId": "S29",
+      "order": 29,
+      "level": "PARALLEL_OAUTH",
+      "title": "Terminer OAuth A3.2 et continuité refresh token",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/oauth.ts",
+        "src/operationalMemory/connectionContext.ts"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/346",
+        "https://github.com/Patricked-code/MCP/pull/207"
+      ],
+      "dependsOn": [
+        "B16"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Tests OAuth/PKCE/rotation, CI, revue et runtime sans régression du consentement."
+    },
+    {
+      "gapId": "S30",
+      "order": 30,
+      "level": "PARALLEL_REGULATORY",
+      "title": "Terminer le préflight et l'admission Regulatory S1",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "src/provisioning/",
+        "docs/governance/README.md"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/pull/353"
+      ],
+      "dependsOn": [
+        "S28",
+        "B16"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "TargetScope, consentement, Plesk, ingress, rollback, admission et déploiement prouvés."
+    },
+    {
+      "gapId": "S31",
+      "order": 31,
+      "level": "PARALLEL_AUDIT",
+      "title": "Achever les résidus audit PCM/GWB F-03/F-04",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/mcp-priority-convergence-map-20261015.json"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/262",
+        "https://github.com/Patricked-code/MCP/issues/268"
+      ],
+      "dependsOn": [
+        "A01"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Chaque constat est prouvé, classé UNKNOWN/BLOCKED/DONE sans faux positifs."
+    },
+    {
+      "gapId": "S32",
+      "order": 32,
+      "level": "PARALLEL_COCKPIT",
+      "title": "Raccorder le Super Admin Cockpit à ses vraies autorités",
+      "qualification": "VERIFY_EXISTING_FIRST",
+      "existingMechanisms": [
+        "docs/governance/super-admin-cockpit-convergence-20261004.json"
+      ],
+      "sourceLinks": [
+        "https://github.com/Patricked-code/MCP/issues/236"
+      ],
+      "dependsOn": [
+        "B16",
+        "B22"
+      ],
+      "requiredEvidence": [
+        "observedAt",
+        "exactHeadSha",
+        "sourceOfTruth",
+        "ownerAndCollision",
+        "actualAuthority",
+        "testsAndCI",
+        "runtimeAttestationWhenRequired",
+        "checkpointAndNextAction"
+      ],
+      "acceptance": "Actions UI autorisées uniquement par les capacités effectives, sans control plane parallèle."
+    }
+  ]
+}

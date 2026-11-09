@@ -2,10 +2,15 @@ import { mkdir, open, readFile, writeFile, chmod } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import type { GitHubConnectionStatus } from './connection.js';
+import { renderConnectConsentFields } from './connectConsent.js';
+import { renderGithubCredentialCompletion, renderGithubCredentialRequest } from './credentialCompletion.js';
+import type { RepositoryMappingCompletion } from '../governedContext/contextCompletion.js';
 import {
   assessGitRegistryV2ActivationReadiness,
   dryRunGitRegistryV2,
-  type GitRegistryV2ActivationReasonCode
+  type GitRegistryV2,
+  type GitRegistryV2ActivationReasonCode,
+  type RegistryCapabilities
 } from './registryV2.js';
 
 const FILE = '/app/data/mcp-git-registry.json';
@@ -27,6 +32,74 @@ export type GitRegistryEvidence = {
   digest: string | null;
 };
 
+/**
+ * C3: server binding evidence of one GitRegistry V2 mapping. `serverPath` is
+ * declared; only `realPath` with `realPathVerified=true` is verified.
+ */
+export type GitRegistryServerBindingEvidence = {
+  mappingId: string;
+  repositoryId: string;
+  projectId: string;
+  projectUid: string | null;
+  componentRole: string | null;
+  serverId: string;
+  serverPath: string;
+  realPath: string | null;
+  realPathVerified: boolean;
+  environment: 'development' | 'staging' | 'production';
+};
+
+/** C5: GitRegistry domain declarations; only observation proves what a server serves. */
+export type GitRegistryDomainEvidence = {
+  projects: Array<{
+    projectId: string;
+    publicDomain: string | null;
+    publicApi: string | null;
+    historicalVhosts: Array<{
+      historicalVhostId: string;
+      classification: 'HISTORICAL_VHOST';
+      serverId: string;
+      serverPath: string;
+      domain: string;
+      repositoryId: null;
+      current: false;
+      deploymentSource: false;
+    }>;
+  }>;
+  mappings: Array<{
+    mappingId: string;
+    repositoryId: string;
+    projectId: string;
+    componentRole: string | null;
+    serverId: string;
+    domain: string | null;
+    domainVerified: boolean;
+  }>;
+};
+
+/**
+ * D1: the governance each GitRegistry mapping declares (branch, status,
+ * capabilities, backup). Declarations stay owned by the registry: they are
+ * projected, never copied into another store.
+ */
+export type GitRegistryMappingGovernance = {
+  officialBranch: string;
+  allowedBranchPrefixes: string[];
+  directMainPush: false;
+  status: GitRegistryV2['mappings'][number]['status'];
+  capabilities: RegistryCapabilities;
+  backupRequired: boolean;
+  rollbackMethod: string | null;
+};
+
+export type GitRegistryGovernanceEvidence = {
+  mappings: Array<GitRegistryMappingGovernance & {
+    mappingId: string;
+    repositoryId: string;
+    projectId: string;
+  }>;
+};
+
 export type GitRegistryProjectEvidence = {
   available: boolean;
   sourceSchemaVersion: 1 | 2 | null;
@@ -44,6 +117,8 @@ export type GitRegistryProjectEvidence = {
     projectUid: string;
     name: string;
     kind: string;
+    globalCheckpointRepositoryId: string;
+    centralGovernanceRepositoryId: string;
     repositoryComponents: Array<{
       repositoryId: string;
       mappingId: string;
@@ -55,6 +130,12 @@ export type GitRegistryProjectEvidence = {
     status: 'READY' | 'BLOCKED';
     reasonCodes: GitRegistryV2ActivationReasonCode[];
   }>;
+  /** Always set by the reader since C3; optional for historical constructors. */
+  serverBindings?: GitRegistryServerBindingEvidence[];
+  /** Always set by the reader since C5; optional for historical constructors. */
+  domainEvidence?: GitRegistryDomainEvidence;
+  /** Always set by the reader since D1; optional for historical constructors. */
+  governanceEvidence?: GitRegistryGovernanceEvidence;
 };
 
 const now = () => new Date().toISOString();
@@ -184,13 +265,67 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
         projectUid: project.projectUid,
         name: project.name,
         kind: project.kind,
+        globalCheckpointRepositoryId: project.globalCheckpointRepositoryId,
+        centralGovernanceRepositoryId: project.centralGovernanceRepositoryId,
         repositoryComponents: project.repositoryComponents.slice(0, 20).map((component) => ({
           repositoryId: component.repositoryId,
           mappingId: component.mappingId,
           role: component.role
         }))
       })),
-      activationReadiness
+      activationReadiness,
+      serverBindings: candidate.mappings.slice(0, 1000).map((mapping) => ({
+        mappingId: mapping.mappingId,
+        repositoryId: mapping.repositoryId,
+        projectId: mapping.projectId,
+        projectUid: mapping.projectUid ?? null,
+        componentRole: mapping.componentRole ?? null,
+        serverId: mapping.serverId,
+        serverPath: mapping.serverPath,
+        realPath: mapping.realPath,
+        realPathVerified: mapping.realPathVerified,
+        environment: mapping.environment
+      })),
+      domainEvidence: {
+        projects: projects.slice(0, 200).map((project) => ({
+          projectId: project.projectId,
+          publicDomain: project.publicDomain,
+          publicApi: project.publicApi,
+          historicalVhosts: project.historicalVhosts.slice(0, 50).map((vhost) => ({
+            historicalVhostId: vhost.historicalVhostId,
+            classification: vhost.classification,
+            serverId: vhost.serverId,
+            serverPath: vhost.serverPath,
+            domain: vhost.domain,
+            repositoryId: vhost.repositoryId,
+            current: vhost.current,
+            deploymentSource: vhost.deploymentSource
+          }))
+        })),
+        mappings: candidate.mappings.slice(0, 1000).map((mapping) => ({
+          mappingId: mapping.mappingId,
+          repositoryId: mapping.repositoryId,
+          projectId: mapping.projectId,
+          componentRole: mapping.componentRole ?? null,
+          serverId: mapping.serverId,
+          domain: mapping.domain,
+          domainVerified: mapping.domainVerified
+        }))
+      },
+      governanceEvidence: {
+        mappings: candidate.mappings.slice(0, 1000).map((mapping) => ({
+          mappingId: mapping.mappingId,
+          repositoryId: mapping.repositoryId,
+          projectId: mapping.projectId,
+          officialBranch: mapping.officialBranch.slice(0, 255),
+          allowedBranchPrefixes: mapping.allowedBranchPrefixes.slice(0, 20).map((prefix) => prefix.slice(0, 100)),
+          directMainPush: mapping.directMainPush,
+          status: mapping.status,
+          capabilities: { ...mapping.capabilities },
+          backupRequired: mapping.backupRequired,
+          rollbackMethod: mapping.rollbackMethod === null ? null : mapping.rollbackMethod.slice(0, 200)
+        }))
+      }
     };
   } catch {
     return {
@@ -200,7 +335,10 @@ export async function readGitRegistryProjectEvidence(): Promise<GitRegistryProje
       candidateDigest: null,
       mappings: [],
       projects: [],
-      activationReadiness: []
+      activationReadiness: [],
+      serverBindings: [],
+      domainEvidence: { projects: [], mappings: [] },
+      governanceEvidence: { mappings: [] }
     };
   }
 }
@@ -244,7 +382,19 @@ async function autoDiscover(status: GitHubConnectionStatus, actor: string): Prom
   }
 }
 
-export async function recordGithubConnection(status: GitHubConnectionStatus, requestedModeInput: unknown, actor = 'mcp-web'): Promise<GitRegistry> {
+/** E3: the explicit consents of a connect form; discovery runs only with its own consent. */
+export type GithubConnectionConsent = { credential: boolean; discovery: boolean };
+
+export async function recordGithubConnection(
+  status: GitHubConnectionStatus,
+  requestedModeInput: unknown,
+  actor = 'mcp-web',
+  options: { consent?: GithubConnectionConsent } = {}
+): Promise<GitRegistry> {
+  const consent: GithubConnectionConsent = {
+    credential: options.consent?.credential === true,
+    discovery: options.consent?.discovery === true
+  };
   const r = await readGitRegistry();
   const requestedMode = mode(requestedModeInput);
   const login = status.login || status.org || 'unknown';
@@ -253,9 +403,9 @@ export async function recordGithubConnection(status: GitHubConnectionStatus, req
   const at = now();
   const entry: GitHubAccountRegistryEntry = { id, login, org: status.org, accountType: status.org && status.org === login ? 'organization' : 'user', authMode: 'pat', requestedMode, connectedAt: existing?.connectedAt || at, lastCheckedAt: at, tokenExpiresAt: status.tokenExpiresAt, reposVisible: status.reposVisible, orgAccessible: status.orgAccessible, canReadReposHint: status.canReadReposHint, canWriteReposHint: status.canWriteReposHint, canAdminOrgHint: status.canAdminOrgHint, enabledOnPublicMcpDomain: existing?.enabledOnPublicMcpDomain ?? true, status: status.connected && status.warnings.length === 0 ? 'connected' : status.connected ? 'warning' : 'error', warnings: status.warnings };
   r.accounts = [entry, ...r.accounts.filter((x) => x.id !== id)];
-  r.auditEvents.push({ id: eid(), at, type: 'github.connection.recorded', actor, message: `GitHub account ${login} recorded with requested mode ${requestedMode}`, metadata: { org: status.org, reposVisible: status.reposVisible, orgAccessible: status.orgAccessible, autoDiscoveryRequested: status.connected, destructiveActions: false } });
+  r.auditEvents.push({ id: eid(), at, type: 'github.connection.recorded', actor, message: `GitHub account ${login} recorded with requested mode ${requestedMode}`, metadata: { org: status.org, reposVisible: status.reposVisible, orgAccessible: status.orgAccessible, autoDiscoveryRequested: status.connected && consent.discovery, consent, destructiveActions: false } });
   await writeGitRegistry(r);
-  return attach(status.connected ? await autoDiscover(status, actor) : r);
+  return attach(status.connected && consent.discovery ? await autoDiscover(status, actor) : r);
 }
 
 function ctxHtml(r: GitRegistry): string {
@@ -270,6 +420,26 @@ function matched(r: GitRegistry, s: GitHubConnectionStatus): string {
   return getRepoMappingsForGithubStatus(r, s).map((m) => `<tr><td>${esc(`${m.githubOwner}/${m.githubRepo}`)}</td><td>${esc(m.projectKey)}</td><td>${esc(m.serverId)}</td><td><code>${esc(m.serverPath)}</code></td></tr>`).join('') || '<tr><td colspan="4">No matching mapping for active GitHub account.</td></tr>';
 }
 
-export function renderGitSettingsPage(status: GitHubConnectionStatus, registry: GitRegistry): string {
-  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"/><title>MCP WealthTech - Git</title><style>body{font-family:system-ui;margin:32px}.card{border:1px solid #ddd;border-radius:12px;padding:16px;margin:16px 0}.warning{background:#fff7ed}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}table{border-collapse:collapse;width:100%}code{background:#f3f4f6;padding:2px 4px}</style></head><body><h1>MCP WealthTech - Git</h1><p><a href="/dashboard">Dashboard</a> | <a href="/github/status">GitHub JSON</a> | <a href="/git/status">Registry JSON</a></p>${ctxHtml(registry)}<section class="card"><h2>GitHub status</h2><p>connected=${status.connected ? 'yes' : 'no'} login=${esc(status.login || 'none')} org=${esc(status.org || org())} repos=${esc(status.reposVisible ?? 'n/a')}</p><p>Auto-discovery: valid connection synchronizes visible repositories additively. No clone, no delete, no deploy, no force push.</p></section><section class="card"><h2>Connect GitHub</h2><form method="post" action="/git/connect"><input name="org" value="${esc(status.org || org())}"/><input name="token" type="password" required/><select name="mode"><option value="read">read</option><option value="write">write</option><option value="admin">admin</option><option value="org_admin">org_admin</option></select><button type="submit">Connect and auto-discover repositories</button></form></section><section class="card"><h2>Mappings matching active GitHub</h2><table><tbody>${matched(registry, status)}</tbody></table></section><section class="card"><h2>All repo/server mappings</h2><table><thead><tr><th>Repo</th><th>Project</th><th>Server</th><th>Path</th><th>Branch</th><th>Access</th><th>Deploy</th></tr></thead><tbody>${rows(registry)}</tbody></table></section></body></html>`;
+/** E2: the GitRegistry mapping of the repository a completion link names; nothing when none is named. */
+function mappingCompletionHtml(mapping: RepositoryMappingCompletion | undefined): string {
+  if (!mapping || mapping.state === 'NOT_REQUESTED') return '';
+  const repository = esc(mapping.repository);
+  const candidates = mapping.candidates
+    .map((entry) => `<li><code>${esc(entry.mappingId)}</code> — projet <code>${esc(entry.projectId)}</code></li>`)
+    .join('');
+  const message = {
+    RESOLVED: `<strong>Rien à fournir</strong> : le mapping <code>${esc(mapping.candidates[0]?.mappingId)}</code> (projet <code>${esc(mapping.candidates[0]?.projectId)}</code>) est déjà gouverné dans GitRegistry.`,
+    MISSING: `<strong>Mapping absent</strong> : aucun mapping GitRegistry ne déclare ${repository}. À fournir : un mapping dépôt ↔ projet ↔ serveur, par le chemin gouverné du registre.`,
+    AMBIGUOUS: `<strong>Choix à faire</strong> : plusieurs mappings GitRegistry déclarent ${repository}.<ul>${candidates}</ul>`,
+    UNOBSERVED: '<strong>GitRegistry illisible</strong> : rien n’est demandé.'
+  }[mapping.state];
+  return `<section class="card${mapping.ask ? ' warning' : ''}"${mapping.ask ? ' id="mapping-request"' : ''}><h2>Mapping du dépôt ${repository}</h2><p>${message}</p><p><code>${esc(mapping.reasonCode)}</code></p></section>`;
+}
+
+export function renderGitSettingsPage(
+  status: GitHubConnectionStatus,
+  registry: GitRegistry,
+  options: { mapping?: RepositoryMappingCompletion; consentTicket?: string } = {}
+): string {
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"/><title>MCP WealthTech - Git</title><style>body{font-family:system-ui;margin:32px}.card{border:1px solid #ddd;border-radius:12px;padding:16px;margin:16px 0}.warning{background:#fff7ed}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}table{border-collapse:collapse;width:100%}code{background:#f3f4f6;padding:2px 4px}</style></head><body><h1>MCP WealthTech - Git</h1><p><a href="/dashboard">Dashboard</a> | <a href="/github/status">GitHub JSON</a> | <a href="/git/status">Registry JSON</a></p>${renderGithubCredentialCompletion(status)}${mappingCompletionHtml(options.mapping)}${ctxHtml(registry)}<section class="card"><h2>GitHub status</h2><p>connected=${status.connected ? 'yes' : 'no'} login=${esc(status.login || 'none')} org=${esc(status.org || org())} repos=${esc(status.reposVisible ?? 'n/a')}</p><p>Auto-discovery runs only with its explicit consent and synchronizes visible repositories additively. No clone, no delete, no deploy, no force push.</p></section>${renderGithubCredentialRequest(status, { request: 'Connect GitHub', optional: 'Reconnect GitHub (optional)' }, `<form method="post" action="/git/connect"><input name="org" value="${esc(status.org || org())}"/><input name="token" type="password" required/><select name="mode"><option value="read">read</option><option value="write">write</option><option value="admin">admin</option><option value="org_admin">org_admin</option></select>${renderConnectConsentFields({ ticket: options.consentTicket ?? '', org: status.org || org() })}<button type="submit">Connect GitHub</button></form>`)}<section class="card"><h2>Mappings matching active GitHub</h2><table><tbody>${matched(registry, status)}</tbody></table></section><section class="card"><h2>All repo/server mappings</h2><table><thead><tr><th>Repo</th><th>Project</th><th>Server</th><th>Path</th><th>Branch</th><th>Access</th><th>Deploy</th></tr></thead><tbody>${rows(registry)}</tbody></table></section></body></html>`;
 }

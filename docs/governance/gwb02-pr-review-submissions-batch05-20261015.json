@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB02_PR_REVIEW_SUBMISSION_BATCH",
+  "baselineMain": "f9aeaf9c0b6f1e97866c131833fd32ade58031a9",
+  "batch": 5,
+  "indexStart": 60,
+  "indexEnd": 74,
+  "totalPrsInOriginalIndex": 130,
+  "source": "GET /pulls/{prNumber}/reviews?per_page=100",
+  "reviewSubmissionCoverage": "BATCH_ONLY",
+  "records": [
+    {
+      "prNumber": 181,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5313984004,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-25T05:54:41Z",
+          "commitId": "eb2aff8ef30ed349cc8d477cb23e7e364ae088df",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/181#pullrequestreview-5313984004",
+          "body": "\n### 💡 Codex Review\n\nhttps://github.com/Patricked-code/MCP/blob/eb2aff8ef30ed349cc8d477cb23e7e364ae088df/scripts/program-backlog-convergence-lib.mjs#L86-L87\n**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Enforce dependencies for manually activated blueprints**\n\nWhen a gated blueprint is manually moved from `CONDITIONAL`/`DEFERRED` to `READY`, its `autoPromotable` flag remains `false`, so this condition keeps it `guarded` and preserves `READY` even if `incompleteDependencies` is nonempty. `program:next` will then offer the blueprint for execution before its prerequisites are `DONE`, contrary to the required dependency-safe selection loop; guarding should prevent automatic gate promotion without bypassing dependency validation after manual activation.\n\nAGENTS.md reference: [AGENTS.md:L56-L60](https://github.com/Patricked-code/MCP/blob/eb2aff8ef30ed349cc8d477cb23e7e364ae088df/AGENTS.md#L56-L60)\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 184,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 187,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 188,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5316950922,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-25T11:12:16Z",
+          "commitId": "ce8bc23af4b322bda46a48740a50173350c35f30",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5316950922",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `ce8bc23af4`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        },
+        {
+          "id": 5316999157,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-25T11:18:02Z",
+          "commitId": "cafccd204cbdc4b6d614bea97b48a874e03a19a6",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5316999157",
+          "body": ""
+        },
+        {
+          "id": 5316999856,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-25T11:18:06Z",
+          "commitId": "cafccd204cbdc4b6d614bea97b48a874e03a19a6",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5316999856",
+          "body": ""
+        },
+        {
+          "id": 5317006294,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-25T11:18:52Z",
+          "commitId": "cafccd204cbdc4b6d614bea97b48a874e03a19a6",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5317006294",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `cafccd204c`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        },
+        {
+          "id": 5317056499,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-25T11:24:05Z",
+          "commitId": "bd4126de400fe5f894643b4a2939c382bc760385",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/188#pullrequestreview-5317056499",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `bd4126de40`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 189,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5317117023,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-25T11:30:54Z",
+          "commitId": "813741eb7793fad869bf7241ff776918a92e06ae",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/189#pullrequestreview-5317117023",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `813741eb77`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 191,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5326523155,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-26T16:17:17Z",
+          "commitId": "b121b867c948c4981912a3b79e57252514e88467",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/191#pullrequestreview-5326523155",
+          "body": "Self-review exact-head b121b867c948c4981912a3b79e57252514e88467 — PASS.\n\nScope reviewed:\n- #192 is converged into existing PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01 only;\n- direct repository MCP discovery was removed from the current diff and deferred;\n- functional delta is bounded to repository_dispatch in the existing exact repo/ref/workflow/SHA OIDC SSH policy plus non-secret refusal classification;\n- no new transport, Task Queue, registry, write authority, shell, persistent key or bypass;\n- Program Backlog/SUIVI/TASKS/TODO/ROADMAP/DECISIONS/CHANGELOG are reconciled;\n- summary workItems drift corrected to 36/36.\n\nExact-head validation:\n- push MCP CI run 36254826124: SUCCESS;\n- PR MCP CI run 36254828240: SUCCESS;\n- typecheck/build/docs/governance/GWC/secrets/read-only safety/whitespace: SUCCESS;\n- no PR review threads or blocking comments observed.\n\nPost-merge requirement remains: governed deploy exact merge SHA, then rerun Governed-Repository-Template/Gouvern BOTH transport E2E. Do not mark TB-W3-SSH-ACCESS-01 DONE before that evidence."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 193,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5327140909,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-26T19:36:25Z",
+          "commitId": "0d8569f3dc94ae26a693b188e9d9ac1a3a866380",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/193#pullrequestreview-5327140909",
+          "body": "Self-review exact-head 0d8569f3dc94ae26a693b188e9d9ac1a3a866380 — PASS.\n\nVerified scope:\n- terminal reconciliation only for PB-SSH-ACCESS / TB-W3-SSH-ACCESS-01 / intake #192;\n- no runtime source, workflow, permission, secret, Task Queue, Session, lock or server mutation;\n- Program Backlog, SUIVI, TASKS, TODO, ROADMAP and CHANGELOG converge on the same DONE evidence;\n- the only test change updates the exact W3 READY projection after SSH completion and does not weaken fail-closed behavior;\n- exact-head push and pull_request validate checks are both SUCCESS;\n- no unresolved review threads observed.\n\nNext governed step: mark ready, reobserve exact head/base/checks, then merge only under expected_head_sha guard."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 194,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 195,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 196,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5342478289,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-28T17:38:25Z",
+          "commitId": "54b400b48f0a053471550c07ee6d600b1f389da7",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/196#pullrequestreview-5342478289",
+          "body": "Self-review PASS on the exact closure head: bounded A3.1 inventory only; no runtime/source/workflow/permission change; findings match current OAuth/AuthInfo/bootstrap/Event Journal code; RED is qualified; GREEN and closure CI are exact-head SUCCESS; historical handoff assertions are monotone; no unresolved blocking review thread observed."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 199,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5342564202,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-28T17:46:41Z",
+          "commitId": "84296aee9fc8ed50552cc1f42dd0252ab003f8d1",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/199#pullrequestreview-5342564202",
+          "body": "Self-review PASS on exact head. This is a docs/governance-only checkpoint: it records PR #196 merge/main/deploy/OIDC evidence, preserves TB-W3-A3-02 planning READY, and fail-closes execution because the approved GitHub fallback does not expose Governed Task Queue, Governed Session or Governed Lock Service. No runtime state is inferred; no source/workflow/permission/runtime mutation is introduced. MCP CI push #2090 and PR #2091 are exact-head SUCCESS."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 200,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5357494582,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-29T19:40:22Z",
+          "commitId": "34e265430ba152f595f22b92ddbc11edd3f46468",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/200#pullrequestreview-5357494582",
+          "body": "Self-review PASS on exact head. Existing-first extension only: the three operational probes read the existing Task Queue, Governed Session and Governed Lock Service in-process; shell runner is bypassed; output is bounded/sanitized; truncation is explicit; SSH fallback fails closed; no operational mutation, raw store read, new authority, secret exposure or permission widening. Exact-head CI push #2100 and PR #2101 are SUCCESS."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 202,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5357639798,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-29T19:54:58Z",
+          "commitId": "36ba412bbec6fd9451cf0b93573aa8e3444afe30",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/202#pullrequestreview-5357639798",
+          "body": "Self-review PASS on exact head. Docs/governance only. The checkpoint accurately distinguishes source capability from deployed runtime authority, preserves A3.2 planning readiness while keeping execution fail-closed, records the repeated TLS certificate-expired blocker, and explicitly forbids TLS validation bypass. No runtime code, workflow logic, permissions, stores, or security controls are changed."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 203,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5357922397,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-29T20:18:50Z",
+          "commitId": "696dff1b02c422bb9afaf333ee65e814f1cbbb3e",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/203#pullrequestreview-5357922397",
+          "body": "Self-review PASS on exact head. Intake #201 is converged into the existing conditional server-write integration slot only. The concrete-need gate is evidenced; dedicated identity/rollback and D2 remain unsatisfied; blueprint stays DEFERRED. No read-only identity privilege widening, arbitrary shell, TLS bypass, runtime Task/Session/lock, workflow mutation or server mutation is introduced."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 207,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    }
+  ]
+}

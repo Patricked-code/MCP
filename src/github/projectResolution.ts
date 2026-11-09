@@ -1,5 +1,6 @@
 import type { GithubRepositoryResolution } from './repositoryResolution.js';
 import type {
+  GitRegistryMappingGovernance,
   GitRegistryProjectEvidence
 } from './registry.js';
 import type {
@@ -32,6 +33,8 @@ export type GithubProjectResolution = {
     componentRole: string | null;
     activationReadiness: 'READY' | 'BLOCKED' | 'UNKNOWN';
     activationReasonCodes: GitRegistryV2ActivationReasonCode[];
+    /** D1: the mapping's declared governance, when the registry evidence carries it. */
+    governance?: GithubMappingGovernance;
   } | null;
   selectedProject: {
     projectId: string;
@@ -51,6 +54,11 @@ export type GithubProjectResolution = {
   candidateDigest: string | null;
 };
 
+export type GithubMappingGovernance = GitRegistryMappingGovernance & {
+  /** True when the declarations come from a V1 registry migrated in memory. */
+  candidateFromV1: boolean;
+};
+
 export type GithubProjectResolutionInput = {
   repository: GithubRepositoryResolution;
   registry: GitRegistryProjectEvidence;
@@ -59,6 +67,19 @@ export type GithubProjectResolutionInput = {
 
 function same(left: string, right: string): boolean {
   return left.toLowerCase() === right.toLowerCase();
+}
+
+/**
+ * The GitRegistry mappings of a repository, ordered by mapping id: the
+ * matching rule of the project resolution, shared with the E2 completion.
+ */
+export function projectMappingCandidates(
+  registry: Pick<GitRegistryProjectEvidence, 'mappings'>,
+  repositoryId: string
+): GitRegistryProjectEvidence['mappings'] {
+  return registry.mappings
+    .filter((mapping) => same(mapping.repositoryId, repositoryId))
+    .sort((left, right) => left.mappingId.localeCompare(right.mappingId));
 }
 
 function unresolved(
@@ -117,13 +138,11 @@ export function resolveGithubProject(
   }
 
   const repositoryId = input.repository.selectedRepository.repositoryId;
-  const matches = input.registry.mappings
-    .filter((mapping) => same(mapping.repositoryId, repositoryId))
+  const matches = projectMappingCandidates(input.registry, repositoryId)
     .map((mapping) => ({
       mapping,
       candidate: { mappingId: mapping.mappingId, projectId: mapping.projectId }
-    }))
-    .sort((left, right) => left.mapping.mappingId.localeCompare(right.mapping.mappingId));
+    }));
 
   if (matches.length === 0) {
     return unresolved(input, 'NONE', 'GITHUB_PROJECT_MAPPING_NOT_FOUND', { repositoryId });
@@ -164,6 +183,9 @@ export function resolveGithubProject(
   const readiness = input.registry.activationReadiness.find(
     (entry) => entry.mappingId === mapping.mappingId
   );
+  const declared = input.registry.governanceEvidence?.mappings.find((entry) => (
+    entry.mappingId === mapping.mappingId && same(entry.repositoryId, mapping.repositoryId)
+  ));
 
   return {
     status: 'RESOLVED',
@@ -176,7 +198,19 @@ export function resolveGithubProject(
       projectUid: mapping.projectUid,
       componentRole: mapping.componentRole,
       activationReadiness: readiness?.status ?? 'UNKNOWN',
-      activationReasonCodes: readiness?.reasonCodes ?? []
+      activationReasonCodes: readiness?.reasonCodes ?? [],
+      ...(declared ? {
+        governance: {
+          officialBranch: declared.officialBranch,
+          allowedBranchPrefixes: [...declared.allowedBranchPrefixes],
+          directMainPush: declared.directMainPush,
+          status: declared.status,
+          capabilities: { ...declared.capabilities },
+          backupRequired: declared.backupRequired,
+          rollbackMethod: declared.rollbackMethod,
+          candidateFromV1: input.registry.sourceSchemaVersion === 1
+        }
+      } : {})
     },
     selectedProject: project
       ? {

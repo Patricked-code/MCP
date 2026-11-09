@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 
 import { env } from '../config/env.js';
+import { managedServers } from '../config/servers.js';
 import { resolveGithubApiBase } from '../github/authorizationDiagnostics.js';
 import {
   loadGithubIdentityPolicy,
@@ -26,6 +27,28 @@ import {
   type GitRegistryEvidence,
   type GitRegistryProjectEvidence
 } from '../github/registry.js';
+import {
+  resolveProjectServer,
+  unverifiedServerResolution
+} from '../github/serverResolution.js';
+import {
+  resolveProjectRuntime,
+  unverifiedRuntimeResolution
+} from '../github/runtimeResolution.js';
+import {
+  resolveProjectDomain,
+  unverifiedDomainResolution
+} from '../github/domainResolution.js';
+import type { DomainResolution } from '../governedWorkflow/resolvers/domain.js';
+import type { RuntimeResolution } from '../governedWorkflow/resolvers/runtime.js';
+import type { ServerResolution } from '../governedWorkflow/resolvers/server.js';
+import { readLiveStateRuntimeObservations } from '../liveState/runtimeObservation.js';
+import {
+  projectSubscriptions,
+  readLiveStateDomainObservation,
+  readLiveStateProjectDomainObservation
+} from '../liveState/servedDomains.js';
+import { readServerMapConfiguration } from '../liveState/targetProject.js';
 import {
   loadDurableGithubObservationBatch,
   type DurableGithubObservationBatch
@@ -60,6 +83,14 @@ type GithubCollectorOptions = {
   collectObservationBatch?: () => Promise<DurableGithubObservationBatch>;
   readRepositoryRegistry?: () => Promise<GitRegistryEvidence>;
   readProjectRegistry?: () => Promise<GitRegistryProjectEvidence>;
+  /** C3: versioned `.mcp/server-map.json` (null when absent). */
+  readServerMap?: () => Promise<unknown>;
+  /** C3: server identities managed by this runtime configuration. */
+  managedServerIds?: readonly string[];
+  /** C4: runtime observations of the existing observation authorities (Live State). */
+  readRuntimeObservations?: () => Promise<readonly unknown[]>;
+  /** C5: current domain observation of the resolved server; no authority exists yet. */
+  readDomainObservation?: (serverId: string | null) => Promise<unknown>;
 };
 
 export type GithubIdentityScope = {
@@ -248,6 +279,24 @@ function withCache(
         provenance: boundedUnique([...value.projectResolution.provenance, 'memory_cache'])
       }
     } : {}),
+    ...(value.serverResolution && status === 'HIT' ? {
+      serverResolution: {
+        ...value.serverResolution,
+        provenance: boundedUnique([...value.serverResolution.provenance, 'memory_cache'])
+      }
+    } : {}),
+    ...(value.runtimeResolution && status === 'HIT' ? {
+      runtimeResolution: {
+        ...value.runtimeResolution,
+        provenance: boundedUnique([...value.runtimeResolution.provenance, 'memory_cache'])
+      }
+    } : {}),
+    ...(value.domainResolution && status === 'HIT' ? {
+      domainResolution: {
+        ...value.domainResolution,
+        provenance: boundedUnique([...value.domainResolution.provenance, 'memory_cache'])
+      }
+    } : {}),
     cache: {
       status,
       observedAt,
@@ -302,6 +351,48 @@ function staleProjectResolution(
   };
 }
 
+function staleServerResolution(
+  value: ServerResolution
+): ServerResolution {
+  return {
+    ...value,
+    status: 'UNVERIFIED',
+    selectedServer: null,
+    candidates: [],
+    candidateCount: 0,
+    freshness: 'STALE',
+    provenance: boundedUnique([...value.provenance, 'memory_cache']),
+    reasonCodes: ['SERVER_EVIDENCE_STALE']
+  };
+}
+
+function staleRuntimeResolution(
+  value: RuntimeResolution
+): RuntimeResolution {
+  return {
+    ...value,
+    status: 'UNVERIFIED',
+    cardinality: 'UNKNOWN',
+    bindings: [],
+    freshness: 'STALE',
+    provenance: boundedUnique([...value.provenance, 'memory_cache']),
+    reasonCodes: ['RUNTIME_EVIDENCE_STALE']
+  };
+}
+
+function staleDomainResolution(
+  value: DomainResolution
+): DomainResolution {
+  return {
+    ...value,
+    status: 'UNVERIFIED',
+    surface: [],
+    freshness: 'STALE',
+    provenance: boundedUnique([...value.provenance, 'memory_cache']),
+    reasonCodes: ['DOMAIN_EVIDENCE_STALE']
+  };
+}
+
 function staleEvidence(
   value: GithubEvidenceObservation,
   observedAt: string
@@ -335,6 +426,15 @@ function withStaleCache(
       : {}),
     ...(value.projectResolution
       ? { projectResolution: staleProjectResolution(value.projectResolution) }
+      : {}),
+    ...(value.serverResolution
+      ? { serverResolution: staleServerResolution(value.serverResolution) }
+      : {}),
+    ...(value.runtimeResolution
+      ? { runtimeResolution: staleRuntimeResolution(value.runtimeResolution) }
+      : {}),
+    ...(value.domainResolution
+      ? { domainResolution: staleDomainResolution(value.domainResolution) }
       : {}),
     reasonCodes: boundedUnique([...value.reasonCodes, 'GITHUB_STALE']),
     uncertainties: [...value.uncertainties]
@@ -893,6 +993,9 @@ export function createGithubOperationalContextCollector(
     identity: GithubIdentityResolution;
     repositoryResolution: GithubRepositoryResolution;
     projectResolution: GithubProjectResolution;
+    serverResolution: ServerResolution;
+    runtimeResolution: RuntimeResolution;
+    domainResolution: DomainResolution;
   } | undefined> {
     if (!scope) return undefined;
     const loadPolicy = options.loadIdentityPolicy ?? loadGithubIdentityPolicy;
@@ -1008,7 +1111,64 @@ export function createGithubOperationalContextCollector(
       registry: projectRegistry,
       observedAt
     });
-    return { identity, repositoryResolution, projectResolution };
+    // C3: GW-07 server resolution chained after the C2 project resolution.
+    let serverMap: unknown = null;
+    try {
+      serverMap = await (options.readServerMap ?? readServerMapConfiguration)();
+    } catch {
+      serverMap = null;
+    }
+    const serverResolution = resolveProjectServer({
+      project: projectResolution,
+      registry: projectRegistry,
+      serverMap,
+      managedServerIds: options.managedServerIds ?? Object.keys(managedServers),
+      observedAt
+    });
+    // C4: GW-08 runtime resolution chained after the C3 server resolution.
+    let runtimeObservations: readonly unknown[] | null;
+    try {
+      runtimeObservations = await (options.readRuntimeObservations ?? (() => readLiveStateRuntimeObservations(now)))();
+    } catch {
+      runtimeObservations = null;
+    }
+    const runtimeResolution = resolveProjectRuntime({
+      server: serverResolution,
+      project: projectResolution,
+      registry: projectRegistry,
+      observations: runtimeObservations,
+      observedAt
+    });
+    // C5: GW-09 domain resolution chained after the C2/C3 resolutions.
+    let domainObservation: unknown;
+    try {
+      domainObservation = await (options.readDomainObservation ?? (async (serverId) => {
+        // Live State observes a shared server: keep the subscriptions GitRegistry binds to the project.
+        const projectId = projectResolution.selectedProject?.projectId;
+        const bindings = projectRegistry.serverBindings;
+        if (!projectId || !serverId || !bindings) return readLiveStateDomainObservation(serverId, now);
+        return readLiveStateProjectDomainObservation(serverId, projectSubscriptions(bindings, projectId, serverId), now);
+      }))(
+        serverResolution.selectedServer?.serverId ?? null
+      );
+    } catch {
+      domainObservation = null;
+    }
+    const domainResolution = resolveProjectDomain({
+      project: projectResolution,
+      server: serverResolution,
+      registry: projectRegistry,
+      observation: domainObservation,
+      observedAt
+    });
+    return {
+      identity,
+      repositoryResolution,
+      projectResolution,
+      serverResolution,
+      runtimeResolution,
+      domainResolution
+    };
   }
 
   async function collectWork(workBranch: string | null): Promise<GithubOperationalContext> {
@@ -1310,8 +1470,19 @@ export function createGithubOperationalContextCollector(
       const identity = identityAndRepository?.identity;
       const repositoryResolution = identityAndRepository?.repositoryResolution;
       const projectResolution = identityAndRepository?.projectResolution;
+      const serverResolution = identityAndRepository?.serverResolution;
+      const runtimeResolution = identityAndRepository?.runtimeResolution;
+      const domainResolution = identityAndRepository?.domainResolution;
       const withIdentity = identityAndRepository
-        ? { ...value, identity, repositoryResolution, projectResolution }
+        ? {
+            ...value,
+            identity,
+            repositoryResolution,
+            projectResolution,
+            serverResolution,
+            runtimeResolution,
+            domainResolution
+          }
         : value;
       const refreshed = withCache(withIdentity, 'REFRESHED', value.observedAt);
       const storedAt = now().getTime();
@@ -1357,7 +1528,22 @@ export function createGithubOperationalContextCollector(
             ...empty,
             identity: identityCacheMiss(identityScope, observedAt),
             repositoryResolution: repositoryCacheMiss(identityScope, observedAt),
-            projectResolution: projectCacheMiss(observedAt)
+            projectResolution: projectCacheMiss(observedAt),
+            serverResolution: unverifiedServerResolution({
+              observedAt,
+              reasonCode: 'SERVER_PROJECT_UNVERIFIED',
+              provenance: ['memory_cache']
+            }),
+            runtimeResolution: unverifiedRuntimeResolution({
+              observedAt,
+              reasonCode: 'RUNTIME_SERVER_UNVERIFIED',
+              provenance: ['memory_cache']
+            }),
+            domainResolution: unverifiedDomainResolution({
+              observedAt,
+              reasonCode: 'DOMAIN_PROJECT_UNVERIFIED',
+              provenance: ['memory_cache']
+            })
           }
         : empty;
     },

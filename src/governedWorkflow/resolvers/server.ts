@@ -54,7 +54,8 @@ const ServerRegistryEvidenceSchema = z.object({
 export const ServerResolutionInputSchema = z.object({
   project: ProjectProjectionSchema,
   registry: ServerRegistryEvidenceSchema,
-  canonicalServerIds: z.array(BoundedServerId).min(1).max(100),
+  // C3: an empty canonical set is an invalid set (bounded reason, no throw).
+  canonicalServerIds: z.array(BoundedServerId).max(100),
   serverHint: BoundedServerId.nullable(),
   observedAt: z.string().datetime({ offset: true })
 }).strict();
@@ -149,6 +150,7 @@ function uniqueSorted(values: readonly string[]): string[] {
 function canonicalServerMap(
   values: readonly string[]
 ): Map<string, string> | null {
+  if (values.length === 0) return null;
   const map = new Map<string, string>();
   for (const raw of values) {
     const key = normalizeKey(raw);

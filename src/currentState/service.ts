@@ -3,7 +3,7 @@ import type { LiveStateEngine } from '../liveState/engine.js';
 import type { LiveStateSnapshot } from '../liveState/types.js';
 import type { GovernedLockService } from '../operationalMemory/lockService.js';
 import type { GovernedSessionService, SessionRequest } from '../operationalMemory/sessionService.js';
-import type { GovernedTaskQueue } from '../operationalMemory/taskQueue.js';
+import { executableTaskCandidates, type GovernedTaskQueue } from '../operationalMemory/taskQueue.js';
 import type { GovernedSessionPublicRecord, GovernedTaskRecord, TaskStoreDocument } from '../operationalMemory/types.js';
 import {
   projectCoordinationCheckpoint,
@@ -15,6 +15,12 @@ import {
   projectGovernedTaskClaimForCoordination,
   projectGovernedTaskForCoordination
 } from '../governedWorkflow/adapters/task.js';
+import {
+  deriveNextWork,
+  nextWorkUnavailable,
+  type NextWorkProjection,
+  type ProgramNextWorkSource
+} from '../governance/nextWorkProjection.js';
 
 export type CurrentStateCoordinationView = Readonly<{
   schemaVersion: 1;
@@ -53,6 +59,8 @@ export type CurrentStateInventory = {
   workQueue: TaskStoreDocument;
   currentTask: GovernedTaskRecord | null;
   firstExecutableTask: GovernedTaskRecord | null;
+  /** DISPATCH-03: read-only next work of the requested session; never claims. */
+  nextWork: NextWorkProjection;
   coordination: CurrentStateCoordinationView;
   bootstrap: {
     required: true;
@@ -69,21 +77,14 @@ type CurrentStateServiceOptions = {
   locks?: Pick<GovernedLockService, 'listActiveLocks'>;
   coordinationLivenessFreshnessSeconds?: number;
   catalogue?: () => CurrentToolCatalog;
+  /** DISPATCH-03: the Program Backlog projection deployed with this revision. */
+  program?: () => Promise<ProgramNextWorkSource | null>;
   now?: () => Date;
 };
 
 export type CurrentStateService = {
   getInventory(request: SessionRequest): Promise<CurrentStateInventory>;
 };
-
-function firstExecutable(tasks: GovernedTaskRecord[]): GovernedTaskRecord | null {
-  const byId = new Map(tasks.map((task) => [task.taskId, task]));
-  return [...tasks]
-    .filter((task) => task.status === 'READY')
-    .filter((task) => task.dependencies.every((dependency) => byId.get(dependency)?.status === 'DONE'))
-    .sort((left, right) => right.priority - left.priority || left.sequence - right.sequence || left.taskId.localeCompare(right.taskId))[0]
-    ?? null;
-}
 
 function completeCoordinationSession(
   session: GovernedSessionPublicRecord | null
@@ -121,11 +122,15 @@ export function createCurrentStateService(options: CurrentStateServiceOptions): 
   return {
     async getInventory(request) {
       const observedAt = now().toISOString();
-      const [liveState, workQueue, sessions, activeLocks] = await Promise.all([
+      const loadProgram = options.program;
+      const [liveState, workQueue, sessions, activeLocks, program] = await Promise.all([
         options.liveState.getCurrent(),
         options.tasks.listVisibleTasks(),
         options.sessions.listVisibleSessions(request),
-        options.locks?.listActiveLocks() ?? Promise.resolve([])
+        options.locks?.listActiveLocks() ?? Promise.resolve([]),
+        loadProgram
+          ? Promise.resolve().then(loadProgram).catch(() => null)
+          : Promise.resolve(null)
       ]);
       const catalog = catalogue();
       const requestedSessionId = options.sessions.lookupGovernedSessionId(
@@ -146,6 +151,21 @@ export function createCurrentStateService(options: CurrentStateServiceOptions): 
           ))
           .sort((left, right) => left.sequence - right.sequence)[0] ?? null
         : null;
+      // The next-work projection is advisory: it never makes the inventory fail.
+      const nextWorkSessionId = requestedSessionIsActive ? requestedSessionId : null;
+      let nextWork: NextWorkProjection;
+      try {
+        nextWork = deriveNextWork({
+          sessionId: nextWorkSessionId,
+          sessionRepository: requestedSession?.repository ?? null,
+          sessionTargetScope: requestedSession?.targetScope ?? null,
+          tasks: workQueue.tasks,
+          activeLocks,
+          program
+        });
+      } catch {
+        nextWork = nextWorkUnavailable(nextWorkSessionId, 'NEXT_WORK_PROJECTION_UNAVAILABLE');
+      }
       const limitations = [
         ...(!liveState ? ['LIVE_STATE_UNAVAILABLE'] : []),
         ...(catalog.counts.tools === 0 ? ['RUNTIME_CATALOG_EMPTY'] : []),
@@ -219,14 +239,15 @@ export function createCurrentStateService(options: CurrentStateServiceOptions): 
         sessions: sessions.slice(0, 100),
         workQueue: { ...workQueue, tasks: workQueue.tasks.slice(0, 1_000) },
         currentTask,
-        firstExecutableTask: firstExecutable(workQueue.tasks),
+        firstExecutableTask: executableTaskCandidates(workQueue.tasks)[0] ?? null,
+        nextWork,
         coordination,
         bootstrap: {
           required: true,
           order: [
             'ping', 'mcp_reconcile_governed_context', 'mcp_get_current_state_inventory',
             'mcp_resume_governed_session_or_open', 'mcp_acknowledge_governed_context',
-            'mcp_reconcile_agent_intent', 'mcp_claim_next_governed_task'
+            'mcp_reconcile_agent_intent', 'mcp_materialize_program_blueprint', 'mcp_claim_next_governed_task'
           ],
           limitations: [...new Set(limitations)].slice(0, 20)
         },

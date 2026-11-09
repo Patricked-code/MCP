@@ -1,0 +1,1508 @@
+{
+  "schemaVersion": 1,
+  "kind": "NON_AUTHORITATIVE_SOURCE_LINK_INDEX",
+  "programIssue": 349,
+  "repository": "Patricked-code/MCP",
+  "observedOn": "2026-10-29",
+  "branch": "mcp/universal-github-plesk-server-capabilities-20261028",
+  "branchHeadAtObservation": "4424cc3cf217f676c462bb39d4b93b79d3a20e1b",
+  "completeness": "COMMENT_AND_REVIEW_LINKS_RETURNED_BY_GITHUB_CONNECTOR; COMMIT_AND_CI_CONTENT_NOT_REPRODUCED",
+  "preservation": "Original GitHub records remain source of truth; headings are discovery hints, not verified acceptance.",
+  "sources": {
+    "issue349": {
+      "url": "https://github.com/Patricked-code/MCP/issues/349",
+      "count": 62,
+      "comments": [
+        {
+          "order": 1,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6353517378",
+          "heading": "Plan d'implémentation courte — 23/10/2026 (extension du code existant)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 2,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6353578603",
+          "heading": "**Protocole TDD impératif — RED → GREEN → REFACTOR → REGRESSION (23 octobre 2026)**",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 3,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6353736319",
+          "heading": "TDD exécuté — tranche Plesk S1/S2 (23/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 4,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6353793573",
+          "heading": "Extension confirmée du besoin utilisateur — plateforme de création, liaison et exploitation des projets (23/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 5,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6353903337",
+          "heading": "2026-10-23 — installations GitHub App réellement observées / divergence avec les credentials du MCP",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 6,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6354409086",
+          "heading": "Checkpoint d'intégration S1/S2 — 23 octobre 2026",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 7,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6354667677",
+          "heading": "Cas réel demandé — GRT sur S1 à /gouvern (23/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 8,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6354728800",
+          "heading": "Checkpoint — pilote GRT S1 `/gouvern` prêt pour revue (23 octobre 2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 9,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6355341099",
+          "heading": "CHECKPOINT POST-MERGE / S1 — 2026-10-23 (observations directes)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 10,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6355400368",
+          "heading": "Reprise après déploiement #350 — tranche d'admission GRT TDD (23/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 11,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6355712365",
+          "heading": "Mandat utilisateur confirmé (23/10/2026) : intégrer le dépôt chainsolutions-wealthtech/Regulatory à S1 puis préparer son déploiement sous https://wealthtechinnovations.com/regulato",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 12,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6355773248",
+          "heading": "PRIORITÉ IMMÉDIATE — Regulatory/S1. Demande explicite de l'opérateur : exécuter via le MCP existant le raccordement chainsolutions-wealthtech/Regulatory (main) à wealthtechinnovati",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 13,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6355907669",
+          "heading": "Regulatory / S1 /regulatory — premier lot exécuté sur GitHub, 23 octobre 2026",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 14,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6456422302",
+          "heading": "ADDENDUM DE MANDAT — REGULATORY DOIT ÊTRE ACHEVÉ COMME PRODUIT ET COMME INTÉGRATION RÉELLE (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 15,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6456632312",
+          "heading": "Regulatory/S1 — CARTE DE COORDINATION MULTI-AGENTS ET FIL DE CONTINUITÉ (lecture/audit, 28 octobre 2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 16,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6457121696",
+          "heading": "Regulatory — lien transversal avec l'agent Claude GWC PR #354 (coordination, pas de mutation)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 17,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6457630211",
+          "heading": "[SUIVI/COORDINATION] Regulatory ↔ BUS ↔ GWC : relecture current-first du 28/10/2026 (sans mutation de code/S1)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 18,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6458160787",
+          "heading": "Raccordement cross-repository — Regulatory produit ↔ MCP/S1",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 19,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6459154498",
+          "heading": "ADDENDUM AU MANDAT FONCTIONNEL #6353793573 — Généralisation A→Z de Governed Deploy (28 octobre 2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 20,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6459168274",
+          "heading": "ADDENDUM STRUCTURANT À #6353793573 — OBJECTIF UNIVERSEL ET ARCHITECTURE D'EXÉCUTION (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 21,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6459201967",
+          "heading": "ANNEXE TECHNIQUE ET FEUILLE DE ROUTE ADDITIVE — suite du mandat #6353793573 et de l'addendum #6459168274 (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 22,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6459697794",
+          "heading": "Réconciliation canonique additive — deux évolutions et Governed Deploy A→Z, 28 octobre 2026",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 23,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6460002460",
+          "heading": "CHECKPOINT D'AUDIT CURRENT-FIRST — Governed Deploy universel / #349 (28/10/2026, 03:34 UTC)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 24,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6460680374",
+          "heading": "Governed Deploy universel — Bifurcation GitHub-first ouverte, PR #355 (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 25,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6460687375",
+          "heading": "Checkpoint GD-U-01 — CI exacte GREEN (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 26,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6460775637",
+          "heading": "GD-U-A1 — Intelligence/autonomie gouvernée : code, tests, preuves (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 27,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6460936452",
+          "heading": "Checkpoint canonique — Bifurcation GD-U-MAX / GD-U-COMPOSE / GD-U-CONTINUITY, 2026-10-28",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 28,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461020317",
+          "heading": "Checkpoint GD-U-EXPOSE — catalogue additif + méthode de travail, RED → GREEN → REGRESSION (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 29,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461198869",
+          "heading": "GD-U-02A/B — exécuteurs MCP réels + preuves de permissions GitHub/Plesk/S1/S2 — GREEN (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 30,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461347131",
+          "heading": "Checkpoint de continuité GD-U-02C — véritable exécuteur Plesk borné, branche #355 (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 31,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461357601",
+          "heading": "GD-U-02C — Checkpoint FINAL GREEN au HEAD exact (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 32,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461545940",
+          "heading": "GD-U-02D-A — Raccordement aux véritables autorités runtime, contrôle des verrous Plesk, CI GREEN (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 33,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461724141",
+          "heading": "Checkpoint additif — GD-U-02D-B1/B2 exécutés directement, sans attendre l'automatisation (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 34,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461732693",
+          "heading": "GD-U-02D-B1/B2 — Validation finale GREEN au HEAD exact (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 35,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461758220",
+          "heading": "ADDENDUM — Modus operandi conversationnel Governed Deploy : questions progressives, décisions et exécution gouvernée (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 36,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461801536",
+          "heading": "GD-U-02 — Parcours de tests pas à pas, étape 0/1 READ-ONLY attestée (2026-10-28 ~05:50 UTC)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 37,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461939290",
+          "heading": "ADDENDUM AU MODUS OPERANDI — Déclenchement depuis la connexion au dépôt GitHub, liaison Bridge et reprise contextuelle (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 38,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6461976834",
+          "heading": "GD-U-02D-B3a — liaison authentifiée au transport MCP existant, RED → GREEN → REGRESSION (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 39,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6462137449",
+          "heading": "Checkpoint GD-U-02D-B3b/B3c — construction directe, CI finale SUCCESS et ouverture de la revue gouvernée (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 40,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6462344808",
+          "heading": "Checkpoint GD-U-02D-B3d — Ticket E3 à usage unique, atomique, gouverné (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 41,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6462497888",
+          "heading": "GD-U-02D-B3e — Route web Plesk existante, branche PR #355 — checkpoint additif (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 42,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6462503769",
+          "heading": "GD-U-02D-B3e — CI finale GREEN au HEAD exact",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 43,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6462636991",
+          "heading": "GD-U-02D-B3f — Lecture gouvernée HTTP Web E3 → transport MCP OAuth réel, sans inférence de privilège",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 44,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6462841101",
+          "heading": "GD-U-02D-B3g — garde de fraîcheur E3 au moment de la consommation (2026-10-28)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 45,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6463111697",
+          "heading": "GD-U-02D-B3h — Intégrité des validations GitHub, RED → GREEN → REGRESSION — 28 octobre 2026",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 46,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6463272263",
+          "heading": "GD-U-02 — Demande explicite d’activation du parcours d’écriture Plesk (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 47,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6463812950",
+          "heading": "GD-U-02D-B3i — Revue GitHub à horodatage ambigu, RED → GREEN → REGRESSION (28/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 48,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6464805449",
+          "heading": "GD-U-02D-B3j — checkpoint de reprise / admission Plesk en HOLD (28/10/2026, observation en lecture seule)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 49,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6504903629",
+          "heading": "GD-U-02D-B3i — MANDAT DEMANDÉ, NON ACCORDÉ : revue humaine indépendante + admission E3/OAuth + écriture Plesk bornée (29/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 50,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6505015571",
+          "heading": "GD-U-02 — Relecteur demandé sur PR #355 (29 octobre 2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 51,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6506065178",
+          "heading": "GD-U-02D — Traitement gouverné des 7 constats de revue actifs, HEAD exact et CI verte (29/10/2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 52,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6506328959",
+          "heading": "GD-U-02D-B3i — propriétaire : consentement fonctionnel général, absence de relecteur humain tiers (29 octobre 2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 53,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6506342426",
+          "heading": "**B3i addendum — CI HEAD exact :** commit `8248fc86679a2e4cacb4a81168513d7f349b11c5`, [MCP CI #40940191848](https://github.com/Patricked-code/MCP/actions/runs/40940191848) **comple",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 54,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6506921320",
+          "heading": "GD-U-02D-B3i — Liaison authentifiée navigateur E3 ↔ transport OAuth MCP : implémentation, sécurité et continuité (29 octobre 2026)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 55,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6506944034",
+          "heading": "GD-U-02D-B3i — Validation finale du HEAD exact après durcissement et contre-revue",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 56,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6507968135",
+          "heading": "CHECKPOINT DE REPRISE EXTERNE GOUVERNÉE — 2026-10-29 20:47 UTC — lecture seule",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 57,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6508142985",
+          "heading": "GD-U-02D / B3i-b — checkpoint additif GitHub-first — 2026-10-29",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 58,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6508271503",
+          "heading": "GD-U-02D / B3i-b — deuxième checkpoint RED→GREEN, contrôle Plesk fail-closed — 2026-10-29",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 59,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6508299718",
+          "heading": "GD-U-02D — complément de découverte S1/S2 en lecture seule — 2026-10-29",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 60,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6508724336",
+          "heading": "GD-U-02D — activation administrative Plesk prioritaire — checkpoint technique 2026-10-29",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 61,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6508816175",
+          "heading": "ADDENDUM EXÉCUTÉ — GD-U-02D-CONT-20261029-B3I-ROOT-01 — B3i P0 Executor Binding (2026-10-29)",
+          "kind": "issue-comment"
+        },
+        {
+          "order": 62,
+          "url": "https://github.com/Patricked-code/MCP/issues/349#issuecomment-6509112414",
+          "heading": "Checkpoint B3j — liaison E3/OAuth/SSH gouverné conditionnelle, 29/10/2026",
+          "kind": "issue-comment"
+        }
+      ]
+    },
+    "prs": [
+      {
+        "number": 350,
+        "title": "feat(provisioning): additive S1/S2 Plesk planner and consented executor (TDD)",
+        "state": "closed",
+        "draft": false,
+        "merged": true,
+        "headAtObservation": "5e8e48d5d3d1886c6bb8996577446413589103cd",
+        "comments": [
+          {
+            "order": 1,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6353912604",
+            "heading": "Nouvelle tranche GitHub App, additive, RED/GREEN attestés (23 octobre 2026)",
+            "createdAt": "2026-10-22T23:52:02Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 2,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6354699752",
+            "heading": "Pilote réel demandé : GRT → S1 → /gouvern (test RED/GREEN terminé dans la branche)",
+            "createdAt": "2026-10-23T00:50:30Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 3,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6354719550",
+            "heading": "<!-- codex-pull-request-review-summary -->",
+            "createdAt": "2026-10-23T00:52:01Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 4,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355078951",
+            "heading": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Enforce the runtime gate before executing the Plesk write**",
+            "createdAt": "2026-10-23T00:56:38Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 5,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355078957",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Only remove archives created by the current staging attempt**",
+            "createdAt": "2026-10-23T00:56:38Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 6,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355078962",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Recompute the archive digest before accepting the snapshot**",
+            "createdAt": "2026-10-23T00:56:38Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 7,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355078967",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reject untrusted pre-existing pilot directories**",
+            "createdAt": "2026-10-23T00:56:38Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 8,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355078969",
+            "heading": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Record the new runtime surfaces in the continuity logs**",
+            "createdAt": "2026-10-23T00:56:38Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 9,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355078973",
+            "heading": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Prevent framing of the Plesk consent page**",
+            "createdAt": "2026-10-23T00:56:38Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 10,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622707593",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-23T00:56:38Z",
+            "kind": "review"
+          },
+          {
+            "order": 11,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6354804476",
+            "heading": "Pré-fusion — contrôle d'admission et plan de recette S1 (23/10/2026, lecture seule)",
+            "createdAt": "2026-10-23T00:58:46Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 12,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622729472",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:00:26Z",
+            "kind": "review"
+          },
+          {
+            "order": 13,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622774941",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:08:20Z",
+            "kind": "review"
+          },
+          {
+            "order": 14,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622782191",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:09:38Z",
+            "kind": "review"
+          },
+          {
+            "order": 15,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355172248",
+            "heading": "Corrigé en mode fail-closed : la route Plesk exige désormais `authorizeRuntimeWrite` indépendamment du consentement web. Le câblage de production retourne explicitement `",
+            "createdAt": "2026-10-23T01:15:45Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 16,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622816645",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:15:45Z",
+            "kind": "review"
+          },
+          {
+            "order": 17,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355172503",
+            "heading": "Corrigé : acquisition exclusive d'un verrou de staging via mkdir atomique sur le même volume ; une seconde opération refuse sans écrire. Le nettoyage n'agit que dans le r",
+            "createdAt": "2026-10-23T01:15:48Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 18,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622816910",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:15:48Z",
+            "kind": "review"
+          },
+          {
+            "order": 19,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355172759",
+            "heading": "Corrigé : `readGovernPilot` recalcule SHA-256 en lisant les octets réels (limite de taille), vérifie strictement marqueur, taille et checksum, et rejette le NO_OP si l'ar",
+            "createdAt": "2026-10-23T01:15:50Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 20,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622817171",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:15:51Z",
+            "kind": "review"
+          },
+          {
+            "order": 21,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355173048",
+            "heading": "Corrigé : tout répertoire `/gouvern` préexistant et non déjà attesté est refusé, même vide. Le dossier doit être créé par la tentative sous verrou, appartenir à l'UID du ",
+            "createdAt": "2026-10-23T01:15:53Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 22,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622817462",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:15:54Z",
+            "kind": "review"
+          },
+          {
+            "order": 23,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355173346",
+            "heading": "Checkpoint documentaire durable ajouté dans `docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md` et enregistré dans le catalogue des Markdown; preuves dans ",
+            "createdAt": "2026-10-23T01:15:57Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 24,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622817803",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:15:57Z",
+            "kind": "review"
+          },
+          {
+            "order": 25,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355173602",
+            "heading": "Corrigé : `GET /provisioning/plesk-subdomain` porte maintenant `Content-Security-Policy: frame-ancestors 'none'`, `X-Frame-Options: DENY` et `Cache-Control: no-store`. Te",
+            "createdAt": "2026-10-23T01:16:00Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 26,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622818152",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:16:00Z",
+            "kind": "review"
+          },
+          {
+            "order": 27,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6355046736",
+            "heading": "Revue #350 — sécurité consolidée sur HEAD `3533ce2e4475aa08092411f8e349baf7e7959112` (23/10/2026)",
+            "createdAt": "2026-10-23T01:17:51Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 28,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355192971",
+            "heading": "**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Gate GRT staging on governed runtime authority**",
+            "createdAt": "2026-10-23T01:19:52Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 29,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355192977",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use the new App token for the GRT download**",
+            "createdAt": "2026-10-23T01:19:52Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 30,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622839528",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-23T01:19:52Z",
+            "kind": "review"
+          },
+          {
+            "order": 31,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355219324",
+            "heading": "P1 sécurité traité : le POST `/gouvern/deploy` appelle maintenant `authorizeRuntimeWrite()` indépendamment du ticket E3. Sur S1, il retourne fail-closed `false` en l'abse",
+            "createdAt": "2026-10-23T01:25:12Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 32,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622869811",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:25:12Z",
+            "kind": "review"
+          },
+          {
+            "order": 33,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355219678",
+            "heading": "Point GitHub App : le pilote épinglé `chainsolutions-wealthtech/Governed-Repository-Template` est actuellement **lisible par le credential GitHub existant sur S1** (diagn",
+            "createdAt": "2026-10-23T01:25:16Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 34,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622870183",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:25:16Z",
+            "kind": "review"
+          },
+          {
+            "order": 35,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6355207645",
+            "heading": "Reprise du 23 octobre — approbation attestée, TDD additionnel et dernier état d'admission",
+            "createdAt": "2026-10-23T01:30:42Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 36,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355248694",
+            "heading": "La remarque P2 est désormais corrigée sur le code (cf. commits `eb6ae16` et `50969d1`) : le téléchargement `/gouvern` appelle `downloadGovernPilotArchive` avec deux modes",
+            "createdAt": "2026-10-23T01:31:06Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 37,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622902836",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:31:06Z",
+            "kind": "review"
+          },
+          {
+            "order": 38,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6355221950",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-23T01:31:47Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 39,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6355226869",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-23T01:32:10Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 40,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6355234257",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-23T01:32:45Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 41,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#issuecomment-6355237676",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-23T01:33:02Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 42,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#discussion_r4355258508",
+            "heading": "La remarque P1 documentaire est maintenant corrigée **dans les trois fichiers canoniques existants**, sans suppression d'historique ni création d'une autorité concurrente",
+            "createdAt": "2026-10-23T01:33:06Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 43,
+            "url": "https://github.com/Patricked-code/MCP/pull/350#pullrequestreview-5622914387",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-23T01:33:07Z",
+            "kind": "review"
+          }
+        ],
+        "url": "https://github.com/Patricked-code/MCP/pull/350",
+        "commentCount": 43
+      },
+      {
+        "number": 351,
+        "title": "feat(pilot): TDD guarded runtime admission for GRT snapshot on S1",
+        "state": "open",
+        "draft": true,
+        "merged": false,
+        "headAtObservation": "58bcf5764e79f16c69301ec923b691e2a844953e",
+        "comments": [
+          {
+            "order": 1,
+            "url": "https://github.com/Patricked-code/MCP/pull/351#issuecomment-6355412435",
+            "heading": "TDD runtime-admission #351 — RED/GREEN attestés (23/10/2026)",
+            "createdAt": "2026-10-23T01:47:08Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 2,
+            "url": "https://github.com/Patricked-code/MCP/pull/351#issuecomment-6459552672",
+            "heading": "Point de trace canonique — audit de continuité du pilote GRT et de la méthode (28 octobre 2026)",
+            "createdAt": "2026-10-28T03:05:12Z",
+            "kind": "pr-comment"
+          }
+        ],
+        "url": "https://github.com/Patricked-code/MCP/pull/351",
+        "commentCount": 2
+      },
+      {
+        "number": 352,
+        "title": "feat(provisioning): RED-GREEN exact Regulatory S1 /regulatory preflight",
+        "state": "open",
+        "draft": true,
+        "merged": false,
+        "headAtObservation": "ed8bc5f0463a52b87b3b7e90e9fc2f5548894760",
+        "comments": [
+          {
+            "order": 1,
+            "url": "https://github.com/Patricked-code/MCP/pull/352#issuecomment-6355915157",
+            "heading": "TDD & CI — tranche Regulatory S1 /regulatory (23/10/2026)",
+            "createdAt": "2026-10-23T02:27:03Z",
+            "kind": "pr-comment"
+          }
+        ],
+        "url": "https://github.com/Patricked-code/MCP/pull/352",
+        "commentCount": 1
+      },
+      {
+        "number": 353,
+        "title": "docs(regulatory): scope governed S1 Plesk admission and acceptance gates",
+        "state": "open",
+        "draft": true,
+        "merged": false,
+        "headAtObservation": "0234a2ae3708d92993a2dc9b798b0ac95633ced1",
+        "comments": [
+          {
+            "order": 1,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6356258266",
+            "heading": "Regulatory S1 — checkpoint de raccordement (2026-10-23)",
+            "createdAt": "2026-10-23T02:54:50Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 2,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6356273027",
+            "heading": "Checkpoint d'admission d'écriture — 2026-10-23",
+            "createdAt": "2026-10-23T02:56:01Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 3,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6356434845",
+            "heading": "Regulatory — reprise autonome / contrôle d'admission (2026-10-23)",
+            "createdAt": "2026-10-23T03:09:09Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 4,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6451186541",
+            "heading": "Checkpoint — sécurité fail-closed (2026-10-27)",
+            "createdAt": "2026-10-27T19:10:46Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 5,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6453198162",
+            "heading": "Regulatory checkpoint (2026-10-27, read-only audit): GitHub Actions run 40567825915 for commit 6e1bfb2a39af03dc716277374e98e8d01b71eec2 completed SUCCESS (validate job: t",
+            "createdAt": "2026-10-27T20:49:02Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 6,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6454577846",
+            "heading": "Regulatory S1 — checkpoint factuel du 27 octobre 2026 (21:55 UTC)",
+            "createdAt": "2026-10-27T21:54:51Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 7,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6455549706",
+            "heading": "Regulatory — checkpoint de validation CI (2026-10-27 22:51 UTC)",
+            "createdAt": "2026-10-27T22:51:57Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 8,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6455948353",
+            "heading": "Regulatory S1 — checkpoint gouverné de coordination multi-agents (2026-10-27 23:15 UTC)",
+            "createdAt": "2026-10-27T23:16:00Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 9,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6456600573",
+            "heading": "Regulatory S1 — audit read-only et alerte d'intégration (2026-10-28 ~00:55 Europe/Paris)",
+            "createdAt": "2026-10-27T23:55:42Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 10,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6456647016",
+            "heading": "PR #353 — SECURITY / INTEGRATION HOLD, point d'entrée multi-agents (audit documentaire)",
+            "createdAt": "2026-10-27T23:57:40Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 11,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6457706873",
+            "heading": "REGULATORY S1 — contrôle supplémentaire de l'ingress réel, de l'autorité de session et de la PR #353 (28/10/2026 00:53 UTC)",
+            "createdAt": "2026-10-28T00:53:34Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 12,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6457711325",
+            "heading": "Append-only — checkpoint runtime effectivement persisté (28/10/2026 00:53:46 UTC)",
+            "createdAt": "2026-10-28T00:53:53Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 13,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6458547521",
+            "heading": "Regulatory / Governed Deploy — reprise factuelle et checkpoint (2026-10-28 01:54 UTC)",
+            "createdAt": "2026-10-28T01:54:11Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 14,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6458758792",
+            "heading": "ANCRAGE ADDITIF — Programme Governed Deploy × Regulatory (périmètre A+B uniquement)",
+            "createdAt": "2026-10-28T02:10:10Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 15,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6459398476",
+            "heading": "Regulatory S1 — checkpoint factuel de continuité (28/10/2026, 02:54–02:55 UTC)",
+            "createdAt": "2026-10-28T02:55:09Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 16,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6460274315",
+            "heading": "Regulatory / S1 — reprise gouvernée et checkpoint factuel (28/10/2026, 03:55–03:57 UTC)",
+            "createdAt": "2026-10-28T03:57:19Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 17,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6461881161",
+            "heading": "Regulatory/S1 — contrôle gouverné en lecture seule (2026-10-28 05:54–05:56 UTC)",
+            "createdAt": "2026-10-28T05:56:11Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 18,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6462719923",
+            "heading": "Checkpoint de continuité Regulatory — 28/10/2026 06:54 UTC (lecture seule, sans admission)",
+            "createdAt": "2026-10-28T06:54:18Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 19,
+            "url": "https://github.com/Patricked-code/MCP/pull/353#issuecomment-6463700421",
+            "heading": "Regulatory / S1 — contrôle GitHub partiel et blocage d'accès MCP (2026-10-28, vers 07:54 UTC)",
+            "createdAt": "2026-10-28T07:54:31Z",
+            "kind": "pr-comment"
+          }
+        ],
+        "url": "https://github.com/Patricked-code/MCP/pull/353",
+        "commentCount": 19
+      },
+      {
+        "number": 354,
+        "title": "GWC PRECODE candidate build — phase F happy path and beyond",
+        "state": "open",
+        "draft": true,
+        "merged": false,
+        "headAtObservation": "c4bd277495176de8adfb7c436a54f4b009968e68",
+        "comments": [
+          {
+            "order": 1,
+            "url": "https://github.com/Patricked-code/MCP/pull/354#issuecomment-6457112684",
+            "heading": "COORDINATION INTER-AGENTS (information non bloquante) — GWC-PRE-F-02 / PR #354 ↔ MCP global ↔ Regulatory",
+            "createdAt": "2026-10-28T00:15:52Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 2,
+            "url": "https://github.com/Patricked-code/MCP/pull/354#issuecomment-6457530184",
+            "heading": "ACK — Coordination inter-agents GWC-PRE-F-02 / PR #354",
+            "createdAt": "2026-10-28T00:41:12Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 3,
+            "url": "https://github.com/Patricked-code/MCP/pull/354#issuecomment-6457603173",
+            "heading": "Coordination actualisée avec Regulatory et BUS — correction du périmètre documentaire (28/10/2026, lecture seule)",
+            "createdAt": "2026-10-28T00:46:28Z",
+            "kind": "pr-comment"
+          }
+        ],
+        "url": "https://github.com/Patricked-code/MCP/pull/354",
+        "commentCount": 3
+      },
+      {
+        "number": 355,
+        "title": "feat(github): additive universal GitHub/Plesk/server capability foundations (GD-U-01)",
+        "state": "open",
+        "draft": false,
+        "merged": false,
+        "headAtObservation": "4424cc3cf217f676c462bb39d4b93b79d3a20e1b",
+        "comments": [
+          {
+            "order": 1,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6460686898",
+            "heading": "Checkpoint GD-U-01 — CI exacte GREEN (28/10/2026)",
+            "createdAt": "2026-10-28T04:29:33Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 2,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6460775062",
+            "heading": "GD-U-A1 — Intelligence/autonomie gouvernée : code, tests, preuves (2026-10-28)",
+            "createdAt": "2026-10-28T04:36:32Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 3,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6460935930",
+            "heading": "Checkpoint canonique — Bifurcation GD-U-MAX / GD-U-COMPOSE / GD-U-CONTINUITY, 2026-10-28",
+            "createdAt": "2026-10-28T04:49:21Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 4,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461019845",
+            "heading": "Checkpoint GD-U-EXPOSE — catalogue additif + méthode de travail, RED → GREEN → REGRESSION (2026-10-28)",
+            "createdAt": "2026-10-28T04:55:57Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 5,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461198392",
+            "heading": "GD-U-02A/B — exécuteurs MCP réels + preuves de permissions GitHub/Plesk/S1/S2 — GREEN (2026-10-28)",
+            "createdAt": "2026-10-28T05:10:03Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 6,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461346563",
+            "heading": "Checkpoint de continuité GD-U-02C — véritable exécuteur Plesk borné, branche #355 (2026-10-28)",
+            "createdAt": "2026-10-28T05:21:07Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 7,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461356935",
+            "heading": "GD-U-02C — Checkpoint FINAL GREEN au HEAD exact (2026-10-28)",
+            "createdAt": "2026-10-28T05:21:54Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 8,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461545353",
+            "heading": "GD-U-02D-A — Raccordement aux véritables autorités runtime, contrôle des verrous Plesk, CI GREEN (28/10/2026)",
+            "createdAt": "2026-10-28T05:36:06Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 9,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461723405",
+            "heading": "Checkpoint additif — GD-U-02D-B1/B2 exécutés directement, sans attendre l'automatisation (28/10/2026)",
+            "createdAt": "2026-10-28T05:47:07Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 10,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461731964",
+            "heading": "GD-U-02D-B1/B2 — Validation finale GREEN au HEAD exact (28/10/2026)",
+            "createdAt": "2026-10-28T05:47:37Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 11,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461800692",
+            "heading": "GD-U-02 — Parcours de tests pas à pas, étape 0/1 READ-ONLY attestée (2026-10-28 ~05:50 UTC)",
+            "createdAt": "2026-10-28T05:51:26Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 12,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6461976360",
+            "heading": "GD-U-02D-B3a — liaison authentifiée au transport MCP existant, RED → GREEN → REGRESSION (28/10/2026)",
+            "createdAt": "2026-10-28T06:03:22Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 13,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6462130595",
+            "heading": "<!-- codex-pull-request-review-summary -->",
+            "createdAt": "2026-10-28T06:14:17Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 14,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6462136877",
+            "heading": "Checkpoint GD-U-02D-B3b/B3c — construction directe, CI finale SUCCESS et ouverture de la revue gouvernée (28/10/2026)",
+            "createdAt": "2026-10-28T06:14:45Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 15,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4397495626",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Resolve the repository manifest from the compiled runtime layout**",
+            "createdAt": "2026-10-28T06:17:03Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 16,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4397495634",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Bind installation observations to the exact repository**",
+            "createdAt": "2026-10-28T06:17:03Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 17,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5678575305",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-28T06:17:03Z",
+            "kind": "review"
+          },
+          {
+            "order": 18,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6462344040",
+            "heading": "Checkpoint GD-U-02D-B3d — Ticket E3 à usage unique, atomique, gouverné (2026-10-28)",
+            "createdAt": "2026-10-28T06:29:02Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 19,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4397571618",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Accept the existing E3 issuer's base64url signatures**",
+            "createdAt": "2026-10-28T06:29:18Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 20,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5678675604",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-28T06:29:18Z",
+            "kind": "review"
+          },
+          {
+            "order": 21,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6462497063",
+            "heading": "GD-U-02D-B3e — Route web Plesk existante, branche PR #355 — checkpoint additif (2026-10-28)",
+            "createdAt": "2026-10-28T06:39:49Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 22,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6462502982",
+            "heading": "GD-U-02D-B3e — CI finale GREEN au HEAD exact",
+            "createdAt": "2026-10-28T06:40:14Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 23,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5678772770",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-28T06:42:47Z",
+            "kind": "review"
+          },
+          {
+            "order": 24,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4397648347",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate release evidence against the consumption clock**",
+            "createdAt": "2026-10-28T06:42:48Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 25,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4397648357",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve approvals when a reviewer subsequently comments**",
+            "createdAt": "2026-10-28T06:42:48Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 26,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6462636086",
+            "heading": "GD-U-02D-B3f — Lecture gouvernée HTTP Web E3 → transport MCP OAuth réel, sans inférence de privilège",
+            "createdAt": "2026-10-28T06:49:08Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 27,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6462840458",
+            "heading": "GD-U-02D-B3g — garde de fraîcheur E3 au moment de la consommation (2026-10-28)",
+            "createdAt": "2026-10-28T07:01:31Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 28,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4397789675",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Sample the release clock after fetching the GitHub attestation**",
+            "createdAt": "2026-10-28T07:04:14Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 29,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5678966443",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-28T07:04:14Z",
+            "kind": "review"
+          },
+          {
+            "order": 30,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6463110344",
+            "heading": "GD-U-02D-B3h — Intégrité des validations GitHub, RED → GREEN → REGRESSION — 28 octobre 2026",
+            "createdAt": "2026-10-28T07:17:53Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 31,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6463273190",
+            "heading": "GD-U-02 — Demande explicite d’activation du parcours d’écriture Plesk (28/10/2026)",
+            "createdAt": "2026-10-28T07:27:36Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 32,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6463812256",
+            "heading": "GD-U-02D-B3i — Revue GitHub à horodatage ambigu, RED → GREEN → REGRESSION (28/10/2026)",
+            "createdAt": "2026-10-28T08:00:15Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 33,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5679516335",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-28T08:03:35Z",
+            "kind": "review"
+          },
+          {
+            "order": 34,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4398205930",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reject outstanding change requests before attesting approval**",
+            "createdAt": "2026-10-28T08:03:36Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 35,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4398205936",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Bind the subdomain preflight to the blueprint's actual target**",
+            "createdAt": "2026-10-28T08:03:36Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 36,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6464804692",
+            "heading": "GD-U-02D-B3j — checkpoint de reprise / admission Plesk en HOLD (28/10/2026, observation en lecture seule)",
+            "createdAt": "2026-10-28T08:57:03Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 37,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6504905213",
+            "heading": "GD-U-02D-B3i — MANDAT DEMANDÉ, NON ACCORDÉ : revue humaine indépendante + admission E3/OAuth + écriture Plesk bornée (29/10/2026)",
+            "createdAt": "2026-10-29T18:22:06Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 38,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6505012639",
+            "heading": "GD-U-02 — Relecteur demandé sur PR #355 (29 octobre 2026)",
+            "createdAt": "2026-10-29T18:27:12Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 39,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703518598",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-29T19:09:29Z",
+            "kind": "review"
+          },
+          {
+            "order": 40,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416758724",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct the regex escaping in the real-ticket regression test**",
+            "createdAt": "2026-10-29T19:09:30Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 41,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6506067110",
+            "heading": "GD-U-02D — Traitement gouverné des 7 constats de revue actifs, HEAD exact et CI verte (29/10/2026)",
+            "createdAt": "2026-10-29T19:15:14Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 42,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416831863",
+            "heading": "Correction: `src/provisioning/universalAdminLiveProbe.ts` cherche désormais le manifeste dans les layouts source `src/` et compilé `dist/src/`, et ne suppose pas sa prése",
+            "createdAt": "2026-10-29T19:16:19Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 43,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703614067",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:16:19Z",
+            "kind": "review"
+          },
+          {
+            "order": 44,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416832706",
+            "heading": "Correction: observation d'installation désormais liée par `repository` au nom de dépôt exact, avec refus du cas `même compte / autre dépôt`. Régression: `tests/githubInst",
+            "createdAt": "2026-10-29T19:16:23Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 45,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703615323",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:16:23Z",
+            "kind": "review"
+          },
+          {
+            "order": 46,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416833716",
+            "heading": "Correction: schéma E3 exact du vrai émetteur HMAC Base64URL (43 caractères), sans hex-only ni variante simulée. Test appelle `issueWebConsentTicket` et `verifyWebConsentT",
+            "createdAt": "2026-10-29T19:16:29Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 47,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703616773",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:16:29Z",
+            "kind": "review"
+          },
+          {
+            "order": 48,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416834719",
+            "heading": "Correction B3g existante revalidée: garde de fraîcheur de snapshot et expiration du verrou par rapport à l'horloge fiable au moment de l'admission, recontrôlée avant cons",
+            "createdAt": "2026-10-29T19:16:34Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 49,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703618178",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:16:34Z",
+            "kind": "review"
+          },
+          {
+            "order": 50,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416835600",
+            "heading": "Correction complémentaire: dans `src/provisioning/pleskE3GovernedConsumption.ts`, l'attestation provider est obtenue AVANT d'échantillonner `ports.now()`, puis évaluée su",
+            "createdAt": "2026-10-29T19:16:39Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 51,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703619475",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:16:39Z",
+            "kind": "review"
+          },
+          {
+            "order": 52,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416836578",
+            "heading": "Correction: `src/github/observeGithubReviewAndCi.ts` refuse les demandes `CHANGES_REQUESTED` encore décisives de tout autre relecteur, même si une autre approbation et CI",
+            "createdAt": "2026-10-29T19:16:44Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 53,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703620851",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:16:44Z",
+            "kind": "review"
+          },
+          {
+            "order": 54,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416837401",
+            "heading": "Correction: blueprint SUBDOMAIN exige maintenant `target.input.serverId===blueprint.serverId` ET `target.input.parentDomain===blueprint.domain`. Régression `tests/univers",
+            "createdAt": "2026-10-29T19:16:49Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 55,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703622028",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:16:49Z",
+            "kind": "review"
+          },
+          {
+            "order": 56,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416848868",
+            "heading": "Correction effective au commit `7b427c3c25a57289d94d3a8a64aa9e30a9573146` : l'assertion utilise désormais la regexp à échappements simples `^\\d{13}\\.[A-Za-z0-9_-]{43}$`. ",
+            "createdAt": "2026-10-29T19:17:49Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 57,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703636365",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:17:49Z",
+            "kind": "review"
+          },
+          {
+            "order": 58,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416849872",
+            "heading": "Contre-vérification complémentaire: `COMMENTED`/`PENDING` ne supplantent plus une approbation décisive; `CHANGES_REQUESTED`/`DISMISSED` le peuvent. Régressions de cet ord",
+            "createdAt": "2026-10-29T19:17:53Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 59,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703637577",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T19:17:53Z",
+            "kind": "review"
+          },
+          {
+            "order": 60,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6506330640",
+            "heading": "GD-U-02D-B3i — propriétaire : consentement fonctionnel général, absence de relecteur humain tiers (29 octobre 2026)",
+            "createdAt": "2026-10-29T19:27:57Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 61,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6506344077",
+            "heading": "**B3i addendum — CI HEAD exact :** commit `8248fc86679a2e4cacb4a81168513d7f349b11c5`, [MCP CI #40940191848](https://github.com/Patricked-code/MCP/actions/runs/40940191848",
+            "createdAt": "2026-10-29T19:28:38Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 62,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416982377",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Evaluate Plesk admission against a current trusted clock**",
+            "createdAt": "2026-10-29T19:31:00Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 63,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4416982384",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Bind the successful workflow run to the requested PR**",
+            "createdAt": "2026-10-29T19:31:00Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 64,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5703802966",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-29T19:31:00Z",
+            "kind": "review"
+          },
+          {
+            "order": 65,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4417185672",
+            "heading": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Register the pairing tool through the catalogue decorator**",
+            "createdAt": "2026-10-29T19:52:01Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 66,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5704056922",
+            "heading": "<!-- codex-review-receipt:v1 -->",
+            "createdAt": "2026-10-29T19:52:01Z",
+            "kind": "review"
+          },
+          {
+            "order": 67,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6506923317",
+            "heading": "GD-U-02D-B3i — Liaison authentifiée navigateur E3 ↔ transport OAuth MCP : implémentation, sécurité et continuité (29 octobre 2026)",
+            "createdAt": "2026-10-29T19:57:12Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 68,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6506945487",
+            "heading": "GD-U-02D-B3i — Validation finale du HEAD exact après durcissement et contre-revue",
+            "createdAt": "2026-10-29T19:58:20Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 69,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4417862578",
+            "heading": "Correctif ajouté sur cette même PR au commit `01b8ef55b328df1d111f81bf3b1ee02a8cb012ba` : horloge serveur échantillonnée après la lecture d'autorité, puis seconde lecture",
+            "createdAt": "2026-10-29T21:02:54Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 70,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5704924184",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T21:02:54Z",
+            "kind": "review"
+          },
+          {
+            "order": 71,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#discussion_r4417863018",
+            "heading": "Correctif ajouté au commit `583791dfafa1f2adc5be81060f175916336dcbbe` : `observeGithubReviewAndCi` impose `workflow.pull_requests[].number === input.pullRequestNumber` ; ",
+            "createdAt": "2026-10-29T21:02:57Z",
+            "kind": "inline-review"
+          },
+          {
+            "order": 72,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#pullrequestreview-5704924783",
+            "heading": "Commentaire / revue sans titre",
+            "createdAt": "2026-10-29T21:02:57Z",
+            "kind": "review"
+          },
+          {
+            "order": 73,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6508766770",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:29:26Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 74,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6508780504",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:30:11Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 75,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6509001770",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:42:30Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 76,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6509006006",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:42:45Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 77,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6509033786",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:44:21Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 78,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6509040747",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:44:45Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 79,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6509063030",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:46:01Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 80,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6509129342",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:49:49Z",
+            "kind": "pr-comment"
+          },
+          {
+            "order": 81,
+            "url": "https://github.com/Patricked-code/MCP/pull/355#issuecomment-6509134980",
+            "heading": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+            "createdAt": "2026-10-29T21:50:08Z",
+            "kind": "pr-comment"
+          }
+        ],
+        "url": "https://github.com/Patricked-code/MCP/pull/355",
+        "commentCount": 81
+      }
+    ]
+  }
+}

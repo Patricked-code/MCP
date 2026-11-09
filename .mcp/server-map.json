@@ -4,7 +4,8 @@
     "S1": {
       "role": "mcp_host_and_destination",
       "mainPath": "/opt/apps/wealthtech-mcp-ssh-bridge",
-      "mcpDomain": "https://mcp.wealthtechinnovations.com"
+      "mcpDomain": "https://mcp.wealthtechinnovations.com",
+      "targetProjectIds": []
     },
     "S2": {
       "role": "source_migration_server",

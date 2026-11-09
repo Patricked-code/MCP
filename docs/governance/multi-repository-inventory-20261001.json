@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "inventoryId": "w3-b3-multi-repository-inventory-20261001",
+  "repository": "Patricked-code/MCP",
+  "observedMainSha": "661a0517aebb3bc6dafe4eec4afc3677820ed510",
+  "observedAt": "2026-10-01T18:40:00Z",
+  "blueprintId": "TB-W3-B3-01",
+  "workItemId": "PB-B3",
+  "lotId": "B3.1",
+  "integrationSlot": "context.multi-repository",
+  "status": "PASS_WITH_EVIDENCE",
+  "runtimeRequired": false,
+  "githubOnlyPossible": true,
+  "scope": "SOURCE_LITERALS_AND_TOOL_SURFACE_FOR_TARGET_SCOPE",
+  "coreAuthorities": {
+    "targetScopeSchema": "src/operationalMemory/targetScope.ts",
+    "targetScopeAcceptedBy": [
+      "GovernedSessionService.openSession/resumeSession/autoResumeCompatibleSession (OpenSessionInput.targetScope)",
+      "GovernedTaskQueue.reconcileIntent (targetScopeContainsRepository)",
+      "GovernedLockRecord.targetScope",
+      "BootstrapReceipt.targetScope/targetContext",
+      "GovernedOperationalContext.targetScope/targetContext"
+    ],
+    "repositoryRecordsGeneric": true,
+    "historicalRecordsWithoutTargetScopeKeepMcpMeaning": true
+  },
+  "toolSurface": {
+    "targetScopeExposedByAnyTool": false,
+    "pinnedRepositoryInputs": [
+      "mcp_open_governed_session.repository",
+      "mcp_resume_governed_session.repository",
+      "mcp_acquire_governed_lock.scope.repository.key",
+      "mcp_reconcile_agent_intent.repository"
+    ]
+  },
+  "residualSingleRepositoryConsumers": [
+    {
+      "path": "src/tools/governedSessions.ts",
+      "disposition": "GENERALIZE_IN_B3_2",
+      "detail": "Open/resume/lock tool inputs pin repository to the MCP literal and accept no TargetScope although the session and lock services support it."
+    },
+    {
+      "path": "src/tools/governedTasks.ts",
+      "disposition": "GENERALIZE_IN_B3_2",
+      "detail": "mcp_reconcile_agent_intent pins repository to the MCP literal and cannot pass a TargetScope to the queue."
+    },
+    {
+      "path": "src/operationalMemory/taskQueue.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Without TargetScope the historical MCP repository is the only in-scope target; with TargetScope membership is checked. Keep as the historical default."
+    },
+    {
+      "path": "src/operationalMemory/types.ts",
+      "disposition": "GENERALIZE_IN_B3_2",
+      "detail": "ClientToolSurfaceCapability.repositoryScope is a literal; client tool attestations cannot describe another governed repository."
+    },
+    {
+      "path": "src/currentState/service.ts",
+      "disposition": "GENERALIZE_IN_B3_2",
+      "detail": "CurrentStateInventory.repository is typed and emitted as the MCP literal."
+    },
+    {
+      "path": "src/server.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Transport auto-resume asks for MCP-repository sessions only; other scopes need explicit resume until a scope source exists."
+    },
+    {
+      "path": "src/governedContext/service.ts",
+      "disposition": "PRESERVE_DEFAULT_WITH_TARGET_SCOPE_OVERRIDE",
+      "detail": "Falls back to the MCP repository only when no session is bound; a bound session repository wins."
+    },
+    {
+      "path": "src/governedContext/github.ts",
+      "disposition": "GENERALIZE_IN_B3_2",
+      "detail": "The GitHub work-state observer (commits, pulls, checks, reviews, rulesets) is hard-coded to owner/repo of MCP and ignores the session repository or TargetScope."
+    }
+  ],
+  "legitimateSelfManagementBoundaries": [
+    {
+      "path": "src/deploy/githubOidc.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "OIDC policies bind MCP own workflows (deploy, evidence, CA bootstrap, stablecoin dispatcher) to this exact repository by design."
+    },
+    {
+      "path": "src/deploy/s1Deploy.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Governed deploy of the MCP runtime itself on S1."
+    },
+    {
+      "path": "src/liveState/engine.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Live State observes the MCP runtime/repository alignment."
+    },
+    {
+      "path": "src/liveState/collect.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Live State collectors for the MCP runtime."
+    },
+    {
+      "path": "src/tools/selfManagement.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Self-management project card of the MCP bridge."
+    },
+    {
+      "path": "src/tools/mcpGitSync.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Read-only/guarded git sync of the MCP checkout on S1."
+    },
+    {
+      "path": "src/governedContext/candidateContinuity.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "Historical PRECODE candidate continuity bound to the PR #95 branch; not a runtime multi-repository consumer."
+    }
+  ],
+  "verdict": "CORE_MULTI_REPOSITORY_TOOL_SURFACE_SINGLE_REPOSITORY",
+  "nextBlueprint": {
+    "id": "TB-W3-B3-02",
+    "requiredBehavior": "Propagate validated repositoryId/mappingId/TargetScope additively through the five GENERALIZE_IN_B3_2 consumers while preserving historical single-repository records and defaults."
+  },
+  "forbiddenSimplifications": [
+    "PROJECT_SHA_SIMPLIFICATION",
+    "PARALLEL_REGISTRY",
+    "REINTERPRETING_RECORDS_WITHOUT_TARGET_SCOPE"
+  ],
+  "runtimeSideEffects": {
+    "runtimeTasksCreated": 0,
+    "governedSessionsCreated": 0,
+    "runtimeLocksCreated": 0,
+    "serverMutations": 0
+  }
+}

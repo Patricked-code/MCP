@@ -1,4 +1,374 @@
 # CHANGELOG.md
+## 2026-10-23 — PR #350 : pilote GRT /gouvern et Plesk S1/S2 (non déployés)
+
+- Ajouts sans migration : prévisualisation Plesk, portail GRT authentifié, archive privée épinglée et fournisseur GitHub App optionnel.
+- Autorités runtime des nouvelles écritures Plesk et GRT refusées par défaut jusqu'aux preuves session/claim/locks existantes. Aucune écriture sur S1/S2 ni fusion main.
+- Tests RED/GREEN de concurrence, SHA256, permissions et consentement ; CI/revue exact-HEAD avant déploiement.
+- Source : issue #349, PR #350, checkpoint docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md.
+
+
+## 2026-10-16 — Entrée commune des agents et handoff PCM-03/GWB-04
+
+- Directive de coordination ajoutée dans le canal GitHub existant : [issue #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094). Entrées `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/governance/README.md` renforcées par une marche à suivre testable de reprise à froid.
+- Distinction explicite : PR #300/CI/Deploy terminés au SHA `cc31ce12bea236b4cfb31d99ecee700c543f0c17`, mais GWB04 H-01/K-01 et GWB05..09 non certifiés. Vérification live requise avant tout write ; les snapshots OIDC sont datés.
+- Seulement de la documentation et un test de découverte. Pas de nouvelle Task/Session/Claim/Lock, pas de permission nouvelle, pas de code fonctionnel ou de changement de serveur.
+
+## 2026-10-15 — Reconnaissance des 18 READY et anti-collision de reprise
+
+- Matrice GitHub + Program Backlog + sondes OIDC des 18 READY, chevauchements possibles de PR et absence actuelle de Session ACTIVE ; test de cohérence sans modification fonctionnelle ni runtime.
+
+
+## 2026-10-15 — GWB03-02 : domaine F-04, 26 revues et limites connues
+
+- Archive documentaire et test de traçabilité sur 26 constats de PR #267, 18 liens source/test, sans statut DONE induit.
+- Quatre limites déjà répertoriées issue #268 restent attachées à la gouvernance existante, aucune écriture serveur ou code de résolution des domaines.
+
+
+## 2026-10-15 — GWB03-01 : réconciliation bornée des constats F-03 de PR #261
+
+- Ajout d'une preuve documentaire source/test pour 17 des 73 constats historiques de PR #261 (54 P1 / 19 P2), chaque verdict runtime restant `UNKNOWN` ; contrôle automatisé de non-surinterprétation.
+- Mise en évidence de deux politiques de ressources à vérifier (maxima CPU/RAM/PID et rotation de logs) sans modifier le provisioning ni la queue officielle ; rattachement à l'issue existante #262.
+- Réemploi du chemin GitHub direct / PR / CI, sans Codex ni write serveur.
+
+
+## 2026-10-15 — Carte de priorité et protocole commun multi-agents
+
+- Création de `docs/governance/mcp-priority-convergence-map-20261015.json` : quinze jalons PCM-00..14, planification liée aux 94 blueprints réellement existants, dépendances, sorties probantes, protocoles d'arrivée/ownership/collisions/checkpoint.
+- Navigation depuis `README.md`, `AGENTS.md`, `CLAUDE.md`, `TASKS.md` et `docs/governance/README.md` ; intégration au `SUIVI.md` et contrôles de non-régression.
+- Pas de seconde autorité de tâches, pas de branch/PR codage sans scope autorisé, pas de nouveau moteur de dispatch, pas de mutation OAuth ou serveur ; les travaux indépendants peuvent avancer sans gate artificielle.
+
+
+## 2026-10-15 — Reprise froide des agents et synchronisation documentaire de l'audit
+
+- Ajout de la navigation vers le pacte, le Program Backlog V2, les archives GWB-00..09, les preuves #290..292 et l'issue maîtresse #235 depuis les entrées `README.md`, `AGENTS.md` et `docs/governance/README.md`.
+- `MASTER_RESUME_MEMORY.md` signale explicitement son état du 5 octobre comme historique ; `governed-audit-continuation-workblock-20261009.json` conserve le checkpoint antérieur en historique et publie la progression documentaire observée sur `main@b187953de89d8f6529e2af97abc1de4570c53146`.
+- Aucun code fonctionnel, schéma runtime, permission, Task/Session/Lock/Claim, OAuth ni serveur modifié. Le changement est une projection de découverte/handoff, soumise à CI puis PR selon la gouvernance.
+
+
+## 2026-10-15 — GWB-02/GWB-04 sources historiques et triage GWB-03
+
+- [PR #290](https://github.com/Patricked-code/MCP/pull/290) : 94 blueprints rapprochés de la présence réelle des chemins code/tests ; aucune certification implicite.
+- [PR #291](https://github.com/Patricked-code/MCP/pull/291) : 282 commentaires de revue et 215 reviews archivés ; manifeste portant sur 135 PR. Dépôt de preuve, sans changement runtime.
+- [PR #292](https://github.com/Patricked-code/MCP/pull/292) : triage de 158 constats historiques P1/P2, avec liens vers les discussions et actions de vérification ; tous restent `UNKNOWN` concernant leur correction actuelle.
+- Références à la suite conservées dans `TASKS.md` et `SUIVI.md`. Aucun nouveau registre Task/Claim/Lock ni autorisation S1.
+
+
+## 2026-10-15 — Priorité opérationnelle GitHub Actions/OIDC et reprise du déploiement MCP
+
+- Rappel documentaire de la source canonique `.mcp/github-first-operational-policy.json` : GitHub direct puis GitHub Actions/OIDC ; bridge interactif réservé aux capacités runtime sans fallback autorisé.
+- Les captures du propriétaire montrent le refus `403 access_denied` sur `/oauth/authorize`, sans cause exacte prouvée ; suivi de correction conservé dans PR #207 sans empiéter sur son claim.
+- PR #275 fusionnée à `54ac2edae8701a8adc6f1c3b13088cf0cd6cafb2` : CI #38783796158 et Governed Deploy #38783796272 **SUCCESS**. Sondes GitHub Actions/OIDC #282–#288 enregistrées. Aucun nouveau mécanisme de tâches ou d'autorité.
+
+
+## 2026-10-11 — Audit gouverné et checkpoint de déploiement (PR #275)
+
+- Fusion sans suppression de la PR #274 dans la branche du bloc GWB-00..09 ; seuls les deux fichiers propres au workblock restent dans son delta initial par rapport à `main`. Revalidation CI sur le HEAD actualisé exigée.
+- `SUIVI.md` consigne les preuves OIDC read-only S1 (#276–#280), le drift GitHub/S1, l'échec de Governed Deploy sur `main@c91c1a` (`HTTP 502` sur `/deploy/github/s1/start`), ainsi que l'analyse bornée `src/deploy/routes.ts` : erreur interne `runWrite` possible mais non confirmée sans réponse et logs serveur.
+- Les travaux restent non autoritaires : aucun Task runtime, claim, lock, fusion ni déploiement ne résulte du workblock lui-même.
+
+
+## 2026-10-09 — W3 `TB-W3-F-04` incrément 1 déployé
+
+- PR #267 fusionnée (`5b631eb`), Governed Deploy #138 attesté pour le SHA exact. Limites connues : issue #268.
+
+## 2026-10-08 — W3 `TB-W3-F-04` Domain binding, incrément 1 (candidate)
+
+- Live State inventorie en lecture seule les domaines servis par S1 et S2 (`src/liveState/servedDomains.ts`). La résolution de domaine C5 consomme cette observation par défaut : un domaine déclaré et servi se résout, et une absence observée devient `DOMAIN_NONE_CONFIRMED`. Une lecture indisponible reste `UNVERIFIED`.
+- Après revue : inventaire au niveau par domaine de Plesk (domaines imbriqués compris), échec de `find` propagé, entrée non conforme rendant l'inventaire indisponible, un inventaire par serveur (S1 et S2), observation restreinte aux domaines déclarés du projet sélectionné.
+- Second round : nom brut validé avant normalisation, répertoires wildcard Plesk exclus, aucune observation pour un projet sans domaine déclaré. Les alias Plesk restaient non inventoriés.
+- Troisième round : l'inventaire lit les enregistrements Plesk des noms actifs servis (domaines actifs avec service web et alias web actifs), au lieu des répertoires que conserve un site suspendu ; TLD Punycode acceptés.
+- Quatrième round : abonnement actif exigé, labels Punycode validés par IDNA, fraîcheur calculée par inventaire. L'alias `www.` généré par Plesk reste non inventorié (limite connue, échec fermé).
+- Cinquième round : l'observation est restreinte par abonnement Plesk (propriété observée) et non plus par liste de noms déclarés ; un nom non déclaré de l'abonnement du projet reste visible.
+- Sixième round : propriété d'abonnement tirée des `serverPath` GitRegistry, requête plafonnée, collecte concurrente, déclarations Unicode comparées en Punycode, contrat `DOMAIN_BINDING` mis à jour.
+- Septième round : propriété limitée aux `realPath` vérifiés, abonnement partagé entre projets rendu indisponible, enregistrement web `DomainServices` actif exigé. Aucun projet actuel n'a encore de chemin vérifié : C5 reste `UNVERIFIED` pour eux.
+- Huitième round : l'enregistrement web doit être lié à une adresse IP.
+
+## 2026-10-08 — W3 F.2 clôture
+
+- `TB-W3-F-03` DONE : PR #261 fusionnée, déployée et attestée ; le runtime de projet est provisionnable via la surface consentie (inerte sans cible S1). Limites connues : issue #262.
+
+## 2026-10-07 — W3 F.2 Project runtime provisioning, incrément 3 (candidate)
+
+- Surface consentie `/provisioning/project-runtime`, derrière la connexion web. Elle offre un plan en lecture seule, une soumission sous consentement E3 et une page de statut. Le consentement exige une origine identique et un ticket lié à la session et à la cible exacte ; création et activation sont séparées. Rien ne s'exécute sans `ENABLE_WRITE_TOOLS` ni cible configurée.
+- Admission de la révision avant toute écriture : historique revu de la branche officielle du mapping et CI ni en échec ni en cours (`src/provisioning/revisionAdmission.ts`).
+- Câblage de production de l'exécuteur (`src/provisioning/wiring.ts`). Les noms de la cible ne figurent plus sur les lignes `docker compose`.
+- `.mcp/provisioning-contracts.json` : la route est classée et rend le runtime de projet provisionnable.
+- Après revue :
+  - consentement lié à la cible résolue ;
+  - checkout vérifié par son empreinte avant toute activation ;
+  - inventaire limité au projet Compose du composant (deux composants d'un même dépôt restent distincts) ;
+  - cibles illisibles affichées `UNKNOWN` ;
+  - branche par défaut encodée comme un seul paramètre.
+- Après la seconde revue :
+  - Task Queue et verrous relus avant toute écriture ;
+  - règle `DEPLOY` de GitRegistry partagée avec D1 ;
+  - pilotes Compose limités aux valeurs par défaut ;
+  - empreinte sans pipeline ;
+  - archive bornée avant extraction ;
+  - attestation non écrite signalée ;
+  - base d'API GitHub Enterprise Server conservée ;
+  - `NO_OP` réservé au runtime complet et sain.
+- Après la troisième revue :
+  - fichier Compose analysé (`yaml` 2.9.1, épinglé) avant tout chargement par Compose, avec des listes de clés revues : `include`, `extends`, `env_file`, `label_file` et `use_api_socket` sont refusés quelle que soit leur écriture YAML ;
+  - modèle construit depuis ce fichier exact et contrôlé avec les mêmes listes (`--no-env-resolution` passée quand Compose la connaît, en seconde garde seulement) ;
+  - pont par défaut du moteur et réseaux ou volumes nommés hors du projet refusés ;
+  - options de sécurité, journalisation et réservations de périphériques bornées ;
+  - constats nommant la clé refusée.
+- Après la quatrième revue : volumes restants d'un job échoué bloquant une nouvelle création ; noms d'image de build refusés ; empreinte incluant le mode complet.
+- Après la cinquième revue : réplicas bornés, images épinglées par empreinte, `NO_OP` vérifié par l'empreinte du checkout, propriétaire et groupe dans l'empreinte.
+- Après la sixième revue : marqueur de confiance enregistré dans les données du job ; réseaux conservés bloquants ; réplicas attendus vérifiés ; IPAM par défaut ; plancher de capacité et quarantaine bornée.
+- Après la septième revue : noms réservés refusés ; parents de la cible résolus avant chaque écriture ; rollback sans recharger un fichier modifié ; entrées spéciales refusées par l'empreinte ; plancher de stockage Docker.
+- Après la huitième revue : Task Queue et verrous relus juste avant chaque écriture sur l'hôte ; révision admise depuis la branche officielle du mapping ; liens physiques refusés par l'empreinte ; capacité mesurée sur le parent de la cible et sur la quarantaine.
+- Après la neuvième revue : coordination relue avant le rollback ; politique de redémarrage effacée avant l'arrêt par labels ; capacités de fichier dans l'empreinte et ACL refusées ; sources de bind exigées dans le checkout.
+- Après la dixième revue : conteneurs arrêtés inclus dans le rollback par labels ; santé `healthy` exigée ; plafonds mémoire, CPU et processus exigés ; pré-contrôle avant téléchargement ; admission relue après téléchargement.
+- Décision du propriétaire sur les builds : images des Dockerfiles épinglées par empreinte, `build.pull` et arguments `BUILDKIT_*` refusés, images exécutées attestées ; plancher de stockage conservé.
+- Après la douzième revue : `NO_OP` vérifie les images exécutées ; seul le frontend `docker/dockerfile` épinglé est admis ; l'attestation garde l'admission finale.
+- Après la treizième revue : admission relue avant chaque écriture ; empreinte recalculée après la santé ; images complètes exigées ; aucune écriture après une collision.
+- Après la quatorzième revue : journaux bornés, plages d'adresses par défaut, `no-new-privileges` jamais désactivé, enregistrement des images obligatoire, marqueur revérifié après la santé, replanification avant chaque écriture.
+- Après la quinzième revue : branche officielle relue avant chaque écriture, images de réactivation identiques exigées, limites réelles vérifiées au `NO_OP`.
+- Après la seizième revue : images comparées par service, `stop_grace_period` ≤ 60 s, chemins à caractères de contrôle refusés, enregistrement de marqueur exigé, abandon de préparation soumis à la coordination.
+
+## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 2 (candidate)
+
+- Exécuteur borné à la cible (`src/provisioning/runtimeExecutor.ts`), encore relié à aucune surface. Il re-observe et replanifie avant toute écriture, télécharge la révision exacte, prépare, contrôle le modèle Compose, crée avec un marqueur, puis active sous son propre consentement. En cas d'échec, il s'arrête sans les volumes et met en quarantaine, sans rien supprimer ; chaque job est attesté.
+- Politique Compose (`src/provisioning/composePolicy.ts`) et téléchargement d'archive borné à `codeload.github.com` (`src/provisioning/sourceArchive.ts`).
+
+## 2026-10-06 — W3 F.2 Project runtime provisioning, incrément 1 (candidate)
+
+- Live State inventorie en lecture seule le chemin déclaré et l'espace Docker provisionné des composants de la cible configurée ; C4 peut prouver un `NO_RUNTIME` ou constater le runtime provisionné.
+- `src/provisioning/projectRuntime.ts` planifie le provisioning d'un runtime de projet selon le contrat `PROJECT_RUNTIME`. Il cible le chemin exact déclaré et gouverné, ne crée qu'un runtime réellement absent, garde des consentements distincts pour la création et l'activation, et n'écrase jamais l'existant. Aucune exécution.
+
+## 2026-10-05 — W3 F.0 livré et attesté
+
+- PR #257 fusionnée au SHA `d34899b` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37390662478` / `37390664427`.
+- `TB-W3-F-01` clôturé DONE ; `PB-F` partiellement livré. `TB-W3-ADMIN-01`, `TB-W3-F-03` et `TB-W3-F-04` deviennent READY.
+
+## 2026-10-05 — W3 F.0 Provisioning capability decomposition (candidate)
+
+- Nouvelle politique machine `.mcp/provisioning-contracts.json`. Elle classe toutes les primitives d'écriture enregistrées, les routes HTTP mutantes et les workflows. Elle définit un contrat par type de ressource : dépôt, projet/runtime, binding de domaine. Aucune primitive ni permission n'est ajoutée.
+- `src/governance/provisioningContracts.ts` valide cette politique contre la surface enregistrée et le Program Backlog. Il indique aussi ce qui est provisionnable : aucun type de ressource ne l'est encore, et chaque lacune est portée par un blueprint ouvert.
+
+## 2026-10-05 — W3 E3 livré et attesté ; chantier E terminé
+
+- PR #255 fusionnée au SHA `61b90a1` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37359797521` / `37359801316`.
+- `TB-W3-E3-01` clôturé DONE ; `PB-E` DONE. `TB-W3-F-01` et quatre couches GGCC GitHub deviennent READY.
+
+## 2026-10-05 — W3 E3 Consent & Validation (candidate)
+
+- Les formulaires de connexion GitHub de `/github` et `/git` exigent un consentement explicite, validé côté serveur avant tout appel GitHub ou toute écriture : même origine, ticket signé et expirant lié à la session web, consentement de remplacement de l'identifiant. Un refus ne modifie rien.
+- La découverte automatique des dépôts n'est plus déclenchée à chaque connexion : elle exige son propre consentement, enregistré dans l'audit GitRegistry.
+
+## 2026-10-05 — W3 E2 livré et attesté
+
+- PR #253 fusionnée au SHA `e51e995` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37358211199` / `37358214601`.
+- `TB-W3-E2-01` clôturé DONE ; `PB-E` reste PARTIALLY_IMPLEMENTED. Le consentement explicite des créations et mutations est porté par `TB-W3-E3-01`, qui devient READY.
+
+## 2026-10-05 — W3 E2 Context Completion Wizard (candidate)
+
+- Le contexte gouverné projette `contextCompletion`, l'étape unique de la première lacune d'E1 : appeler l'outil nommé, demander à l'opérateur avec le lien de la surface existante, proposer un changement gouverné, réconcilier ou signaler l'inobservable. Les entrées à ne pas demander sont listées.
+- `/github` et `/git` ne demandent le token GitHub que s'il est absent, refusé ou aveugle à l'organisation ; un identifiant valide est restauré, son remplacement devient facultatif, et une observation impossible ne demande rien. `/git?repository=Owner/Name` montre le mapping GitRegistry du dépôt.
+- `/login` ne renvoie qu'à un chemin de la même origine. La liste fixe de questions de paramétrage de `/github` est retirée. Aucune ressource n'est créée ni modifiée.
+
+## 2026-10-05 — W3 E1 livré et attesté
+
+- PR #251 fusionnée au SHA `4dcc90d` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37321828298` / `37321832535`.
+- `TB-W3-E1-01` clôturé DONE ; `PB-E` PARTIALLY_IMPLEMENTED. Les entrées des sessions TargetScope non observées sont portées par `TB-W3-GGCC-GH-REPO-BRANCH`. `TB-W3-E2-01` devient READY.
+
+## 2026-10-05 — W3 E1 Missing-context Detection (candidate)
+
+- Le contexte gouverné projette `missingContext` : les entrées obligatoires encore absentes après la résolution automatique, dans l'ordre de leurs dépendances (identité OAuth, identité GitHub, dépôt, mapping projet, binding serveur). Seule la première lacune est exposée, avec sa nature (saisie, choix, réconciliation ou ré-observation) et l'autorité existante qui la complète.
+- Le prédicat OAuth du scope d'identité GitHub devient `isOauthConnectionContext`, partagé avec E1. Aucune question, autorisation, écriture ou nouvelle surface.
+
+## 2026-10-05 — Intake #236 : clarification `EXISTING_MCP_EXPOSURE_FIRST`
+
+- Clarification propriétaire absorbée dans PB-K (`CLARIFICATION-236-20261005`, `PB-K.nonRegression`, critères de `TB-W4-K-01`) : le cockpit se compose dans l'exposition MCP existante et le Governed Deploy, sans nouveau domaine ni route spéculative avant l'inventaire des routes, de l'authentification et de la sécurité. La readiness n'est pas modifiée.
+
+## 2026-10-05 — W3 D3 livré et attesté
+
+- PR #248 fusionnée au SHA `7c93316` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37317336321` / `37317340325`.
+- `TB-W3-D3-01` clôturé DONE ; `PB-D3` DONE. Les références prouvées des sessions liées à un dépôt TargetScope non observé sont portées par `TB-W3-GGCC-GH-REPO-BRANCH`. `TB-W3-E1-01` et `TB-W4-H-01` deviennent READY.
+
+## 2026-10-05 — W3 D3 Bootstrap Receipt Enrichment (candidate)
+
+- Le Bootstrap Receipt existant gagne un champ optionnel et borné `references` (GW-12) : la connexion OAuth de la session, ainsi que le dépôt, le projet et le mapping prouvés par la réalité projet et le périmètre D1, avec leur provenance et leur heure d'observation.
+- Aucune couche non prouvée n'est promue, les références d'un autre dépôt sont écartées, une observation en échec ne bloque jamais l'acquittement, et aucun principal, client, transport ou secret n'est enregistré. Un receipt sans références reste valide.
+
+## 2026-10-05 — W3 D2 livré et attesté
+
+- PR #246 fusionnée au SHA `1e4b78f` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37287158288` / `37287161565`.
+- `TB-W3-D2-01` clôturé DONE ; `PB-D2` DONE. L'autorisation attestée et l'éligibilité de dispatch fondée sur les capacités sont portées par `TB-W3-OAUTH-WRITE-SCOPE-01`. `TB-W3-D3-01`, les lots PR WRITE et les couches GGCC GitHub deviennent READY.
+
+## 2026-10-05 — W3 D2 Effective Capabilities (candidate)
+
+- Le contexte opérationnel gouverné projette `effectiveCapabilities` (GW-11) : pour chacune des quatorze classes de capacité GitRegistry du périmètre projet prouvé, l'intersection en échec fermé de la déclaration du mapping validé, de l'identité OAuth/GitHub, des couches de réalité, de l'état GitHub du dépôt, des règles héritées D1, des préconditions du WRITE gate et de l'autorisation attestée.
+- Une dimension non prouvée ne permet jamais : la capacité technique, l'identité ou la déclaration du registre n'impliquent aucune autorisation. Faute d'attestation, l'autorisation reste `UNKNOWN` et aucune capacité n'est effective. Le WRITE gate shadow est inchangé.
+
+## 2026-10-05 — W3 D1 livré et attesté
+
+- PR #244 fusionnée au SHA `87109f4` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37284270816` / `37284273785`.
+- `TB-W3-D1-01` clôturé DONE ; `PB-D1` DONE. Les rulesets des dépôts cibles sont portés par `TB-W3-GGCC-GH-RULESETS`, le canal Governed Deploy par `TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS`. `TB-W3-D2-01` devient READY.
+
+## 2026-10-05 — W3 D1 Existing Governance Inheritance (candidate)
+
+- Le contexte opérationnel gouverné projette `governanceInheritance` (GW-10) : contraintes branche, pull request, tests, déploiement, locks et écriture héritées par le périmètre projet prouvé, depuis le mapping GitRegistry (`governanceEvidence` additif, `selectedMapping.governance`), le ruleset GitHub observé, `.mcp/branch-governance.json` (lecteur borné, livré dans l'image), le Governed Lock Service et le WRITE gate.
+- La contrainte la plus stricte l'emporte. Toute preuve absente, périmée ou non observée donne `UNKNOWN`, jamais une permission. Rien n'est hérité sans périmètre prouvé.
+
+## 2026-10-05 — W3 C345-02 livré et attesté
+
+- PR #242 fusionnée au SHA `d4a9898` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37261508259` / `37261509926`.
+- `TB-W3-C345-02` clôturé DONE ; `PB-C345` DONE. L'observation d'ingress et le service des domaines sont portés par `TB-W4-I1-01`, la tête exacte des composants du TargetContext par `TB-W3-GGCC-GIT-READ`. `TB-W3-D1-01` devient READY.
+
+## 2026-10-05 — W3 C345-02 Project Reality acceptance (candidate)
+
+- Le contexte opérationnel gouverné projette `projectReality` : `src/github/projectReality.ts` compose les couches dépôt (GW-05), projet (GW-06), serveur (GW-07), runtime (GW-08), ingress et domaine (GW-09), une seule fois dans le service, quel que soit le chemin de cache.
+- Chaque couche est `VERIFIED`, `UNVERIFIED`, `STALE`, `AMBIGUOUS`, `CONFLICT` ou `NONE`. La réalité indique la première couche bloquante, les contradictions et les identifiants issus des seules couches vérifiées.
+- L'ingress n'a pas d'autorité d'observation : il reste `UNVERIFIED`, sauf surface publique confirmée absente.
+
+## 2026-10-05 — W3 C5 livré et attesté
+
+- PR #240 fusionnée au SHA `9131bd8` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37259482198` / `37259484407`.
+- `TB-W3-C5-01` clôturé DONE ; le service des domaines non observé est porté par `TB-W3-C345-02` et `TB-W4-I1-01` ; `TB-W3-C345-02` devient READY.
+
+## 2026-10-04 — W3 C5 Domain Resolution (candidate)
+
+- Le contexte GitHub gouverné projette `domainResolution` (GW-09) après les résolutions projet (C2) et serveur (C3). La projection repose sur les déclarations de domaine du GitRegistry V2 (`GitRegistryProjectEvidence.domainEvidence`) et sur l'observation courante du serveur.
+- Sans autorité d'observation de domaine, la surface reste `UNVERIFIED` (`DOMAIN_OBSERVATION_UNAVAILABLE`), jamais `NONE`.
+
+## 2026-10-04 — W3 C4 livré et attesté
+
+- PR #238 fusionnée au SHA `4654c9e` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37242868231` / `37242870056`.
+- `TB-W3-C4-01` clôturé DONE ; le résiduel d'ingress (ports, reverse proxy) est porté par `TB-W3-C345-02` ; `TB-W3-C5-01` reste READY.
+
+## 2026-10-04 — W3 C4 Runtime Resolution (candidate)
+
+- Le contexte GitHub gouverné projette `runtimeResolution` (GW-08) après `serverResolution` (C3). Il rattache les observations runtime bornées des autorités existantes (Live State pour le runtime MCP) aux composants du projet déclarés par le GitRegistry V2, en lecture seule et fail-closed.
+- Live State conserve le label compose borné de son conteneur observé (`composeProject`), ce qui permet de distinguer `DOCKER_COMPOSE` de `DOCKER`.
+
+## 2026-10-04 — Convergence des intakes #235 et #236
+
+- **Program Backlog V2 :**
+  - nouveaux work items `PB-K` (Super Admin Cockpit, `TB-W4-K-01..12`) et `PB-MCP-TERMINAL` (`TB-W4-MCP-FINAL-ACCEPTANCE`) ;
+  - condition terminale `GLOBAL_MCP_COMPLETE` à quatre dimensions ;
+  - rapport d'arrêt global `agentHandoffContract.globalStopReport`.
+- **Contrôle machine :** `validateProgramBacklogConvergence` expose `terminalAcceptanceGaps`. Il signale un blueprint obligatoire non rattaché à l'acceptation terminale, un lot gardé qui la bloquerait, ou l'absence du blueprint terminal.
+- **Couverture ROADMAP :** l'extracteur couvre `CHANTIER K`.
+- **Inventaire de convergence du Cockpit :** `docs/governance/super-admin-cockpit-convergence-20261004.json`.
+- **READY dérivés :** `TB-W3-A3-02`, `TB-W3-C4-01`, `TB-W3-C5-01`, `TB-W3-GGCC-GIT-READ`, `TB-W4-K-01`.
+
+## 2026-10-04 — W3 C3 livré et attesté
+
+- PR #233 fusionnée au SHA `dbc5a50` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37225118082` / `37225120093`.
+- `TB-W3-C3-01` clôturé DONE ; `TB-W3-C4-01` et `TB-W3-C5-01` deviennent READY.
+
+## 2026-10-04 — W3 C3 Server Resolution (candidate)
+
+- Le contexte GitHub gouverné projette `serverResolution` (GW-07) après la résolution projet C2 : serveur canonique, liaisons et chemins déclarés/vérifiés issus du GitRegistry V2, en lecture seule et fail-closed.
+- `GitRegistryProjectEvidence.serverBindings` expose les liaisons serveur du candidat V2 sans changer les autres projections.
+
+## 2026-10-04 — W3 DISPATCH-03 livré et attesté ; boucle de dispatch #222 complète
+
+- PR #231 fusionnée au SHA `6df23b9` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37223532065` / `37223533843`.
+- `TB-W3-DISPATCH-03` et `PB-DISPATCH` clôturés DONE ; READY recalculés : `TB-W3-A3-02`, `TB-W3-C3-01`, `TB-W3-GGCC-GIT-READ`.
+
+## 2026-10-04 — W3 DISPATCH-03 Connected-agent next-work projection (candidate)
+
+- Le Current-State Inventory expose `nextWork`, projection read-only du prochain travail de la session (reprise, claim compatible ou blueprint READY sans collision), sans claim ni création de tâche ; le contexte gouverné en dérive `nextAction`.
+- `mcp_claim_next_governed_task` saute un candidat bloqué localement lorsqu'un autre candidat compatible existe.
+
+## 2026-10-04 — W3 DISPATCH-02 livré et attesté
+
+- PR #229 fusionnée au SHA `870305f` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37221611227` / `37221613056`.
+- `TB-W3-DISPATCH-02` clôturé DONE ; `TB-W3-DISPATCH-03` devient READY.
+
+## 2026-10-04 — W3 DISPATCH-02 Resume-owned-first governed claim (candidate)
+
+- `mcp_claim_next_governed_task` rend d'abord la tâche active déjà possédée par la session, puis ne réclame que des tâches éligibles pour son TargetScope ; jamais de vol de tâche.
+
+## 2026-10-04 — W3 DISPATCH-01 livré et attesté
+
+- PR #227 fusionnée au SHA `c5fc1d7` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37220863383` / `37220865029`.
+- `TB-W3-DISPATCH-01` clôturé DONE ; `TB-W3-DISPATCH-02` devient READY.
+
+## 2026-10-04 — W3 DISPATCH-01 Blueprint-bound governed materialization (candidate)
+
+- Nouvel outil `mcp_materialize_program_blueprint` : au plus une tâche runtime par blueprint READY du Program Backlog déployé, via la Governed Task Queue existante, sans claim implicite.
+
+## 2026-10-04 — W3 B3.2 Operator-configured server target livré et attesté
+
+- PR #225 fusionnée au SHA `93d631e` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `37219684472` / `37219686641`.
+- `TB-W3-B3-02` et `PB-B3` clôturés DONE ; `TB-W3-DISPATCH-01`, `TB-W3-C3-01` et `TB-W3-GGCC-GIT-READ` deviennent READY.
+
+## 2026-10-04 — W3 B3.2 Operator-configured server target (candidate)
+
+- `.mcp/server-map.json` accepte `servers.S1.targetProjectIds` ; Live State en dérive un `TargetContext` identité seule depuis GitRegistry V2 ; sans configuration, rien ne change.
+- Sessions, reprises, intentions et locks acceptent des `targetMappingIds` : le `TargetScope` est construit par le serveur, jamais par l'agent.
+
+## 2026-10-04 — Convergence des intakes #220/#221/#222
+
+- B3.2 : décision propriétaire #220 enregistrée ; `TB-W3-B3-02` READY (V1 `OPERATOR_CONFIGURED_SERVER_TARGET`, extensible multi-projet).
+- Gates humaines : politique `humanGatePolicy` et catalogue des 22 gates ; la validation du programme refuse une gate non cataloguée ou une gate humaine auto-créée (`CLAUDE.md` §7.3).
+- Boucle de dispatch : `PB-DISPATCH` / `TB-W3-DISPATCH-01..03` séquencés après B3.2 ; lot `mcp:write` enregistré après A3.2.
+- Reprise : étape `REOBSERVE_PROGRAM_INTAKES` ajoutée au contrat de handoff.
+
+## 2026-10-01 — W4 G3 Tool Surface Attestation livré et attesté
+
+- PR #218 fusionnée au SHA `02f2da9` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36941423280` / `36941426233`.
+- `TB-W4-G3-01` et `PB-G3` clôturés DONE.
+
+## 2026-10-01 — W4 G3 Tool Surface Attestation (candidate)
+
+- Nouvel outil `mcp_attest_client_tool_surface` : attestation bornée (≤ 5 min, horodatée par le serveur, liée à la session) de la surface d'outils observée par le client.
+- Le contexte gouverné compare le catalogue serveur et la surface attestée (`proof.toolSurface`) ; la callabilité attestée alimente la réalité des capacités sans jamais valoir autorisation.
+
+## 2026-10-01 — W4 G2 Two-clock Presence livré et attesté
+
+- PR #215 fusionnée au SHA `e213209` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36939139244` / `36939142926`.
+- `TB-W4-G2-01` et `PB-G12` clôturés DONE ; `TB-W4-G3-01` débloqué.
+
+## 2026-10-01 — W4 G2 Two-clock Presence (candidate)
+
+- Deux horloges séparées : observation client réelle (OAuth) et sonde synthétique (`/health`, token partagé).
+- États de présence bornés (`ACTIVE_OBSERVED`, `RECENTLY_OBSERVED`, `STALE`, `UNKNOWN`, `AUTH_EXPIRED`) projetés en lecture seule dans `proof.clientPresence` du contexte gouverné. Aucun nouveau store.
+
+## 2026-10-01 — W4 G1 Client Presence livré et attesté
+
+- PR #213 fusionnée au SHA `90df50b` ; CI main et Governed Deploy réussis ; preuves OIDC S1 `36910252863` / `36910256304`.
+- `TB-W4-G1-01` clôturé DONE ; `TB-W4-G2-01` débloqué.
+
+## 2026-10-01 — W4 G1 Client Presence (candidate)
+
+- Les requêtes MCP authentifiées par OAuth sont journalisées comme observation client réelle (`client.observed`, digest du principal, au plus une par minute et par principal).
+- Le token partagé, les sondes `/health` et les heartbeats d'agent ne comptent jamais comme présence client. Aucun nouveau store.
+
+## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness livré et attesté
+
+- PR #211 fusionnée au SHA `e714350` ; CI main et Governed Deploy réussis ; probe S1 `36908751224` : 5 mappings, tous BLOCKED.
+- `TB-W3-C1-01` clôturé DONE ; activation du registre toujours fail-closed.
+
+## 2026-10-01 — W3 C1.1 GitRegistry V2 readiness evidence probe (candidate)
+
+- Nouveau probe GitHub OIDC read-only `mcp_git_registry_readiness` (S1) : readiness d'activation GitRegistry V2 par mapping, reason codes et digests uniquement.
+- Aucun nom de dépôt/projet, chemin, domaine ou credential publié ; fallback SSH fail-closed ; aucune mutation.
+
+## 2026-10-01 — W3 B3.1 multi-repository residual inventory
+
+- Inventaire machine-vérifié des hypothèses mono-dépôt restantes : cœur `TargetScope` multi-dépôt, surface d'outils encore figée sur `Patricked-code/MCP`.
+- `TB-W3-B3-01` DONE, `TB-W3-B3-02` débloqué ; aucun changement runtime.
+
+
+## 2026-10-01 — OAuth authorization consent livré et attesté
+
+- PR #208 fusionnée au SHA `2febc46` ; CI main `36905634628` et Governed Deploy `36905634643` réussis ; preuves OIDC S1 `36905914920` / `36905918563`.
+- `TB-W3-OAUTH-CONSENT-01` et `PB-OAUTH-CONSENT` clôturés DONE.
+
+
+## 2026-10-01 — OAuth authorization consent (candidate)
+
+- `/oauth/authorize` affiche désormais une page de consentement opérateur (client, hôte de redirection, accès demandé) au lieu d'émettre directement un code.
+- Le code n'est émis qu'après une approbation POST same-origin, authentifiée et portant un ticket HMAC lié à la demande exacte (10 minutes) ; un refus renvoie `access_denied`.
+- Échange de token, PKCE, login et validations inchangés ; aucun nouveau store ni autorité.
+- Program Backlog : `PB-OAUTH-CONSENT` / `TB-W3-OAUTH-CONSENT-01` (décision propriétaire, option 1).
+
 
 ## 2026-09-30 — Candidate OAuth continuity: bounded correlation + rotating refresh grants
 

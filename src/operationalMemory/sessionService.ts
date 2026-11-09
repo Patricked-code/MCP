@@ -10,14 +10,21 @@ import { createResumeSecret, hashResumeSecret, verifyResumeSecret } from './resu
 import type { TransportBindings } from './transportBindings.js';
 import type { TaskLifecycleCoordinator } from './taskLifecycleCoordinator.js';
 import {
+  createTargetScope,
   projectTargetContext,
+  targetScopeContainsRepository,
   targetScopeEquals,
   type TargetContext,
   type TargetScope
 } from './targetScope.js';
 import {
+  BootstrapReceiptReferencesSchema,
+  ClientToolSurfaceAttestationSchema,
   MAX_GOVERNED_SESSION_RECORDS,
+  type BootstrapProjectReferences,
   type BootstrapReceipt,
+  type BootstrapReceiptReferences,
+  type ClientToolSurfaceCapability,
   type GovernedCheckpoint,
   type GovernedSessionPublicRecord,
   type GovernedSessionRecord,
@@ -41,6 +48,8 @@ export type SessionRequest = {
 export type OpenSessionInput = {
   repository: GovernedRepositoryTarget;
   targetScope?: TargetScope;
+  /** B3.2: mapping ids resolved server-side against the Live State TargetContext. */
+  targetMappingIds?: string[];
   taskScope: string;
   workBranch: string | null;
   agentIdentity: string;
@@ -58,11 +67,15 @@ export type ResumeSessionInput = {
   resumeSecret?: string;
   repository: GovernedRepositoryTarget;
   targetScope?: TargetScope;
+  /** B3.2: mapping ids resolved server-side against the Live State TargetContext. */
+  targetMappingIds?: string[];
   taskScope: string;
   expectedSessionRevision: number;
 };
 
 export type GovernedRepositoryTarget = string;
+
+const HISTORICAL_REPOSITORY = 'Patricked-code/MCP';
 
 export type AutoResumeCompatibleSessionInput = {
   repository: GovernedRepositoryTarget;
@@ -111,6 +124,10 @@ export type GovernedSessionService = {
   createCheckpoint(input: CreateCheckpointInput, request: SessionRequest): Promise<GovernedCheckpoint>;
   pauseSession(input: SessionRevisionInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
   closeSession(input: SessionRevisionInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
+  attestClientToolSurface(
+    input: AttestClientToolSurfaceInput,
+    request: SessionRequest
+  ): Promise<GovernedSessionPublicRecord>;
   listVisibleSessions(request: SessionRequest): Promise<GovernedSessionPublicRecord[]>;
   getVisibleSession(
     governedSessionId: string,
@@ -128,6 +145,16 @@ export type SessionRevisionInput = {
   governedSessionId: string;
   expectedSessionRevision: number;
 };
+
+/** G3: the client declares what it observes; time, ids and binding are server-assigned. */
+export type AttestClientToolSurfaceInput = SessionRevisionInput & {
+  surface: string;
+  capabilities: Array<Omit<ClientToolSurfaceCapability, 'source'>>;
+  provenance?: string[];
+  validitySeconds?: number;
+};
+
+const MAX_CLIENT_TOOL_SURFACE_VALIDITY_SECONDS = 300;
 
 export type CreateCheckpointInput = SessionRevisionInput & {
   expectedStateVersion: number;
@@ -163,7 +190,77 @@ type GovernedSessionServiceOptions = {
   releaseLocksForSession?: (governedSessionId: string) => Promise<unknown>;
   taskLifecycleCoordinator?: TaskLifecycleCoordinator;
   audit?: OperationalAudit;
+  /**
+   * D3: observes the proven repository, project and mapping references of a
+   * visible session outside the session store. Without it, receipts keep
+   * their historical shape.
+   */
+  observeProjectReferences?: (
+    governedSessionId: string,
+    request: SessionRequest
+  ) => Promise<BootstrapProjectReferences | null>;
 };
+
+const MAX_RECEIPT_REFERENCE_REASONS = 10;
+
+function repositoryKey(value: string): string {
+  return value.trim().replace(/^github:/i, '').toLowerCase();
+}
+
+/**
+ * D3: the references a receipt carries. The connection comes from the session's
+ * own OAuth connection context; project references observed for another
+ * repository are dropped; nothing that fails the bounded schema is recorded.
+ */
+function receiptReferences(
+  session: GovernedSessionRecord,
+  observed: BootstrapProjectReferences | null,
+  at: Date
+): BootstrapReceiptReferences {
+  const context = session.connectionContext ?? null;
+  const connection = context?.identityAssurance === 'oauth_subject'
+    ? {
+        connectionContextId: context.connectionContextId,
+        identityAssurance: context.identityAssurance,
+        evidenceSource: context.evidenceSource,
+        createdAt: context.createdAt
+      }
+    : null;
+  const foreign = Boolean(
+    observed?.repository
+    && repositoryKey(observed.repository.id) !== repositoryKey(session.repository)
+  );
+  const project = observed && !foreign ? observed : null;
+  const reasonCodes = [
+    ...(connection ? [] : ['RECEIPT_CONNECTION_UNVERIFIED']),
+    ...(!observed ? ['RECEIPT_PROJECT_REFERENCES_UNOBSERVED'] : []),
+    ...(foreign ? ['RECEIPT_REFERENCE_BINDING_MISMATCH'] : []),
+    ...(project?.reasonCodes ?? [])
+  ];
+  const references = {
+    schemaVersion: 1 as const,
+    observedAt: project?.observedAt ?? at.toISOString(),
+    connection,
+    repository: project?.repository ?? null,
+    project: project?.project ?? null,
+    mapping: project?.mapping ?? null,
+    reasonCodes: [...new Set(reasonCodes)].sort().slice(0, MAX_RECEIPT_REFERENCE_REASONS)
+  };
+  const parsed = BootstrapReceiptReferencesSchema.safeParse(references);
+  return parsed.success
+    ? parsed.data
+    : {
+        ...references,
+        observedAt: at.toISOString(),
+        repository: null,
+        project: null,
+        mapping: null,
+        reasonCodes: [...new Set([
+          ...(connection ? [] : ['RECEIPT_CONNECTION_UNVERIFIED']),
+          'RECEIPT_PROJECT_REFERENCES_INVALID'
+        ])].sort()
+      };
+}
 
 function publicSession(session: GovernedSessionRecord): GovernedSessionPublicRecord {
   const { resumeSecretHash: _resumeSecretHash, ...visible } = session;
@@ -216,6 +313,26 @@ export function createGovernedSessionService(
   const getLiveState: () => Promise<SessionLiveStateProof> = options.getLiveState
     ?? (async () => ({ stateVersion: 0 }));
   const audit = options.audit ?? NOOP_OPERATIONAL_AUDIT;
+
+  /**
+   * B3.2: a scope requested by mapping ids is built from the Live State
+   * TargetContext (GitRegistry V2 identity), never taken from the agent.
+   */
+  async function resolveRequestedTargetScope(input: {
+    repository: GovernedRepositoryTarget;
+    targetScope?: TargetScope;
+    targetMappingIds?: string[];
+  }): Promise<TargetScope | undefined> {
+    if (input.targetMappingIds === undefined) return input.targetScope;
+    if (input.targetScope) fail('TARGET_SCOPE_INPUT_AMBIGUOUS');
+    const liveState = await getLiveState();
+    if (!liveState.targetContext) fail('TARGET_CONTEXT_UNAVAILABLE');
+    const scope = createTargetScope(liveState.targetContext, input.targetMappingIds);
+    if (!targetScopeContainsRepository(scope, input.repository)) {
+      fail('TARGET_SCOPE_REPOSITORY_MISMATCH');
+    }
+    return scope;
+  }
 
   function assertTransportAvailable(
     transportSessionId: string,
@@ -278,6 +395,7 @@ export function createGovernedSessionService(
   const service: GovernedSessionService = {
     async openSession(input, request) {
       assertTransportAvailable(request.transportSessionId);
+      const targetScope = await resolveRequestedTargetScope(input);
       const resumeSecret = createResumeSecret();
       const resumeSecretHash = await hashResumeSecret(resumeSecret);
       const governedSessionId = randomUUID();
@@ -299,7 +417,7 @@ export function createGovernedSessionService(
         schemaVersion: 1,
         governedSessionId,
         repository: input.repository,
-        ...(input.targetScope ? { targetScope: input.targetScope } : {}),
+        ...(targetScope ? { targetScope } : {}),
         taskScope: input.taskScope,
         workBranch: input.workBranch,
         agentIdentity: input.agentIdentity,
@@ -353,6 +471,7 @@ export function createGovernedSessionService(
 
     async resumeSession(input, request) {
       assertTransportAvailable(request.transportSessionId, input.governedSessionId);
+      const requestedTargetScope = await resolveRequestedTargetScope(input);
       const resumedAt = now();
       let resumed: GovernedSessionRecord | null = null;
       let previousTransportFingerprint: string | null = null;
@@ -376,7 +495,7 @@ export function createGovernedSessionService(
         if (
           current.repository !== input.repository
           || current.taskScope !== input.taskScope
-          || !targetScopeEquals(current.targetScope, input.targetScope)
+          || !targetScopeEquals(current.targetScope, requestedTargetScope)
         ) {
           fail('SESSION_SCOPE_MISMATCH');
         }
@@ -513,6 +632,16 @@ export function createGovernedSessionService(
       if (liveState.stateVersion !== input.expectedStateVersion) {
         fail('LIVE_STATE_VERSION_MISMATCH');
       }
+      // D3: observe the proven references of a visible session only; a failed
+      // observation is recorded as such and never blocks the acknowledgement.
+      let observedReferences: BootstrapProjectReferences | null | undefined;
+      if (options.observeProjectReferences && await service.getVisibleSession(input.governedSessionId, request)) {
+        try {
+          observedReferences = await options.observeProjectReferences(input.governedSessionId, request);
+        } catch {
+          observedReferences = null;
+        }
+      }
       let receipt: BootstrapReceipt | null = null;
       const acknowledged = await mutateSession(input, request, (session, at) => {
         let scopedTargetContext: TargetContext | undefined;
@@ -546,7 +675,10 @@ export function createGovernedSessionService(
             ...targetLimitations
           ].filter((code) => /^[A-Z0-9_.:-]{2,80}$/.test(code)))]
             .sort()
-            .slice(0, 20)
+            .slice(0, 20),
+          ...(observedReferences !== undefined
+            ? { references: receiptReferences(session, observedReferences, at) }
+            : {})
         };
         return {
           ...session,
@@ -652,6 +784,44 @@ export function createGovernedSessionService(
         });
       }
       return closed;
+    },
+
+    async attestClientToolSurface(input, request) {
+      const validitySeconds = Math.min(
+        Math.max(Math.trunc(input.validitySeconds ?? MAX_CLIENT_TOOL_SURFACE_VALIDITY_SECONDS), 1),
+        MAX_CLIENT_TOOL_SURFACE_VALIDITY_SECONDS
+      );
+      const updated = await mutateSession(input, request, (session, at) => {
+        const attestation = ClientToolSurfaceAttestationSchema.safeParse({
+          schemaVersion: 1,
+          attestationId: randomUUID(),
+          governedSessionId: session.governedSessionId,
+          connectionContextId: session.connectionContext?.connectionContextId ?? null,
+          surface: input.surface,
+          observedAt: at.toISOString(),
+          expiresAt: new Date(at.getTime() + validitySeconds * 1_000).toISOString(),
+          capabilities: input.capabilities.map((capability) => ({
+            ...capability,
+            source: 'CLIENT_ATTESTATION'
+          })),
+          provenance: [...new Set(['client_attestation', ...(input.provenance ?? [])])]
+        });
+        if (!attestation.success) fail('CLIENT_TOOL_SURFACE_ATTESTATION_INVALID');
+        // B3.2: a capability may name the MCP governance repository or a
+        // repository inside the session's server-built TargetScope only.
+        if (!attestation.data.capabilities.every((capability) => (
+          capability.repositoryScope === HISTORICAL_REPOSITORY
+          || (session.targetScope
+            && targetScopeContainsRepository(session.targetScope, capability.repositoryScope))
+        ))) fail('CLIENT_TOOL_SURFACE_ATTESTATION_INVALID');
+        return {
+          ...session,
+          clientToolSurfaceAttestation: attestation.data,
+          sessionRevision: session.sessionRevision + 1
+        };
+      });
+      await audit.record({ type: 'client.tool_surface_attested', session: updated });
+      return updated;
     },
 
     async listVisibleSessions(request) {

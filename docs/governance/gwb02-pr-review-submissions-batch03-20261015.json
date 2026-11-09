@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB02_PR_REVIEW_SUBMISSION_BATCH",
+  "baselineMain": "f9aeaf9c0b6f1e97866c131833fd32ade58031a9",
+  "batch": 3,
+  "indexStart": 30,
+  "indexEnd": 44,
+  "totalPrsInOriginalIndex": 130,
+  "source": "GET /pulls/{prNumber}/reviews?per_page=100",
+  "reviewSubmissionCoverage": "BATCH_ONLY",
+  "records": [
+    {
+      "prNumber": 95,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5260747207,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T13:55:08Z",
+          "commitId": "938a7f01b4404c7980711b372746d08c3861f6f7",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260747207",
+          "body": "INTEGRATE-04 technical exact-head review evidence.\n\nHead reviewed: `938a7f01b4404c7980711b372746d08c3861f6f7`.\nObserved gates: PR mergeable; branch base equals current main; ruleset `protect-main` active; required approvals = 0; required review thread resolution = true with 0 open threads; strict required check = `validate`; MCP CI #1495 succeeded on this exact head.\n\nThis COMMENT records technical evidence only. It is not represented as a human approval and does not bypass any GitHub rule."
+        },
+        {
+          "id": 5260755505,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T13:58:23Z",
+          "commitId": "938a7f01b4404c7980711b372746d08c3861f6f7",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260755505",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `938a7f01b4`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        },
+        {
+          "id": 5260779913,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T14:08:36Z",
+          "commitId": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260779913",
+          "body": ""
+        },
+        {
+          "id": 5260780166,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T14:08:40Z",
+          "commitId": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260780166",
+          "body": ""
+        },
+        {
+          "id": 5260786042,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T14:11:27Z",
+          "commitId": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/95#pullrequestreview-5260786042",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `015dc3ebde`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 96,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5261023259,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T16:10:56Z",
+          "commitId": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/96#pullrequestreview-5261023259",
+          "body": "GW-62 technical exact-head review evidence.\n\nReviewed head: `d112358d1f13757fdace7e1d3fd73b8d7922cadb`.\nMCP CI #1509 is SUCCESS on this exact head.\nDiff is bounded to four documentation files: SUIVI.md, PRODUCTION_STATE.json, CHANGELOG.md, DECISIONS_LOG.md.\nNo src/, workflow, script, test, policy, or runtime file is changed.\nThe declared baseline `9da845822e122cc67fc86ad90243d4e7d6a6d4f4` is intentional: Live State already waives an explicit GitHub/S1 mismatch when the declared baseline is an ancestor and the descendant delta is docs-only.\n\nThis COMMENT records technical review evidence only; it is not represented as a human approval and bypasses no repository rule."
+        },
+        {
+          "id": 5261029442,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T16:13:57Z",
+          "commitId": "d112358d1f13757fdace7e1d3fd73b8d7922cadb",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/96#pullrequestreview-5261029442",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `d112358d1f`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 97,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5261089385,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T16:40:16Z",
+          "commitId": "18d93abf2d576d93a985b8c004d820d43f304090",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/97#pullrequestreview-5261089385",
+          "body": "Post-integration canonical handoff exact-head technical review.\n\nReviewed head: `18d93abf2d576d93a985b8c004d820d43f304090`.\nMCP CI #1518 is SUCCESS on this exact head.\nCanonical-memory verification passed: currentBundlePath resolves, bundle_id matches, source bytes/SHA-256 verify, all claims remain approval_eligible=false, and the new current bundle is absent from previousBundles.\nDiff is bounded to six documentation/projection files: current pointer, new bundle/source, SUIVI, CHANGELOG, DECISIONS.\nNo runtime source, workflow, test, script, policy, or direct S1 mutation is included.\n\nThis COMMENT is technical evidence only; it is not represented as human approval and bypasses no repository rule."
+        },
+        {
+          "id": 5261092760,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T16:41:51Z",
+          "commitId": "18d93abf2d576d93a985b8c004d820d43f304090",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/97#pullrequestreview-5261092760",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `18d93abf2d`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 98,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5261104729,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T16:46:45Z",
+          "commitId": "dce9d0b00af301d83d16ac7470e6c96c2e9f531d",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/98#pullrequestreview-5261104729",
+          "body": "Terminal canonical-handoff documentation reconciliation exact-head review.\n\nReviewed head: `dce9d0b00af301d83d16ac7470e6c96c2e9f531d`.\nMCP CI #1524 is SUCCESS; governance 13/13 and full read-only/non-regression suite 604/604 PASS.\nDiff is strictly Markdown: SUIVI.md, CHANGELOG.md, DECISIONS_LOG.md only.\nSUIVI.md declares `21e56dc2ff4f9944b7a8a0c5e376e24c45ddbf15` as the first current GitHub/S1/runtime baseline; the future merge SHA is deliberately not predicted.\nThis makes the follow-up merge an eligible docs-only descendant for Live State reconciliation without rewriting the canonical JSON bundle.\n\nThis COMMENT is technical evidence only; it is not represented as human approval."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 99,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 100,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 102,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5261434862,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T19:03:55Z",
+          "commitId": "844f042de95ef8aa103095770139b3258184b3c6",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/102#pullrequestreview-5261434862",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `844f042de9`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 104,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5261508523,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-20T19:30:47Z",
+          "commitId": "160506ee60906ead8a3c04c25e49d449023cb1d0",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/104#pullrequestreview-5261508523",
+          "body": "\n### 💡 Codex Review\n\nhttps://github.com/Patricked-code/MCP/blob/160506ee60906ead8a3c04c25e49d449023cb1d0/src/evidence/githubReadonlyRoutes.ts#L138\n**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fit sequential health checks within the route timeout**\n\nWhen one or more endpoints are slow or unreachable, these three sequential transfers can consume up to 30 seconds: `curl --help all` defines `--max-time` as the maximum time allowed per transfer. However, the OIDC route invokes `runReadOnlyCommand` with a 15-second timeout in `src/server.ts`, and the workflow client itself has a 20-second timeout, so the probe can be aborted before emitting all three status lines—precisely when outage evidence is needed. Run the requests concurrently, reduce their individual limits, or increase both enclosing timeouts.\n\n---\n\nhttps://github.com/Patricked-code/MCP/blob/160506ee60906ead8a3c04c25e49d449023cb1d0/src/evidence/githubReadonlyRoutes.ts#L122\n**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Filter Stablecoin processes before truncating the PID list**\n\nOn an S2 host with more than 80 matching Passenger or Node processes, `head -n 80` truncates the global PID set before the subsequent `comm`/`cwd` Stablecoin filter. (`pgrep --help` confirms that `-f` matches the full process name.) A Stablecoin worker outside those first 80 entries is therefore omitted, and the reconciliation artifact can falsely suggest that no application process is running; apply the limit after filtering or narrow the initial selection to the Stablecoin paths.\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 108,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 111,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 117,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 124,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5270185495,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-21T18:11:13Z",
+          "commitId": "da57f520948272b409abc1d89f564577abd94f2c",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/124#pullrequestreview-5270185495",
+          "body": "Exact-head technical review for the GitHub client-surface preservation rule.\n\nReviewed head: `da57f520948272b409abc1d89f564577abd94f2c`.\nMCP CI #1613 is SUCCESS on this exact head.\nThe diff is limited to GitHub-first policy/governance/docs plus one non-regression test.\nThe machine policy now requires preservation of `@GitHub` when GitHub or an approved GitHub fallback can complete the bounded operation, and forbids requesting bridge exposure merely for stale/missing client runtime schemas.\nNo runtime source, deploy workflow, server mutation, or production action is changed.\n\nThis COMMENT records technical review evidence only and is not represented as human approval."
+        },
+        {
+          "id": 5270212116,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-21T18:14:21Z",
+          "commitId": "da57f520948272b409abc1d89f564577abd94f2c",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/124#pullrequestreview-5270212116",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `da57f52094`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 126,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5270396147,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-21T18:33:24Z",
+          "commitId": "0a51b09b13febdda9fbcdd4324de61ab22140363",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/126#pullrequestreview-5270396147",
+          "body": "AF-09 exact-head technical review.\n\nReviewed head: `0a51b09b13febdda9fbcdd4324de61ab22140363`.\nMCP CI #1622 is SUCCESS on this exact head.\nThe change removes free-text SHA extraction from `SUIVI.md` and reuses structured `PRODUCTION_STATE.json` fields instead.\nExisting descendant-scope semantics (`exact`, `docs_only`, `contains_runtime_changes`) and revalidation logic are unchanged.\nTDD evidence: #1616 RED on AF-09, #1618 GREEN after updating the legacy expectation, #1621 push SUCCESS, #1622 PR SUCCESS.\nNo production-state SHA is predicted in this code PR; reconciliation is intentionally deferred to a docs-only follow-up after the real merge SHA exists.\n\nThis COMMENT is technical review evidence only."
+        },
+        {
+          "id": 5270428060,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-21T18:36:34Z",
+          "commitId": "0a51b09b13febdda9fbcdd4324de61ab22140363",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/126#pullrequestreview-5270428060",
+          "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `0a51b09b13`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 127,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5280970271,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-22T16:42:06Z",
+          "commitId": "e8eafc3282e022d5c1a9fe0817899fbd6debc615",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/127#pullrequestreview-5280970271",
+          "body": "AF-09 docs-only reconciliation exact-head technical review.\n\nReviewed head: `e8eafc3282e022d5c1a9fe0817899fbd6debc615`.\nMCP CI #1629 is SUCCESS on this exact head.\nDiff scope is limited to `PRODUCTION_STATE.json` and Markdown.\n`65e633381e8ae811bb5d4060826d0d679f0c7e80` is the observed functional baseline backed by CI #1623 and Governed Deploy #56.\nThe future merge SHA is intentionally not predicted; the corrected collector must accept it only if the resulting delta remains docs-only.\nNo runtime source, tests, workflows, server writes, build or restart behavior are changed by this PR.\n\nThis COMMENT is technical review evidence only."
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 130,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5281146182,
+          "state": "COMMENTED",
+          "submittedAt": "2026-09-22T16:58:28Z",
+          "commitId": "e378cca954c7760dd62ac994c79c9a2e3b56840e",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/130#pullrequestreview-5281146182",
+          "body": "AF-10/AF-18/AF-24/AF-27 exact-head technical review.\n\nReviewed head: `e378cca954c7760dd62ac994c79c9a2e3b56840e`.\nMCP CI #1641 is SUCCESS on this exact head.\nTDD signature was exact: RED #1634 produced exactly four failures, one per finding; GREEN #1637 passed governance 13/13 and full suite 646/646.\nAF-10 remains fail-closed and only exposes all blockers.\nAF-18 aligns Current State to the existing Task Queue ordering.\nAF-24 and AF-27 only extend the existing allowed-transition table; no parallel lifecycle is introduced.\n\nThis COMMENT records technical review evidence only."
+        }
+      ],
+      "error": null
+    }
+  ]
+}

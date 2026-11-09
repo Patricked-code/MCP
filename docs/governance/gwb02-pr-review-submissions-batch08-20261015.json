@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "kind": "GWB02_PR_REVIEW_SUBMISSION_BATCH",
+  "baselineMain": "f9aeaf9c0b6f1e97866c131833fd32ade58031a9",
+  "batch": 8,
+  "indexStart": 105,
+  "indexEnd": 119,
+  "totalPrsInOriginalIndex": 130,
+  "source": "GET /pulls/{prNumber}/reviews?per_page=100",
+  "reviewSubmissionCoverage": "BATCH_ONLY",
+  "records": [
+    {
+      "prNumber": 243,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 244,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 245,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 246,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 247,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 248,
+      "status": "FETCHED",
+      "reviews": [
+        {
+          "id": 5415355145,
+          "state": "COMMENTED",
+          "submittedAt": "2026-10-05T13:40:00Z",
+          "commitId": "884414ff68b7e4b381f99252cab55f9cdaad7011",
+          "htmlUrl": "https://github.com/Patricked-code/MCP/pull/248#pullrequestreview-5415355145",
+          "body": "\n### 💡 Codex Review\n\nhttps://github.com/Patricked-code/MCP/blob/884414ff68b7e4b381f99252cab55f9cdaad7011/src/operationalMemory/types.ts#L58-L61\n**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve provenance on the mapping reference**\n\nWhen a receipt includes a verified mapping, this schema persists only its ID and component role. Unlike the repository and project references, it carries neither the evidence timestamp nor provenance, so consumers cannot determine which D1/GitRegistry evidence established that mapping; the outer `observedAt` records receipt derivation time rather than the mapping authority's observation. Include the mapping's observation time and provenance so the new receipt actually provides an auditable proven mapping reference.\n\n---\n\nhttps://github.com/Patricked-code/MCP/blob/884414ff68b7e4b381f99252cab55f9cdaad7011/src/operationalMemory/sessionService.ts#L242-L244\n**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Enforce the reference hierarchy before persisting it**\n\nIf an observer returns a schema-valid but inconsistent result—such as `repository: null` with a non-null project or mapping—`foreign` remains false and these fields are copied directly into the receipt. The new schema has no refinement enforcing repository → project → mapping either, so `safeParse` accepts and persists evidence that violates the documented no-promotion invariant. Normalize or reject these combinations before attaching the references.\n\n---\n\nhttps://github.com/Patricked-code/MCP/blob/884414ff68b7e4b381f99252cab55f9cdaad7011/src/tools/governedSessions.ts#L113-L118\n**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Populate references for supported target repositories**\n\nFor a supported target-scoped session whose repository is not `Patricked-code/MCP`, this production observer calls `getCurrent`, but `src/governedContext/service.ts` deliberately short-circuits such sessions to `github_target_repository_not_observed` instead of invoking the repository collector. Their project reality therefore has no verified repository layer, so this callback always produces null repository/project/mapping references; the direct AfricaFunds helper test does not exercise this wiring. Use an observer capable of resolving the session's target repository, or explicitly derive the proven target scope through an existing authority.\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "prNumber": 249,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 250,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 251,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 252,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 253,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 254,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 255,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 256,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    },
+    {
+      "prNumber": 257,
+      "status": "FETCHED",
+      "reviews": [],
+      "error": null
+    }
+  ]
+}

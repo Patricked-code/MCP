@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "scope": "Issue/PR conversation comments only",
+  "repo": "Patricked-code/MCP",
+  "baseline": "3df9778dc44202b0e20fb56ce020a089f3a6ea2a",
+  "records": [
+    {
+      "number": 256,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/256#issuecomment-6005413481",
+          "body": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).\nTo continue using code reviews, you can upgrade your account or add credits to your account and enable them for code reviews in your [settings](https://chatgpt.com/codex/cloud/settings/code-review)."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 257,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/257#issuecomment-6005721319",
+          "body": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).\nTo continue using code reviews, you can upgrade your account or add credits to your account and enable them for code reviews in your [settings](https://chatgpt.com/codex/cloud/settings/code-review)."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 258,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/258#issuecomment-6005865262",
+          "body": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).\nTo continue using code reviews, you can upgrade your account or add credits to your account and enable them for code reviews in your [settings](https://chatgpt.com/codex/cloud/settings/code-review)."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 259,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/259#issuecomment-6006151048",
+          "body": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).\nTo continue using code reviews, you can upgrade your account or add credits to your account and enable them for code reviews in your [settings](https://chatgpt.com/codex/cloud/settings/code-review)."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 260,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/260#issuecomment-6009448024",
+          "body": "<!-- codex-pull-request-review-summary -->\n\n## Codex Review Summary\n\nThis comment shows the latest Codex review activity on this pull request.\n\n| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n| 📝 **Code Review** | ✅ **Completed** <relative-time datetime=\"2026-10-06T04:38:50.971262Z\">2026-10-06T04:38:50.971262Z</relative-time> | `89ca1d4` | Draft marked ready |\n\n\n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\" or \"@codex security review\".\n\nCodex reacts with 👀 while any review is running, comments if it has suggestions, and reacts with 👍 once all reviews finish with no findings.\n\n</details>"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 261,
+      "reported": 4,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/261#issuecomment-6041095471",
+          "body": "<!-- codex-pull-request-review-summary -->\n\n## Codex Review Summary\n\nThis comment shows the latest Codex review activity on this pull request.\n\n| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n| 📝 **Code Review** | ✅ **Completed** <relative-time datetime=\"2026-10-08T17:44:36.125085Z\">2026-10-08T17:44:36.125085Z</relative-time> | `d0bc1ee` | New commits |\n\n\n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\" or \"@codex security review\".\n\nCodex reacts with 👀 while any review is running, comments if it has suggestions, and reacts with 👍 once all reviews finish with no findings.\n\n</details>"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/261#issuecomment-6049578621",
+          "body": "Fixed the review-body finding \"Reserve provisioning metadata paths before staging\" in 1268e1b. Right after extraction, the stage now refuses an archive that contains `.mcp-provisioning.json` or `.mcp-provisioning.labels.json`, whether as a file or a link (`reserved_name_present`). The tree digest leaves those two names out, so a repository can no longer place content under them that later gets overwritten and built unseen. A test checks that this runs between extraction and printing the source.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/261#issuecomment-6050198550",
+          "body": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).\nTo continue using code reviews, you can upgrade your account or add credits to your account and enable them for code reviews in your [settings](https://chatgpt.com/codex/cloud/settings/code-review)."
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/261#issuecomment-6065537239",
+          "body": "On the review-body findings about archive permissions (`0600`/`0700`): by owner decision this is a known limit, because the S1 channel's user must still be able to read the archive. It is tracked in https://github.com/Patricked-code/MCP/issues/262 and settled before the first S1 target is configured.\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 263,
+      "reported": 2,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/263#issuecomment-6065671367",
+          "body": "<!-- codex-pull-request-review-summary -->\n\n## Codex Review Summary\n\nThis comment shows the latest Codex review activity on this pull request.\n\n| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n| 📝 **Code Review** | ✅ **Completed** <relative-time datetime=\"2026-10-08T17:43:40.713300Z\">2026-10-08T17:43:40.713300Z</relative-time> | `011ebfe` | Draft marked ready |\n\n\n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\" or \"@codex security review\".\n\nCodex reacts with 👀 while any review is running, comments if it has suggestions, and reacts with 👍 once all reviews finish with no findings.\n\n</details>"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/263#issuecomment-6066016078",
+          "body": "Instruction du propriétaire (2026-10-08) — Claude, poursuis le programme MCP sans attendre une nouvelle sollicitation humaine pour les tâches déjà autorisées.\n\nRepars de `main` et des autorités canoniques (`docs/gwc/canonical-memory/current.json`, Program Backlog, `SUIVI.md`, `NEXT_ACTION`, politiques GitHub-first). Réobserve en direct la Governed Task Queue, les sessions/claims/locks et les collision domains avant tout dispatch. Applique `FIRST_COLLISION_FREE_IN_PROGRAM_ORDER` : examine `TB-W3-A3-02` sans prendre ni transférer son claim bloquant ; si ce lot reste réservé, passe au prochain lot éligible, notamment `TB-W3-F-04`, sous réserve des gates et dépendances. Continue RED → GREEN → revue → CI exact-head → merge gouverné → Governed Deploy → attestation → checkpoint, avec traçabilité et sans régression.\n\nRespecte les limites de l'issue #262 : aucune configuration/activation de première cible S1 avant résolution des prérequis S1. Ne considère jamais heartbeat absent/expiré comme autorisation de transfert. Ne crée aucune autorité parallèle et n'élargis aucune permission. Arrête uniquement le travail précis nécessitant une décision propriétaire ou une autorité manquante ; poursuis les autres lots indépendants. Ceci est une instruction de continuation, pas une preuve de claim ni une autorisation de contournement."
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 267,
+      "reported": 9,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6066985517",
+          "body": "<!-- codex-pull-request-review-summary -->\n\n## Codex Review Summary\n\nThis comment shows the latest Codex review activity on this pull request.\n\n| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n| 📝 **Code Review** | ✅ **Completed** <relative-time datetime=\"2026-10-08T20:07:46.574643Z\">2026-10-08T20:07:46.574643Z</relative-time> | `6e7417f` | Manual request |\n\n\n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\" or \"@codex security review\".\n\nCodex reacts with 👀 while any review is running, comments if it has suggestions, and reacts with 👍 once all reviews finish with no findings.\n\n</details>"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6067112502",
+          "body": "@codex review\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6067282799",
+          "body": "@codex review\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6067398964",
+          "body": "@codex review\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6067522181",
+          "body": "@codex review\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6067619588",
+          "body": "@codex review\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6067773727",
+          "body": "@codex review\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6067889219",
+          "body": "@codex review\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        },
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/267#issuecomment-6068024199",
+          "body": "@codex review\n\n---\n_Generated by [Claude Code](https://claude.ai/code)_"
+        }
+      ],
+      "error": null
+    },
+    {
+      "number": 272,
+      "reported": 1,
+      "status": "fulfilled",
+      "comments": [
+        {
+          "url": "https://github.com/Patricked-code/MCP/pull/272#issuecomment-6086604084",
+          "body": "## Supervision / orchestration — revue additive du 9 octobre 2026 (GitHub direct, sans Codex)\n\n**Observation exact-head :** PR #272 en draft, branche `mcp/dispatch-concurrent-cas-regression-20261009`, HEAD `b88e835efc9336455c175e7427e8b1f2ede40693`, base `main@05cb448159e16c2e4b17696ca246c760107be005`. CI MCP `37969882380` = SUCCESS. Diff limité au test `tests/governedTaskQueue.test.ts`.\n\n**Résultat de supervision :** le nouveau scénario vérifie que deux appels simultanés à `claimNextTask`, depuis deux identifiants de session et la même `storeRevision`, n'attribuent pas deux fois **une même tâche** dans cette fixture ; un seul gagnant, rejet `TASK_STORE_REVISION_MISMATCH` et incrément unique. Le test existant « two distinct sessions can claim disjoint ready scopes » vérifie des claims **séquentiels** et non le simultané multi-tâche/multi-processus. Ne pas présenter la combinaison de ces deux tests comme une attestation live de plusieurs exécuteurs.\n\n**Point technique à maintenir dans l'acceptation :** `src/operationalMemory/atomicStore.ts` sérialise les écritures par `updateQueue` locale à l'instance ; aucun CAS distribué inter-processus n'est prouvé par ce test. Topologie Compose versionnée : un service MCP. Toute certification multi-processus doit être conditionnée à une autorité de verrouillage/CAS commune et à un test adapté si cette topologie devient nécessaire.\n\n**Prochaine étape propriétaire de la PR :** examiner le diff complet et les gates de revue, vérifier HEAD exact et checks requis, conserver la portée tests-only, puis conclure la PR selon la gouvernance. Après fusion, recharger le Program Backlog V2, réobserver `nextWork` et les autorités runtime (Tasks/Sessions/Locks) lorsque la preuve de dispatch live est nécessaire. **Pas de claim ni de takeover d'une autre session.**\n\nCette note est un commentaire GitHub de supervision, pas une nouvelle tâche, un ordre de merge ni une autorisation runtime. Aucun Codex, aucune écriture serveur."
+        }
+      ],
+      "error": null
+    }
+  ]
+}

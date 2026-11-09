@@ -438,3 +438,54 @@ test('A2.2.2 projects bounded client evidence in proof without blocking B1 ident
     assert.equal(absentEvidence?.blocksOauthPrincipalResolution, false);
   }
 });
+
+test('G3 residual: governed context projects the client tool surface read-only and never authorizes from it', async () => {
+  const attestation = {
+    schemaVersion: 1 as const,
+    attestationId: '33333333-3333-4333-8333-333333333333',
+    governedSessionId: SESSION_ID,
+    connectionContextId: null,
+    surface: 'chatgpt_connector',
+    observedAt: '2026-08-13T07:59:00.000Z',
+    expiresAt: '2026-08-13T08:03:00.000Z',
+    capabilities: [{
+      name: 'mcp_alpha',
+      callability: 'CALLABLE' as const,
+      source: 'CLIENT_ATTESTATION' as const,
+      provider: 'wealthtech_mcp',
+      repositoryScope: 'Patricked-code/MCP' as const
+    }],
+    provenance: ['client_attestation']
+  };
+  const currentState = {
+    source: { catalogueDigest: 'b'.repeat(64), inventoryDigest: 'e'.repeat(64) },
+    governance: { digest: 'c'.repeat(64) },
+    auditBaseline: { valid: true },
+    workQueue: { storeRevision: 2, tasks: [] },
+    currentTask: null,
+    firstExecutableTask: null,
+    contradictions: [],
+    catalogue: { tools: [{ name: 'mcp_alpha' }, { name: 'mcp_beta' }] }
+  };
+
+  const attested = (await context({
+    session: { ...SESSION, clientToolSurfaceAttestation: attestation },
+    currentState
+  })).result;
+  assert.equal(attested.proof.toolSurface?.client.status, 'ATTESTED');
+  assert.equal(attested.proof.toolSurface?.server.toolCount, 2);
+  assert.equal(attested.proof.toolSurface?.server.catalogueDigest, 'b'.repeat(64));
+  assert.equal(attested.proof.toolSurface?.clientAttestationAuthorizes, false);
+  const alpha = attested.capabilityReality.find((entry) => entry.toolName === 'mcp_alpha');
+  assert.deepEqual(alpha?.callability, { status: 'CALLABLE', source: 'CLIENT_ATTESTATION' });
+  assert.equal(alpha?.authorized.status, 'UNKNOWN');
+  assert.equal(alpha?.safeNow, false);
+  assert.equal(attested.governanceDecision.mayMutate, false);
+
+  const unattested = (await context({ currentState })).result;
+  assert.equal(unattested.proof.toolSurface?.client.status, 'UNKNOWN');
+  assert.equal(
+    unattested.capabilityReality.find((entry) => entry.toolName === 'mcp_alpha')?.callability.status,
+    'UNKNOWN'
+  );
+});

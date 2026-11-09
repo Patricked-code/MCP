@@ -303,3 +303,134 @@ test('task collision evidence is bounded and excludes free-form task text', asyn
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('DISPATCH: two distinct sessions can claim disjoint ready scopes without duplicate ownership', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const added = await queue.reconcileIntent({
+      repository: 'Patricked-code/MCP',
+      intentKey: 'parallel-disjoint-scope',
+      title: 'Independent parallel task',
+      summary: 'A distinct scope should be claimable by another executor.',
+      priority: 40,
+      dependencies: [],
+      resourceScopes: ['resource:parallel-independent']
+    }, OTHER_SESSION);
+    assert.equal(added.classification, 'NEW_TASK');
+    const before = await queue.listVisibleTasks();
+    const first = await queue.claimNextTask(SESSION, before.storeRevision);
+    assert.equal(first?.taskId, 'TASK-20260822-001');
+    assert.equal(first?.ownerGovernedSessionId, SESSION);
+    const afterFirst = await queue.listVisibleTasks();
+    const second = await queue.claimNextTask(OTHER_SESSION, afterFirst.storeRevision);
+    assert.equal(second?.taskId, added.task?.taskId);
+    assert.equal(second?.ownerGovernedSessionId, OTHER_SESSION);
+    assert.notEqual(first?.taskId, second?.taskId);
+    const afterSecond = await queue.listVisibleTasks();
+    assert.equal(afterSecond.tasks.find((task) => task.taskId === first?.taskId)?.ownerGovernedSessionId, SESSION);
+    assert.equal(afterSecond.tasks.find((task) => task.taskId === second?.taskId)?.ownerGovernedSessionId, OTHER_SESSION);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('DISPATCH parallel CAS: simultaneous stale-revision claims never double-assign one task', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const baseline = await queue.listVisibleTasks();
+    const attempts = await Promise.allSettled([
+      queue.claimNextTask(SESSION, baseline.storeRevision),
+      queue.claimNextTask(OTHER_SESSION, baseline.storeRevision)
+    ]);
+    const winners = attempts.filter((result) => result.status === 'fulfilled');
+    const rejected = attempts.filter((result) => result.status === 'rejected');
+    assert.equal(winners.length, 1);
+    assert.equal(rejected.length, 1);
+    assert.match(String((rejected[0] as PromiseRejectedResult).reason), /TASK_STORE_REVISION_MISMATCH/);
+    const ownedTask = (winners[0] as PromiseFulfilledResult<Awaited<ReturnType<typeof queue.claimNextTask>>>).value;
+    assert.equal(ownedTask?.taskId, 'TASK-20260822-001');
+    const after = await queue.listVisibleTasks();
+    assert.equal(after.storeRevision, baseline.storeRevision + 1);
+    assert.equal(after.tasks.filter((task) => task.taskId === ownedTask?.taskId && task.status === 'CLAIMED').length, 1);
+    assert.equal(after.tasks.find((task) => task.taskId === ownedTask?.taskId)?.ownerGovernedSessionId, ownedTask?.ownerGovernedSessionId);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('targeted claim selects only the requested task and enforces task/store CAS', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const created = await queue.reconcileIntent({
+      repository: 'Patricked-code/MCP', intentKey: 'targeted', title: 'Targeted',
+      summary: 'Independent exact target.', priority: 10, dependencies: [],
+      resourceScopes: ['resource:targeted']
+    }, SESSION);
+    assert.ok(created.task);
+    const before = await queue.listVisibleTasks();
+    const target = created.task;
+    await assert.rejects(queue.claimTaskById(SESSION, target.taskId, target.taskRevision + 1, before.storeRevision), /TASK_REVISION_MISMATCH/);
+    await assert.rejects(queue.claimTaskById(SESSION, 'TASK-20990101-999', 1, before.storeRevision), /TASK_NOT_FOUND/);
+    assert.deepEqual(await queue.listVisibleTasks(), before);
+    const claimed = await queue.claimTaskById(SESSION, target.taskId, target.taskRevision, before.storeRevision);
+    assert.equal(claimed.taskId, target.taskId);
+    assert.equal(claimed.ownerGovernedSessionId, SESSION);
+    assert.equal((await queue.getVisibleTask('TASK-20260822-001'))?.status, 'READY');
+    await assert.rejects(queue.claimTaskById(OTHER_SESSION, 'TASK-20260822-001', 1, before.storeRevision), /TASK_STORE_REVISION_MISMATCH/);
+    const after = await queue.listVisibleTasks();
+    await assert.rejects(queue.claimTaskById(SESSION, 'TASK-20260822-001', 1, after.storeRevision), /TASK_SESSION_ALREADY_OWNS_OTHER_TASK/);
+    assert.deepEqual(await queue.listVisibleTasks(), after);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('targeted claim respects foreign locks and does not fall back to a different task', async () => {
+  const { directory, queue } = await fixture([{ scope: 'resource:existing', governedSessionId: OTHER_SESSION }]);
+  try {
+    const before = await queue.listVisibleTasks();
+    await assert.rejects(queue.claimTaskById(SESSION, 'TASK-20260822-001', 1, before.storeRevision), /TASK_LOCK_CONFLICT/);
+    assert.deepEqual(await queue.listVisibleTasks(), before);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('targeted parallel claims use the same atomic revision guard', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const before = await queue.listVisibleTasks();
+    const attempts = await Promise.allSettled([
+      queue.claimTaskById(SESSION, 'TASK-20260822-001', 1, before.storeRevision),
+      queue.claimTaskById(OTHER_SESSION, 'TASK-20260822-001', 1, before.storeRevision)
+    ]);
+    assert.equal(attempts.filter((result) => result.status === 'fulfilled').length, 1);
+    assert.equal(attempts.filter((result) => result.status === 'rejected').length, 1);
+    const after = await queue.listVisibleTasks();
+    assert.equal(after.storeRevision, before.storeRevision + 1);
+    assert.equal(after.tasks.filter((task) => task.status === 'CLAIMED').length, 1);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('targeted claim cannot take over another session and same-owner resume is read-only', async () => {
+  const { directory, queue } = await fixture();
+  try {
+    const before = await queue.listVisibleTasks();
+    const first = await queue.claimTaskById(SESSION, 'TASK-20260822-001', 1, before.storeRevision);
+    const after = await queue.listVisibleTasks();
+    await assert.rejects(
+      queue.claimTaskById(OTHER_SESSION, first.taskId, first.taskRevision, after.storeRevision),
+      /TASK_OWNED_BY_OTHER_SESSION/
+    );
+    assert.deepEqual(await queue.listVisibleTasks(), after);
+    const resumed = await queue.claimTaskById(SESSION, first.taskId, first.taskRevision, after.storeRevision);
+    assert.deepEqual(resumed, first);
+    assert.deepEqual(await queue.listVisibleTasks(), after);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

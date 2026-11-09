@@ -1,3 +1,9 @@
+import {
+  reconcileE2Entry, routeE2OwnerChoice,
+  type E2LiveSnapshot, type E2OwnerChoice
+} from '../governance/e2EntryFlow.js';
+import type {WorkEntryIndexResult} from '../governance/workEntryContinuityIndex.js';
+
 import { z } from 'zod';
 
 import type { GithubOperationalContext } from './types.js';
@@ -231,4 +237,91 @@ export function projectGithubExecutionForCoordination(
     authorizationInferred: false,
     mutationPerformed: false
   });
+}
+
+export const EXTERNAL_GOVERNED_RECOVERY_FULL_NAME = "Méthode universelle de bifurcation externe gouvernée pour le développement, la correction, la maintenance, la reprise et le déploiement contrôlé du MCP — GitHub-first / OIDC / Non-régression";
+
+export const ExternalGovernedRecoveryInputSchema = z.object({
+  profile: z.literal('EXTERNAL_GOVERNED_RECOVERY'),
+  ownerSelected: z.boolean(),
+  collisionFreeObserved: z.boolean(),
+  expectedMainSha: z.string().regex(/^[a-f0-9]{40}$/),
+  observedMainSha: z.string().regex(/^[a-f0-9]{40}$/),
+  expectedBranchSha: z.string().regex(/^[a-f0-9]{40}$/),
+  observedBranchSha: z.string().regex(/^[a-f0-9]{40}$/),
+  github: GithubFirstOperationalBootstrapInputSchema
+}).strict();
+
+export type ExternalGovernedRecoveryInput = z.infer<typeof ExternalGovernedRecoveryInputSchema>;
+
+export function previewExternalGovernedRecovery(raw: ExternalGovernedRecoveryInput) {
+  const input = ExternalGovernedRecoveryInputSchema.parse(raw);
+  const safe = {
+    profile: 'EXTERNAL_GOVERNED_RECOVERY' as const,
+    advisoryOnly: true as const,
+    newTaskOrSessionCreated: false as const,
+    githubWriteGranted: false as const,
+    serverWriteGranted: false as const,
+    deployGranted: false as const,
+    workflowTriggered: false as const
+  };
+  if (!input.ownerSelected) return { ...safe, state: 'EXPLICIT_SELECTION_REQUIRED', transport: null };
+  if (input.expectedMainSha !== input.observedMainSha ||
+      input.expectedBranchSha !== input.observedBranchSha ||
+      input.github.observedHeadSha !== input.observedBranchSha) {
+    return { ...safe, state: 'HEAD_DRIFT_STOP_WRITE', transport: null };
+  }
+  if (!input.collisionFreeObserved) return { ...safe, state: 'COLLISION_UNRESOLVED', transport: null };
+  if (!input.github.githubConnected) return { ...safe, state: 'GITHUB_CONNECTION_REQUIRED', transport: null };
+  const transport = resolveGithubFirstOperationalBootstrap(input.github);
+  const state = transport.mode === 'GITHUB_ONLY' ? 'GITHUB_WORK_CANDIDATE'
+    : transport.mode === 'GITHUB_ACTION_READONLY_EVIDENCE' ? 'OIDC_EVIDENCE_CANDIDATE'
+      : 'RUNTIME_AUTHORITY_REQUIRED';
+  return { ...safe, state, transport: transport.mode, nextAction: transport.nextAction,
+    githubOperationsRequireExistingPermissions: true as const };
+}
+
+/**
+ * E2 continuation adapter for the existing external governed recovery profile.
+ * The owner route is checked before the legacy GitHub-first preview is evaluated.
+ * This is an advisory projection: it never creates a task, permission, or runtime session.
+ */
+export function previewExternalGovernedRecoveryAfterE2Reconciliation(
+  rawInput:ExternalGovernedRecoveryInput,
+  liveState:E2LiveSnapshot,
+  index:WorkEntryIndexResult,
+  ownerChoice:E2OwnerChoice,
+  assessedAt:string=new Date().toISOString()
+){
+  const reconciliation=reconcileE2Entry(liveState,index,assessedAt);
+  const ownerRoute=routeE2OwnerChoice(reconciliation,ownerChoice);
+  const selected=index.entries.find(x=>x.continuityId===ownerRoute.continuityId);
+  const selectedHead=selected?.latest.github.headSha??null;
+  const headDrift=ownerRoute.decision==='RESUME_EXISTING'&&(
+    rawInput.github.repository!==liveState.repository
+    ||rawInput.observedMainSha!==liveState.github.head
+    ||rawInput.expectedMainSha!==liveState.github.head
+    ||(selectedHead!==null&&rawInput.observedBranchSha!==selectedHead)
+  );
+  const existingPreview=(
+    ownerRoute.decision==='RESUME_EXISTING'&&rawInput.ownerSelected===true&&!headDrift
+  )?previewExternalGovernedRecovery(rawInput):null;
+  const state=rawInput.ownerSelected!==true?'EXPLICIT_SELECTION_REQUIRED'
+    :headDrift?'E2_SELECTED_GITHUB_EVIDENCE_DRIFT'
+    :ownerRoute.decision==='BLOCKED'?'E2_RECONCILIATION_OR_CHOICE_BLOCKED'
+      :ownerRoute.decision==='REVIEW_NEW_WORK_FOR_DUPLICATES'
+        ?'E2_DUPLICATE_REVIEW_REQUIRED'
+        :existingPreview?.state??'E2_RECONCILIATION_OR_CHOICE_BLOCKED';
+  return {
+    profile:'EXTERNAL_GOVERNED_RECOVERY' as const,
+    state,
+    reconciliation,
+    ownerRoute,
+    existingPreview,
+    advisoryOnly:true as const,
+    newTaskOrSessionCreated:false as const,
+    githubWriteGranted:false as const,
+    serverWriteGranted:false as const,
+    deployGranted:false as const
+  };
 }
