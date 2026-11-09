@@ -119,6 +119,20 @@ export function c26SubjectFromCookie(
     ? C26_OAUTH_SUBJECT : null;
 }
 
+/**
+ * Never accept an OAuth client_id, browser-supplied subject, or cookie name
+ * as identity. An already verified administrative web/Bearer credential has
+ * priority, preserving the pre-existing Regulatory principal.
+ */
+export function resolveVerifiedOAuthWebSubject(
+  adminVerified: boolean,
+  cookieHeader: string | undefined,
+  options: { now?: number; readSecret?: () => string | null } = {}
+): string | null {
+  if (adminVerified) return 'wealthtech-mcp-admin';
+  return c26SubjectFromCookie(cookieHeader, options);
+}
+
 export function clearC26OAuthCookie(secure: boolean): string {
   return `${C26_OAUTH_COOKIE_NAME}=; HttpOnly; SameSite=Lax; Path=/oauth; Max-Age=0${secure ? '; Secure' : ''}`;
 }
