@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash, createHmac } from 'node:crypto';
+import { fork } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -159,6 +160,95 @@ test('two independent refresh grant services cannot both consume one generation'
       /OAUTH_REFRESH_GRANT_REVOKED/
     );
   } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('two OS processes never both accept the same refresh generation', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-multiprocess-'));
+  const storePath = path.join(directory, 'refresh-grants.json');
+  const issuer = createOAuthRefreshGrantService({
+    storePath, idleTtlSeconds: 3600, absoluteTtlSeconds: 86400
+  });
+  const workers: ReturnType<typeof fork>[] = [];
+  try {
+    const issued = await issuer.issue({
+      subject: 'oauth-multiprocess-test',
+      clientId: 'race-client',
+      resource: 'https://mcp.wealthtechinnovations.com',
+      scopes: ['mcp:read', 'offline_access'],
+      oauthAttemptRef: 'oa_abcdefghijklmnopqrstuv'
+    });
+    const createWorker = () => {
+      const child = fork(new URL('./fixtures/oauthRefreshTransactionWorker.mjs', import.meta.url), [], {
+        execArgv: ['--import', 'tsx'],
+        silent: true
+      });
+      workers.push(child);
+      let readyResolve!: () => void;
+      let readyReject!: (reason?: unknown) => void;
+      let resultResolve!: (result: string) => void;
+      let resultReject!: (reason?: unknown) => void;
+      const ready = new Promise<void>((resolve, reject) => {
+        readyResolve = resolve;
+        readyReject = reject;
+      });
+      const result = new Promise<string>((resolve, reject) => {
+        resultResolve = resolve;
+        resultReject = reject;
+      });
+      // Attach rejection handlers immediately to avoid an unhandled rejection
+      // if a worker exits before the test awaits the result.
+      void result.catch(() => undefined);
+      let done = false;
+      const timer = setTimeout(() => {
+        if (done) return;
+        done = true;
+        child.kill();
+        const error = new Error('OAUTH_TEST_WORKER_TIMEOUT');
+        readyReject(error);
+        resultReject(error);
+      }, 15000);
+      child.on('message', (message: { kind?: string; outcome?: string }) => {
+        if (message.kind === 'READY') readyResolve();
+        if (message.kind === 'RESULT' && !done) {
+          done = true;
+          clearTimeout(timer);
+          resultResolve(message.outcome ?? 'MISSING_OUTCOME');
+        }
+      });
+      child.once('error', (error) => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        readyReject(error);
+        resultReject(error);
+      });
+      child.once('exit', (code) => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        const error = new Error(`OAUTH_TEST_WORKER_EXIT_${code}`);
+        readyReject(error);
+        resultReject(error);
+      });
+      return { child, ready, result };
+    };
+    const first = createWorker();
+    const second = createWorker();
+    await Promise.all([first.ready, second.ready]);
+    // Both processes begin the read-modify-write using their own store
+    // instances, against the same mounted JSON file and transaction lock.
+    first.child.send({ kind: 'ROTATE', storePath, refreshToken: issued.refreshToken });
+    second.child.send({ kind: 'ROTATE', storePath, refreshToken: issued.refreshToken });
+    const outcomes = await Promise.all([first.result, second.result]);
+    assert.deepEqual(outcomes.sort(), ['OAUTH_REFRESH_TOKEN_REPLAY', 'SUCCESS']);
+    const stored = JSON.parse(await readFile(storePath, 'utf8'));
+    assert.equal(stored.grants[0].currentGeneration, 1);
+    assert.equal(stored.grants[0].revokeReason, 'replay_detected');
+    assert.equal(stored.storeRevision, 3, 'issue, single rotation, then replay revocation');
+  } finally {
+    for (const child of workers) child.kill();
     await rm(directory, { recursive: true, force: true });
   }
 });
