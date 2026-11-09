@@ -8,8 +8,21 @@ process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
 process.env.MCP_WEB_BASE_URL ??= 'https://mcp.wealthtechinnovations.com';
 
 const { createOAuthRefreshGrantService } = await import('../../src/oauthRefreshTokens.ts');
+const { createOAuthAuthorizationCodeService } = await import('../../src/oauthAuthorizationCodes.ts');
 
 process.on('message', async (message) => {
+  if (message?.kind === 'CONSUME_AUTH_CODE') {
+    try {
+      const svc = createOAuthAuthorizationCodeService({ storePath: message.storePath, lockTimeoutMs: 3000 });
+      const result = await svc.consume(message.authorizationCode);
+      process.send?.({ kind: 'RESULT', outcome: result ? 'CONSUMED' : 'ALREADY_CONSUMED' });
+    } catch {
+      process.send?.({ kind: 'RESULT', outcome: 'AUTH_CODE_WORKER_FAILURE' });
+    } finally {
+      process.disconnect?.();
+    }
+    return;
+  }
   if (message?.kind !== 'ROTATE') return;
   const service = createOAuthRefreshGrantService({
     storePath: message.storePath,
