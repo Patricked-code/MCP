@@ -3,6 +3,7 @@ import { createHash, createHmac, randomBytes, randomUUID, timingSafeEqual } from
 import { env } from './config/env.js';
 import { logger } from './logger.js';
 import { getDefaultOAuthRefreshGrantService } from './oauthRefreshTokens.js';
+import { getDefaultOAuthAuthorizationCodeService, type OAuthAuthorizationCodeRecord } from './oauthAuthorizationCodes.js';
 
 const DEFAULT_ISSUER = 'https://mcp.wealthtechinnovations.com';
 const ACCESS_TOKEN_TTL_SECONDS = Math.max(
@@ -20,18 +21,6 @@ const WEB_CONSENT_TTL_MS = 10 * 60 * 1000;
 const SUPPORTED_SCOPES = ['mcp:read', 'mcp:write', 'offline_access'] as const;
 
 type SupportedScope = typeof SUPPORTED_SCOPES[number];
-
-type AuthorizationCodeRecord = {
-  clientId: string;
-  redirectUri: string;
-  scope: string;
-  resource: string;
-  codeChallenge: string;
-  codeChallengeMethod: 'S256';
-  expiresAt: number;
-  subject: string;
-  oauthAttemptRef: string;
-};
 
 type OAuthTokenPayload = {
   typ: 'wealthtech-mcp-oauth';
@@ -60,8 +49,6 @@ export type VerifiedOauthIdentity = {
 type RegisterOAuthRoutesOptions = {
   isAuthenticated: (req: Request) => boolean;
 };
-
-const authorizationCodes = new Map<string, AuthorizationCodeRecord>();
 
 function normalizeBaseUrl(value: string): string {
   return value.trim().replace(/\/+$/, '');
@@ -208,23 +195,8 @@ function buildProtectedResourceMetadata() {
   };
 }
 
-function pruneExpiredAuthorizationCodes(): void {
-  const now = Date.now();
-
-  for (const [code, record] of authorizationCodes) {
-    if (record.expiresAt <= now) {
-      authorizationCodes.delete(code);
-    }
-  }
-}
-
-function issueAuthorizationCode(record: AuthorizationCodeRecord): string {
-  pruneExpiredAuthorizationCodes();
-
-  const code = base64Url(randomBytes(32));
-  authorizationCodes.set(code, record);
-
-  return code;
+function issueAuthorizationCode(record: OAuthAuthorizationCodeRecord): Promise<string> {
+  return getDefaultOAuthAuthorizationCodeService().issue(record);
 }
 
 function signAccessToken(payload: OAuthTokenPayload): string {
@@ -563,7 +535,7 @@ function denyAuthorization(res: Response, request: AuthorizationConsentRequest):
   res.redirect(302, redirectTarget.toString());
 }
 
-function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (req: Request) => boolean): void {
+async function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (req: Request) => boolean): Promise<void> {
   if (!isAuthenticated(req)) {
     sendOAuthError(res, 401, 'access_denied', 'Une session opérateur est requise pour autoriser une connexion.');
     return;
@@ -620,25 +592,25 @@ function handleAuthorizeDecision(req: Request, res: Response, isAuthenticated: (
 
   const decision = getSingleBodyParam(req, 'decision');
   if (decision === 'approve') {
-    handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'APPROVED');
+    await handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'APPROVED');
     return;
   }
 
   if (decision === 'deny') {
-    handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'DENIED');
+    await handleAuthorize(req, res, isAuthenticated, getSingleBodyParam, 'DENIED');
     return;
   }
 
   sendOAuthError(res, 400, 'invalid_request', 'decision doit valoir approve ou deny.');
 }
 
-function handleAuthorize(
+async function handleAuthorize(
   req: Request,
   res: Response,
   isAuthenticated: (req: Request) => boolean,
   readParam: (req: Request, name: string) => string | undefined = getSingleQueryParam,
   consent: 'REQUIRED' | 'APPROVED' | 'DENIED' = 'REQUIRED'
-): void {
+): Promise<void> {
   if (!isAuthenticated(req)) {
     redirectToLogin(req, res);
     return;
@@ -705,7 +677,7 @@ function handleAuthorize(
   }
 
   const oauthAttemptRef = `oa_${base64Url(randomBytes(16))}`;
-  const code = issueAuthorizationCode({
+  const code = await issueAuthorizationCode({
     clientId,
     redirectUri,
     scope,
@@ -755,7 +727,6 @@ function issueAccessToken(input: {
 }
 
 async function handleToken(req: Request, res: Response): Promise<void> {
-  pruneExpiredAuthorizationCodes();
 
   const grantType = getSingleBodyParam(req, 'grant_type');
   const refreshService = getDefaultOAuthRefreshGrantService();
@@ -820,8 +791,8 @@ async function handleToken(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const record = authorizationCodes.get(code);
-  authorizationCodes.delete(code);
+  // Shared atomic consume burns a code once, even for failed client/PKCE checks.
+  const record = await getDefaultOAuthAuthorizationCodeService().consume(code);
 
   if (!record || record.expiresAt <= Date.now()) {
     sendOAuthError(res, 400, 'invalid_grant', 'Code OAuth absent, expiré ou déjà utilisé.');
@@ -885,12 +856,20 @@ export function registerOauthRoutes(app: Express, options: RegisterOAuthRoutesOp
     res.json(buildAuthorizationServerMetadata());
   });
 
+  const authorizationFailure = (res: Response) => (_error: unknown) => {
+    // Never expose raw code, store file paths or credentials in an OAuth error.
+    logger.error({ reasonCode: 'OAUTH_AUTH_CODE_STORE_UNAVAILABLE' }, 'Échec persistance code OAuth');
+    if (!res.headersSent) {
+      sendOAuthError(res, 500, 'server_error', 'Le serveur OAuth ne peut pas traiter l’autorisation.');
+    }
+  };
+
   app.get('/oauth/authorize', (req, res) => {
-    handleAuthorize(req, res, options.isAuthenticated);
+    void handleAuthorize(req, res, options.isAuthenticated).catch(authorizationFailure(res));
   });
 
   app.post('/oauth/authorize', (req, res) => {
-    handleAuthorizeDecision(req, res, options.isAuthenticated);
+    void handleAuthorizeDecision(req, res, options.isAuthenticated).catch(authorizationFailure(res));
   });
 
   app.post('/oauth/token', async (req, res) => {
