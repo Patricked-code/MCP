@@ -7,6 +7,13 @@
 - Source : issue #349, PR #350, checkpoint docs/governance/pr350-provisioning-grt-s1-checkpoint-20261023.md.
 
 
+## 2026-10-16 — Première preuve bornée GWB-04/H.1
+
+- Inventaire des identifiants et traces actuellement présents dans l'Event Journal et les Contextes, avec matrice à sept points de passage et quatre lacunes nécessitant tests fonctionnels, sans création d'un store de tracing concurrent.
+- Nouveau contrôle automatisé de découverte des preuves source/test H.1 ; `TB-W4-H-01` conserve son statut canonique `READY`, pas de promotion en `DONE`.
+- Aucun changement fonctionnel, permission, Task/Claim/Lock, OAuth ou serveur.
+
+
 ## 2026-10-16 — Entrée commune des agents et handoff PCM-03/GWB-04
 
 - Directive de coordination ajoutée dans le canal GitHub existant : [issue #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094). Entrées `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/governance/README.md` renforcées par une marche à suivre testable de reprise à froid.
