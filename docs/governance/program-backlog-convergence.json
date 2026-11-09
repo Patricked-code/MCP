@@ -1348,6 +1348,14 @@
         "coveredBy": "PB-K",
         "disposition": "DESIGNED_NOT_IMPLEMENTED",
         "observedMainSha": "121fba9c4ff7ddfb7526a00673ca67b253c9cd4b"
+      },
+      {
+        "sourceKey": "user:oauth-refresh-continuity:20260930",
+        "sourceId": "USER-OAUTH-REFRESH-20260930",
+        "title": "Durable OAuth refresh continuity for ChatGPT/Claude MCP clients",
+        "coveredBy": "PB-A3",
+        "disposition": "DESIGNED_NOT_IMPLEMENTED",
+        "observedMainSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c"
       }
     ]
   },
@@ -2891,7 +2899,8 @@
             "TB-W3-F-05",
             "TB-W4-I3-01",
             "TB-W4-GGCC-E2E",
-            "TB-W3-OAUTH-WRITE-SCOPE-01"
+            "TB-W3-OAUTH-WRITE-SCOPE-01",
+            "TB-W3-A3-03"
           ],
           "scope": "Project Reality, governance and effective capabilities, receipts, guided completion, provisioning, Git/GitHub E2E, tracing, monitoring, alerts and OAuth write scope, with every ancestor lot DONE."
         },
@@ -11081,7 +11090,8 @@
         "TB-W4-J2-01",
         "TB-W4-K-12",
         "TB-W4-GGCC-E2E",
-        "TB-W3-OAUTH-WRITE-SCOPE-01"
+        "TB-W3-OAUTH-WRITE-SCOPE-01",
+        "TB-W3-A3-03"
       ],
       "existingAuthorities": [
         "Program Backlog V2 derived readiness",
@@ -11586,6 +11596,26 @@
           36905918563
         ]
       }
+    },
+    {
+      "id": "INTAKE-OAUTH-REFRESH-20260930",
+      "sourceKey": "user:oauth-refresh-continuity:20260930",
+      "sourceId": "USER-OAUTH-REFRESH-20260930",
+      "title": "Durable OAuth refresh continuity for ChatGPT/Claude MCP clients",
+      "status": "CONVERGED_CURRENT_BRANCH",
+      "observedMainSha": "9511d434f3a66a2b92e847eabfd26596200e5f5c",
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "integrationVerdict": "COMPLEMENT",
+      "coveredBy": "PB-A3",
+      "targetBlueprintIds": [
+        "TB-W3-A3-02",
+        "TB-W3-A3-03"
+      ],
+      "integrationRule": "Complete A3.2 bounded auth-attempt correlation first, then extend the same OAuth/ConnectionContext/Governed Session authority chain with opt-in rotating refresh tokens. Preserve authorization_code + PKCE and never persist raw token material.",
+      "runtimeTasksCreatedByConvergence": 0,
+      "governedSessionsCreatedByConvergence": 0,
+      "runtimeLocksCreatedByConvergence": 0
     },
     {
       "id": "INTAKE-220",
