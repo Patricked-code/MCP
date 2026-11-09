@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { readFileSync, statSync } from 'node:fs';
+import { lstatSync, readFileSync } from 'node:fs';
 
 /**
  * Additive, OAuth-only operator identity for C26. This credential never grants
@@ -14,10 +14,12 @@ export const C26_OAUTH_COOKIE_NAME = 'mcp_c26_oauth_session';
 
 function readConfiguredSecret(): string | null {
   try {
-    const info = statSync(C26_OAUTH_LOGIN_SECRET_PATH);
+    const info = lstatSync(C26_OAUTH_LOGIN_SECRET_PATH);
     // Deny shared-readable credentials and non-regular special devices.
     if (!info.isFile() || (info.mode & 0o077) !== 0) return null;
     const value = readFileSync(C26_OAUTH_LOGIN_SECRET_PATH, 'utf8').trim();
+    // Reusing the shared administrative Bearer is never a C26 identity.
+    if (value === process.env.MCP_AUTH_TOKEN) return null;
     return /^[A-Za-z0-9_-]{43,256}$/.test(value) ? value : null;
   } catch {
     // An unprovisioned or unreadable secret DISABLES C26, not OAuth admin.
@@ -58,6 +60,21 @@ export function verifyC26OAuthLoginToken(
   const secret = readSecret();
   return typeof secret === 'string' && /^[A-Za-z0-9_-]{43,256}$/.test(secret)
     && equalsConstantTime(input, secret);
+}
+
+/**
+ * Single-read login exchange: the credential that was verified signs the same
+ * cookie even during an operator-controlled secret rotation. Null means disabled
+ * or invalid; no response contains the credential or its checksum.
+ */
+export function issueC26OAuthCookieFromLogin(
+  input: string,
+  options: { maxAgeSeconds: number; secure: boolean; now?: number; readSecret?: () => string | null }
+): string | null {
+  const secret = (options.readSecret ?? readConfiguredSecret)();
+  if (!secret || secret === process.env.MCP_AUTH_TOKEN
+    || !/^[A-Za-z0-9_-]{43,256}$/.test(secret) || !equalsConstantTime(input, secret)) return null;
+  return issueC26OAuthCookie({ ...options, readSecret: () => secret });
 }
 
 /**
