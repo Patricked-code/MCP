@@ -50,11 +50,15 @@ function authorizeQuery(challenge: string, overrides: Record<string, string> = {
 
 async function withOauthServer(
   authenticated: boolean,
-  fn: (baseUrl: string) => Promise<void>
+  fn: (baseUrl: string) => Promise<void>,
+  authenticatedSubject?: string | null
 ): Promise<void> {
   const app = express();
   app.use(express.urlencoded({ extended: false, limit: '64kb' }));
-  registerOauthRoutes(app, { isAuthenticated: () => authenticated });
+  registerOauthRoutes(app, {
+    isAuthenticated: () => authenticated,
+    ...(authenticatedSubject !== undefined ? { authenticatedSubject: () => authenticatedSubject } : {})
+  });
   const server = app.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const address = server.address() as AddressInfo;
@@ -208,6 +212,42 @@ test('client mismatch burns the code before a second legitimate exchange', async
     assert.equal(retry.status, 400);
     assert.equal((await retry.json()).error, 'invalid_grant');
   });
+});
+
+test('dedicated C26 OAuth subject comes only from verified server-side authentication', async () => {
+  const { verifier, challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const approved = await submitConsent(baseUrl, fields, 'approve');
+    assert.equal(approved.status, 302);
+    const code = new URL(approved.headers.get('location') ?? 'about:blank').searchParams.get('code');
+    assert.ok(code);
+    const token = await fetch(`${baseUrl}/oauth/token`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI,
+        client_id: 'https://client.example/oauth-client',
+        code_verifier: verifier, resource: oauthIssuer()
+      })
+    });
+    assert.equal(token.status, 200);
+    const body = await token.json() as { access_token: string };
+    assert.equal(inspectOauthAccessToken(body.access_token, 'mcp:read')?.subject, 'wealthtech-mcp-c26-agent');
+    assert.notEqual(inspectOauthAccessToken(body.access_token, 'mcp:read')?.subject, 'wealthtech-mcp-admin');
+  }, 'wealthtech-mcp-c26-agent');
+});
+
+test('unrecognized or absent authenticated identity cannot issue any OAuth authorization code', async () => {
+  const { challenge } = pkce();
+  for (const untrustedSubject of [null, 'attacker-chosen-subject']) {
+    await withOauthServer(true, async (baseUrl) => {
+      const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+      const response = await submitConsent(baseUrl, fields, 'approve');
+      assert.equal(response.status, 401);
+      assert.equal(response.headers.get('location'), null);
+    }, untrustedSubject);
+  }
 });
 
 test('a denied consent redirects with access_denied and never issues a code', async () => {
