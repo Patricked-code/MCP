@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { continueC26WithExistingHost } from '../scripts/mcp-autonomous-agent-continuation.mjs';
+import { continueC26WithExistingHost, createC26BoundSessionReader } from '../scripts/mcp-autonomous-agent-continuation.mjs';
 
 const SHA='1a053eb366dfe0c3f567f46a3bd544a079491197';
 const SESSION='d40fbb4d-a3a0-4cc4-aa17-43f7b3552b48';
@@ -274,4 +274,86 @@ test('C26 cannot double-start a runner when two callers race over the same key',
   assert.equal(b.status,'DELEGATED');
   assert.equal(a.executorRunId,b.executorRunId);
   assert.equal(starts,1);
+});
+
+function c26CurrentBoundContext(f){
+  const session=boundSession(f);
+  const connectionContextId='11111111-1111-4111-8111-111111111111';
+  session.connectionContext.connectionContextId=connectionContextId;
+  return {
+    schemaVersion:1,repository:'Patricked-code/MCP',session,
+    proof:{clientEvidence:{
+      source:'connection_context',connectionContextId,
+      principal:{status:'VERIFIED',assurance:'oauth_subject',
+        evidenceSource:'oauth_auth_info'}
+    }}
+  };
+}
+
+test('C26 composes the existing server-bound governed-context tool without a selected session ID',async()=>{
+  const f=fixture(),context=c26CurrentBoundContext(f),args=[];
+  let lookups=0,claims=0;
+  const readBoundAgentSession=createC26BoundSessionReader(async(...provided)=>{
+    args.push(provided);
+    return context;
+  });
+  const result=await continueC26WithExistingHost(f.input,ports(f,{
+    readBoundAgentSession,
+    readOwnP2State:async()=>{lookups++;return f.p2;},
+    admitExistingP2:async()=>{claims++;return f.claim;}
+  }));
+  assert.equal(result.status,'DELEGATED');
+  assert.deepEqual(args,[[]], 'No governedSessionId or other caller-selected parameter');
+  assert.equal(lookups,1);
+  assert.equal(claims,1);
+  assert.equal(result.createdQueue,false);
+  assert.equal(result.certifiedC27,false);
+});
+
+test('C26 context reader fails closed before P2 for unbound, foreign, or unverified connections',async()=>{
+  const mutations=[
+    c=>{c.session=null;},
+    c=>{c.session.governedSessionId='caa50d12-737c-47f9-9ee0-6cf8b763fdbe';},
+    c=>{c.proof.clientEvidence.principal.status='UNKNOWN';},
+    c=>{c.proof.clientEvidence.principal.assurance='declared_only';},
+    c=>{c.proof.clientEvidence.connectionContextId='ffffffff-ffff-ffff-ffff-ffffffffffff';},
+    c=>{c.proof.clientEvidence.source='GITHUB_ARTIFACT';},
+    c=>{c.session.connectionContext.principalId='oauth:foreign';},
+    c=>{c.session.currentTransport=null;},
+    c=>{c.repository='other/repository';},
+    c=>{c.proof=null;}
+  ];
+  for(const mutate of mutations){
+    const f=fixture(),context=c26CurrentBoundContext(f);
+    mutate(context);
+    let reads=0,claims=0,starts=0;
+    const result=await continueC26WithExistingHost(f.input,ports(f,{
+      readBoundAgentSession:createC26BoundSessionReader(async()=>context),
+      readOwnP2State:async()=>{reads++;return f.p2;},
+      admitExistingP2:async()=>{claims++;return f.claim;},
+      startOrResumeExistingAgent:async()=>{starts++;throw Error('forbidden');}
+    }));
+    assert.equal(result.status,'BLOCKED');
+    assert.equal(result.reason,'OWN_TRANSPORT_SESSION_OR_BOOTSTRAP_CONFLICT');
+    assert.equal(reads,0);
+    assert.equal(claims,0);
+    assert.equal(starts,0);
+  }
+});
+
+test('C26 context reader cannot treat missing MCP transport or failed observation as an admission',async()=>{
+  const f=fixture();
+  let reads=0;
+  for(const reader of [
+    createC26BoundSessionReader(null),
+    createC26BoundSessionReader(async()=>{throw Error('MCP_TRANSPORT_UNAVAILABLE');})
+  ]){
+    const result=await continueC26WithExistingHost(f.input,ports(f,{
+      readBoundAgentSession:reader,
+      readOwnP2State:async()=>{reads++;return f.p2;}
+    }));
+    assert.equal(result.status,'BLOCKED');
+    assert.equal(result.claimedTask,false);
+  }
+  assert.equal(reads,0);
 });
