@@ -41,7 +41,7 @@ test('C26 identity is not elevatable by a legacy administrative cookie or a malf
   }).split(';')[0];
   const token = validCookie.split('=')[1];
   assert.ok(token);
-  const forged = `${C26_OAUTH_COOKIE_NAME}=${token.slice(0, -1)}0`;
+  const forged = `${C26_OAUTH_COOKIE_NAME}=${token.slice(0, -1)}${token.endsWith('0') ? '1' : '0'}`;
   assert.equal(c26SubjectFromCookie(forged, { now: at, readSecret: () => c26Secret }), null);
   assert.equal(c26SubjectFromCookie('mcp_web_session=not-c26', { now: at, readSecret: () => c26Secret }), null);
   assert.equal(c26SubjectFromCookie(`${C26_OAUTH_COOKIE_NAME}=%invalid`, { now: at, readSecret: () => c26Secret }), null);
