@@ -12,7 +12,7 @@ test('intake #201 converges into the existing conditional bounded server-write b
 
   assert.equal(
     program.w3A3InventoryHandoff?.a32ExecutionGate?.reasonCode,
-    'RUNTIME_REOBSERVATION_CLEAN_MATERIALIZATION_PATH_UNAVAILABLE'
+    'RUNTIME_TASK_MATERIALIZED_DEDICATED_SESSION_REQUIRED_FOR_CLAIM'
   );
   assert.equal(
     program.w3A3InventoryHandoff?.a32ExecutionGate?.githubFallbackCoverage?.mutationOrClaim,
@@ -92,7 +92,7 @@ test('intake #201 converges into the existing conditional bounded server-write b
   );
 });
 
-test('remediated intake #201 does not materialize or claim A3.2 runtime authority', async () => {
+test('remediated intake #201 does not claim existing A3.2 runtime task', async () => {
   const program = JSON.parse(
     await readFile('docs/governance/program-backlog-convergence.json', 'utf8')
   );
@@ -103,8 +103,16 @@ test('remediated intake #201 does not materialize or claim A3.2 runtime authorit
   assert.equal(a32?.readiness?.state, 'READY');
   assert.equal(
     program.w3A3InventoryHandoff?.a32ExecutionGate?.executionStatus,
-    'BLOCKED_PENDING_RUNTIME_MATERIALIZATION_AUTHORITY'
+    'MATERIALIZED_READY_PENDING_DEDICATED_CLAIM'
   );
+
+  // Materialization is not an authorized Governed Session claim or ownership transfer.
+  const materialized = a32?.materializationEvidence;
+  assert.equal(materialized?.runtimeTaskId, 'TASK-20260929-001');
+  assert.equal(materialized?.status, 'READY');
+  assert.equal(materialized?.ownerGovernedSessionId, null);
+  assert.deepEqual(materialized?.resourceScopes, ['connection:oauth-attempt-correlation']);
+  assert.equal(program.w3A3InventoryHandoff?.a32ExecutionGate?.githubFallbackCoverage?.mutationOrClaim, false);
 
   const intake = (program.programIntakes ?? []).find((entry: any) => entry.issue === 201);
   assert.equal(intake?.runtimeTasksCreatedByConvergence, 0);
