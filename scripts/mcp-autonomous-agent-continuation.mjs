@@ -94,6 +94,43 @@ function validateOwnBoundSession(session,p,observedAt){
     &&validFrom<=now&&now<validUntil;
 }
 
+/**
+ * Adapt the EXISTING authenticated `mcp_get_governed_context` response to the
+ * existing readBoundAgentSession port. The server-owned context tool accepts
+ * no agent-selected session ID: it resolves the bound session from ToolExtra's
+ * transport (src/tools/governedContext.ts). A list/get-session lookup, GitHub
+ * observation, or caller-provided nextWork is NOT a valid readCurrentContext.
+ *
+ * This adapter creates no principal, session, transport, token, queue or host,
+ * and grants no authority. continueC26WithExistingHost still validates the
+ * receipt, live exact SHA, ownership and P2/host ports independently.
+ */
+export function createC26BoundSessionReader(readCurrentContext){
+  if(typeof readCurrentContext!=='function')return async()=>null;
+  return async()=>{
+    // Deliberately pass ZERO arguments: no agent-supplied governedSessionId.
+    const context=await readCurrentContext();
+    const session=context?.session;
+    const evidence=context?.proof?.clientEvidence;
+    const connection=session?.connectionContext;
+    if(!object(context)||context.repository!=='Patricked-code/MCP'
+      ||!object(session)||session.repository!==context.repository
+      ||!object(connection)||!object(evidence)
+      ||evidence.source!=='connection_context'
+      ||evidence.principal?.status!=='VERIFIED'
+      ||evidence.principal?.assurance!=='oauth_subject'
+      ||evidence.principal?.evidenceSource!=='oauth_auth_info'
+      ||!same(evidence.connectionContextId,connection.connectionContextId)
+      ||!same(session.governedSessionId,connection.governedSessionId)
+      ||!same(session.ownerPrincipalId,connection.principalId)
+      ||!object(session.currentTransport)
+      ||!/^[0-9a-f]{64}$/.test(session.currentTransport.fingerprint??'')){
+      return null;
+    }
+    return Object.freeze({...session,source:'GOVERNED_SESSIONS'});
+  };
+}
+
 function verifiedRun(host,p,key){
   return object(host)
     &&host.source==='EXISTING_AGENT_HOST'
