@@ -284,8 +284,9 @@ async function assertGovernedS2Session(
   const leaseExpiresAtMs = Date.parse(ownedLock.expiresAt);
   assertS2LeaseWindow(leaseExpiresAtMs);
   const state = await liveStateEngine.getCurrent();
+  const observedStateVersion = state?.stateVersion ?? -1;
   assertS2FreshAlignedState(state, session.lastAcknowledgedStateVersion);
-  assertS2BootstrapCurrent(session.bootstrapReceipt, governedSessionId, session.repository, state.stateVersion);
+  assertS2BootstrapCurrent(session.bootstrapReceipt, governedSessionId, session.repository, observedStateVersion);
   const tasks = getGovernedTaskToolDependencies();
   await tasks.ready();
   const taskStore = await tasks.queue.listVisibleTasks();
