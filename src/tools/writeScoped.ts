@@ -4,6 +4,7 @@ import { env } from '../config/env.js';
 import { runGuardedCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { registerMcpSelfWriteTools } from './selfManagement.js';
+import { registerS2LeafCleanupWriteTools } from './s2LeafCleanup.js';
 import { registerLegacyVhostsScopedTools } from './legacyVhostsScoped.js';
 import { registerAmfRegistryTools } from './amfRegistry.js';
 import { registerSadiaafScopedTools } from './sadiaafScoped.js';
@@ -441,4 +442,5 @@ node ${shellQuote(script)} ${quotedArgs}`;
   registerLegacyVhostsScopedTools(server);
   registerAmfRegistryTools(server);
   registerMcpSelfWriteTools(server);
+  registerS2LeafCleanupWriteTools(server);
 }
