@@ -36,6 +36,7 @@ test('valid observation still denies cleanup', () => {
   assert.equal(result.deletionAllowed, false);
   assert.equal(result.quarantineAllowed, false);
   assert.equal(result.writesPerformed, false);
+  assert.ok(result.blockers.includes('ALLOCATED_DISK_BYTES_NOT_PROVEN_RECLAIMABLE'));
 });
 
 test('symlink escape is blocked, no matter the measured size', () => {
@@ -70,6 +71,6 @@ test('malformed, duplicated or failed observations fail closed', () => {
 
 test('fixed probe has no write, purge, restart or arbitrary path input', () => {
   assert.ok(FUNDS_CACHE_PREFLIGHT_COMMAND.includes("BASE='/var/www/vhosts/chainsolutions.fr'"));
-  assert.ok(FUNDS_CACHE_PREFLIGHT_COMMAND.includes('du -sb'));
+  assert.ok(FUNDS_CACHE_PREFLIGHT_COMMAND.includes('du -sB1'));
   assert.ok(!/\brm\b|\bmv\b|\btruncate\b|\bsystemctl\b|\btee\b/.test(FUNDS_CACHE_PREFLIGHT_COMMAND));
 });
