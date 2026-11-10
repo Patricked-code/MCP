@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-process.env.MCP_AUTH_TOKEN ??= 'test-only-token';
+process.env.MCP_AUTH_TOKEN ??= 'mcp-test-only-credential-20261110-no-secret';
 process.env.S1_HOST ??= '127.0.0.1';
 process.env.S2_HOST ??= '127.0.0.1';
 process.env.S1_KEY_PATH ??= '/tmp/unused-s1';

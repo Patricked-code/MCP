@@ -172,7 +172,7 @@ async function assertGovernedS2Session(
     throw new Error('S2_CLEANUP_TRANSPORT_MISMATCH');
   const session = await deps.sessions.getVisibleSession(governedSessionId, request);
   if (!session || session.ownerPrincipalId !== request.identity.principalId ||
-      session.status !== 'ACTIVE' || session.repository !== 'Patricked-code/MCP' ||
+      session.status !== 'ACTIVE' ||
       session.taskScope !== 'S2_LEGACY_CLEANUP') {
     throw new Error('S2_CLEANUP_SESSION_SCOPE_INVALID');
   }
