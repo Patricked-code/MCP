@@ -176,3 +176,17 @@ Nouvelle commande **strictement read-only** et sans paramètre. Réutilise le co
 - Toutes les réponses comprennent `deletionAllowed=false`, `quarantineAllowed=false`, `writesPerformed=false`. La commande ne prétend pas vérifier les dépendances Plesk/Passenger ni les processus ouvrant des fichiers.
 - Aucune suppression ou mise en quarantaine autorisée. Les prérequis de l'issue #3 restent obligatoires avant tout futur outil destructeur.
 - Les données observées lors de l'appel sont des preuves privées d'exploitation ; ne pas reproduire l'inventaire brut dans GitHub.
+
+## 10 novembre 2026 — Extension candidate de gouvernance S2, transport et sauvegarde GitHub
+
+Cette extension **non fusionnée, non déployée** réutilise les autorités existantes et ajoute cinq outils MCP de **lecture seule** :
+
+| Outil | Effet exact | Limite |
+| --- | --- | --- |
+| `cleanup_legacy_target_preflight_s2` | Contrôle `realpath`, présence, taille allouée et métadonnées d'un des **six** chemins historiques S2, clé allowlistée | Aucun `rm`, aucun chemin shell libre |
+| `mcp_transport_rebinding_preflight` | Identifie une liaison de transport visible au principal OAuth courant | Ne détache ni ne modifie Regulatory |
+| `mcp_credential_rotation_preflight` | Prépare le changement de mot de passe Plesk/SSH ou la rotation OAuth/GitHub App | Aucune donnée secrète acceptée, aucun mot de passe changé |
+| `cleanup_disposal_policy_s2` | Distingue caches reconstruisibles et données exigeant restauration | Pas de suppression; backup facultatif **uniquement** pour un cache dont le rebuild et la non-utilisation sont attestés |
+| `cleanup_github_backup_policy_s2` | Décrit la conservation du code dans un dépôt GitHub **privé** | Pas de création ni commit; jamais de secrets, dumps, Plesk archives ou données personnelles |
+
+La séparation entre **transport MCP**, **session gouvernée**, **mot de passe/identifiant** et **dépôt GitHub** est maintenue. Ce travail ne crée aucun nouveau moteur de nettoyage, registre ou autorité. Les protections S1/S2 et les originaux Stablecoin sont conservés. La suppression des six vhosts reste soumise à inventaire Plesk, dépendances, droit technique et décision gouvernée par cible. Source : [PR #390](https://github.com/Patricked-code/MCP/pull/390).

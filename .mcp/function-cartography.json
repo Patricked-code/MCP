@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "49945d4f1953853728e5e2cd23fb80990009b6c6ae88a34f73065adfc91d1678",
-  "registeredToolCount": 148,
-  "readOnlyToolCount": 92,
+  "catalogueDigest": "755217ef625d17cecfba0b87253037c55ba40997af3b762d1a8d16741001d1c0",
+  "registeredToolCount": 153,
+  "readOnlyToolCount": 97,
   "writeToolCount": 56,
   "resourceCount": 2,
   "tools": [
@@ -217,6 +217,72 @@
         "additionalProperties": false
       },
       "contractDigest": "a3ee3801065419150991810d65d851ec7c3e318412062285a542f0ea1ab0a77b"
+    },
+    {
+      "name": "cleanup_disposal_policy_s2",
+      "title": null,
+      "description": "Classe les contenus S2; sauvegarde facultative uniquement pour cache reconstruisible prouvé.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "f8d91ea19e46e60af76d96527aa46ae19e76c2acdbb88d48ddb3b7c259ffb830"
+    },
+    {
+      "name": "cleanup_github_backup_policy_s2",
+      "title": null,
+      "description": "Prépare un dépôt GitHub privé pour le code S2 sans sauvegarder de secrets ni créer de dépôt.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "96d5d000ba2dc8b13ced18beffba4658578629b2feddb9bb16e0d18fe26bd416"
+    },
+    {
+      "name": "cleanup_legacy_target_preflight_s2",
+      "title": null,
+      "description": "Mesure un des six anciens répertoires S2 en lecture seule, sans suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "wti_pccet_api",
+              "wti_api",
+              "wti_evote",
+              "wti_pccet",
+              "wti_apex",
+              "opcvm_legacy"
+            ]
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "fa1b9171d6d1e527d3641f39b53e19e4aed6159d3dc4acbc8995253531530881"
     },
     {
       "name": "cleanup_plan_s1",
@@ -3139,6 +3205,23 @@
       "contractDigest": "2ca1f2adf4b1373cec2da0a78a816daab2f4de5484718dec1176c136c71eed18"
     },
     {
+      "name": "mcp_credential_rotation_preflight",
+      "title": null,
+      "description": "Prépare le changement du mot de passe Plesk/SSH ou la rotation OAuth/GitHub App sans recueillir de secret.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "187c2b467c7bce64f3a699dbbb9422138f13589005673a3374cd6cf9bea0322c"
+    },
+    {
       "name": "mcp_e2_activate",
       "title": null,
       "description": "E2 EXTERNAL_GOVERNED_RECOVERY : automatiquement observer S1/GitHub; si divergence, demarrer mcp_reconcile_s1_to_main dans les limites de la gouvernance; si tout est aligne, poursuivre E2. Aucun effet E1.",
@@ -4211,6 +4294,23 @@
         "additionalProperties": false
       },
       "contractDigest": "97a7d5bff92edb0e197dc1762877c14be729d454794cf38c11ce139f17ba6ba6"
+    },
+    {
+      "name": "mcp_transport_rebinding_preflight",
+      "title": null,
+      "description": "Observe la session liée au transport MCP courant sans changer ni fermer de session.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "e1d72ff7167bd2b2be8d45b5ef63a3f76ab910a0e8b31bf52616c582a5039b14"
     },
     {
       "name": "mcp_typecheck_s1",
