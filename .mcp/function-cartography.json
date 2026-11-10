@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "755217ef625d17cecfba0b87253037c55ba40997af3b762d1a8d16741001d1c0",
-  "registeredToolCount": 153,
+  "catalogueDigest": "bc2bd78a9237633db39e6e9fcb789500412f9ebb3d0a64cf39af6742919d74c3",
+  "registeredToolCount": 154,
   "readOnlyToolCount": 97,
-  "writeToolCount": 56,
+  "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
     {
@@ -3205,23 +3205,6 @@
       "contractDigest": "2ca1f2adf4b1373cec2da0a78a816daab2f4de5484718dec1176c136c71eed18"
     },
     {
-      "name": "mcp_credential_rotation_preflight",
-      "title": null,
-      "description": "Prépare le changement du mot de passe Plesk/SSH ou la rotation OAuth/GitHub App sans recueillir de secret.",
-      "surface": "read",
-      "annotations": {
-        "readOnlyHint": null,
-        "destructiveHint": null
-      },
-      "inputSchema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "properties": {},
-        "additionalProperties": false
-      },
-      "contractDigest": "187c2b467c7bce64f3a699dbbb9422138f13589005673a3374cd6cf9bea0322c"
-    },
-    {
       "name": "mcp_e2_activate",
       "title": null,
       "description": "E2 EXTERNAL_GOVERNED_RECOVERY : automatiquement observer S1/GitHub; si divergence, demarrer mcp_reconcile_s1_to_main dans les limites de la gouvernance; si tout est aligne, poursuivre E2. Aucun effet E1.",
@@ -3591,6 +3574,23 @@
         "additionalProperties": false
       },
       "contractDigest": "3986770a7c7916b552103a406af5db7b64459b08c30d6e92e90ccb1dc24d2ec6"
+    },
+    {
+      "name": "mcp_governed_session_selection_preflight",
+      "title": null,
+      "description": "Présente la procédure de choix de session et de transport MCP, sans mot de passe.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "525aa0c5155624fac6ca72fc23886817cee84a9e2eabee118c55546afce649b3"
     },
     {
       "name": "mcp_list_governed_sessions",
@@ -4051,6 +4051,38 @@
         "additionalProperties": false
       },
       "contractDigest": "f2c133b3dbea44fb7c8e5d00a6e44ee8137f812caaaf5d1eef3bdc305317b944"
+    },
+    {
+      "name": "mcp_release_paused_transport",
+      "title": null,
+      "description": "Libère le transport de la session PAUSED possédée par le principal OAuth courant, sans fermer sa mémoire.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a9a8cf47592be97eb0ede0b4589e5908fd0d4c4897181b38193a5a484da15350"
     },
     {
       "name": "mcp_resume_governed_session",
