@@ -1,5 +1,16 @@
 # DECISIONS_LOG.md
 
+## 2026-11-10 — Refuser le nettoyage des caches Funds sans preuve d'inactivité
+
+**Décision** : pour poursuivre le chantier S1/S2 sans régression, la première extension est un **préflight S2 read-only borné au cache historique Funds**, et non un exécuteur de purge. La commande `cleanup_cache_preflight_funds_s2` réutilise la surface MCP existante et ne crée aucune nouvelle autorité, session, Task Queue ou capacité d'écriture.
+
+- Un répertoire ancien, une anomalie HTTPS ou une réponse 502 ne prouvent pas que le cache n'est plus utilisé. L'abonnement `chainsolutions.fr` est partagé avec des domaines actifs : aucune action au niveau de sa racine.
+- Chemin cible fixé et contrôlé par `realpath` et les composants symlink ; lecture des métadonnées uniquement ; toute anomalie entraîne `UNVERIFIED` ou `BLOCKED_SYMLINK_OR_ESCAPE`.
+- Les champs `deletionAllowed=false`, `quarantineAllowed=false` et `writesPerformed=false` sont invariants et testés. Les tests ne constituent pas une preuve de fonctionnement sur S2 avant le déploiement approuvé.
+- Exécution future conditionnée à une revue indépendante, CI exacte, fusion gouvernée, Governed Deploy du MCP et vérification read-only ; les opérations destructrices relèvent d'une autre admission avec preuve de propriété, sauvegarde/restauration testée, rollback, session/claim/locks et consentement sur cible exacte.
+- Références : [issue #3](https://github.com/Patricked-code/MCP/issues/3), `SUIVI.md`, `CHANGELOG.md`, `MCP_TOOLS.md`.
+
+
 
 ## 2026-11-10 — Correction documentaire de l'état déployé après PR #391
 
