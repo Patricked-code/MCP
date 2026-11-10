@@ -7,6 +7,9 @@ import { assertScopedWriteToolsEnabled, assertWriteFlag } from '../ssh/writeSafe
 import { getGovernedSessionToolDependencies, sessionRequestFromToolExtra } from './governedSessions.js';
 import { liveStateEngine } from '../liveState/engine.js';
 import { asText } from './format.js';
+import { getGovernedTaskToolDependencies } from './governedTasks.js';
+import { PROGRAM_REPOSITORY } from '../governance/programBlueprintMaterialization.js';
+import type { BootstrapReceipt, GovernedTaskRecord } from '../operationalMemory/types.js';
 
 /** Five explicit leaf paths for inspection, never a deletion allowlist. The shared parent is excluded. */
 export const S2_LEAF_TARGETS = {
@@ -47,7 +50,11 @@ const PROBE_LINES: readonly string[] = [
   "if printf '%s\\n' \"$DOMAINS\" | grep -Fxq -- \"$DOMAIN\"; then exit 47; fi",
   "test -d /etc/nginx/plesk.conf.d || exit 48",
   "test -d /etc/apache2/plesk.conf.d || exit 49",
-  "if grep -RFq -- \"$TARGET\" /etc/nginx/plesk.conf.d /etc/apache2/plesk.conf.d; then exit 50; fi",
+  "set +e",
+  "grep -RFq -- \"$TARGET\" /etc/nginx/plesk.conf.d /etc/apache2/plesk.conf.d",
+  "CONFIG_SCAN_RC=$?",
+  "set -e",
+  "test \"$CONFIG_SCAN_RC\" = 1 || exit 50",
   "command -v lsof >/dev/null || exit 51",
   "set +e",
   "timeout 30 lsof +D \"$TARGET\" >/dev/null 2>&1",
@@ -56,7 +63,9 @@ const PROBE_LINES: readonly string[] = [
   "test \"$LSOF_RC\" = 1 || exit 52",
   "BYTES=\"$(du -sB1 -- \"$TARGET\" | cut -f1)\"",
   "case \"$BYTES\" in ''|*[!0-9]*) exit 53;; esac",
-  "FINGERPRINT=\"$(find \"$TARGET\" -printf '%P|%y|%s|%T@|%i\\n' | LC_ALL=C sort | sha256sum | cut -d ' ' -f1)\"",
+  "META_HASH=\"$(find \"$TARGET\" -printf '%P|%y|%s|%T@|%i\\n' | LC_ALL=C sort | sha256sum | cut -d ' ' -f1)\"",
+  "CONTENT_HASH=\"$(find \"$TARGET\" -type f -exec sha256sum -- {} + | LC_ALL=C sort | sha256sum | cut -d ' ' -f1)\"",
+  "FINGERPRINT=\"$(printf '%s\\n%s\\n' \"$META_HASH\" \"$CONTENT_HASH\" | sha256sum | cut -d ' ' -f1)\"",
   "test \"$(printf '%s' \"$FINGERPRINT\" | wc -c)\" = 64 || exit 54",
   "printf 'target=__KEY__\\n'",
   "printf 'bytes=%s\\n' \"$BYTES\"",
@@ -65,10 +74,19 @@ const PROBE_LINES: readonly string[] = [
 ];
 const EXEC_LINES: readonly string[] = [
   "test \"$FINGERPRINT\" = '__EXPECTED__' || exit 60",
-  "QROOT='/var/backups/wealthtech-mcp/s2-cleanup-quarantine/__KEY__'",
+  "umask 077",
+  "QBASE='/var/backups/wealthtech-mcp/s2-cleanup-quarantine'",
+  "QROOT=\"$QBASE/__KEY__\"",
   "DEST=\"$QROOT/__OP_ID__\"",
   "test ! -e \"$DEST\" && test ! -L \"$DEST\" || exit 61",
-  "mkdir -p -- \"$QROOT\"",
+  "mkdir -p -m 0700 -- \"$QROOT\"",
+  "for P in /var/backups /var/backups/wealthtech-mcp \"$QBASE\" \"$QROOT\"; do",
+  "  test -d \"$P\" && test ! -L \"$P\" || exit 68",
+  "  test \"$(realpath -e -- \"$P\")\" = \"$P\" || exit 69",
+  "  test \"$(stat -c '%u' -- \"$P\")\" = 0 || exit 70",
+  "done",
+  "test \"$(stat -c '%a' -- \"$QBASE\")\" = 700 || exit 71",
+  "test \"$(stat -c '%a' -- \"$QROOT\")\" = 700 || exit 72",
   "test \"$(stat -c '%d' \"$TARGET\")\" = \"$(stat -c '%d' \"$QROOT\")\" || exit 62",
   "RECEIPT=\"$QROOT/__OP_ID__.receipt\"",
   "test ! -e \"$RECEIPT\" && test ! -e \"$RECEIPT.pending\" || exit 63",
@@ -159,6 +177,45 @@ async function inspect(key: S2LeafKey): Promise<S2LeafInspection> {
     return parseS2LeafInspection(key, '', null);
   }
 }
+type TaskAdmissionProof = Pick<GovernedTaskRecord,
+  'taskId' | 'repository' | 'status' | 'ownerGovernedSessionId' | 'resourceScopes' | 'dependencies'>;
+
+/** No authorization may be inferred from a session ACK alone. */
+export function assertS2BootstrapCurrent(
+  receipt: Pick<BootstrapReceipt, 'governedSessionId' | 'repository' | 'status' | 'stateVersion' | 'expiresAt'> | null | undefined,
+  sessionId: string, repository: string, currentStateVersion: number, now = Date.now()
+): void {
+  if (!receipt || receipt.status !== 'ACKNOWLEDGED' ||
+      receipt.governedSessionId !== sessionId || receipt.repository !== repository ||
+      receipt.stateVersion !== currentStateVersion ||
+      !Number.isFinite(Date.parse(receipt.expiresAt)) ||
+      Date.parse(receipt.expiresAt) <= now) {
+    throw new Error('S2_CLEANUP_BOOTSTRAP_NOT_CURRENT');
+  }
+}
+
+/** A single actively owned, in-progress task must claim the exact cleanup resource. */
+export function assertS2OwnedCleanupTask(
+  key: S2LeafKey, sessionId: string, repository: string, tasks: readonly TaskAdmissionProof[]
+): void {
+  const resource = 'resource:s2-cleanup/' + key;
+  const matches = tasks.filter(task => task.ownerGovernedSessionId === sessionId &&
+    task.resourceScopes.includes(resource));
+  if (matches.length !== 1 || matches[0].status !== 'IN_PROGRESS' ||
+      matches[0].repository !== repository) {
+    throw new Error('S2_CLEANUP_CLAIMED_TASK_MISSING');
+  }
+  const statuses = new Map(tasks.map(task => [task.taskId, task.status]));
+  if (matches[0].dependencies.some(id => statuses.get(id) !== 'DONE')) {
+    throw new Error('S2_CLEANUP_TASK_DEPENDENCY_INCOMPLETE');
+  }
+  if (tasks.some(task => task.taskId !== matches[0].taskId &&
+      task.resourceScopes.includes(resource) &&
+      ['CLAIMED', 'IN_PROGRESS', 'REVIEW', 'MERGE_READY', 'DEPLOYING', 'VERIFYING'].includes(task.status))) {
+    throw new Error('S2_CLEANUP_TASK_SCOPE_CONFLICT');
+  }
+}
+
 async function assertGovernedS2Session(
   key: S2LeafKey, governedSessionId: string, revision: number, extra: {
     sessionId?: string; authInfo?: any
@@ -172,8 +229,8 @@ async function assertGovernedS2Session(
     throw new Error('S2_CLEANUP_TRANSPORT_MISMATCH');
   const session = await deps.sessions.getVisibleSession(governedSessionId, request);
   if (!session || session.ownerPrincipalId !== request.identity.principalId ||
-      session.status !== 'ACTIVE' ||
-      session.taskScope !== 'S2_LEGACY_CLEANUP') {
+      session.status !== 'ACTIVE' || session.repository !== PROGRAM_REPOSITORY ||
+      session.targetScope !== undefined || session.taskScope !== 'S2_LEGACY_CLEANUP') {
     throw new Error('S2_CLEANUP_SESSION_SCOPE_INVALID');
   }
   if (session.sessionRevision !== revision) throw new Error('S2_CLEANUP_SESSION_STALE');
@@ -188,6 +245,11 @@ async function assertGovernedS2Session(
   if (!state || state.alignment?.global !== 'FULLY_ALIGNED' ||
       state.stateVersion !== session.lastAcknowledgedStateVersion)
     throw new Error('S2_CLEANUP_LIVE_STATE_NOT_ALIGNED');
+  assertS2BootstrapCurrent(session.bootstrapReceipt, governedSessionId, session.repository, state.stateVersion);
+  const tasks = getGovernedTaskToolDependencies();
+  await tasks.ready();
+  const taskStore = await tasks.queue.listVisibleTasks();
+  assertS2OwnedCleanupTask(key, governedSessionId, session.repository, taskStore.tasks);
 }
 export function registerS2LeafCleanupReadTools(server: McpServer): void {
   server.tool('cleanup_s2_leaf_preflight',

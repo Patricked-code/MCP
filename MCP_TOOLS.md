@@ -189,3 +189,8 @@ Admission : `ENABLE_WRITE_TOOLS`, `MCP_S2_CLEANUP_EXECUTION_ENABLED=true` (désa
 Action : `mv -T` vers la quarantaine privée sur le même filesystem ; reçu `state=QUARANTINED`, absence du chemin source vérifiée, opération sans `rm -rf` et sans restart. **La quarantaine ne libère pas d'espace disque**, ne détruit aucune sauvegarde, et exige une restauration possible. Une purge définitive nécessitera un autre lot validé.
 
 Statut : branche/PR candidate ; ne pas déclarer l'outil déployé tant que revue/CI/merge exact SHA et runtime ne sont pas attestés. Aucun privilège attribué par le code seul.
+
+
+### Revue PR #396 — durcissements de sécurité (10/11/2026)
+
+Les cinq constats ont motivé des corrections candidates : détection des erreurs d'inspection de configuration, Bootstrap Receipt et tâche claimée obligatoires, SHA-256 de contenu, répertoire privé root `0700` et inscription permanente dans SUIVI/CHANGELOG/DECISIONS_LOG. La CI et la revue doivent être renouvelées sur le SHA corrigé. Ne pas assimiler la réussite CI à l'activation serveur. Le mode d'exécution demeure OFF par défaut.

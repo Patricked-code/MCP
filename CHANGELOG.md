@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## 2026-11-10 — PR #396 : durcissement du candidat de quarantaine S2
+
+- L'inspection Apache/nginx échoue fermement sur toute erreur de scan, et non seulement en présence d'un match.
+- L'opérateur doit être propriétaire OAuth de la session dédiée, disposer d'un Bootstrap Receipt courant et d'une tâche `IN_PROGRESS` réclamée avec le scope exact et des dépendances terminées.
+- L'empreinte de cible associe SHA-256 de métadonnées et contenus ; la quarantaine doit être privée (mode `0700`, propriétaire root, non-symlink).
+- Ajout des tests de refus correspondants. Mise à jour documentaire append-only des registres `SUIVI.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`.
+- Aucun effacement, redémarrage, changement de secret, fusion ou déploiement n'est induit par ce commit.
+
+
 ## 2026-11-10 — Préflight en lecture seule du cache de build historique Funds S2 (candidat)
 
 - Ajout additif de `cleanup_cache_preflight_funds_s2`, enregistré sur la surface `readOnly` du MCP. Cible **fixe**, sans argument utilisateur, accès SSH de lecture seule, taille et métadonnées uniquement, contrôle des symlinks et du `realpath`.

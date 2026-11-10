@@ -1,5 +1,16 @@
 # SUIVI.md
 
+## 2026-11-10 — PR #396 : correction des cinq constats de revue avant fusion du nettoyeur gouverné S2
+
+- **Référence** : [PR #396](https://github.com/Patricked-code/MCP/pull/396), branche `mcp/s2-governed-quarantine-executor-20261110`. Le propriétaire a fait approuver le commit `9973a46803101da74b80479f4fe87420e196b149` par `Wealthtechinnovations`; les commentaires de revue automatique ont identifié cinq défauts. L'approbation de l'ancien commit **ne certifie pas** les corrections ultérieures.
+- **Correction P1 / configurations** : distinguer le retour grep `1` (absence vérifiée) de `0` (mapping) et `2+` (échec d'inspection) ; toute erreur de lecture bloque.
+- **Correction P1 / admission** : exige un Bootstrap Receipt valide, non expiré, lié à la session/projet/version courante, et une tâche gouvernée `IN_PROGRESS`, possédée par cette session, avec scope exact `resource:s2-cleanup/<key>` et dépendances `DONE`. Le WRITE shadow n'est pas une autorisation.
+- **Correction P2 / fingerprint** : ajouter les empreintes SHA-256 du contenu de tous les fichiers réguliers à la preuve des métadonnées ; réobserver sous `flock` juste avant le déplacement.
+- **Correction P1 / confidentialité** : `umask 077`, création et vérification de la racine de quarantaine `0700`, propriétaire root et absence de liens symboliques avant le déplacement.
+- **Contrat** : cinq chemins enfants S2 seulement, jamais la racine de l'abonnement `wealthtechinnovations.ci` ni les domaines protégés ; ni mots de passe, ni modification de Regulatory, ni purge définitive. Le déplacement sur le même volume n'économise pas d'espace disque.
+- **Statut de ce checkpoint** : corrections candidates sur branche, ni merge ni déploiement ni exécution S2 attestés ; pas de nouveau claim runtime revendiqué. **NEXT_ACTION** : confirmer tests CI exact SHA, résoudre les cinq constats, obtenir une revue indépendante sur le dernier commit, puis fusion/déploiement gouvernés autorisés ; préflight live et approbation d'empreinte par cible avant toute action.
+
+
 ## 2026-11-10 — Caches historiques Funds S2 : préflight borné en lecture seule
 
 - **Continuité propriétaire** : `WT-PROJECT-MCP-001`, nettoyage de caches historiques autorisé **comme catégorie de diagnostic** et non comme suppression de chemins présumés inutilisés. Issue d'autorité existante : [#3](https://github.com/Patricked-code/MCP/issues/3), checkpoint antérieur `#issuecomment-6762376212`.

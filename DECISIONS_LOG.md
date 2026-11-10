@@ -1,5 +1,18 @@
 # DECISIONS_LOG.md
 
+## 2026-11-10 — PR #396 : refus de fusion d'un outil destructif tant que les cinq constats de revue restent ouverts
+
+**Décision** : l'approbation du commit initial par `Wealthtechinnovations` est une preuve de revue humaine, mais n'autorise pas la fusion d'un exécuteur S2 alors que cinq anomalies P1/P2 existent. Admettre les corrections sur la **même PR**, garder le statut non déployé et exiger une validation indépendante du nouveau SHA.
+
+1. Une erreur d'inspection Plesk ou des configurations bloque, indépendamment de l'absence de résultats.
+2. Le `scopedWriteGate` étant en observation `shadow`, l'exécuteur impose ses **propres** vérifications Bootstrap Receipt, tâches gouvernées, locks et Live State.
+3. Un fingerprint de contenu (SHA-256 réguliers) est indispensable ; une preuve de métadonnées seules ne justifie pas un déplacement.
+4. La quarantaine est inaccessible aux utilisateurs non privilégiés : racine privée root `0700`, absence de symlinks, `umask 077`.
+5. Les trois registres permanents sont obligatoires. Aucune nouvelle autorité ni exception de fusion n'est créée.
+
+La racine d'abonnement Plesk, Regulatory, BRVM, Stablecoin, AfricaFunds et les sauvegardes demeurent exclues ; seule une quarantaine réversible et strictement admise est envisagée. **NEXT_ACTION** : CI dernier SHA → résolution documentée revue → nouvelle approbation → gouverned merge/deploy exact SHA → attestation runtime → admission des cibles.
+
+
 ## 2026-11-10 — Refuser le nettoyage des caches Funds sans preuve d'inactivité
 
 **Décision** : pour poursuivre le chantier S1/S2 sans régression, la première extension est un **préflight S2 read-only borné au cache historique Funds**, et non un exécuteur de purge. La commande `cleanup_cache_preflight_funds_s2` réutilise la surface MCP existante et ne crée aucune nouvelle autorité, session, Task Queue ou capacité d'écriture.

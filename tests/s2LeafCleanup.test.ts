@@ -6,7 +6,8 @@ process.env.S2_HOST ??= '127.0.0.1';
 process.env.S1_KEY_PATH ??= '/tmp/unused-s1';
 process.env.S2_KEY_PATH ??= '/tmp/unused-s2';
 const { S2_LEAF_TARGETS, buildS2LeafProbe, buildS2LeafQuarantine,
-  parseS2LeafInspection, assertS2OperatorApproval } =
+  parseS2LeafInspection, assertS2OperatorApproval,
+  assertS2BootstrapCurrent, assertS2OwnedCleanupTask } =
   await import('../src/tools/s2LeafCleanup.js');
 
 test('five exact leaf targets, parent and protected resources excluded', () => {
@@ -54,4 +55,55 @@ test('quarantine is same-device and reversible with receipt, not recursive delet
   assert.ok(cmd.includes('state=QUARANTINED'));
   assert.ok(cmd.includes("stat -c '%d'"));
   assert.doesNotMatch(cmd, /\brm -rf\b|\bdocker\s+stop\b/);
+});
+
+test('configuration errors cannot be mistaken for a Plesk no-match', () => {
+  const probe = buildS2LeafProbe('pccet');
+  assert.match(probe, /CONFIG_SCAN_RC=\$\?/);
+  assert.match(probe, /test "\$CONFIG_SCAN_RC" = 1 \|\| exit 50/);
+  assert.doesNotMatch(probe, /if grep -RFq/);
+});
+test('fingerprint incorporates regular-file contents as well as metadata', () => {
+  const probe = buildS2LeafProbe('evote');
+  assert.match(probe, /CONTENT_HASH=/);
+  assert.match(probe, /-type f -exec sha256sum -- \{\} \+/);
+  assert.match(probe, /META_HASH=/);
+  assert.match(probe, /"\$META_HASH" "\$CONTENT_HASH"/);
+});
+test('quarantine must be a root-owned private mode-0700 directory', () => {
+  const cmd = buildS2LeafQuarantine('evote','a'.repeat(64),'test-fixed');
+  assert.match(cmd, /umask 077/);
+  assert.match(cmd, /mkdir -p -m 0700/);
+  assert.match(cmd, /stat -c '%u'/);
+  assert.match(cmd, /stat -c '%a'/);
+  assert.match(cmd, /\$QBASE.*700/);
+  assert.match(cmd, /\$QROOT.*700/);
+});
+test('bootstrap receipt is required, owned, current and not expired', () => {
+  const good = { governedSessionId:'owner-session', repository:'repo/test',
+    status:'ACKNOWLEDGED', stateVersion:42, expiresAt:'2099-01-01T00:00:00.000Z' };
+  assert.doesNotThrow(() => assertS2BootstrapCurrent(good,'owner-session','repo/test',42));
+  for(const invalid of [null,{...good,governedSessionId:'foreign'},
+    {...good,stateVersion:41},{...good,expiresAt:'2020-01-01T00:00:00.000Z'}]){
+    assert.throws(() => assertS2BootstrapCurrent(invalid,'owner-session','repo/test',42),
+      /S2_CLEANUP_BOOTSTRAP_NOT_CURRENT/);
+  }
+});
+test('cleanup needs exact owned IN_PROGRESS task with complete dependencies', () => {
+  const base = {taskId:'TASK-20261110-101', ownerGovernedSessionId:'owner-session',
+    repository:'repo/test',status:'IN_PROGRESS',
+    resourceScopes:['resource:s2-cleanup/evote'],dependencies:[] };
+  assert.doesNotThrow(() => assertS2OwnedCleanupTask('evote','owner-session','repo/test',[base]));
+  for(const invalid of [[],[{...base,status:'READY'}],
+      [{...base,ownerGovernedSessionId:'other'}],
+      [{...base,resourceScopes:['resource:s2-cleanup/pccet']}],
+      [{...base,repository:'other/repo'}]]){
+    assert.throws(() => assertS2OwnedCleanupTask('evote','owner-session','repo/test',invalid),
+      /S2_CLEANUP_CLAIMED_TASK_MISSING/);
+  }
+  assert.throws(() => assertS2OwnedCleanupTask('evote','owner-session','repo/test',
+      [{...base,dependencies:['TASK-20261110-100']}]),/S2_CLEANUP_TASK_DEPENDENCY_INCOMPLETE/);
+  assert.throws(() => assertS2OwnedCleanupTask('evote','owner-session','repo/test',
+      [base,{...base,taskId:'TASK-20261110-102',ownerGovernedSessionId:'other'}]),
+      /S2_CLEANUP_TASK_SCOPE_CONFLICT/);
 });
