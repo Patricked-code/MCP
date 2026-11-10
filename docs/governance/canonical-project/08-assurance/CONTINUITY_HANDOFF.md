@@ -44,3 +44,9 @@
 - Chargeur `src/projectIdentity/canonicalProjectEntry.ts`, intégré additivement à `get_project_context` par le champ `canonicalMcpProject` et tests fail-closed.
 - Aucun nouveau tool enregistré, aucune session Regulatory, aucune Task/Lock, aucun binding effectif dans GitRegistry, aucun déploiement.
 - **NEXT_ACTION :** vérifier tests + CI exact-head et revue puis décision d'adoption GitRegistry et resolver paramétré ; ne pas inférer une activation serveur de la seule présence du code en PR.
+
+## GitHub direct ID navigation (module read-only)
+
+- Script `scripts/mcp-project-entry.mjs` : résolution `WT-PROJECT-MCP-001 [VIEW]`, validation identifiant et manifeste, référence d'entrée documentaire, aucun appel serveur.
+- Tests `tests/mcpProjectEntryCli.test.ts` : réponse FOUNDATIONS et rejet d'un ID inconnu.
+- **Réalité de l'appel** : GitHub checkout/agent invoqué => script utilisable après validation de la branche ; le client GitHub connecté doit encore lire les sources. Aucune activation implicite de S1.

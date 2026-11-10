@@ -46,3 +46,11 @@ Nom d'API **propose** : `mcp_resolve_canonical_project`, arguments `project_uid`
 ## Raccordement additif dans get_project_context (candidat PR #389)
 
 Le code candidat ajoute le champ `canonicalMcpProject` au résultat de `get_project_context`, sans changer le nom de l'outil, ses arguments ni ses annotations. La réponse charge un manifeste **copié dans l'image Docker**. `status: DOCUMENTARY_CANDIDATE` signifie **index de routage en lecture seule**, pas autorité GitRegistry et pas ID accepté par un resolver paramétré. Le fichier manquant ou invalide renvoie `CANONICAL_ENTRY_UNAVAILABLE`. Sur le runtime actuellement déployé, ce champ reste **non attesté** jusqu'à fusion, CI, Governed Deploy et vérification.
+
+## C. Navigation directe par Project UID dans un checkout GitHub (candidat)
+
+Le script en lecture seule `scripts/mcp-project-entry.mjs` accepte l'ID et une vue sans demander les chemins des documents :
+
+`node scripts/mcp-project-entry.mjs WT-PROJECT-MCP-001 FOUNDATIONS`
+
+Les vues disponibles sont `FULL`, `FOUNDATIONS`, `READING_ORDER`, `LOOP`, `WORKFLOW`, `AUTHORIZATIONS`, `REGISTRIES`, `CAPABILITIES`, `PERSISTENCE`, `CONTINUITIES`, `HISTORY` et `NEXT`. Le résultat JSON donne le chemin documentaire à lire, la chaîne d'entrée, les références de registre et un statut **DOCUMENTARY_CANDIDATE**. Le script ne contacte pas S1 et ne certifie aucun état live. Un ID inconnu est refusé.
