@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildServerCleanupPlan } from '../src/tools/cleanupPlan.js';
+// Test-only placeholders: no SSH connection or production credentials are used.
+process.env.MCP_AUTH_TOKEN ??= 'ci-placeholder-only-not-a-real-credential';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/unused-cleanup-test-s1';
+process.env.S2_KEY_PATH ??= '/tmp/unused-cleanup-test-s2';
+const { buildServerCleanupPlan } = await import('../src/tools/cleanupPlan.js');
 
 test('S1: a listed domain is not treated as approved for cleanup', () => {
   const plan = buildServerCleanupPlan('s1', [
