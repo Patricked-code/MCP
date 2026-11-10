@@ -169,7 +169,7 @@ Ces commandes MCP sans argument inventorient en lecture seule les noms de réper
 
 ## `cleanup_cache_preflight_funds_s2` — audit borné d'un cache historique Funds (10 novembre 2026)
 
-Nouvelle commande **strictement read-only** et sans paramètre. Réutilise le connecteur SSH existant pour vérifier le répertoire fixe du frontend historique Funds sous S2, les liens symboliques et chemins canoniques, la présence des marqueurs de build et la taille du seul cache `.next/cache`.
+Nouvelle commande **strictement read-only** et sans paramètre. Réutilise le connecteur SSH existant pour vérifier le répertoire fixe du frontend historique Funds sous S2, les liens symboliques et chemins canoniques, la présence des marqueurs de build et l'espace disque alloué au seul cache `.next/cache` (`du -sB1`, pas la taille apparente). Cette mesure n'est pas une preuve du nombre d'octets effectivement récupérables.
 
 - Ne lit aucun contenu applicatif, aucun fichier de secret, aucune clé et aucun `.env`.
 - Retourne `UNVERIFIED` en cas d'échec/observation tronquée, `BLOCKED_SYMLINK_OR_ESCAPE` si chemin non canonique, `CACHE_ABSENT` si rien à examiner, sinon `INSPECTED_NEEDS_RUNTIME_PROOF`.
