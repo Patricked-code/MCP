@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 245,
+  "trackedCount": 246,
   "categories": {
     "canonical": 7,
-    "documentation": 94,
+    "documentation": 95,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -256,6 +256,10 @@
     },
     {
       "path": "docs/governance/canonical-project/04-continuity/HIERARCHY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/04-continuity/DEEP_CONVERSATION_NODE_INDEX.md",
       "category": "documentation"
     },
     {

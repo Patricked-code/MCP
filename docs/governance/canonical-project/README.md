@@ -19,6 +19,7 @@
 | L2 | [Exigences, conceptions et decisions](02-design/DESIGN_TRACEABILITY.md) | Qu'est-ce qui a ete concu, approuve et remplace ? |
 | L3 | [Programmes, roadmap et dependances](03-planning/DEPENDENCIES.md) | Pourquoi ce travail et quels prerequis ? |
 | L4 | [Hierarchie des continuities](04-continuity/HIERARCHY.md) | Comment descendre jusqu'a un point precis ? |
+| L4 | [133 nœuds de conversation (projection PR #373)](04-continuity/DEEP_CONVERSATION_NODE_INDEX.md) | Explorer les niveaux profonds existants sans detenir leur autorite |
 | L4 | [Racines de continuite observees](04-continuity/ROOTS_AND_CHECKPOINTS.md) | Quels identifiants ont de vraies ancres ? |
 | L4 | [Fiche de point de reprise](04-continuity/POINT_OF_REPRISE_TEMPLATE.md) | Comment conserver un arret sans perte ? |
 | L5 | [Chaine d'execution et de preuves](05-execution/PROOF_CHAIN.md) | Quelle modification et quelle preuve de livraison ? |

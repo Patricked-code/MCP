@@ -10,6 +10,7 @@
 - **Branche isolee :** `mcp/canonical-project-deep-markdown-20261110`.
 - **Autorite:** GitHub pour les fichiers et commits ; aucun write runtime ni changement de session/Task/Lock.
 - **Point de reprise:** cette page + [README racine](../README.md) + statut GitHub **a reobserver**.
+- **Projection profonde supplementaire :** 133 nœuds de discussion de la PR #373, version 1.7, sous `04-continuity/DEEP_CONVERSATION_NODE_INDEX.md`. Statut documentaire non-fusionne.
 - **Rattachements sans takeover:** [#348](https://github.com/Patricked-code/MCP/pull/348), [#373](https://github.com/Patricked-code/MCP/pull/373), [#374](https://github.com/Patricked-code/MCP/pull/374), [#379](https://github.com/Patricked-code/MCP/pull/379), [#372](https://github.com/Patricked-code/MCP/pull/372).
 - **Verification CI, PR, SHA de ce lot :** a remplir avec les **preuves GitHub reelles** apres commit et ouverture de PR ; ne pas inventer a l'avance.
 - **Limites :** pas de resolver MCP deploye, pas de `ProjectRecord` MCP confirme, pas d'index universel operationnel.
