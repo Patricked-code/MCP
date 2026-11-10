@@ -1,6 +1,14 @@
 # CHANGELOG.md
 
 
+## 2026-11-10 — Réconciliation documentaire candidate après PR #391
+
+- Suite à la fusion [PR #391](https://github.com/Patricked-code/MCP/pull/391) au merge `9a14b1cf1e15f7f86a6da6e84c740539793820ce` et à l'observation S1/runtime `running/healthy`, alignement des déclarations SHA et du snapshot d'image dans `PRODUCTION_STATE.json`.
+- Remédiation ciblée au `DOCUMENTATION_DRIFT` de Live State v1260 ; mise à jour documentaire uniquement (JSON canonique autorisé + Markdown), sans changement des outils `cleanup_plan_s1` et `cleanup_plan_s2`, sans déploiement et sans nettoyage.
+- Sources de preuve : `SUIVI.md` (checkpoint 2026-11-10), `DECISIONS_LOG.md`, `PRODUCTION_STATE.json`. Cette nouvelle PR doit réussir la CI et les contrôles indépendants avant fusion.
+
+
+
 ## 2026-11-10 — PR #391 : commandes MCP d'inventaire préalable au nettoyage S1/S2
 
 - Ajout **strictement additif et non destructif** des commandes `cleanup_plan_s1` et `cleanup_plan_s2` dans `src/tools/cleanupPlan.ts`, exposées par l'enregistrement existant `src/tools/readOnly.ts`.

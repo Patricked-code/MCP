@@ -1,6 +1,18 @@
 # SUIVI.md
 
 
+## 2026-11-10 — Suite PR #391 : alignement documentaire post-fusion, branche docs-only
+
+- **Entrée :** suite du mandat `WT-PROJECT-MCP-001` ; PR #391 fusionnée à `main` le 2026-11-10 07:52:23Z, merge exact `9a14b1cf1e15f7f86a6da6e84c740539793820ce`.
+- **État direct MCP / S1** : `mcp_reconcile_governed_context` à 07:55:02Z, Live State v1260 : GitHub main = S1 main/origin = Docker runtime = SHA `9a14b1cf1e15f7f86a6da6e84c740539793820ce`; conteneur `wealthtech_mcp_ssh_bridge` `running/healthy`, arbre S1 propre, aucune écriture SSH. Le catalogue runtime contient `cleanup_plan_s1` et `cleanup_plan_s2` (plans en lecture seule).
+- **Limite de la preuve** : les identifiants du job GitHub Actions CI `main` et du job Governed Deploy OIDC n'ont **pas** encore été récupérés ; l'alignement runtime exact-SHA ne vaut pas reçu de workflow de déploiement. Aucune exécution directe des deux commandes nouvellement exposées n'a été attestée depuis ce client.
+- **Écart observé** : Live State = `RECONCILIATION_REQUIRED`, seule contradiction `DOCUMENTATION_DRIFT` ; `PRODUCTION_STATE.json` déclarait encore le SHA historique `82b7b574fe855b71e44bcf1e3f1b0f18aa7cd4d6` (PR #387). Aucun drift fonctionnel GitHub/S1/runtime.
+- **Correction candidate** : dans la branche documentaire distincte, actualiser exclusivement les déclarations d'observation vérifiées de `PRODUCTION_STATE.json` vers le merge #391. Les autres champs historiques de provenance restent intacts. Ce commit et ces lignes Markdown sont des descendants `docs_only` au sens de `src/liveState/collect.ts`, sans modification code ni runtime.
+- **Gouvernance** : aucune nouvelle session, task, claim, lock, fusion, déploiement, suppression, restauration ou opération sur Regulatory. Les archives Plesk S2 restent protégées.
+- **NEXT_ACTION** : valider CI de la PR docs-only, obtenir revue indépendante, fusionner par voie gouvernée, confirmer Governed Deploy exact SHA et Live State `FULLY_ALIGNED`; enfin vérifier l'invocation de `cleanup_plan_s1/s2` sur un client qui découvre leur catalogue actualisé, sans écriture.
+
+
+
 ## 2026-11-10 — PR #391 : reprise, constat P1 et correction documentaire additive
 
 - **Observation GitHub vérifiée** : PR #391 prête pour revue (`draft=false`), non fusionnée, base `main@b2cdeaa116b22546ca15c2fb9fd6dcc7e215efb7`, HEAD initialement validé `3fd053d329bd462ee09b603357757096639ba3dc` par CI `42772896287` SUCCESS. Cette ancienne CI ne valide pas les nouveaux commits documentaires.
