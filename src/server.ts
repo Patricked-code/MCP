@@ -15,6 +15,7 @@ import {
 } from './oauth.js';
 import { logger } from './logger.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
+import { registerGovernedTransportReleaseTool } from './tools/governedSessions.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { registerE2AutomaticActivationTool } from './tools/e2Activation.js';
 import { registerE2OwnerTools } from './tools/e2OwnerTools.js';
@@ -364,6 +365,10 @@ export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   });
 
   registerReadOnlyTools(decorateRegistrationCatalogServer(server, 'read'));
+  if (env.ENABLE_WRITE_TOOLS) {
+    // Escape hatch for a PAUSED, owner-verified session: never automatically detach Regulatory.
+    registerGovernedTransportReleaseTool(decorateRegistrationCatalogServer(server, 'operational-write'));
+  }
   if(pairing){
     // Authenticated ToolExtra, not a browser field, is the only transport source.
     registerPleskWebMcpPairingTool(

@@ -177,16 +177,21 @@ Nouvelle commande **strictement read-only** et sans paramètre. Réutilise le co
 - Aucune suppression ou mise en quarantaine autorisée. Les prérequis de l'issue #3 restent obligatoires avant tout futur outil destructeur.
 - Les données observées lors de l'appel sont des preuves privées d'exploitation ; ne pas reproduire l'inventaire brut dans GitHub.
 
-## 10 novembre 2026 — Extension candidate de gouvernance S2, transport et sauvegarde GitHub
+## 10 novembre 2026 — Extension S2 et choix de session/transport gouvernés
 
-Cette extension **non fusionnée, non déployée** réutilise les autorités existantes et ajoute cinq outils MCP de **lecture seule** :
+**Aucun changement de mot de passe ni rotation d'identifiants n'est demandé ou développé.**
 
-| Outil | Effet exact | Limite |
-| --- | --- | --- |
-| `cleanup_legacy_target_preflight_s2` | Contrôle `realpath`, présence, taille allouée et métadonnées d'un des **six** chemins historiques S2, clé allowlistée | Aucun `rm`, aucun chemin shell libre |
-| `mcp_transport_rebinding_preflight` | Identifie une liaison de transport visible au principal OAuth courant | Ne détache ni ne modifie Regulatory |
-| `mcp_credential_rotation_preflight` | Prépare le changement de mot de passe Plesk/SSH ou la rotation OAuth/GitHub App | Aucune donnée secrète acceptée, aucun mot de passe changé |
-| `cleanup_disposal_policy_s2` | Distingue caches reconstruisibles et données exigeant restauration | Pas de suppression; backup facultatif **uniquement** pour un cache dont le rebuild et la non-utilisation sont attestés |
-| `cleanup_github_backup_policy_s2` | Décrit la conservation du code dans un dépôt GitHub **privé** | Pas de création ni commit; jamais de secrets, dumps, Plesk archives ou données personnelles |
+| Outil | Fonction |
+| --- | --- |
+| `cleanup_legacy_target_preflight_s2` | Préflight strictement en lecture seule de six anciens vhosts S2 |
+| `mcp_transport_rebinding_preflight` | Lecture de la session actuellement liée au transport, sans mutation |
+| `mcp_governed_session_selection_preflight` | Présente les procédures d'ouverture, reprise et sélection de session |
+| `mcp_release_paused_transport` | Détache uniquement une session **PAUSED**, possédée par le principal OAuth, sans verrous, avec ID et révision exacts |
+| `cleanup_disposal_policy_s2` | Classe les éléments selon le besoin réel de sauvegarde |
+| `cleanup_github_backup_policy_s2` | Propose de conserver le code dans un dépôt privé, sans secrets ni dumps |
 
-La séparation entre **transport MCP**, **session gouvernée**, **mot de passe/identifiant** et **dépôt GitHub** est maintenue. Ce travail ne crée aucun nouveau moteur de nettoyage, registre ou autorité. Les protections S1/S2 et les originaux Stablecoin sont conservés. La suppression des six vhosts reste soumise à inventaire Plesk, dépendances, droit technique et décision gouvernée par cible. Source : [PR #390](https://github.com/Patricked-code/MCP/pull/390).
+**Parcours utilisateur** : `mcp_list_governed_sessions` → identifier la session source et la destination → checkpoint éventuel → mise en pause **explicite** de la source → `mcp_release_paused_transport` → `mcp_open_governed_session` ou `mcp_resume_governed_session` → réconciliation/acknowledgement.
+
+Le détachement n'ouvre pas un nouveau transport HTTP : cette étape appartient au client MCP. Les sessions ACTIVE ne sont jamais détachées automatiquement, et Regulatory ne fait l'objet d'aucune mutation implicite. L'ancienne session, son historique et ses checkpoints sont conservés.
+
+**Statut** : outils candidats de la PR #395, non fusionnés et non déployés ; aucune suppression S2.

@@ -72,21 +72,24 @@ export function cleanupS2GitPolicy() {
     notes: 'GitHub source-code hosting is not a replacement for encrypted restorable server backups.'
   };
 }
-export function credentialRotationPlan() {
+export function governedSessionSelectionPlan() {
   return {
-    schemaVersion: 1, status: 'TARGET_ACCOUNT_REQUIRED',
-    changed: false, acceptsRawPassword: false,
-    targets: [
-      { system: 'S2_PLESK', kind: 'password', method: 'provider-native authorized password rotation' },
-      { system: 'S2_SSH', kind: 'key or password', method: 'staged key replacement, proof, then old key revocation' },
-      { system: 'MCP_OAUTH', kind: 'OAuth secret/token', method: 'client-aware revoke and re-authorize flow' },
-      { system: 'GITHUB_APP', kind: 'private key or installation token', method: 'rotate GitHub App key in protected secret store' }
+    schemaVersion: 1, status: 'OWNER_SELECTION_REQUIRED',
+    changesPasswords: false, transportHttpCreated: false,
+    steps: [
+      'mcp_list_governed_sessions to inspect sessions visible to the OAuth owner',
+      'mcp_transport_rebinding_preflight to observe the current transport binding',
+      'mcp_pause_governed_session only on the explicitly chosen source after a checkpoint',
+      'mcp_release_paused_transport with exact session ID and revision and no locks',
+      'mcp_open_governed_session or mcp_resume_governed_session for the chosen target',
+      'mcp_reconcile_governed_context and acknowledge the new observed state'
     ],
-    blockers: ['exact account not specified', 'must not put passwords in MCP arguments or GitHub files',
-      'rotation requires authorized provider scope, rollback and continuity verification']
+    clientResponsibility: 'A fresh MCP HTTP transport is created by the client, not by a server tool.',
+    constraints: ['Never detach an ACTIVE session', 'OAuth owner only',
+      'No active locks', 'No automatic takeover or pause of Regulatory',
+      'Session memory and checkpoints preserved']
   };
 }
-
 export function registerS2CleanupGovernedReadTools(server: McpServer): void {
   server.tool('cleanup_legacy_target_preflight_s2',
     'Mesure un des six anciens répertoires S2 en lecture seule, sans suppression.',
@@ -122,9 +125,9 @@ export function registerS2CleanupGovernedReadTools(server: McpServer): void {
         return json({ status: 'AUTH_OR_TRANSPORT_UNVERIFIED', switched: false, writesPerformed: false });
       }
     });
-  server.tool('mcp_credential_rotation_preflight',
-    'Prépare le changement du mot de passe Plesk/SSH ou la rotation OAuth/GitHub App sans recueillir de secret.',
-    {}, async () => json(credentialRotationPlan()));
+  server.tool('mcp_governed_session_selection_preflight',
+    'Présente la procédure de choix de session et de transport MCP, sans mot de passe.',
+    {}, async () => json(governedSessionSelectionPlan()));
   server.tool('cleanup_disposal_policy_s2',
     'Classe les contenus S2; sauvegarde facultative uniquement pour cache reconstruisible prouvé.',
     {}, async () => json(cleanupS2DisposalPolicy()));

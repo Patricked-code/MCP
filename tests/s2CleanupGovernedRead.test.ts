@@ -6,7 +6,7 @@ process.env.S2_HOST ??= '127.0.0.1';
 process.env.S1_KEY_PATH ??= '/tmp/unused-s2-plan-s1';
 process.env.S2_KEY_PATH ??= '/tmp/unused-s2-plan-s2';
 const { S2_LEGACY_TARGETS, buildS2LegacyProbeCommand,
-  cleanupS2DisposalPolicy, cleanupS2GitPolicy, credentialRotationPlan } =
+  cleanupS2DisposalPolicy, cleanupS2GitPolicy, governedSessionSelectionPlan } =
   await import('../src/tools/s2CleanupGovernedRead.js');
 
 test('six historical path probes are fixed and read-only', () => {
@@ -35,9 +35,10 @@ test('GitHub plan is private and rejects database dumps and secrets', () => {
   assert.ok(policy.prohibited.includes('database dumps'));
   assert.ok(policy.prohibited.includes('SSH keys'));
 });
-test('credential preflight never accepts raw passwords or writes secrets', () => {
-  const policy = credentialRotationPlan();
-  assert.equal(policy.changed, false);
-  assert.equal(policy.acceptsRawPassword, false);
-  assert.equal(policy.targets.length, 4);
+test('session selection does not change passwords or hijack active Regulatory', () => {
+  const policy = governedSessionSelectionPlan();
+  assert.equal(policy.changesPasswords, false);
+  assert.equal(policy.transportHttpCreated, false);
+  assert.ok(policy.steps.some((step: string) => step.includes('mcp_release_paused_transport')));
+  assert.ok(policy.constraints.some((text: string) => text.includes('Regulatory')));
 });

@@ -1,6 +1,8 @@
 import type { AuthInfo } from '@modelcontextprotocol/sdk/server/auth/types.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
+import { env } from '../config/env.js';
+import { assertScopedWriteToolsEnabled } from '../ssh/writeSafety.js';
 
 import { deriveBootstrapProjectReferences } from '../governedContext/receiptReferences.js';
 import { liveStateEngine } from '../liveState/engine.js';
@@ -427,5 +429,20 @@ export function registerGovernedSessionTools(
       input,
       sessionRequestFromToolExtra(extra)
     ))
+  );
+}
+
+/** Controlled release of the CURRENT paused transport only. No new HTTP transport is created. */
+export function registerGovernedTransportReleaseTool(server: McpServer): void {
+  if (!operationalMemoryConfig.enabled) return;
+  server.tool('mcp_release_paused_transport',
+    'Libère le transport de la session PAUSED possédée par le principal OAuth courant, sans fermer sa mémoire.',
+    { governedSessionId: GovernedSessionIdSchema, expectedSessionRevision: ExpectedSessionRevisionSchema },
+    async (input, extra) => handled(async () => {
+      assertScopedWriteToolsEnabled(env.ENABLE_WRITE_TOOLS);
+      return getGovernedSessionToolDependencies().sessions.releasePausedTransport(
+        input, sessionRequestFromToolExtra(extra)
+      );
+    })
   );
 }
