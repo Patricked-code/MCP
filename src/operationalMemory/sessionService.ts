@@ -71,6 +71,8 @@ export type ResumeSessionInput = {
   expectedSessionRevision: number;
 };
 
+export type ReleasePausedTransportInput = { governedSessionId: string; expectedSessionRevision: number };
+
 export type GovernedRepositoryTarget = string;
 
 const HISTORICAL_REPOSITORY = 'Patricked-code/MCP';
@@ -137,6 +139,7 @@ export type GovernedSessionService = {
   expireIdleSessions(): Promise<number>;
   lookupGovernedSessionId(transportSessionId: string | undefined): string | null;
   unbindTransport(transportSessionId: string): string | null;
+  releasePausedTransport(input: ReleasePausedTransportInput, request: SessionRequest): Promise<GovernedSessionPublicRecord>;
 };
 
 export type SessionRevisionInput = {
@@ -752,6 +755,32 @@ export function createGovernedSessionService(
       return paused;
     },
 
+    async releasePausedTransport(input, request) {
+      if (request.identity.assurance !== 'oauth_subject' || !request.identity.principalId) fail('OAUTH_OWNER_REQUIRED');
+      if (options.bindings.lookup(request.transportSessionId) !== input.governedSessionId) fail('TRANSPORT_BINDING_MISMATCH');
+      const fingerprint = options.bindings.metadata(request.transportSessionId, now()).fingerprint;
+      let updated: GovernedSessionRecord | null = null;
+      await options.store.update((document) => {
+        const index = document.sessions.findIndex((item) => item.governedSessionId === input.governedSessionId);
+        const session = document.sessions[index];
+        if (!session) fail('SESSION_NOT_FOUND');
+        if (session.ownerPrincipalId !== request.identity.principalId) fail('SESSION_NOT_OWNED');
+        if (session.status !== 'PAUSED') fail('SESSION_MUST_BE_PAUSED');
+        if (session.lockIds.length > 0) fail('SESSION_LOCKS_ACTIVE');
+        if (session.sessionRevision !== input.expectedSessionRevision) fail('SESSION_REVISION_MISMATCH');
+        if (session.currentTransport?.fingerprint !== fingerprint) fail('TRANSPORT_FINGERPRINT_MISMATCH');
+        updated = { ...session, currentTransport: null, sessionRevision: session.sessionRevision + 1 };
+        const sessions = [...document.sessions];
+        sessions[index] = updated;
+        return { ...document, sessions, storeRevision: document.storeRevision + 1 };
+      });
+      if (!updated) fail('SESSION_UPDATE_FAILED');
+      options.bindings.unbind(request.transportSessionId);
+      const visible = publicSession(updated);
+      await audit.record({ type: 'transport.unbound', governedSessionId: visible.governedSessionId,
+        fingerprint, sessionRevision: visible.sessionRevision, reasonCode: 'transport_released_by_owner' });
+      return visible;
+    },
     async closeSession(input, request) {
       const existing = (await options.store.read()).sessions.find(
         (session) => session.governedSessionId === input.governedSessionId
@@ -955,6 +984,7 @@ export function createGovernedSessionService(
       () => service.autoResumeCompatibleSession(input, request)
     ),
     closeSession: (input, request) => lifecycle.run(() => service.closeSession(input, request)),
+    releasePausedTransport: (input, request) => lifecycle.run(() => service.releasePausedTransport(input, request)),
     expireIdleSessions: () => lifecycle.run(() => service.expireIdleSessions())
   };
 }

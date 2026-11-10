@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "49945d4f1953853728e5e2cd23fb80990009b6c6ae88a34f73065adfc91d1678",
-  "registeredToolCount": 148,
-  "readOnlyToolCount": 92,
-  "writeToolCount": 56,
+  "catalogueDigest": "bc2bd78a9237633db39e6e9fcb789500412f9ebb3d0a64cf39af6742919d74c3",
+  "registeredToolCount": 154,
+  "readOnlyToolCount": 97,
+  "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
     {
@@ -217,6 +217,72 @@
         "additionalProperties": false
       },
       "contractDigest": "a3ee3801065419150991810d65d851ec7c3e318412062285a542f0ea1ab0a77b"
+    },
+    {
+      "name": "cleanup_disposal_policy_s2",
+      "title": null,
+      "description": "Classe les contenus S2; sauvegarde facultative uniquement pour cache reconstruisible prouvé.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "f8d91ea19e46e60af76d96527aa46ae19e76c2acdbb88d48ddb3b7c259ffb830"
+    },
+    {
+      "name": "cleanup_github_backup_policy_s2",
+      "title": null,
+      "description": "Prépare un dépôt GitHub privé pour le code S2 sans sauvegarder de secrets ni créer de dépôt.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "96d5d000ba2dc8b13ced18beffba4658578629b2feddb9bb16e0d18fe26bd416"
+    },
+    {
+      "name": "cleanup_legacy_target_preflight_s2",
+      "title": null,
+      "description": "Mesure un des six anciens répertoires S2 en lecture seule, sans suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "wti_pccet_api",
+              "wti_api",
+              "wti_evote",
+              "wti_pccet",
+              "wti_apex",
+              "opcvm_legacy"
+            ]
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "fa1b9171d6d1e527d3641f39b53e19e4aed6159d3dc4acbc8995253531530881"
     },
     {
       "name": "cleanup_plan_s1",
@@ -3510,6 +3576,23 @@
       "contractDigest": "3986770a7c7916b552103a406af5db7b64459b08c30d6e92e90ccb1dc24d2ec6"
     },
     {
+      "name": "mcp_governed_session_selection_preflight",
+      "title": null,
+      "description": "Présente la procédure de choix de session et de transport MCP, sans mot de passe.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "525aa0c5155624fac6ca72fc23886817cee84a9e2eabee118c55546afce649b3"
+    },
+    {
       "name": "mcp_list_governed_sessions",
       "title": null,
       "description": "Liste uniquement les governed sessions visibles par l’identité courante.",
@@ -3970,6 +4053,38 @@
       "contractDigest": "f2c133b3dbea44fb7c8e5d00a6e44ee8137f812caaaf5d1eef3bdc305317b944"
     },
     {
+      "name": "mcp_release_paused_transport",
+      "title": null,
+      "description": "Libère le transport de la session PAUSED possédée par le principal OAuth courant, sans fermer sa mémoire.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "governedSessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expectedSessionRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "governedSessionId",
+          "expectedSessionRevision"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "a9a8cf47592be97eb0ede0b4589e5908fd0d4c4897181b38193a5a484da15350"
+    },
+    {
       "name": "mcp_resume_governed_session",
       "title": null,
       "description": "Reprend une governed session légitime sur le transport MCP courant. Une session ciblée se reprend avec les mêmes targetMappingIds.",
@@ -4211,6 +4326,23 @@
         "additionalProperties": false
       },
       "contractDigest": "97a7d5bff92edb0e197dc1762877c14be729d454794cf38c11ce139f17ba6ba6"
+    },
+    {
+      "name": "mcp_transport_rebinding_preflight",
+      "title": null,
+      "description": "Observe la session liée au transport MCP courant sans changer ni fermer de session.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "e1d72ff7167bd2b2be8d45b5ef63a3f76ab910a0e8b31bf52616c582a5039b14"
     },
     {
       "name": "mcp_typecheck_s1",

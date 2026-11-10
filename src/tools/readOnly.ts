@@ -5,6 +5,7 @@ import { runReadOnlyCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
 import { registerCleanupPlanReadOnlyTools } from './cleanupPlan.js';
 import { registerFundsCacheReadOnlyPreflight } from './cleanupCacheFunds.js';
+import { registerS2CleanupGovernedReadTools } from './s2CleanupGovernedRead.js';
 import { registerMcpSelfReadOnlyTools } from './selfManagement.js';
 import { registerGithubInventoryReadOnlyTools } from './githubInventory.js';
 import { registerGithubAuthorizationReadOnlyTools } from './githubAuthorization.js';
@@ -110,6 +111,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerCurrentStateTools(server);
   registerCleanupPlanReadOnlyTools(server);
   registerFundsCacheReadOnlyPreflight(server);
+  registerS2CleanupGovernedReadTools(server);
   registerMcpSelfReadOnlyTools(server);
   registerSadiaafTools(server);
   registerLegacyFundsScopedTools(server);

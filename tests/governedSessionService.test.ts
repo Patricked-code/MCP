@@ -1383,3 +1383,62 @@ test('session collision evidence excludes principal, agent and task text', async
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('owner releases PAUSED transport, retains checkpoint history and can open a new session', async () => {
+  const { directory, bindings, service, store } = await fixture();
+  const req = { transportSessionId: 'transport-switch-owner', identity: OAUTH_IDENTITY };
+  try {
+    const opened = await service.openSession(OPEN_INPUT, req);
+    const paused = await service.pauseSession({
+      governedSessionId: opened.session.governedSessionId, expectedSessionRevision: opened.session.sessionRevision
+    }, req);
+    const released = await service.releasePausedTransport({
+      governedSessionId: paused.governedSessionId, expectedSessionRevision: paused.sessionRevision
+    }, req);
+    assert.equal(released.status, 'PAUSED');
+    assert.equal(released.currentTransport, null);
+    assert.equal(bindings.lookup(req.transportSessionId), null);
+    const persisted = (await store.read()).sessions.find(x => x.governedSessionId === released.governedSessionId);
+    assert.equal(persisted?.status, 'PAUSED');
+    const second = await service.openSession({ ...OPEN_INPUT, taskScope: 'MCP-S2-CLEANUP' }, req);
+    assert.notEqual(second.session.governedSessionId, released.governedSessionId);
+    assert.equal(bindings.lookup(req.transportSessionId), second.session.governedSessionId);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('release refuses ACTIVE, other OAuth owner, shared identity, and stale revision', async () => {
+  const { directory, bindings, service } = await fixture();
+  const req = { transportSessionId: 'transport-guard', identity: OAUTH_IDENTITY };
+  try {
+    const opened = await service.openSession(OPEN_INPUT, req);
+    const input = { governedSessionId: opened.session.governedSessionId, expectedSessionRevision: opened.session.sessionRevision };
+    await assert.rejects(service.releasePausedTransport(input, req), /SESSION_MUST_BE_PAUSED/);
+    const paused = await service.pauseSession(input, req);
+    const valid = { ...input, expectedSessionRevision: paused.sessionRevision };
+    await assert.rejects(service.releasePausedTransport(valid,
+      { ...req, identity: { principalId: 'oauth:other', clientId: 'other-client', assurance: 'oauth_subject' } }),
+      /SESSION_NOT_OWNED/);
+    await assert.rejects(service.releasePausedTransport(valid,
+      { ...req, identity: SHARED_IDENTITY }), /OAUTH_OWNER_REQUIRED/);
+    await assert.rejects(service.releasePausedTransport(input, req), /SESSION_REVISION_MISMATCH/);
+    assert.equal(bindings.lookup(req.transportSessionId), paused.governedSessionId);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('release never unbinds a PAUSED session holding a lock', async () => {
+  const { directory, bindings, service, store } = await fixture();
+  const req = { transportSessionId: 'transport-lock-guard', identity: OAUTH_IDENTITY };
+  try {
+    const opened = await service.openSession(OPEN_INPUT, req);
+    const paused = await service.pauseSession({
+      governedSessionId: opened.session.governedSessionId, expectedSessionRevision: opened.session.sessionRevision
+    }, req);
+    await store.update(doc => ({ ...doc, storeRevision: doc.storeRevision + 1,
+      sessions: doc.sessions.map(s => s.governedSessionId === paused.governedSessionId
+        ? { ...s, lockIds: [randomUUID()] } : s) }));
+    await assert.rejects(service.releasePausedTransport({
+      governedSessionId: paused.governedSessionId, expectedSessionRevision: paused.sessionRevision
+    }, req), /SESSION_LOCKS_ACTIVE/);
+    assert.equal(bindings.lookup(req.transportSessionId), paused.governedSessionId);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
