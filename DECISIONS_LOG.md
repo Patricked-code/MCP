@@ -1,6 +1,18 @@
 # DECISIONS_LOG.md
 
 
+## 2026-11-10 — Correction documentaire de l'état déployé après PR #391
+
+**Décision** : conformément à la source AF-09, `PRODUCTION_STATE.json` est l'autorité structurée des SHA déclarés ; `SUIVI.md` n'est pas utilisé comme extracteur automatique de SHA. Le `DOCUMENTATION_DRIFT` observé après la fusion de #391 doit être corrigé par une PR séparée et **exclusivement documentaire** à partir du merge exact `9a14b1cf1e15f7f86a6da6e84c740539793820ce`.
+
+- Seuls les champs d'état courant directement observés sont actualisés (GitHub, S1, runtime, image Docker, horodatages d'observation), sur preuve Live State v1260.
+- Les historiques de déploiement, archives d'attestations et événements antérieurs ne sont pas réécrits. L'absence de preuve du numéro du workflow CI main et du Governed Deploy reste explicitement signalée.
+- L'exception `docs_only` de `src/liveState/collect.ts` autorise `PRODUCTION_STATE.json` et Markdown comme descendants de la baseline attestée. Ne pas modifier le runtime pour masquer le drift et ne pas remplacer la preuve d'un job réel par la seule observation d'un SHA.
+- Aucune suppression ni autorisation de nettoyage S1/S2 ; prérequis et interdictions de PR #391 maintenus.
+- Liens : [PR #391](https://github.com/Patricked-code/MCP/pull/391), `SUIVI.md` et `CHANGELOG.md` (10 novembre 2026), `PRODUCTION_STATE.json`.
+
+
+
 ## 2026-11-10 — PR #391 : séparation stricte entre inventaire de nettoyage et droit de suppression
 
 **Décision de gouvernance** : ajouter les commandes `cleanup_plan_s1` et `cleanup_plan_s2` à la surface MCP de lecture seule existante, sans créer de seconde autorité, file, registre, session ou moteur de maintenance et sans activer une purge serveur.
