@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "23ae00adfb27b5277e9a9178d81274237d94bfd9104271b41e29ae09a2131b3b",
-  "registeredToolCount": 147,
-  "readOnlyToolCount": 91,
+  "catalogueDigest": "49945d4f1953853728e5e2cd23fb80990009b6c6ae88a34f73065adfc91d1678",
+  "registeredToolCount": 148,
+  "readOnlyToolCount": 92,
   "writeToolCount": 56,
   "resourceCount": 2,
   "tools": [
@@ -200,6 +200,23 @@
         "additionalProperties": false
       },
       "contractDigest": "49517344893e35b46dad45d2e7d76747a29d20a279b25fb336efee5f39762abe"
+    },
+    {
+      "name": "cleanup_cache_preflight_funds_s2",
+      "title": null,
+      "description": "Inspecte en lecture seule le cache de build historique Funds sur S2, sans purge ni quarantaine.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "a3ee3801065419150991810d65d851ec7c3e318412062285a542f0ea1ab0a77b"
     },
     {
       "name": "cleanup_plan_s1",
