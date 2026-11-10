@@ -165,3 +165,14 @@ Ces commandes MCP sans argument inventorient en lecture seule les noms de réper
 **Contrat de sécurité :** `deletionAllowed=false`, `quarantineAllowed=false`, `writesPerformed=false`. Les opérations de purge, de vidage, de nettoyage des sauvegardes, caches, journaux et `node_modules` ne sont pas activées par ces commandes. Toute évolution destructive nécessitera un périmètre exact, des preuves fraîches, sauvegarde et restauration testées, consentement explicite sur la cible, session/claim/locks gouvernés, quarantaine/rollback et contrôles de santé après intervention.
 
 **Traçabilité :** source historique `Migration/02_PLAN_MIGRATION_ET_SECURITE.md`, piste Loop Engineering `memory/LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md`, tests `tests/cleanupPlan.test.ts`. La PR de ce lot constitue la preuve GitHub et le point de reprise ; aucun déploiement S1/S2 n'est implicite.
+
+
+## `cleanup_cache_preflight_funds_s2` — audit borné d'un cache historique Funds (10 novembre 2026)
+
+Nouvelle commande **strictement read-only** et sans paramètre. Réutilise le connecteur SSH existant pour vérifier le répertoire fixe du frontend historique Funds sous S2, les liens symboliques et chemins canoniques, la présence des marqueurs de build et l'espace disque alloué au seul cache `.next/cache` (`du -sB1`, pas la taille apparente). Cette mesure n'est pas une preuve du nombre d'octets effectivement récupérables.
+
+- Ne lit aucun contenu applicatif, aucun fichier de secret, aucune clé et aucun `.env`.
+- Retourne `UNVERIFIED` en cas d'échec/observation tronquée, `BLOCKED_SYMLINK_OR_ESCAPE` si chemin non canonique, `CACHE_ABSENT` si rien à examiner, sinon `INSPECTED_NEEDS_RUNTIME_PROOF`.
+- Toutes les réponses comprennent `deletionAllowed=false`, `quarantineAllowed=false`, `writesPerformed=false`. La commande ne prétend pas vérifier les dépendances Plesk/Passenger ni les processus ouvrant des fichiers.
+- Aucune suppression ou mise en quarantaine autorisée. Les prérequis de l'issue #3 restent obligatoires avant tout futur outil destructeur.
+- Les données observées lors de l'appel sont des preuves privées d'exploitation ; ne pas reproduire l'inventaire brut dans GitHub.
