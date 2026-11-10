@@ -56,6 +56,7 @@ test('malformed, duplicated or failed observations fail closed', () => {
   for (const [payload, exit] of [
     [observation() + 'cache_bytes=1\n', 0],
     [observation({ cache_bytes: '-5' }), 0],
+    [observation({ cache_bytes: '' }), 0],
     [observation({ any_symlink: 'maybe' }), 0],
     [observation(), 1],
     [observation().replace('cache_real=', 'cache_path='), 0],
