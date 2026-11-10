@@ -28,6 +28,15 @@
 | L8 | [Gates d'adoption](08-assurance/ADOPTION_GATES.md) | Que faut-il valider avant de declarer la methode active ? |
 | L8 | [Handoff de cette tranche](08-assurance/CONTINUITY_HANDOFF.md) | Quelle est la prochaine action sure ? |
 
+| L9 | [Corpus fondateur juillet 2026](09-foundations/FOUNDING_DOCUMENTS.md) | Quels documents ont créé Loop Engineering ? |
+| L9 | [Ordre documentaire d'origine](09-foundations/ORIGINAL_READING_ORDER.md) | Quel ordre de lecture pilotait réellement les interventions ? |
+| L9 | [Boucle historique et sorties](09-foundations/LOOP_ENGINEERING_METHOD.md) | Quelles étapes et preuves rendaient le travail reproductible ? |
+| L10 | [Workflow d'entrée MCP_SELF](10-orchestration/PROJECT_SELF_WORKFLOW.md) | Quel circuit est déclenché par le Project UID ? |
+| L10 | [Autorisations et opérations](10-orchestration/AUTHORIZATION_CONTRACT.md) | Quelles permissions doivent être vérifiées, sans les accorder ? |
+| L11 | [Persistance et liaison S1/GitHub](11-persistence/S1_GITHUB_INDEXATION.md) | Comment indexer sans second registre live ? |
+| L11 | [Index des comptes et capacités](11-persistence/CAPABILITY_INVENTORY.md) | Comment retrouver les fonctions et accès existants ? |
+| L12 | [Continuité profonde et handoff](12-continuity/DEEP_CONTINUITY_AND_HANDOFF.md) | Comment reprendre à un niveau arbitraire et sourcé ? |
+
 ## Contrat de navigation bidirectionnelle
 
 `Project UID → registre des registres → source → programme / conception → chantier → Continuity ID → evenement → checkpoint → preuve → NEXT_ACTION`. Chaque lien doit etre reversible dans la mesure ou la source le permet. Un lien absent n'est pas invente. Un checkpoint historique ne vaut pas attestation live. Les preuves vivant dans GitHub ou S1 restent chez leurs autorites.

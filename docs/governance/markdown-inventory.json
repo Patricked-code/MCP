@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 246,
+  "trackedCount": 254,
   "categories": {
     "canonical": 7,
-    "documentation": 95,
+    "documentation": 103,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -288,6 +288,38 @@
     },
     {
       "path": "docs/governance/canonical-project/08-assurance/CONTINUITY_HANDOFF.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/09-foundations/FOUNDING_DOCUMENTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/09-foundations/LOOP_ENGINEERING_METHOD.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/09-foundations/ORIGINAL_READING_ORDER.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/10-orchestration/AUTHORIZATION_CONTRACT.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/10-orchestration/PROJECT_SELF_WORKFLOW.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/11-persistence/CAPABILITY_INVENTORY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/11-persistence/S1_GITHUB_INDEXATION.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/12-continuity/DEEP_CONTINUITY_AND_HANDOFF.md",
       "category": "documentation"
     },
     {

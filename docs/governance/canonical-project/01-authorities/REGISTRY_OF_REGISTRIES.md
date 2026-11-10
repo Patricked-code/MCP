@@ -44,3 +44,7 @@ Toute reference renvoie vers son autorite ; la racine n'en stocke pas une copie 
 ## Navigation
 
 [Conception](../02-design/DESIGN_TRACEABILITY.md) · [Dependances](../03-planning/DEPENDENCIES.md) · [Continuites](../04-continuity/HIERARCHY.md) · [Preuves](../05-execution/PROOF_CHAIN.md).
+
+## Raccord fondateur et runtime (candidat PR #389)
+
+La [bibliothèque des sources de juillet](../09-foundations/FOUNDING_DOCUMENTS.md), [l'ordre documentaire initial](../09-foundations/ORIGINAL_READING_ORDER.md), le [workflow MCP_SELF](../10-orchestration/PROJECT_SELF_WORKFLOW.md), le [contrat d'autorisations](../10-orchestration/AUTHORIZATION_CONTRACT.md) et la [liaison S1/GitHub](../11-persistence/S1_GITHUB_INDEXATION.md) constituent une **vue de navigation**. Leurs versions documentaires ne deviennent pas propriétaires des sessions, comptes GitHub, tâches, secrets ou de l'état runtime.

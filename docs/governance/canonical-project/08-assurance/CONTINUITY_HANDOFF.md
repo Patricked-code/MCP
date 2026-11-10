@@ -29,3 +29,11 @@
 ## Condition de sortie de la tranche
 
 `DRAFT_PR_CREATED` avec fichiers inventoriés, liens existants et preuve de CI/revue **si disponibles**. `PROJECT_ID_CANONICAL_ACTIVE` et `MCP_RESOLVER_DEPLOYED` restent `NOT_PROVEN`. Conserver la chronologie et ce checkpoint comme historique si la tranche est supersedee.
+
+## Extension — procedure fondatrice, orchestration et persistance du Project UID
+
+- Sources fondatrices rattachées : extraction Word (669 paragraphes), Master Plan, Playbook, matrice R01–R15, index de la mémoire, intégration des 20 documents et 9 agents.
+- Entrée MCP_SELF : GitHub d'abord ; connexion au bridge **si nécessaire** ; identité/permissions/Regulatory bornées et sans sélection implicite.
+- Manifeste machine candidat : `.mcp/canonical-project-entry.json` ; futur embedding dans l'image S1 et projection read-only via l'outil existant `get_project_context`.
+- Pas de nouveau GitRegistry, Operational Memory ou base de comptes. Les index des comptes et capacités restent des **projections autorisées**.
+- **Prochaine action sûre :** vérifier la CI sur le HEAD exact, corriger les éventuelles erreurs de contrat, puis obtenir la revue/approbation avant fusion et Governed Deploy.
