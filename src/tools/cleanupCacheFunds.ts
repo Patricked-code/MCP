@@ -17,7 +17,7 @@ export type FundsCachePreflight = {
   quarantineAllowed: false;
   writesPerformed: false;
   selectedPath: string;
-  candidateSizeBytes: number | null;
+  candidateSizeBytes: number | null; // du allocated bytes, NOT guaranteed reclaimable disk space
   packageManifestPresent: boolean | null;
   nextBuildIdPresent: boolean | null;
   evidence: 'FIXED_PATH_READ_ONLY_FILESYSTEM';
@@ -102,6 +102,7 @@ export function parseFundsCachePreflight(stdout: string, code: number | null): F
     'PLESK_RUNTIME_MAPPING_NOT_VERIFIED',
     'PROCESS_OPEN_FILES_NOT_ATTESTED',
     'BACKUP_AND_RESTORE_TEST_NOT_ATTESTED',
+    'ALLOCATED_DISK_BYTES_NOT_PROVEN_RECLAIMABLE',
     'OWNER_EXACT_TARGET_CONSENT_NOT_ATTESTED',
     'GOVERNED_SESSION_CLAIM_LOCKS_NOT_ATTESTED'
   ], bytes, manifest, build);
@@ -109,7 +110,7 @@ export function parseFundsCachePreflight(stdout: string, code: number | null): F
 
 // No caller input, no free shell, no dynamic paths or mutating commands.
 // Symlink checks cover each fixed component before inspecting the cache.
-// Directory metadata and sizes only; no file contents or secrets.
+// Directory metadata and allocated disk blocks only; no file contents or secrets.
 export const FUNDS_CACHE_PREFLIGHT_COMMAND = String.raw`set -eu
 BASE='/var/www/vhosts/chainsolutions.fr'
 APP="$BASE/Funds.chainsolutions.fr/front_end_opcvm"
@@ -133,7 +134,7 @@ printf 'app_present=%s\n' "$APP_PRESENT"
 printf 'cache_present=%s\n' "$CACHE_PRESENT"
 printf 'any_symlink=%s\n' "$SYMLINK"
 if test "$SYMLINK" = false && test "$CACHE_PRESENT" = true; then
-  printf 'cache_bytes=%s\n' "$(du -sb -- "$CACHE" | cut -f1)"
+  printf 'cache_bytes=%s\n' "$(du -sB1 -- "$CACHE" | cut -f1)"
 else
   printf 'cache_bytes=0\n'
 fi
