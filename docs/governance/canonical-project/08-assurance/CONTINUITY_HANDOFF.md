@@ -12,7 +12,10 @@
 - **Point de reprise:** cette page + [README racine](../README.md) + statut GitHub **a reobserver**.
 - **Projection profonde supplementaire :** 133 nœuds de discussion de la PR #373, version 1.7, sous `04-continuity/DEEP_CONVERSATION_NODE_INDEX.md`. Statut documentaire non-fusionne.
 - **Rattachements sans takeover:** [#348](https://github.com/Patricked-code/MCP/pull/348), [#373](https://github.com/Patricked-code/MCP/pull/373), [#374](https://github.com/Patricked-code/MCP/pull/374), [#379](https://github.com/Patricked-code/MCP/pull/379), [#372](https://github.com/Patricked-code/MCP/pull/372).
-- **Verification CI, PR, SHA de ce lot :** a remplir avec les **preuves GitHub reelles** apres commit et ouverture de PR ; ne pas inventer a l'avance.
+- **PR ouverte :** [#389](https://github.com/Patricked-code/MCP/pull/389), statut **Draft**, sans fusion.
+- **Preuve source de la projection :** [PR #373](https://github.com/Patricked-code/MCP/pull/373) au SHA `7e5b6a2c623684cdecdd7a917d6c4b7871f97674`, 133 nœuds documentaires.
+- **Dernier HEAD observe avant ce checkpoint documentaire :** `c65b9acae666a99fd8efaf2eb69bf7cdb386c529`. Ce SHA deviendra historique apres le commit du handoff ; relire la PR pour le HEAD courant.
+- **Verification CI :** les runs doivent etre verifies sur le **dernier HEAD** de PR #389, non deduits de son ouverture.
 - **Limites :** pas de resolver MCP deploye, pas de `ProjectRecord` MCP confirme, pas d'index universel operationnel.
 
 ## NEXT_ACTION deterministe

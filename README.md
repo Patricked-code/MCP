@@ -1,5 +1,10 @@
 # WealthTech MCP SSH Bridge
 
+## Index canonique profond du **projet MCP** — proposition en cours de revue
+
+L'identifiant candidat `WT-PROJECT-MCP-001` designe le **projet logiciel** `Patricked-code/MCP` (distinct des projets administres par le bridge). Son [index-racine Markdown](docs/governance/canonical-project/README.md) raccorde identite, autorites, conceptions, programmes, registres, points de continuite et preuves, y compris une projection documentaire profonde de la PR #373. **Statut : PR Draft #389 non fusionnee, resolver runtime non deploye**. Ce pointeur ne remplace pas l'[INTAKE obligatoire d'AGENTS.md](AGENTS.md) et ne cree aucune autorisation, session ou tache.
+
+
 ## Arrivée universelle des agents — INTAKE global GitHub → MCP
 
 À la demande « Connecte-toi à Patricked-code/MCP », tout agent ayant accès aux connecteurs doit appliquer **en premier** le [parcours INTAKE global dans AGENTS.md](AGENTS.md#intake-global--arrivée-github--mcp--point-de-choix). La séquence commence par la connexion GitHub et la lecture des instructions ; elle raccorde ensuite le MCP existant (`ping`, `mcp_reconcile_governed_context`, `mcp_get_current_state_inventory`), contrôle GitHub/S1/runtime/documentation, corrige uniquement les divergences via les autorités déjà existantes, réatteste `FULLY_ALIGNED`, découvre les chantiers et **s'arrête au choix nouveau/reprise**.
