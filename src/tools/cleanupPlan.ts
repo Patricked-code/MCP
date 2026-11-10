@@ -58,7 +58,6 @@ export function buildServerCleanupPlan(
 
   return {
     schemaVersion: 1,
-    repository: 'Patricked-code/MCP',
     server: serverId,
     status: 'READ_ONLY_REVIEW',
     writesPerformed: false,
