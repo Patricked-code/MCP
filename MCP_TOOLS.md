@@ -176,3 +176,26 @@ Nouvelle commande **strictement read-only** et sans paramètre. Réutilise le co
 - Toutes les réponses comprennent `deletionAllowed=false`, `quarantineAllowed=false`, `writesPerformed=false`. La commande ne prétend pas vérifier les dépendances Plesk/Passenger ni les processus ouvrant des fichiers.
 - Aucune suppression ou mise en quarantaine autorisée. Les prérequis de l'issue #3 restent obligatoires avant tout futur outil destructeur.
 - Les données observées lors de l'appel sont des preuves privées d'exploitation ; ne pas reproduire l'inventaire brut dans GitHub.
+
+
+## 2026-11-10 — Exécuteur S2 à autorisation précise (candidat)
+
+Deux outils : `cleanup_s2_leaf_preflight` (lecture seule, cinq chemins enfants) et `cleanup_s2_leaf_quarantine` (écriture gouvernée, déplacement réversible). Le domaine parent `wealthtechinnovations.ci`, les domaines protégés BRVM, Stablecoin, AfricaFunds et les sauvegardes Plesk sont exclus des cibles de mutation.
+
+Preflight : identité root SSH, absence de liens symboliques, chemin réel fixe, absence du domaine dans Plesk, absence de référence dans les configurations Apache/nginx, absence de fichiers ouverts selon `lsof`, empreinte et taille du contenu. Échec ou données incomplètes = refus.
+
+Admission : `ENABLE_WRITE_TOOLS`, `MCP_S2_CLEANUP_EXECUTION_ENABLED=true` (désactivé par défaut), `MCP_S2_CLEANUP_APPROVED_FINGERPRINTS` défini **côté serveur** après contrôle de la cible ; confirmation littérale du domaine ; session OAuth propriétaire *S2_LEGACY_CLEANUP* active et rattachée au transport, contexte acquitté et aligné, lock actif `resource:s2-cleanup/<key>` ; nouvelle vérification SSH sous `flock` immédiatement avant mutation.
+
+Action : `mv -T` vers la quarantaine privée sur le même filesystem ; reçu `state=QUARANTINED`, absence du chemin source vérifiée, opération sans `rm -rf` et sans restart. **La quarantaine ne libère pas d'espace disque**, ne détruit aucune sauvegarde, et exige une restauration possible. Une purge définitive nécessitera un autre lot validé.
+
+Statut : branche/PR candidate ; ne pas déclarer l'outil déployé tant que revue/CI/merge exact SHA et runtime ne sont pas attestés. Aucun privilège attribué par le code seul.
+
+
+### Revue PR #396 — durcissements de sécurité (10/11/2026)
+
+Les cinq constats ont motivé des corrections candidates : détection des erreurs d'inspection de configuration, Bootstrap Receipt et tâche claimée obligatoires, SHA-256 de contenu, répertoire privé root `0700` et inscription permanente dans SUIVI/CHANGELOG/DECISIONS_LOG. La CI et la revue doivent être renouvelées sur le SHA corrigé. Ne pas assimiler la réussite CI à l'activation serveur. Le mode d'exécution demeure OFF par défaut.
+
+
+### S2 quarantine — deuxième revue : maintien de lease et état frais (10/11/2026)
+
+L'opération refuse tout Live State STALE, même avec un ancien alignement. Le verrou doit conserver au moins 140 secondes à chaque admission avant SSH ; la session, le Bootstrap Receipt et la tâche sont réobservés après le préflight ; S2 vérifie l'heure et la date limite du lock avant tout déplacement. L'absence d'un domaine dans Plesk n'est acceptée qu'avec code retour grep=1 via here-string sans SIGPIPE. Tout échec de ces contrôles bloque. Aucune suppression exécutée.

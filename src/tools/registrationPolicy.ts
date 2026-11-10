@@ -15,6 +15,7 @@ export const WRITE_SCOPED_TOOL_NAMES = new Set<string>([
   'amf_registry_publish_download',
   'brvm_container_logs_s2',
   'brvm_run_sql_readonly_s2',
+  'cleanup_s2_leaf_quarantine',
   'deploy_brvm_s2',
   'deploy_project_s2',
   'exec_repo_script_s2',

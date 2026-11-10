@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## 2026-11-10 — PR #396 : deuxième durcissement de l'exécuteur S2
+
+- Refus d'un Live State périmé même si l'ancien verdict était `FULLY_ALIGNED`.
+- Réservation d'une fenêtre de lease supérieure au timeout de la commande SSH, double réobservation de l'admission et refus sur S2 si le verrou expire avant le déplacement ; garde contre une horloge S2 désynchronisée.
+- Contrôle Plesk via entrée fixe et code de sortie capturé, sans risque SIGPIPE `pipefail`.
+- Tests de refus et présence des contrôles. Aucun déploiement ou déplacement effectué.
+
+
+## 2026-11-10 — PR #396 : durcissement du candidat de quarantaine S2
+
+- L'inspection Apache/nginx échoue fermement sur toute erreur de scan, et non seulement en présence d'un match.
+- L'opérateur doit être propriétaire OAuth de la session dédiée, disposer d'un Bootstrap Receipt courant et d'une tâche `IN_PROGRESS` réclamée avec le scope exact et des dépendances terminées.
+- L'empreinte de cible associe SHA-256 de métadonnées et contenus ; la quarantaine doit être privée (mode `0700`, propriétaire root, non-symlink).
+- Ajout des tests de refus correspondants. Mise à jour documentaire append-only des registres `SUIVI.md`, `CHANGELOG.md`, `DECISIONS_LOG.md`.
+- Aucun effacement, redémarrage, changement de secret, fusion ou déploiement n'est induit par ce commit.
+
+
 ## 2026-11-10 — Préflight en lecture seule du cache de build historique Funds S2 (candidat)
 
 - Ajout additif de `cleanup_cache_preflight_funds_s2`, enregistré sur la surface `readOnly` du MCP. Cible **fixe**, sans argument utilisateur, accès SSH de lecture seule, taille et métadonnées uniquement, contrôle des symlinks et du `realpath`.
