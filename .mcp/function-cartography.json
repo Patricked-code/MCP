@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "16e61572e94fc9559c6af02101460ac0fab31d72f9037d6c5e7a73d9ad650ae1",
-  "registeredToolCount": 145,
-  "readOnlyToolCount": 89,
-  "writeToolCount": 56,
+  "catalogueDigest": "5fe37199520a0ed6b622f30ead8d2ead9d39f5f9f8e3353c5c42b9f1a88b63fe",
+  "registeredToolCount": 148,
+  "readOnlyToolCount": 91,
+  "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
     {
@@ -200,6 +200,40 @@
         "additionalProperties": false
       },
       "contractDigest": "49517344893e35b46dad45d2e7d76747a29d20a279b25fb336efee5f39762abe"
+    },
+    {
+      "name": "cleanup_plan_s1",
+      "title": null,
+      "description": "Prépare un plan de nettoyage S1 en lecture seule, avec protections, inventaire et prérequis; aucune suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "0fca0ebee227f7e1376cb659d34ac16d46cf03fa23efbc8212f663b68f0f0552"
+    },
+    {
+      "name": "cleanup_plan_s2",
+      "title": null,
+      "description": "Prépare un plan de nettoyage S2 en lecture seule, avec cibles historiques et protections; aucune suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "5a128ac23e61a94de43c2f820a40623ce336d69424a63bd016733f2fda073b35"
     },
     {
       "name": "curl_domain",
@@ -3457,6 +3491,52 @@
         "additionalProperties": false
       },
       "contractDigest": "3986770a7c7916b552103a406af5db7b64459b08c30d6e92e90ccb1dc24d2ec6"
+    },
+    {
+      "name": "mcp_issue_plesk_web_pairing_proof",
+      "title": null,
+      "description": "Émet une preuve E3 temporaire pour une session OAuth MCP réellement liée; aucune opération Plesk.",
+      "surface": "operational-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "enum": [
+              "s1",
+              "s2"
+            ]
+          },
+          "parentDomain": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 253
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 63
+          },
+          "documentRoot": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 150
+          }
+        },
+        "required": [
+          "serverId",
+          "parentDomain",
+          "label",
+          "documentRoot"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "918f50c9b19229a40dc151d59df986c65e28db0adf81e7bdec111c6e71c4e627"
     },
     {
       "name": "mcp_list_governed_sessions",
