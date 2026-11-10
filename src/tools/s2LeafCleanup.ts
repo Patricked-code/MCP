@@ -201,15 +201,16 @@ export function assertS2OwnedCleanupTask(
   const resource = 'resource:s2-cleanup/' + key;
   const matches = tasks.filter(task => task.ownerGovernedSessionId === sessionId &&
     task.resourceScopes.includes(resource));
-  if (matches.length !== 1 || matches[0].status !== 'IN_PROGRESS' ||
-      matches[0].repository !== repository) {
+  const claimed = matches[0];
+  if (matches.length !== 1 || !claimed || claimed.status !== 'IN_PROGRESS' ||
+      claimed.repository !== repository) {
     throw new Error('S2_CLEANUP_CLAIMED_TASK_MISSING');
   }
   const statuses = new Map(tasks.map(task => [task.taskId, task.status]));
-  if (matches[0].dependencies.some(id => statuses.get(id) !== 'DONE')) {
+  if (claimed.dependencies.some(id => statuses.get(id) !== 'DONE')) {
     throw new Error('S2_CLEANUP_TASK_DEPENDENCY_INCOMPLETE');
   }
-  if (tasks.some(task => task.taskId !== matches[0].taskId &&
+  if (tasks.some(task => task.taskId !== claimed.taskId &&
       task.resourceScopes.includes(resource) &&
       ['CLAIMED', 'IN_PROGRESS', 'REVIEW', 'MERGE_READY', 'DEPLOYING', 'VERIFYING'].includes(task.status))) {
     throw new Error('S2_CLEANUP_TASK_SCOPE_CONFLICT');
