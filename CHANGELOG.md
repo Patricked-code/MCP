@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-11-10 — Préflight en lecture seule du cache de build historique Funds S2 (candidat)
+
+- Ajout additif de `cleanup_cache_preflight_funds_s2`, enregistré sur la surface `readOnly` du MCP. Cible **fixe**, sans argument utilisateur, accès SSH de lecture seule, taille et métadonnées uniquement, contrôle des symlinks et du `realpath`.
+- Tests `tests/cleanupCacheFunds.test.ts` : cache présent/absent, fail-closed en cas d'observation corrompue, traversée/symlink, et interdiction de suppression. Catalogue `.mcp/function-cartography.json` actualisé.
+- La commande ne prouve ni le rattachement Plesk/runtime ni l'absence d'utilisateurs ; elle ne déplace, ne supprime et ne relance aucun service. Toute décision destructive reste hors périmètre, soumise à l'issue #3 et à une autorisation par cible exacte.
+- Référence de continuité : `SUIVI.md` et `DECISIONS_LOG.md` (10 novembre 2026). PR candidate, non fusionnée/déployée lors de cette inscription.
+
+
 
 ## 2026-11-10 — Réconciliation documentaire candidate après PR #391
 

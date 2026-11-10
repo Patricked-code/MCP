@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-11-10 — Caches historiques Funds S2 : préflight borné en lecture seule
+
+- **Continuité propriétaire** : `WT-PROJECT-MCP-001`, nettoyage de caches historiques autorisé **comme catégorie de diagnostic** et non comme suppression de chemins présumés inutilisés. Issue d'autorité existante : [#3](https://github.com/Patricked-code/MCP/issues/3), checkpoint antérieur `#issuecomment-6762376212`.
+- **Observation S2** : racine disque 96 % ; domaine `funds.chainsolutions.fr` encore servi par Plesk au sein de l'abonnement partagé `chainsolutions.fr` ; certificat HTTPS Funds non conforme, API Funds répond 502 ; erreurs historiques `Primary script unknown`. Cela n'atteste pas l'inactivité du cache ni de l'application.
+- **Code candidat** : `cleanup_cache_preflight_funds_s2` est une extension additive du point d'entrée read-only existant, sans shell libre ni chemin paramétrable. Elle mesure uniquement les métadonnées et la taille du cache fixe de l'ancien sous-répertoire Funds, vérifie `realpath` et symlinks, et renvoie toujours `deletionAllowed=false`, `quarantineAllowed=false`.
+- **Aucune écriture serveur** : ni cache vidé, ni archive Plesk touchée, ni redémarrage, ni nouvelle session gouvernée, ni interaction avec Regulatory.
+- **Règle anti-collision** : PR #392 documente la réconciliation des SHA de production sur une branche distincte ; la présente PR ne peut fusionner sans vérification de base/HEAD, résolution des éventuels conflits documentaires et revue indépendante.
+- **NEXT_ACTION** : CI exacte sur ce lot, revue indépendante, merge/deploy gouvernés si admis ; exécuter ensuite le préflight read-only, obtenir le mapping Plesk/runtime et les preuves privées de sauvegarde/rollback avant de proposer le moindre déplacement ou effacement.
+
+
 
 ## 2026-11-10 — Suite PR #391 : alignement documentaire post-fusion, branche docs-only
 
