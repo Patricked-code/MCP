@@ -34,13 +34,13 @@ Ces niveaux sont **des positions de navigation**, pas une nouvelle machine d'eta
 
 ###### L4 — `MCP-CONV-CONT-20261104-ROOT-01` (declare dans PR #373)
 
-####### L5 — Enfant `.../NODE/6.8.GW` (exemple de navigation de la PR #373)
+- **L5 — Enfant `.../NODE/6.8.GW` (exemple de navigation de la PR #373)**
 
-######## L6 — Registres relies : PR #372 (UTL), PR #374 (Global Work), PR #373 (arbre)
+  - **L6 — Registres relies : PR #372 (UTL), PR #374 (Global Work), PR #373 (arbre)**
 
-######### L7 — Evenement de discussion/checkpoint (a chercher dans l'arbre source de PR #373)
+    - **L7 — Evenement de discussion/checkpoint (a chercher dans l'arbre source de PR #373)**
 
-########## L8 — URL et pieces de preuve exactes (a verifier dans la source)
+      - **L8 — URL et pieces de preuve exactes (a verifier dans la source)**
 
 Les identifiants `ROOT/NODE` de la PR #373 sont **documentaires** : ne pas les transformer en Governed Sessions, Task IDs ou Continuity IDs runtime.
 
