@@ -1,5 +1,17 @@
 # SUIVI.md
 
+
+## 2026-11-10 — PR #391 : reprise, constat P1 et correction documentaire additive
+
+- **Observation GitHub vérifiée** : PR #391 prête pour revue (`draft=false`), non fusionnée, base `main@b2cdeaa116b22546ca15c2fb9fd6dcc7e215efb7`, HEAD initialement validé `3fd053d329bd462ee09b603357757096639ba3dc` par CI `42772896287` SUCCESS. Cette ancienne CI ne valide pas les nouveaux commits documentaires.
+- **Finding P1 de revue** : les deux nouvelles commandes étaient absentes de `CHANGELOG.md` et `DECISIONS_LOG.md`, malgré la règle `AGENTS.md`. Le constat est repris sans déléguer d'exécution à l'auteur du commentaire.
+- **Correction** : documentation ajoutée à `CHANGELOG.md` et `DECISIONS_LOG.md` dans la même branche/PR, sans modifier le comportement de `cleanup_plan_s1/s2`, la Task Queue, les sessions, les locks ou le runtime.
+- **Réconciliation S1/GitHub** : `main`/S1/runtime `FULLY_ALIGNED` sur `b2cdeaa116b22546ca15c2fb9fd6dcc7e215efb7`. Le contexte MCP retournait encore une session Regulatory et un `bootstrap_expired`; aucune prise de possession ni écriture MCP S1.
+- **Audit infrastructure read-only** : S2 : 155 Go, 142 Go utilisés, 7,1 Go disponibles (96 %) ; S1 : 77 Go, 56 Go utilisés, 18 Go disponibles (77 %). Deux archives Plesk S2 `chainsolutions.fr` de ~7,43 Go et ~7,41 Go repérées. **Ni leur redondance, ni leur restauration, ni leur admissibilité à la suppression ne sont vérifiées**.
+- **Décision** : `NO_DELETE`, `NO_MIGRATION`, `NO_RESTART` ; conserver toutes les sauvegardes et dépendances actuelles. Aucune commande de purge ajoutée.
+- **NEXT_ACTION** : vérifier la CI sur le HEAD issu des corrections P1, obtenir une validation indépendante, puis fusion gouvernée avec HEAD attendu et constater le SHA de merge ; seulement ensuite Governed Deploy MCP et attestation S1/runtime avant utilisation des commandes en lecture seule. L'étude de suppression/quarantaine relève d'un lot gouverné séparé, après preuve Plesk/backup/rollback et consentement ciblé.
+
+
 ## 2026-11-10 — PR #391 : plan de nettoyage S1/S2 non destructif, non fusionné
 
 - **Mandat propriétaire** : ajouter des commandes de nettoyage au MCP. Première tranche additive en lecture seule, sans activation de purge et sans modification des serveurs.
