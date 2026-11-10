@@ -41,3 +41,7 @@ Cette tranche porte un **index Markdown de navigation**, pas un deploy du resolv
 ## Suites dependantes
 
 Apres approbation : definir le binding GitRegistry exact ; implementer le resolver read-only dans la surface MCP **en reutilisant les composants existants** ; ajouter les tests d'isolation identity/transport/Regulatory, des preuves historiques et du mode GitHub-only ; deployer gouverne et attester. Ne pas lancer ces suites automatiquement parce que les documents existent.
+
+## Extension technique candidate (sans changement de catalogue MCP)
+
+La PR #389 ajoute `src/projectIdentity/canonicalProjectEntry.ts`, un manifeste `.mcp/canonical-project-entry.json` et une projection additive `canonicalMcpProject` dans `get_project_context`, avec tests isolés. Cette fonction conserve sa signature actuelle et ne crée pas `mcp_resolve_canonical_project`. **Il reste à approuver le Project UID dans GitRegistry, implémenter une résolution paramétrée et certifier la persistance runtime après déploiement.**

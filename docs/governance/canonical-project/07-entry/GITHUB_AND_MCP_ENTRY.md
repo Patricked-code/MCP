@@ -42,3 +42,7 @@ Nom d'API **propose** : `mcp_resolve_canonical_project`, arguments `project_uid`
 ## C'est quoi « rentrer ou on veut » ?
 
 `project_uid + view + (optional continuity_id / node_path / time)` permet de descendre ou remonter. Une requete `node_path` selectionne un **lien prouve** ; elle ne cree pas de chemin de continuite fictif. Le serveur doit paginer pour ne pas exposer toutes les sessions ou archives a un demandeur non autorise.
+
+## Raccordement additif dans get_project_context (candidat PR #389)
+
+Le code candidat ajoute le champ `canonicalMcpProject` au résultat de `get_project_context`, sans changer le nom de l'outil, ses arguments ni ses annotations. La réponse charge un manifeste **copié dans l'image Docker**. `status: DOCUMENTARY_CANDIDATE` signifie **index de routage en lecture seule**, pas autorité GitRegistry et pas ID accepté par un resolver paramétré. Le fichier manquant ou invalide renvoie `CANONICAL_ENTRY_UNAVAILABLE`. Sur le runtime actuellement déployé, ce champ reste **non attesté** jusqu'à fusion, CI, Governed Deploy et vérification.

@@ -37,3 +37,10 @@
 - Manifeste machine candidat : `.mcp/canonical-project-entry.json` ; futur embedding dans l'image S1 et projection read-only via l'outil existant `get_project_context`.
 - Pas de nouveau GitRegistry, Operational Memory ou base de comptes. Les index des comptes et capacités restent des **projections autorisées**.
 - **Prochaine action sûre :** vérifier la CI sur le HEAD exact, corriger les éventuelles erreurs de contrat, puis obtenir la revue/approbation avant fusion et Governed Deploy.
+
+## Extension technique candidate du raccord S1
+
+- Manifeste déclaratif versionné `.mcp/canonical-project-entry.json` (lecture seulement), copié dans la future image Docker, sans secret ni droit.
+- Chargeur `src/projectIdentity/canonicalProjectEntry.ts`, intégré additivement à `get_project_context` par le champ `canonicalMcpProject` et tests fail-closed.
+- Aucun nouveau tool enregistré, aucune session Regulatory, aucune Task/Lock, aucun binding effectif dans GitRegistry, aucun déploiement.
+- **NEXT_ACTION :** vérifier tests + CI exact-head et revue puis décision d'adoption GitRegistry et resolver paramétré ; ne pas inférer une activation serveur de la seule présence du code en PR.
