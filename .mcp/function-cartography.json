@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "49945d4f1953853728e5e2cd23fb80990009b6c6ae88a34f73065adfc91d1678",
-  "registeredToolCount": 148,
-  "readOnlyToolCount": 92,
-  "writeToolCount": 56,
+  "catalogueDigest": "6a94a598ffd5d7335a37f32f87ed55a2ffbe7679f85d182260ea1c3f8410efd0",
+  "registeredToolCount": 150,
+  "readOnlyToolCount": 93,
+  "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
     {
@@ -251,6 +251,99 @@
         "additionalProperties": false
       },
       "contractDigest": "5a128ac23e61a94de43c2f820a40623ce336d69424a63bd016733f2fda073b35"
+    },
+    {
+      "name": "cleanup_s2_leaf_preflight",
+      "title": null,
+      "description": "Inspection S2 d une cible fixe : Plesk, fichiers ouverts, symlinks, empreinte. Aucune écriture.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "pccet_api",
+              "wti_api",
+              "evote",
+              "pccet",
+              "opcvm"
+            ]
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "483139d06d31c67ff3fdd0ee99ed222b2eb34061b916670c964d3f1a86162f8e"
+    },
+    {
+      "name": "cleanup_s2_leaf_quarantine",
+      "title": null,
+      "description": "Déplace réversiblement une cible enfant S2, uniquement après admission gouvernée et autorisation opérateur.",
+      "surface": "scoped-write",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "pccet_api",
+              "wti_api",
+              "evote",
+              "pccet",
+              "opcvm"
+            ]
+          },
+          "confirm_domain": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 255
+          },
+          "confirm_phrase": {
+            "type": "string",
+            "const": "QUARANTINE EXACT S2 TARGET"
+          },
+          "expected_fingerprint": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "governed_session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expected_session_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "allow_write": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "target",
+          "confirm_domain",
+          "confirm_phrase",
+          "expected_fingerprint",
+          "governed_session_id",
+          "expected_session_revision",
+          "allow_write"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "bb9d0efe03ebab9d8e7a366139ae0c19ceddff9f21ecf435be293b4a93b86155"
     },
     {
       "name": "curl_domain",
