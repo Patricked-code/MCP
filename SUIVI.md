@@ -1,4 +1,27 @@
 # SUIVI.md
+
+
+## 2026-11-10 — PR #391 : reprise, constat P1 et correction documentaire additive
+
+- **Observation GitHub vérifiée** : PR #391 prête pour revue (`draft=false`), non fusionnée, base `main@b2cdeaa116b22546ca15c2fb9fd6dcc7e215efb7`, HEAD initialement validé `3fd053d329bd462ee09b603357757096639ba3dc` par CI `42772896287` SUCCESS. Cette ancienne CI ne valide pas les nouveaux commits documentaires.
+- **Finding P1 de revue** : les deux nouvelles commandes étaient absentes de `CHANGELOG.md` et `DECISIONS_LOG.md`, malgré la règle `AGENTS.md`. Le constat est repris sans déléguer d'exécution à l'auteur du commentaire.
+- **Correction** : documentation ajoutée à `CHANGELOG.md` et `DECISIONS_LOG.md` dans la même branche/PR, sans modifier le comportement de `cleanup_plan_s1/s2`, la Task Queue, les sessions, les locks ou le runtime.
+- **Réconciliation S1/GitHub** : `main`/S1/runtime `FULLY_ALIGNED` sur `b2cdeaa116b22546ca15c2fb9fd6dcc7e215efb7`. Le contexte MCP retournait encore une session Regulatory et un `bootstrap_expired`; aucune prise de possession ni écriture MCP S1.
+- **Audit infrastructure read-only** : S2 : 155 Go, 142 Go utilisés, 7,1 Go disponibles (96 %) ; S1 : 77 Go, 56 Go utilisés, 18 Go disponibles (77 %). Deux archives Plesk S2 `chainsolutions.fr` de ~7,43 Go et ~7,41 Go repérées. **Ni leur redondance, ni leur restauration, ni leur admissibilité à la suppression ne sont vérifiées**.
+- **Décision** : `NO_DELETE`, `NO_MIGRATION`, `NO_RESTART` ; conserver toutes les sauvegardes et dépendances actuelles. Aucune commande de purge ajoutée.
+- **NEXT_ACTION** : vérifier la CI sur le HEAD issu des corrections P1, obtenir une validation indépendante, puis fusion gouvernée avec HEAD attendu et constater le SHA de merge ; seulement ensuite Governed Deploy MCP et attestation S1/runtime avant utilisation des commandes en lecture seule. L'étude de suppression/quarantaine relève d'un lot gouverné séparé, après preuve Plesk/backup/rollback et consentement ciblé.
+
+
+## 2026-11-10 — PR #391 : plan de nettoyage S1/S2 non destructif, non fusionné
+
+- **Mandat propriétaire** : ajouter des commandes de nettoyage au MCP. Première tranche additive en lecture seule, sans activation de purge et sans modification des serveurs.
+- **Périmètre** : branche `mcp/cleanup-readonly-s1-s2-20261110`, PR #391 DRAFT, base GitHub/S1/runtime `b2cdeaa116b22546ca15c2fb9fd6dcc7e215efb7` observée `FULLY_ALIGNED` avant intervention GitHub.
+- **Code** : `src/tools/cleanupPlan.ts` expose `cleanup_plan_s1` et `cleanup_plan_s2`; enregistrement additif via `src/tools/readOnly.ts`; tests `tests/cleanupPlan.test.ts`.
+- **Documents** : `MCP_TOOLS.md` précise les états, limites et prérequis ; catalogue `.mcp/function-cartography.json` actualisé pour les deux nouveaux outils (147 enregistrements selon CI). Une entrée additionnelle observée dans le catalogue du runtime, `mcp_issue_plesk_web_pairing_proof`, n'est pas présente dans la génération du code CI et reste hors périmètre de la PR.
+- **Protection** : cibles S2 historiques uniquement comme `REVIEW_ONLY_NOT_AUTHORIZED`; domaines protégés S1/S2 et originaux Stablecoin S2 conservés ; aucun effacement, vidage, migration, redémarrage, secret, nouvelle session ni attribution runtime.
+- **Statut** : code et tests proposés dans PR ; CI/revue exact-head et déploiement non attestés ; `deletionAllowed=false`.
+- **NEXT_ACTION** : contrôler CI et tests de sécurité sur HEAD de PR #391, corriger les écarts, obtenir revue indépendante. Ne pas fusionner sans accord propriétaire ; aucun Governed Deploy sans admission. Définir ultérieurement les exécuteurs destructifs avec inventaire exact, mapping Plesk, sauvegarde/restauration, rollback/quarantaine, autorisation ciblée, session/claim/locks et preuve post-action.
+
 ## 2026-10-23 — PR #350 : pilote GRT /gouvern et provisioning S1/S2, non fusionnés
 
 - Mandat : étendre sans migration le MCP existant, point d'ancrage issue #349 et PR #350. Baseline main/S1 `a3df3b0`, GRT `eb74f16b6c8bbe63658666095f6c97fb32aaa303`. Aucun déploiement S1 effectué.

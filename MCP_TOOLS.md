@@ -151,3 +151,17 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-08-05
+
+## `cleanup_plan_s1` et `cleanup_plan_s2` — préparation non destructive (10 novembre 2026)
+
+Ces commandes MCP sans argument inventorient en lecture seule les noms de répertoires observables sur S1 ou S2, consultent l'utilisation disque et produisent une classification pour revue. Elles ne suppriment, ne déplacent, ne vident, ne modifient et ne redémarrent rien.
+
+- Sur **S1**, chaque répertoire ressemblant à un domaine hors liste protégée est classé `DISCOVER_ONLY_NOT_AUTHORIZED`. Cela ne signifie **pas** qu'il est supprimable.
+- Sur **S2**, seules les six cibles historiques indiquées dans `Migration/02_PLAN_MIGRATION_ET_SECURITE.md` apparaissent comme `REVIEW_ONLY_NOT_AUTHORIZED`; les huit références historiques de sauvegardes restent des pistes de recherche, sans preuve de présence.
+- Les domaines protégés viennent de `src/config/servers.ts`. Les originaux Stablecoin sur S2 doivent rester intacts.
+- Un nom de dossier observé n'est **pas** une preuve de mapping Plesk, de chemin exact, d'absence de dépendances ou de permission de nettoyage.
+- En cas d'échec SSH ou d'inventaire tronqué, réponse `UNVERIFIED` et blocage conservateur.
+
+**Contrat de sécurité :** `deletionAllowed=false`, `quarantineAllowed=false`, `writesPerformed=false`. Les opérations de purge, de vidage, de nettoyage des sauvegardes, caches, journaux et `node_modules` ne sont pas activées par ces commandes. Toute évolution destructive nécessitera un périmètre exact, des preuves fraîches, sauvegarde et restauration testées, consentement explicite sur la cible, session/claim/locks gouvernés, quarantaine/rollback et contrôles de santé après intervention.
+
+**Traçabilité :** source historique `Migration/02_PLAN_MIGRATION_ET_SECURITE.md`, piste Loop Engineering `memory/LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md`, tests `tests/cleanupPlan.test.ts`. La PR de ce lot constitue la preuve GitHub et le point de reprise ; aucun déploiement S1/S2 n'est implicite.

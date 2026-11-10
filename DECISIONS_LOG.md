@@ -1,4 +1,17 @@
 # DECISIONS_LOG.md
+
+
+## 2026-11-10 — PR #391 : séparation stricte entre inventaire de nettoyage et droit de suppression
+
+**Décision de gouvernance** : ajouter les commandes `cleanup_plan_s1` et `cleanup_plan_s2` à la surface MCP de lecture seule existante, sans créer de seconde autorité, file, registre, session ou moteur de maintenance et sans activer une purge serveur.
+
+- Les six domaines et huit références de sauvegardes historiques S2 définis dans `Migration/02_PLAN_MIGRATION_ET_SECURITE.md` sont des **objets à inspecter**, jamais une allowlist de suppression.
+- La protection canonique des domaines S1/S2 demeure dans `src/config/servers.ts`. Les originaux Stablecoin S2, les sites en production et leurs dépendances restent protégés. L'existence d'un répertoire n'est pas une preuve de propriété Plesk ni d'inactivité.
+- `cleanup_plan_s1/s2` retournent uniquement une proposition de classification : `deletionAllowed=false`, `quarantineAllowed=false`, `writesPerformed=false`. Une erreur SSH, une liste tronquée ou une observation du disque indisponible produisent `UNVERIFIED` plutôt qu'une permission implicite.
+- **Séparation obligatoire des phases** : toute suppression/vidage/quarantaine future devra d'abord obtenir mapping Plesk/realpath actuel, inventaire des usages et services, sauvegarde et test de restauration, périmètre exact, rollback/quarantaine, identité + consentement opérateur explicite, session/claim/locks gouvernés, puis postchecks, preuves et checkpoint.
+- La demande de développement ne vaut ni approbation de cible destructive, ni autorisation de contourner CI/revue. Fusion uniquement après revue indépendante sur HEAD valide ; le déploiement suivra `.github/workflows/mcp-deploy.yml` (GitHub main → CI → OIDC → attestation S1/runtime), jamais un SSH libre.
+- Références : [PR #391](https://github.com/Patricked-code/MCP/pull/391), `SUIVI.md` (point de reprise et preuves), `CHANGELOG.md` (changement fonctionnel), `MCP_TOOLS.md` (contrats d'outils), `Migration/02_PLAN_MIGRATION_ET_SECURITE.md`.
+
 ## 2026-10-23 — Extension additive et GRT /gouvern, sans nouvelle autorité
 
 - Décision : conserver le MCP, ses sessions, Task Queue, locks, consentement E3 et chaîne GitHub → S1. Pas de migration, pas de nouveau dispatcher, ni accès libre à Plesk.

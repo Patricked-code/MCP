@@ -1,4 +1,15 @@
 # CHANGELOG.md
+
+
+## 2026-11-10 — PR #391 : commandes MCP d'inventaire préalable au nettoyage S1/S2
+
+- Ajout **strictement additif et non destructif** des commandes `cleanup_plan_s1` et `cleanup_plan_s2` dans `src/tools/cleanupPlan.ts`, exposées par l'enregistrement existant `src/tools/readOnly.ts`.
+- Les commandes réalisent un inventaire borné en lecture seule de noms de répertoires vhosts et de l'utilisation disque. Les listes historiques de cibles S2 et de sauvegardes servent **uniquement à la revue**, sans conclure qu'un chemin existe ou est supprimable.
+- Protections : domaines issus de `src/config/servers.ts`, originaux Stablecoin S2 intouchables, aucune commande shell libre ni chemin utilisateur, échec fermé en cas d'erreur SSH/inventaire tronqué, sorties `deletionAllowed=false`, `quarantineAllowed=false`, `writesPerformed=false`.
+- Tests de sécurité et non-régression `tests/cleanupPlan.test.ts`, documentation `MCP_TOOLS.md` et cartographie `.mcp/function-cartography.json` synchronisée sur le catalogue généré du code CI.
+- La PR #391 est **candidate uniquement**, non fusionnée et non déployée à cette étape ; CI sur HEAD `3fd053d329bd462ee09b603357757096639ba3dc` réussie ([run 42772896287](https://github.com/Patricked-code/MCP/actions/runs/42772896287)), puis correction documentaire P1 en cours. Revue indépendante et revalidation de l'ultime HEAD exigées avant fusion.
+- Références et preuves : [PR #391](https://github.com/Patricked-code/MCP/pull/391), `SUIVI.md` (checkpoint 2026-11-10), `DECISIONS_LOG.md` (décision d'interdiction des suppressions), `Migration/02_PLAN_MIGRATION_ET_SECURITE.md`.
+
 ## 2026-10-23 — PR #350 : pilote GRT /gouvern et Plesk S1/S2 (non déployés)
 
 - Ajouts sans migration : prévisualisation Plesk, portail GRT authentifié, archive privée épinglée et fournisseur GitHub App optionnel.

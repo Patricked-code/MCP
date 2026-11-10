@@ -3,6 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { managedServers, type ServerId } from '../config/servers.js';
 import { runReadOnlyCommand } from '../ssh/client.js';
 import { asText, commandResultToText } from './format.js';
+import { registerCleanupPlanReadOnlyTools } from './cleanupPlan.js';
 import { registerMcpSelfReadOnlyTools } from './selfManagement.js';
 import { registerGithubInventoryReadOnlyTools } from './githubInventory.js';
 import { registerGithubAuthorizationReadOnlyTools } from './githubAuthorization.js';
@@ -106,6 +107,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerE2PreflightReadOnlyTool(server);
   registerE2ContinuityReadTools(server);
   registerCurrentStateTools(server);
+  registerCleanupPlanReadOnlyTools(server);
   registerMcpSelfReadOnlyTools(server);
   registerSadiaafTools(server);
   registerLegacyFundsScopedTools(server);
