@@ -7,7 +7,8 @@ process.env.S1_KEY_PATH ??= '/tmp/unused-s1';
 process.env.S2_KEY_PATH ??= '/tmp/unused-s2';
 const { S2_LEAF_TARGETS, buildS2LeafProbe, buildS2LeafQuarantine,
   parseS2LeafInspection, assertS2OperatorApproval,
-  assertS2BootstrapCurrent, assertS2OwnedCleanupTask } =
+  assertS2BootstrapCurrent, assertS2OwnedCleanupTask,
+  assertS2FreshAlignedState, assertS2LeaseWindow } =
   await import('../src/tools/s2LeafCleanup.js');
 
 test('five exact leaf targets, parent and protected resources excluded', () => {
@@ -48,7 +49,7 @@ test('operator env approval defaults to disabled and is exact fingerprint-bound'
       MCP_S2_CLEANUP_APPROVED_FINGERPRINTS:'{"evote":"' + fp + '"}' }));
 });
 test('quarantine is same-device and reversible with receipt, not recursive deletion', () => {
-  const cmd = buildS2LeafQuarantine('pccet','a'.repeat(64),'test-20261110');
+  const cmd = buildS2LeafQuarantine('pccet','a'.repeat(64),'test-20261110',Date.now()+300_000);
   assert.ok(cmd.includes('flock -n 9'));
   assert.ok(cmd.includes("test \"$FINGERPRINT\" ="));
   assert.ok(cmd.includes('mv -T -- \"$TARGET\" \"$DEST\"'));
@@ -71,7 +72,7 @@ test('fingerprint incorporates regular-file contents as well as metadata', () =>
   assert.match(probe, /"\$META_HASH" "\$CONTENT_HASH"/);
 });
 test('quarantine must be a root-owned private mode-0700 directory', () => {
-  const cmd = buildS2LeafQuarantine('evote','a'.repeat(64),'test-fixed');
+  const cmd = buildS2LeafQuarantine('evote','a'.repeat(64),'test-fixed',Date.now()+300_000);
   assert.match(cmd, /umask 077/);
   assert.match(cmd, /mkdir -p -m 0700/);
   assert.match(cmd, /stat -c '%u'/);
@@ -106,4 +107,33 @@ test('cleanup needs exact owned IN_PROGRESS task with complete dependencies', ()
   assert.throws(() => assertS2OwnedCleanupTask('evote','owner-session','repo/test',
       [base,{...base,taskId:'TASK-20261110-102',ownerGovernedSessionId:'other'}]),
       /S2_CLEANUP_TASK_SCOPE_CONFLICT/);
+});
+
+test('Plesk domain list is checked without SIGPIPE/pipefail false absence', () => {
+  const probe = buildS2LeafProbe('evote');
+  assert.match(probe, /grep -Fx -- "\$DOMAIN" <<< "\$DOMAINS" >\/dev\/null/);
+  assert.match(probe, /test "\$DOMAIN_MATCH_RC" = 1 \|\| exit 47/);
+  assert.doesNotMatch(probe, /\|\s*grep -Fxq/);
+});
+test('aligned but stale Live State is never sufficient for quarantine', () => {
+  assert.doesNotThrow(() => assertS2FreshAlignedState(
+    { alignment: { global:'FULLY_ALIGNED' }, freshness:'CURRENT', stateVersion:17 },17));
+  for (const state of [null,
+    { alignment: { global:'FULLY_ALIGNED' }, freshness:'STALE', stateVersion:17 },
+    { alignment: { global:'DIVERGENCE' }, freshness:'CURRENT', stateVersion:17 },
+    { alignment: { global:'FULLY_ALIGNED' }, freshness:'CURRENT', stateVersion:16 }
+  ]) {
+    assert.throws(() => assertS2FreshAlignedState(state,17), /S2_CLEANUP_LIVE_STATE_NOT_ALIGNED/);
+  }
+});
+test('remote move is gated by remaining lease before and after long preflight', () => {
+  const at = Date.now();
+  assert.doesNotThrow(() => assertS2LeaseWindow(at+200_000,at));
+  assert.throws(() => assertS2LeaseWindow(at+129_000,at), /S2_CLEANUP_LOCK_LEASE_TOO_SHORT/);
+  const cmd = buildS2LeafQuarantine('pccet','a'.repeat(64),'lease-test',at+300_000);
+  assert.match(cmd, /SERVER_NOW="\$\(date \+%s\)"/);
+  assert.match(cmd, /SERVER_CLOCK="\$\(date \+%s\)"/);
+  assert.match(cmd, /test "\$SERVER_NOW" -lt/);
+  assert.match(cmd, /mv -T -- "\$TARGET" "\$DEST"/);
+  assert.ok(cmd.indexOf('SERVER_NOW=') < cmd.indexOf('mv -T --'));
 });

@@ -47,7 +47,11 @@ const PROBE_LINES: readonly string[] = [
   "test -z \"$(find \"$TARGET\" -type l -print -quit)\" || exit 44",
   "command -v plesk >/dev/null || exit 45",
   "DOMAINS=\"$(plesk bin domain --list 2>/dev/null)\" || exit 46",
-  "if printf '%s\\n' \"$DOMAINS\" | grep -Fxq -- \"$DOMAIN\"; then exit 47; fi",
+  "set +e",
+  "grep -Fx -- \"$DOMAIN\" <<< \"$DOMAINS\" >/dev/null",
+  "DOMAIN_MATCH_RC=$?",
+  "set -e",
+  "test \"$DOMAIN_MATCH_RC\" = 1 || exit 47",
   "test -d /etc/nginx/plesk.conf.d || exit 48",
   "test -d /etc/apache2/plesk.conf.d || exit 49",
   "set +e",
@@ -91,6 +95,8 @@ const EXEC_LINES: readonly string[] = [
   "RECEIPT=\"$QROOT/__OP_ID__.receipt\"",
   "test ! -e \"$RECEIPT\" && test ! -e \"$RECEIPT.pending\" || exit 63",
   "printf 'state=PENDING\\ntarget=__KEY__\\noriginal=%s\\nfingerprint=%s\\n' \"$TARGET\" \"$FINGERPRINT\" > \"$RECEIPT.pending\"",
+  "SERVER_NOW=\"$(date +%s)\"",
+  "test \"$SERVER_NOW\" -lt \"__LOCK_EXPIRY_SECONDS__\" || exit 73",
   "mv -T -- \"$TARGET\" \"$DEST\"",
   "test ! -e \"$TARGET\" && test ! -L \"$TARGET\" && test -d \"$DEST\" || exit 64",
   "printf 'state=QUARANTINED\\ntarget=__KEY__\\noriginal=%s\\nquarantine=%s\\nfingerprint=%s\\nbytes=%s\\n' \"$TARGET\" \"$DEST\" \"$FINGERPRINT\" \"$BYTES\" > \"$RECEIPT.tmp\"",
@@ -106,12 +112,24 @@ export function buildS2LeafProbe(key: S2LeafKey): string {
   return PROBE_LINES.join('\n').replaceAll('__TARGET__', target.path)
     .replaceAll('__DOMAIN__', target.domain).replaceAll('__KEY__', key);
 }
-export function buildS2LeafQuarantine(key: S2LeafKey, fingerprint: string, operationId: string): string {
+export function buildS2LeafQuarantine(
+  key: S2LeafKey, fingerprint: string, operationId: string, leaseExpiresAtMs: number
+): string {
+  if (!Number.isSafeInteger(leaseExpiresAtMs) || leaseExpiresAtMs <= 0) {
+    throw new Error('S2_CLEANUP_LEASE_INVALID');
+  }
   const probe = buildS2LeafProbe(key);
   const tail = EXEC_LINES.join('\n').replaceAll('__EXPECTED__', fingerprint)
-    .replaceAll('__KEY__', key).replaceAll('__OP_ID__', operationId);
+    .replaceAll('__KEY__', key).replaceAll('__OP_ID__', operationId)
+    .replaceAll('__LOCK_EXPIRY_SECONDS__', String(Math.floor((leaseExpiresAtMs - 5000) / 1000)));
+  // Distinct S2 clocks must be in agreement before a long probe or a move.
+  const issuedAtSeconds = Math.floor(Date.now() / 1000);
   return ['set -euo pipefail', 'exec 9>/run/lock/wealthtech-mcp-s2-cleanup.lock',
-    'flock -n 9 || exit 59', probe, tail].join('\n');
+    'flock -n 9 || exit 59',
+    'SERVER_CLOCK="$(date +%s)"',
+    "test \"$SERVER_CLOCK\" -ge '" + String(issuedAtSeconds - 10) + "' || exit 74",
+    "test \"$SERVER_CLOCK\" -le '" + String(issuedAtSeconds + 10) + "' || exit 74",
+    probe, tail].join('\n');
 }
 export type S2LeafInspection = {
   server: 's2'; target: S2LeafKey; path: string; domain: string;
@@ -217,11 +235,32 @@ export function assertS2OwnedCleanupTask(
   }
 }
 
+export function assertS2FreshAlignedState(
+  state: { alignment?: { global?: string }; freshness?: string; stateVersion: number } | null,
+  expectedVersion: number
+): void {
+  if (!state || state.freshness !== 'CURRENT' ||
+      state.alignment?.global !== 'FULLY_ALIGNED' ||
+      state.stateVersion !== expectedVersion) {
+    throw new Error('S2_CLEANUP_LIVE_STATE_NOT_ALIGNED');
+  }
+}
+
+/** SSH execution timeout is 120 s; reserve an extra 20 s against expiry. */
+export function assertS2LeaseWindow(
+  expiresAtMs: number, atMs = Date.now(), reserveMs = 140_000
+): void {
+  if (!Number.isFinite(expiresAtMs) || !Number.isFinite(atMs) ||
+      expiresAtMs - atMs < reserveMs) {
+    throw new Error('S2_CLEANUP_LOCK_LEASE_TOO_SHORT');
+  }
+}
+
 async function assertGovernedS2Session(
   key: S2LeafKey, governedSessionId: string, revision: number, extra: {
     sessionId?: string; authInfo?: any
   }
-): Promise<void> {
+): Promise<number> {
   const request = sessionRequestFromToolExtra(extra);
   const deps = getGovernedSessionToolDependencies();
   if (request.identity.assurance !== 'oauth_subject' || !request.identity.principalId)
@@ -238,19 +277,20 @@ async function assertGovernedS2Session(
   if (session.lastAcknowledgedStateVersion === null)
     throw new Error('S2_CLEANUP_CONTEXT_UNACKNOWLEDGED');
   const locks = await deps.locks.listActiveLocks();
-  if (!locks.some(lock => lock.status === 'ACTIVE' && lock.governedSessionId === governedSessionId &&
-      session.lockIds.includes(lock.lockId) && lock.scope === 'resource:s2-cleanup/' + key &&
-      Date.parse(lock.expiresAt) > Date.now()))
-    throw new Error('S2_CLEANUP_LOCK_MISSING');
+  const ownedLock = locks.find(lock => lock.status === 'ACTIVE' &&
+      lock.governedSessionId === governedSessionId && session.lockIds.includes(lock.lockId) &&
+      lock.scope === 'resource:s2-cleanup/' + key && Date.parse(lock.expiresAt) > Date.now());
+  if (!ownedLock) throw new Error('S2_CLEANUP_LOCK_MISSING');
+  const leaseExpiresAtMs = Date.parse(ownedLock.expiresAt);
+  assertS2LeaseWindow(leaseExpiresAtMs);
   const state = await liveStateEngine.getCurrent();
-  if (!state || state.alignment?.global !== 'FULLY_ALIGNED' ||
-      state.stateVersion !== session.lastAcknowledgedStateVersion)
-    throw new Error('S2_CLEANUP_LIVE_STATE_NOT_ALIGNED');
+  assertS2FreshAlignedState(state, session.lastAcknowledgedStateVersion);
   assertS2BootstrapCurrent(session.bootstrapReceipt, governedSessionId, session.repository, state.stateVersion);
   const tasks = getGovernedTaskToolDependencies();
   await tasks.ready();
   const taskStore = await tasks.queue.listVisibleTasks();
   assertS2OwnedCleanupTask(key, governedSessionId, session.repository, taskStore.tasks);
+  return leaseExpiresAtMs;
 }
 export function registerS2LeafCleanupReadTools(server: McpServer): void {
   server.tool('cleanup_s2_leaf_preflight',
@@ -278,10 +318,13 @@ export function registerS2LeafCleanupWriteTools(server: McpServer): void {
       if (before.status !== 'OPERATOR_APPROVAL_REQUIRED' ||
           before.fingerprint !== expected_fingerprint)
         throw new Error('S2_CLEANUP_PREFLIGHT_STALE');
+      // The remote probe may take time: re-read session, receipt, task and lease immediately before SSH.
+      const leaseExpiresAtMs = await assertGovernedS2Session(
+        target, governed_session_id, expected_session_revision, extra);
       const opId = String(Date.now()) + '-' +
         createHash('sha256').update(governed_session_id).digest('hex').slice(0, 12);
       const result = await runGuardedCommand('s2',
-        buildS2LeafQuarantine(target, expected_fingerprint, opId),
+        buildS2LeafQuarantine(target, expected_fingerprint, opId, leaseExpiresAtMs),
         { intent: 'cleanup_s2_leaf_quarantine:' + target, timeoutMs: 120_000, maxOutputBytes: 4096 });
       if (result.code !== 0 || !result.stdout.includes('status=QUARANTINED\n') ||
           result.stdout.includes('...[sortie plafonnée par le MCP]'))

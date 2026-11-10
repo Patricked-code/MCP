@@ -1,5 +1,12 @@
 # DECISIONS_LOG.md
 
+## 2026-11-10 — PR #396 : preuve de fraîcheur et maintien de l'autorité jusqu'au déplacement
+
+**Décision** : pour un nettoyage gouverné de serveur, `FULLY_ALIGNED` sur une observation périmée est insuffisant. L'admission exige `freshness=CURRENT`, une réévaluation Task/Receipt/Lock après la lecture SSH et un bail dont le temps restant couvre le timeout maximal de l'exécuteur, avec contrôle temporel sur S2 avant `mv`.
+
+Le contrôle de domaine Plesk refuse tout résultat sauf une absence attestée (`grep` code retour `1`), sans pipeline `printf | grep -q`. Ces durcissements ne confèrent aucune autorisation d'opérateur ni aucun droit sur Regulatory. La PR et le runtime restent distincts jusqu'au Governed Deploy exact-SHA.
+
+
 ## 2026-11-10 — PR #396 : refus de fusion d'un outil destructif tant que les cinq constats de revue restent ouverts
 
 **Décision** : l'approbation du commit initial par `Wealthtechinnovations` est une preuve de revue humaine, mais n'autorise pas la fusion d'un exécuteur S2 alors que cinq anomalies P1/P2 existent. Admettre les corrections sur la **même PR**, garder le statut non déployé et exiger une validation indépendante du nouveau SHA.

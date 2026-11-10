@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-11-10 — PR #396 : deuxième durcissement de l'exécuteur S2
+
+- Refus d'un Live State périmé même si l'ancien verdict était `FULLY_ALIGNED`.
+- Réservation d'une fenêtre de lease supérieure au timeout de la commande SSH, double réobservation de l'admission et refus sur S2 si le verrou expire avant le déplacement ; garde contre une horloge S2 désynchronisée.
+- Contrôle Plesk via entrée fixe et code de sortie capturé, sans risque SIGPIPE `pipefail`.
+- Tests de refus et présence des contrôles. Aucun déploiement ou déplacement effectué.
+
+
 ## 2026-11-10 — PR #396 : durcissement du candidat de quarantaine S2
 
 - L'inspection Apache/nginx échoue fermement sur toute erreur de scan, et non seulement en présence d'un match.

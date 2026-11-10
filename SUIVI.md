@@ -1,5 +1,13 @@
 # SUIVI.md
 
+## 2026-11-10 — PR #396 : deuxième passe P1/P2 d'admission S2
+
+- Après le correctif des cinq premiers constats, une nouvelle revue du SHA `1828ac3bbe584c1ddfb89db0e9bfdd0ce056066e` a soulevé trois risques : Live State `STALE` malgré un ancien alignement, expiration du verrou pendant les préflights SSH et faux négatif Plesk par `grep -q` + `pipefail`.
+- Correctifs candidats : exigence `freshness=CURRENT` à chaque admission ; contrôle de lease > 140 s à l'entrée ET après l'inspection ; délai absolu vérifié sur S2 juste avant `mv` ; contrôle de dérive horloge ; `grep` Plesk via here-string sans pipeline et statut `1` exclusivement pour « absent ».
+- Aucune mutation S2, aucun changement de secrets, aucun détachement Regulatory ; pas de fusion ni déploiement revendiqué.
+- **NEXT_ACTION** : valider CI sur le nouveau SHA exact, documenter les threads corrigés et obtenir la revue indépendante post-correctif, puis seulement évaluer merge/deploy et admission opérationnelle.
+
+
 ## 2026-11-10 — PR #396 : correction des cinq constats de revue avant fusion du nettoyeur gouverné S2
 
 - **Référence** : [PR #396](https://github.com/Patricked-code/MCP/pull/396), branche `mcp/s2-governed-quarantine-executor-20261110`. Le propriétaire a fait approuver le commit `9973a46803101da74b80479f4fe87420e196b149` par `Wealthtechinnovations`; les commentaires de revue automatique ont identifié cinq défauts. L'approbation de l'ancien commit **ne certifie pas** les corrections ultérieures.

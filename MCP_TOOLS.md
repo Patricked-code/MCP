@@ -194,3 +194,8 @@ Statut : branche/PR candidate ; ne pas déclarer l'outil déployé tant que revu
 ### Revue PR #396 — durcissements de sécurité (10/11/2026)
 
 Les cinq constats ont motivé des corrections candidates : détection des erreurs d'inspection de configuration, Bootstrap Receipt et tâche claimée obligatoires, SHA-256 de contenu, répertoire privé root `0700` et inscription permanente dans SUIVI/CHANGELOG/DECISIONS_LOG. La CI et la revue doivent être renouvelées sur le SHA corrigé. Ne pas assimiler la réussite CI à l'activation serveur. Le mode d'exécution demeure OFF par défaut.
+
+
+### S2 quarantine — deuxième revue : maintien de lease et état frais (10/11/2026)
+
+L'opération refuse tout Live State STALE, même avec un ancien alignement. Le verrou doit conserver au moins 140 secondes à chaque admission avant SSH ; la session, le Bootstrap Receipt et la tâche sont réobservés après le préflight ; S2 vérifie l'heure et la date limite du lock avant tout déplacement. L'absence d'un domaine dans Plesk n'est acceptée qu'avec code retour grep=1 via here-string sans SIGPIPE. Tout échec de ces contrôles bloque. Aucune suppression exécutée.
