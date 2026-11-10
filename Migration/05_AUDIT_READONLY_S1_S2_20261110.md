@@ -62,3 +62,20 @@ Les six candidats historiques S2 ont été retrouvés sous leur vhost racine par
 Les lecteurs `list_domains_s1/s2` effectuent des `find ... -maxdepth 2 ... | head -300`. Ils démontrent la **présence de répertoires**, pas un inventaire exhaustif ou une confirmation qu'ils sont vides. Les lecteurs `list_large_files` bornent aux fichiers `>100M` et aux 200 premiers. Aucun `du` complet, aucune inspection fine des six sources, aucun hash/archive restore test, aucune capture Plesk subscriptions/databases ni preuve de sauvegarde indépendante n'a été obtenu.
 
 **Aucune suppression, édition, déplacement, déploiement, restart, migration ou élévation de permissions n'a été effectué.** [Checkpoint suivant](07_POINT_DE_REPRISE_ET_PROCHAINES_ACTIONS_20261110.md).
+
+## G. Vérification DNS/HTTPS ponctuelle depuis S1 — 2026-11-10, ~06:47 UTC
+
+`curl_domain` a lancé `curl -I --max-time 15 https://DOMAINE` depuis **S1**. Résultats :
+
+| Domaine candidate S2 | Code process | Observation |
+| --- | ---: | --- |
+| `api.pccet.wealthtechinnovations.ci` | 6 | DNS non résolu depuis S1 |
+| `api.wealthtechinnovations.ci` | 6 | DNS non résolu depuis S1 |
+| `evote.wealthtechinnovations.ci` | 6 | DNS non résolu depuis S1 |
+| `pccet.wealthtechinnovations.ci` | 6 | DNS non résolu depuis S1 |
+| `wealthtechinnovations.ci` | 6 | DNS non résolu depuis S1 |
+| `opcvm.chainsolutions.fr` | 6 | DNS non résolu depuis S1 |
+
+**Contrôles protégés comparatifs :** `stablecoin.chainsolutions.fr` et `brvm.chainsolutions.fr` → HTTP/2 **200** tous deux depuis S1. **Aucun changement de DNS**.
+
+Un échec de résolution depuis S1 n'est **ni une preuve universelle d'absence DNS**, ni une preuve que Plesk est désactivé, qu'un service interne n'utilise pas ce domaine ou que le contenu est supprimable. La liste candidate garde donc `HOLD_NO_DELETION` jusqu'aux gates d'inventaire et restauration.

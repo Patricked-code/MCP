@@ -43,3 +43,10 @@
 « Lis `Migration/05_AUDIT_READONLY_S1_S2_20261110.md`, `06_MATRICE_ACTIONS_ET_PERMISSIONS_20261110.md` et ce checkpoint ; vérifie l'état GitHub/PR et le consentement propriétaire ; refais les lectures S1/S2 ; reste hors Regulatory ; ne revendique aucune tâche sans scope et ne nettoie aucun chemin sans tous les gates. »
 
 **Statut de clôture du lot documentaire** : à contrôler par commit, PR et CI. Ne pas qualifier l'incident disque ou les opérations de nettoyage comme résolus.
+
+## Nouveau jalon de preuve (append-only)
+
+- **Vers 06:47 UTC, 10/11/2026** — `curl_domain` de six candidats historiques : six erreurs de résolution (code 6) depuis S1.
+- **Deux contrôles protégés** : `brvm.chainsolutions.fr` et `stablecoin.chainsolutions.fr` HTTP 200 depuis S1.
+- **Effet sur autorisation** : **AUCUN** ; les six chemins demeurent `HOLD_NO_DELETION`.
+- **NEXT_ACTION inchangée** : inventaire S2 par cible, dépendances et backup/restore, puis admission d'un lot exact.

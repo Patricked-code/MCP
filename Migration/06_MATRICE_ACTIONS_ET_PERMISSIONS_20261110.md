@@ -65,3 +65,7 @@ La correction souhaitable est **un workflow de nettoyage gouverné par chemin ex
 2. Comprendre `bvmac_app unhealthy` sans le redémarrer ni purger ses données.
 3. Compléter la taille, le contenu et les dépendances des six cibles historiques (outils de diagnostic **read-only** à ajouter si absents).
 4. Valider explicitement un lot de remédiation avec rollback et outils à scope strict.
+
+## G. Vérification externe ponctuelle du 10 novembre
+
+Les six domaines candidats ont échoué au DNS depuis S1 (`curl_domain` code 6). Les domaines protégés de contrôle `brvm.chainsolutions.fr` et `stablecoin.chainsolutions.fr` ont répondu **HTTP 200**. Il s'agit uniquement de l'accessibilité depuis S1 à cet instant : le **gate de nettoyage reste bloqué** jusqu'à inventaire des usages Plesk/internes et des sauvegardes.
