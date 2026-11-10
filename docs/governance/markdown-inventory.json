@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 231,
+  "trackedCount": 234,
   "categories": {
     "canonical": 7,
     "documentation": 80,
@@ -9,7 +9,7 @@
     "engineering-spec": 10,
     "history": 1,
     "memory": 61,
-    "migration-history": 7,
+    "migration-history": 10,
     "root-documentation": 50,
     "runtime-mirror-tracked": 7
   },
@@ -828,6 +828,18 @@
     },
     {
       "path": "Migration/04_GITHUB_PUBLICATION_LOG.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/05_AUDIT_READONLY_S1_S2_20261110.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/06_MATRICE_ACTIONS_ET_PERMISSIONS_20261110.md",
+      "category": "migration-history"
+    },
+    {
+      "path": "Migration/07_POINT_DE_REPRISE_ET_PROCHAINES_ACTIONS_20261110.md",
       "category": "migration-history"
     },
     {
