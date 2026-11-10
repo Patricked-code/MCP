@@ -60,6 +60,7 @@ test('malformed, duplicated or failed observations fail closed', () => {
     [observation({ cache_bytes: '' }), 0],
     [observation({ any_symlink: 'maybe' }), 0],
     [observation(), 1],
+    [observation({ cache_bytes: '123456' }), 27],
     [observation().replace('cache_real=', 'cache_path='), 0],
     [observation() + '...[sortie plafonnée par le MCP]', 0]
   ] as const) {
@@ -72,5 +73,7 @@ test('malformed, duplicated or failed observations fail closed', () => {
 test('fixed probe has no write, purge, restart or arbitrary path input', () => {
   assert.ok(FUNDS_CACHE_PREFLIGHT_COMMAND.includes("BASE='/var/www/vhosts/chainsolutions.fr'"));
   assert.ok(FUNDS_CACHE_PREFLIGHT_COMMAND.includes('du -sB1'));
+  assert.ok(FUNDS_CACHE_PREFLIGHT_COMMAND.includes('if DU_OUTPUT="$(du -sB1 -- "$CACHE" 2>/dev/null)"; then'));
+  assert.ok(FUNDS_CACHE_PREFLIGHT_COMMAND.includes('exit 27'));
   assert.ok(!/\brm\b|\bmv\b|\btruncate\b|\bsystemctl\b|\btee\b/.test(FUNDS_CACHE_PREFLIGHT_COMMAND));
 });
