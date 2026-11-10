@@ -25,7 +25,7 @@ const S2_BACKUP_REVIEW = [
   'api-mutualfunds.chainsolutions.fr'
 ] as const;
 
-const DOMAIN_NAME = /^[a-z0-9-]+(?:\\.[a-z0-9-]+)+$/;
+const DOMAIN_NAME = /^[a-z0-9-]+(?:\.[a-z0-9-]+)+$/;
 const REQUIRED_GATES = [
   'LIVE_EXACT_PATH_AND_PLESK_MAPPING',
   'DEPENDENCY_AND_RUNNING_SERVICE_AUDIT',
@@ -121,7 +121,7 @@ async function cleanupPlan(serverId: ServerId) {
     }
     return asText(JSON.stringify(buildServerCleanupPlan(
       serverId,
-      inventory.stdout.split(/\\r?\\n/),
+      inventory.stdout.split(/\r?\n/),
       disk.stdout.trim()
     ), null, 2));
   } catch {
