@@ -71,8 +71,12 @@ export function parseFundsCachePreflight(stdout: string, code: number | null): F
       return blocked('UNVERIFIED', ['INVALID_BOOLEAN_OBSERVATION']);
     }
   }
-  const bytes = Number(values.get('cache_bytes'));
-  if (!Number.isSafeInteger(bytes) || bytes < 0) {
+  const sizeField = values.get('cache_bytes') ?? '';
+  if (!/^(0|[1-9][0-9]*)$/.test(sizeField)) {
+    return blocked('UNVERIFIED', ['INVALID_SIZE_OBSERVATION']);
+  }
+  const bytes = Number(sizeField);
+  if (!Number.isSafeInteger(bytes)) {
     return blocked('UNVERIFIED', ['INVALID_SIZE_OBSERVATION']);
   }
   const manifest = values.get('manifest_present') === 'true';
