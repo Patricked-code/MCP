@@ -134,7 +134,11 @@ printf 'app_present=%s\n' "$APP_PRESENT"
 printf 'cache_present=%s\n' "$CACHE_PRESENT"
 printf 'any_symlink=%s\n' "$SYMLINK"
 if test "$SYMLINK" = false && test "$CACHE_PRESENT" = true; then
-  printf 'cache_bytes=%s\n' "$(du -sB1 -- "$CACHE" | cut -f1)"
+  if DU_OUTPUT="$(du -sB1 -- "$CACHE" 2>/dev/null)"; then
+    printf 'cache_bytes=%s\n' "${DU_OUTPUT%%[!0-9]*}"
+  else
+    exit 27
+  fi
 else
   printf 'cache_bytes=0\n'
 fi
