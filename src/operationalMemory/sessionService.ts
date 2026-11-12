@@ -36,6 +36,8 @@ export type RequestIdentity = {
   principalId: string | null;
   clientId: string | null;
   assurance: 'oauth_subject' | 'shared_credential' | 'declared_only';
+  oauthAttemptRef?: string;
+  oauthGrantId?: string;
 };
 
 export type SessionRequest = {

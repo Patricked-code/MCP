@@ -5,6 +5,11 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { env } from './config/env.js';
+import {
+  resolveVerifiedOAuthWebSubject,
+  clearC26OAuthCookie,
+  issueC26OAuthCookieFromLogin
+} from './oauthC26WebIdentity.js';
 import { requireBearerToken } from './auth.js';
 import {
   isSameOriginSubmission,
@@ -181,6 +186,18 @@ function isWebAuthenticated(req: express.Request): boolean {
   }
 
   return isValidWebSession(parseCookies(req.header('cookie'))[WEB_SESSION_COOKIE]);
+}
+
+/**
+ * C26 cookie is scoped to /oauth and is never accepted by requireWebLogin,
+ * dashboard, git, Plesk, or the historical MCP Bearer middleware.
+ */
+function oauthAuthenticatedSubject(req: express.Request): string | null {
+  return resolveVerifiedOAuthWebSubject(isWebAuthenticated(req), req.header('cookie'));
+}
+
+function isOAuthWebAuthenticated(req: express.Request): boolean {
+  return oauthAuthenticatedSubject(req) !== null;
 }
 
 function requireWebLogin(req: express.Request, res: express.Response, next: express.NextFunction): void {
@@ -551,7 +568,8 @@ export async function startHttpServer(): Promise<void> {
   app.use(express.urlencoded({ extended: false, limit: '64kb' }));
 
   registerOauthRoutes(app, {
-    isAuthenticated: isWebAuthenticated
+    isAuthenticated: isOAuthWebAuthenticated,
+    authenticatedSubject: oauthAuthenticatedSubject
   });
 
   // F.2 (TB-W3-F-03): project runtime provisioning under the E3 consent, behind the web login.
@@ -864,17 +882,32 @@ export async function startHttpServer(): Promise<void> {
     const token = typeof req.body.token === 'string' ? req.body.token : '';
     const next = safeWebReturnPath(req.body.next);
 
-    if (!tokenMatches(token)) {
-      res.status(401).type('html').send(renderLoginPage('Token MCP invalide.', next));
+    // The existing admin login stays byte-for-byte compatible. The optional
+    // C26 credential is separate and creates an OAuth-path-only cookie.
+    if (tokenMatches(token)) {
+      res.setHeader('Set-Cookie', createWebSessionCookie());
+      res.redirect(next);
+      return;
+    }
+    const c26Cookie = issueC26OAuthCookieFromLogin(token, {
+      maxAgeSeconds: Math.min(WEB_SESSION_MAX_AGE_SECONDS, 86_400),
+      secure: secureCookieAttribute().includes('Secure')
+    });
+    if (c26Cookie !== null) {
+      if (!next.startsWith('/oauth/authorize')) {
+        res.status(403).type('html').send(renderLoginPage('Ce compte est réservé à OAuth.', '/oauth/authorize'));
+        return;
+      }
+      res.setHeader('Set-Cookie', c26Cookie);
+      res.redirect(next);
       return;
     }
 
-    res.setHeader('Set-Cookie', createWebSessionCookie());
-    res.redirect(next);
+    res.status(401).type('html').send(renderLoginPage('Token MCP invalide.', next));
   });
 
   app.get('/logout', (_req, res) => {
-    res.setHeader('Set-Cookie', clearWebSessionCookie());
+    res.setHeader('Set-Cookie', [clearWebSessionCookie(), clearC26OAuthCookie(secureCookieAttribute().includes('Secure'))]);
     res.redirect('/login');
   });
 

@@ -45,7 +45,12 @@ test('history guide retains source anchors for the historical chain, and gaps ca
     assert.ok(guide.toLowerCase().includes(phrase.toLowerCase()), 'missing coverage boundary: ' + phrase);
   }
   const program = JSON.parse(await read('docs/governance/program-backlog-convergence.json'));
-  assert.equal(program.taskBlueprints.length, 94);
+  // 94 is the historical October GWB04 snapshot, not a perpetual ceiling:
+  // OAuth A3.3 extends the SAME versioned program with one blocked blueprint.
+  assert.equal(program.taskBlueprints.length, 95);
+  assert.ok(program.taskBlueprints.some((entry: any) =>
+    entry.id === 'TB-W3-A3-03' && entry.readiness?.state === 'BLOCKED'
+  ));
   const history = JSON.parse(await read('docs/governance/architecture-chronology-issue65-20261009.json'));
   assert.equal(history.kind, 'NON_AUTHORITATIVE_ARCHITECTURE_CHRONOLOGY_AND_HANDOFF_INDEX');
 });

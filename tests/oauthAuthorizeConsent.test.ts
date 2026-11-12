@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict';
 import { createHash, randomBytes } from 'node:crypto';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import { once } from 'node:events';
 import type { AddressInfo } from 'node:net';
-import test from 'node:test';
+import test, { after } from 'node:test';
 import express from 'express';
 
 process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-value-20260805-abcdef';
@@ -10,6 +13,12 @@ process.env.S1_HOST ??= '127.0.0.1';
 process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
 process.env.S2_HOST ??= '127.0.0.1';
 process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
+
+// This suite must not write under /app/data on the CI runner. Each test file
+// uses one isolated store and cleans it up after all HTTP integration tests.
+const codeStoreDir = await mkdtemp(path.join(tmpdir(), 'mcp-oauth-http-codes-'));
+process.env.MCP_OAUTH_CODE_STORE_PATH = path.join(codeStoreDir, 'authorization-codes.json');
+after(async () => { await rm(codeStoreDir, { recursive: true, force: true }); });
 
 const { registerOauthRoutes, inspectOauthAccessToken, oauthIssuer, consentOriginRejectionReason, getOauthConsentProvenanceEvidence } = await import('../src/oauth.js');
 
@@ -41,11 +50,15 @@ function authorizeQuery(challenge: string, overrides: Record<string, string> = {
 
 async function withOauthServer(
   authenticated: boolean,
-  fn: (baseUrl: string) => Promise<void>
+  fn: (baseUrl: string) => Promise<void>,
+  authenticatedSubject?: string | null
 ): Promise<void> {
   const app = express();
   app.use(express.urlencoded({ extended: false, limit: '64kb' }));
-  registerOauthRoutes(app, { isAuthenticated: () => authenticated });
+  registerOauthRoutes(app, {
+    isAuthenticated: () => authenticated,
+    ...(authenticatedSubject !== undefined ? { authenticatedSubject: () => authenticatedSubject } : {})
+  });
   const server = app.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const address = server.address() as AddressInfo;
@@ -147,6 +160,94 @@ test('an approved consent issues a code for the original request and the token e
     assert.equal(body.scope, 'mcp:read');
     assert.equal(inspectOauthAccessToken(body.access_token, 'mcp:read')?.subject, 'wealthtech-mcp-admin');
   });
+});
+
+test('invalid PKCE burns the code permanently even when the next request is valid', async () => {
+  const { challenge, verifier } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const approved = await submitConsent(baseUrl, fields, 'approve');
+    assert.equal(approved.status, 302);
+    const code = new URL(approved.headers.get('location') ?? 'about:blank').searchParams.get('code');
+    assert.ok(code);
+    const exchange = (codeVerifier: string) => fetch(`${baseUrl}/oauth/token`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code, redirect_uri: REDIRECT_URI,
+        client_id: 'https://client.example/oauth-client',
+        code_verifier: codeVerifier, resource: oauthIssuer()
+      })
+    });
+    const failedPkce = await exchange('wrong-code-verifier');
+    assert.equal(failedPkce.status, 400);
+    assert.equal((await failedPkce.json()).error, 'invalid_grant');
+    const validButReplayed = await exchange(verifier);
+    assert.equal(validButReplayed.status, 400, 'failed PKCE must have burned the code');
+    assert.equal((await validButReplayed.json()).error, 'invalid_grant');
+  });
+});
+
+test('client mismatch burns the code before a second legitimate exchange', async () => {
+  const { challenge, verifier } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const approved = await submitConsent(baseUrl, fields, 'approve');
+    assert.equal(approved.status, 302);
+    const code = new URL(approved.headers.get('location') ?? 'about:blank').searchParams.get('code');
+    assert.ok(code);
+    const exchange = (clientId: string) => fetch(`${baseUrl}/oauth/token`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI,
+        client_id: clientId, code_verifier: verifier, resource: oauthIssuer()
+      })
+    });
+    const wrongClient = await exchange('attacker-client');
+    assert.equal(wrongClient.status, 400);
+    assert.equal((await wrongClient.json()).error, 'invalid_grant');
+    const retry = await exchange('https://client.example/oauth-client');
+    assert.equal(retry.status, 400);
+    assert.equal((await retry.json()).error, 'invalid_grant');
+  });
+});
+
+test('dedicated C26 OAuth subject comes only from verified server-side authentication', async () => {
+  const { verifier, challenge } = pkce();
+  await withOauthServer(true, async (baseUrl) => {
+    const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+    const approved = await submitConsent(baseUrl, fields, 'approve');
+    assert.equal(approved.status, 302);
+    const code = new URL(approved.headers.get('location') ?? 'about:blank').searchParams.get('code');
+    assert.ok(code);
+    const token = await fetch(`${baseUrl}/oauth/token`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI,
+        client_id: 'https://client.example/oauth-client',
+        code_verifier: verifier, resource: oauthIssuer()
+      })
+    });
+    assert.equal(token.status, 200);
+    const body = await token.json() as { access_token: string };
+    assert.equal(inspectOauthAccessToken(body.access_token, 'mcp:read')?.subject, 'wealthtech-mcp-c26-agent');
+    assert.notEqual(inspectOauthAccessToken(body.access_token, 'mcp:read')?.subject, 'wealthtech-mcp-admin');
+  }, 'wealthtech-mcp-c26-agent');
+});
+
+test('unrecognized or absent authenticated identity cannot issue any OAuth authorization code', async () => {
+  const { challenge } = pkce();
+  for (const untrustedSubject of [null, 'attacker-chosen-subject']) {
+    await withOauthServer(true, async (baseUrl) => {
+      const { fields } = await consentForm(baseUrl, authorizeQuery(challenge));
+      const response = await submitConsent(baseUrl, fields, 'approve');
+      assert.equal(response.status, 401);
+      assert.equal(response.headers.get('location'), null);
+    }, untrustedSubject);
+  }
 });
 
 test('a denied consent redirects with access_denied and never issues a code', async () => {

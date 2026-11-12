@@ -348,3 +348,64 @@ test('des transports OAuth successifs s attachent sans invalider la révision op
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('C26 OAuth principal never auto-attaches to an active Regulatory owner session', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'mcp-c26-regulatory-separation-'));
+  try {
+    const store = createAtomicJsonStore({
+      filePath: join(directory, 'sessions.json'),
+      schema: SessionStoreDocumentSchema,
+      empty: createEmptySessionStoreDocument
+    });
+    const bindings = createTransportBindings();
+    const service = createGovernedSessionService({
+      store,
+      bindings,
+      idleTtlSeconds: 86_400,
+      resumeGraceSeconds: 604_800,
+      now: () => new Date('2026-11-09T21:45:00.000Z')
+    });
+    const regulatory: RequestIdentity = {
+      principalId: 'oauth:wealthtech-mcp-admin',
+      clientId: 'chatgpt-regulatory',
+      assurance: 'oauth_subject'
+    };
+    const c26: RequestIdentity = {
+      principalId: 'oauth:wealthtech-mcp-c26-agent',
+      clientId: 'chatgpt-c26',
+      assurance: 'oauth_subject'
+    };
+    const existing = await service.openSession({
+      ...OPEN_INPUT,
+      taskScope: 'REGULATORY_EXISTING',
+      workBranch: 'mcp/regulatory-existing',
+      agentIdentity: 'ChatGPT Regulatory integration operator'
+    }, {
+      transportSessionId: 'regulatory-existing-transport',
+      identity: regulatory
+    });
+    // openSession starts OPEN. First activate the owner through its authentic
+    // original transport so the test mirrors the ACTIVE Regulatory session.
+    const activeRegulatory = await service.heartbeat({
+      governedSessionId: existing.session.governedSessionId,
+      expectedSessionRevision: existing.session.sessionRevision
+    }, {
+      transportSessionId: 'regulatory-existing-transport',
+      identity: regulatory
+    });
+    assert.equal(activeRegulatory.status, 'ACTIVE');
+    const attempted = await service.autoResumeCompatibleSession(
+      { repository: 'Patricked-code/MCP' },
+      { transportSessionId: 'c26-independent-transport', identity: c26 }
+    );
+    assert.equal(attempted.status, 'NONE', 'C26 cannot inherit Regulatory ownership');
+    assert.equal(bindings.lookup('c26-independent-transport'), null);
+    assert.equal(bindings.lookup('regulatory-existing-transport'), existing.session.governedSessionId);
+    const document = await store.read();
+    assert.equal(document.sessions.length, 1, 'no second phantom session and no owner reassignment');
+    assert.equal(document.sessions[0]?.ownerPrincipalId, regulatory.principalId);
+    assert.equal(document.sessions[0]?.status, 'ACTIVE');
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

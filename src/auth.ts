@@ -42,7 +42,9 @@ export function requireBearerToken(req: Request, res: Response, next: NextFuncti
       expiresAt: oauthIdentity.expiresAt,
       extra: {
         governedPrincipalId: `oauth:${oauthIdentity.subject}`,
-        identityAssurance: 'oauth_subject'
+        identityAssurance: 'oauth_subject',
+        ...(oauthIdentity.oauthAttemptRef ? { oauthAttemptRef: oauthIdentity.oauthAttemptRef } : {}),
+        ...(oauthIdentity.oauthGrantId ? { oauthGrantId: oauthIdentity.oauthGrantId } : {})
       }
     };
     next();

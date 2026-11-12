@@ -342,7 +342,8 @@
         "GWB-07"
       ],
       "blueprints": [
-        "TB-W3-A3-02"
+        "TB-W3-A3-02",
+        "TB-W3-A3-03"
       ],
       "scope": "connection:oauth-token-continuity",
       "goal": "Réutiliser le candidat PR #207 sans écraser le code de consentement de main",
@@ -633,7 +634,7 @@
   "planningSnapshot": {
     "snapshotType": "READ_ONLY_COPY_OF_PROGRAM_BACKLOG_ORDER_NOT_RUNTIME_QUEUE",
     "observedMainSha": "92f4e51c1e7e3489b5d6e5c78369dcf0249e8703",
-    "total": 94,
+    "total": 95,
     "counts": {
       "DONE": 36,
       "READY": 18,
@@ -831,6 +832,19 @@
       },
       {
         "programOrdinal": 14,
+        "id": "TB-W3-A3-03",
+        "title": "Add durable OAuth grant and refresh-token rotation",
+        "planningStateAsObserved": "BLOCKED",
+        "dependsOn": [
+          "TB-W3-A3-02"
+        ],
+        "collisionDomains": [
+          "connection:oauth-durable-authorization"
+        ],
+        "integrationSlot": "connection.oauth-attempt-correlation"
+      },
+      {
+        "programOrdinal": 15,
         "id": "TB-W3-B3-01",
         "title": "Reconcile remaining MCP-only target consumers",
         "planningStateAsObserved": "DONE",
@@ -845,7 +859,7 @@
         "integrationSlot": "context.multi-repository"
       },
       {
-        "programOrdinal": 15,
+        "programOrdinal": 16,
         "id": "TB-W3-B3-02",
         "title": "Operator-configured server target project and TargetScope propagation",
         "planningStateAsObserved": "DONE",
@@ -858,7 +872,7 @@
         "integrationSlot": "context.multi-repository"
       },
       {
-        "programOrdinal": 16,
+        "programOrdinal": 17,
         "id": "TB-W3-DISPATCH-01",
         "title": "Blueprint-bound governed materialization gate",
         "planningStateAsObserved": "DONE",
@@ -871,7 +885,7 @@
         "integrationSlot": "orchestration.autonomous-dispatch-loop"
       },
       {
-        "programOrdinal": 17,
+        "programOrdinal": 18,
         "id": "TB-W3-DISPATCH-02",
         "title": "Resume-owned-first governed claim",
         "planningStateAsObserved": "DONE",
@@ -884,7 +898,7 @@
         "integrationSlot": "orchestration.autonomous-dispatch-loop"
       },
       {
-        "programOrdinal": 18,
+        "programOrdinal": 19,
         "id": "TB-W3-DISPATCH-03",
         "title": "Connected-agent next-work projection and terminal recompute",
         "planningStateAsObserved": "DONE",
@@ -897,7 +911,7 @@
         "integrationSlot": "orchestration.autonomous-dispatch-loop"
       },
       {
-        "programOrdinal": 19,
+        "programOrdinal": 20,
         "id": "TB-W3-C1-01",
         "title": "Refresh GitRegistry V2 verification evidence",
         "planningStateAsObserved": "DONE",
@@ -912,7 +926,7 @@
         "integrationSlot": "project.gitregistry-verification"
       },
       {
-        "programOrdinal": 20,
+        "programOrdinal": 21,
         "id": "TB-W3-C3-01",
         "title": "Integrate Server Resolution",
         "planningStateAsObserved": "DONE",
@@ -926,7 +940,7 @@
         "integrationSlot": "project.server-runtime-domain-resolution"
       },
       {
-        "programOrdinal": 21,
+        "programOrdinal": 22,
         "id": "TB-W3-C4-01",
         "title": "Integrate Runtime/Container/Proxy Resolution",
         "planningStateAsObserved": "DONE",
@@ -939,7 +953,7 @@
         "integrationSlot": "project.server-runtime-domain-resolution"
       },
       {
-        "programOrdinal": 22,
+        "programOrdinal": 23,
         "id": "TB-W3-C5-01",
         "title": "Integrate Domain Resolution",
         "planningStateAsObserved": "DONE",
@@ -952,7 +966,7 @@
         "integrationSlot": "project.server-runtime-domain-resolution"
       },
       {
-        "programOrdinal": 23,
+        "programOrdinal": 24,
         "id": "TB-W3-C345-02",
         "title": "Project reality acceptance",
         "planningStateAsObserved": "DONE",
@@ -966,7 +980,7 @@
         "integrationSlot": "project.server-runtime-domain-resolution"
       },
       {
-        "programOrdinal": 24,
+        "programOrdinal": 25,
         "id": "TB-W3-D1-01",
         "title": "Existing Governance Inheritance",
         "planningStateAsObserved": "DONE",
@@ -979,7 +993,7 @@
         "integrationSlot": "governance.inheritance"
       },
       {
-        "programOrdinal": 25,
+        "programOrdinal": 26,
         "id": "TB-W3-D2-01",
         "title": "Effective Capabilities",
         "planningStateAsObserved": "DONE",
@@ -992,7 +1006,7 @@
         "integrationSlot": "governance.effective-capabilities"
       },
       {
-        "programOrdinal": 26,
+        "programOrdinal": 27,
         "id": "TB-W3-D3-01",
         "title": "Bootstrap Receipt Enrichment",
         "planningStateAsObserved": "DONE",
@@ -1005,7 +1019,7 @@
         "integrationSlot": "bootstrap.receipt-enrichment"
       },
       {
-        "programOrdinal": 27,
+        "programOrdinal": 28,
         "id": "TB-W3-E1-01",
         "title": "Missing-context Detection",
         "planningStateAsObserved": "DONE",
@@ -1018,7 +1032,7 @@
         "integrationSlot": "context.guided-completion"
       },
       {
-        "programOrdinal": 28,
+        "programOrdinal": 29,
         "id": "TB-W3-E2-01",
         "title": "Context Completion Wizard",
         "planningStateAsObserved": "DONE",
@@ -1031,7 +1045,7 @@
         "integrationSlot": "context.guided-completion"
       },
       {
-        "programOrdinal": 29,
+        "programOrdinal": 30,
         "id": "TB-W3-E3-01",
         "title": "Consent and Validation",
         "planningStateAsObserved": "DONE",
@@ -1044,7 +1058,7 @@
         "integrationSlot": "context.guided-completion"
       },
       {
-        "programOrdinal": 30,
+        "programOrdinal": 31,
         "id": "TB-W3-F-01",
         "title": "Provisioning capability decomposition",
         "planningStateAsObserved": "DONE",
@@ -1058,7 +1072,7 @@
         "integrationSlot": "provisioning.governed"
       },
       {
-        "programOrdinal": 31,
+        "programOrdinal": 32,
         "id": "TB-W3-F-02",
         "title": "Repository provisioning",
         "planningStateAsObserved": "BLOCKED",
@@ -1072,7 +1086,7 @@
         "integrationSlot": "provisioning.governed"
       },
       {
-        "programOrdinal": 32,
+        "programOrdinal": 33,
         "id": "TB-W3-F-03",
         "title": "Project/runtime provisioning",
         "planningStateAsObserved": "DONE",
@@ -1085,7 +1099,7 @@
         "integrationSlot": "provisioning.governed"
       },
       {
-        "programOrdinal": 33,
+        "programOrdinal": 34,
         "id": "TB-W3-F-04",
         "title": "Domain/binding provisioning",
         "planningStateAsObserved": "READY",
@@ -1098,7 +1112,7 @@
         "integrationSlot": "provisioning.governed"
       },
       {
-        "programOrdinal": 34,
+        "programOrdinal": 35,
         "id": "TB-W3-F-05",
         "title": "Provisioning acceptance and rollback",
         "planningStateAsObserved": "BLOCKED",
@@ -1113,7 +1127,7 @@
         "integrationSlot": "provisioning.governed"
       },
       {
-        "programOrdinal": 35,
+        "programOrdinal": 36,
         "id": "TB-W3-PRW-01",
         "title": "Exact-head request-review",
         "planningStateAsObserved": "READY",
@@ -1126,7 +1140,7 @@
         "integrationSlot": "github.pr-write.extensions"
       },
       {
-        "programOrdinal": 36,
+        "programOrdinal": 37,
         "id": "TB-W3-PRW-02",
         "title": "Reduced PR metadata update",
         "planningStateAsObserved": "READY",
@@ -1139,7 +1153,7 @@
         "integrationSlot": "github.pr-write.extensions"
       },
       {
-        "programOrdinal": 37,
+        "programOrdinal": 38,
         "id": "TB-W3-ADMIN-01",
         "title": "Governed private repository creation",
         "planningStateAsObserved": "READY",
@@ -1154,7 +1168,7 @@
         "integrationSlot": "github.admin.create-repository"
       },
       {
-        "programOrdinal": 38,
+        "programOrdinal": 39,
         "id": "TB-W4-G1-01",
         "title": "Client Presence",
         "planningStateAsObserved": "DONE",
@@ -1167,7 +1181,7 @@
         "integrationSlot": "presence.client-two-clock"
       },
       {
-        "programOrdinal": 39,
+        "programOrdinal": 40,
         "id": "TB-W4-G2-01",
         "title": "Two-clock Presence",
         "planningStateAsObserved": "DONE",
@@ -1180,7 +1194,7 @@
         "integrationSlot": "presence.client-two-clock"
       },
       {
-        "programOrdinal": 40,
+        "programOrdinal": 41,
         "id": "TB-W4-G3-01",
         "title": "Tool Surface Attestation residual",
         "planningStateAsObserved": "DONE",
@@ -1193,7 +1207,7 @@
         "integrationSlot": "attestation.tool-surface"
       },
       {
-        "programOrdinal": 41,
+        "programOrdinal": 42,
         "id": "TB-W4-H-01",
         "title": "Trace evidence inventory",
         "planningStateAsObserved": "READY",
@@ -1206,7 +1220,7 @@
         "integrationSlot": "observability.end-to-end-tracing"
       },
       {
-        "programOrdinal": 42,
+        "programOrdinal": 43,
         "id": "TB-W4-H-02",
         "title": "Bounded trace context",
         "planningStateAsObserved": "BLOCKED",
@@ -1219,7 +1233,7 @@
         "integrationSlot": "observability.end-to-end-tracing"
       },
       {
-        "programOrdinal": 43,
+        "programOrdinal": 44,
         "id": "TB-W4-H-03",
         "title": "Event Journal trace integration",
         "planningStateAsObserved": "BLOCKED",
@@ -1232,7 +1246,7 @@
         "integrationSlot": "observability.end-to-end-tracing"
       },
       {
-        "programOrdinal": 44,
+        "programOrdinal": 45,
         "id": "TB-W4-I1-01",
         "title": "Synthetic Monitor",
         "planningStateAsObserved": "BLOCKED",
@@ -1247,7 +1261,7 @@
         "integrationSlot": "observability.synthetic-monitoring"
       },
       {
-        "programOrdinal": 45,
+        "programOrdinal": 46,
         "id": "TB-W4-I2-01",
         "title": "Connection-chain Dashboard",
         "planningStateAsObserved": "BLOCKED",
@@ -1260,7 +1274,7 @@
         "integrationSlot": "observability.synthetic-monitoring"
       },
       {
-        "programOrdinal": 46,
+        "programOrdinal": 47,
         "id": "TB-W4-I3-01",
         "title": "Layer-specific Alerts",
         "planningStateAsObserved": "BLOCKED",
@@ -1273,7 +1287,7 @@
         "integrationSlot": "observability.synthetic-monitoring"
       },
       {
-        "programOrdinal": 47,
+        "programOrdinal": 48,
         "id": "TB-W4-J1-01",
         "title": "Claude certification",
         "planningStateAsObserved": "BLOCKED",
@@ -1287,7 +1301,7 @@
         "integrationSlot": "certification.clients"
       },
       {
-        "programOrdinal": 48,
+        "programOrdinal": 49,
         "id": "TB-W4-J2-01",
         "title": "ChatGPT certification",
         "planningStateAsObserved": "BLOCKED",
@@ -1301,7 +1315,7 @@
         "integrationSlot": "certification.clients"
       },
       {
-        "programOrdinal": 49,
+        "programOrdinal": 50,
         "id": "TB-W4-K-01",
         "title": "Cockpit shell, design system, security baseline and read-only Command Center",
         "planningStateAsObserved": "READY",
@@ -1315,7 +1329,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 50,
+        "programOrdinal": 51,
         "id": "TB-W4-K-02",
         "title": "Program, Sessions, Tasks/nextWork and Claims & Locks explorers with global search (read-only)",
         "planningStateAsObserved": "BLOCKED",
@@ -1328,7 +1342,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 51,
+        "programOrdinal": 52,
         "id": "TB-W4-K-03",
         "title": "Agents & Clients and Tool Catalogue/Inspector (read-only)",
         "planningStateAsObserved": "BLOCKED",
@@ -1341,7 +1355,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 52,
+        "programOrdinal": 53,
         "id": "TB-W4-K-04",
         "title": "Pull Request and CI/Checks operations center (read-only)",
         "planningStateAsObserved": "BLOCKED",
@@ -1354,7 +1368,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 53,
+        "programOrdinal": 54,
         "id": "TB-W4-K-05",
         "title": "Project Reality Explorer and Repository/Git workspace (read-only)",
         "planningStateAsObserved": "BLOCKED",
@@ -1369,7 +1383,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 54,
+        "programOrdinal": 55,
         "id": "TB-W4-K-06",
         "title": "Deployments, runtime and Evidence/Receipts center (read-only)",
         "planningStateAsObserved": "BLOCKED",
@@ -1383,7 +1397,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 55,
+        "programOrdinal": 56,
         "id": "TB-W4-K-07",
         "title": "Identity/OAuth, Capability Reality matrix, Governance center and System configuration (read-only)",
         "planningStateAsObserved": "BLOCKED",
@@ -1399,7 +1413,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 56,
+        "programOrdinal": 57,
         "id": "TB-W4-K-08",
         "title": "Governed action pipeline and PR/CI actions",
         "planningStateAsObserved": "BLOCKED",
@@ -1417,7 +1431,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 57,
+        "programOrdinal": 58,
         "id": "TB-W4-K-09",
         "title": "GitHub control plane, Git and deployment/runtime governed actions",
         "planningStateAsObserved": "BLOCKED",
@@ -1433,7 +1447,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 58,
+        "programOrdinal": 59,
         "id": "TB-W4-K-10",
         "title": "Provisioning Center",
         "planningStateAsObserved": "BLOCKED",
@@ -1448,7 +1462,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 59,
+        "programOrdinal": 60,
         "id": "TB-W4-K-11",
         "title": "Events/Tracing, Monitoring, Alerts/Incidents and Audit/Drift explorers",
         "planningStateAsObserved": "BLOCKED",
@@ -1464,7 +1478,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 60,
+        "programOrdinal": 61,
         "id": "TB-W4-K-12",
         "title": "Cockpit E2E acceptance, browser certification and operational documentation",
         "planningStateAsObserved": "BLOCKED",
@@ -1486,7 +1500,7 @@
         "integrationSlot": "cockpit.super-admin"
       },
       {
-        "programOrdinal": 61,
+        "programOrdinal": 62,
         "id": "TB-M-01",
         "title": "GitHub Actions Node 24 maintenance",
         "planningStateAsObserved": "DEFERRED",
@@ -1497,7 +1511,7 @@
         "integrationSlot": "maintenance.github-actions-node24"
       },
       {
-        "programOrdinal": 62,
+        "programOrdinal": 63,
         "id": "TB-COND-C1-ACTIVATE",
         "title": "GitRegistry V2 validated→active transition",
         "planningStateAsObserved": "CONDITIONAL",
@@ -1511,7 +1525,7 @@
         "integrationSlot": "project.gitregistry-verification"
       },
       {
-        "programOrdinal": 63,
+        "programOrdinal": 64,
         "id": "TB-COND-J4",
         "title": "WRITE gate shadow→enforce",
         "planningStateAsObserved": "CONDITIONAL",
@@ -1524,7 +1538,7 @@
         "integrationSlot": "governance.write-gate-enforcement"
       },
       {
-        "programOrdinal": 64,
+        "programOrdinal": 65,
         "id": "TB-COND-SSH",
         "title": "Optional read-only SSH fallback selection",
         "planningStateAsObserved": "DEFERRED",
@@ -1537,7 +1551,7 @@
         "integrationSlot": "github-first.optional-readonly-fallbacks"
       },
       {
-        "programOrdinal": 65,
+        "programOrdinal": 66,
         "id": "TB-COND-SERVER-WRITE",
         "title": "Additional bounded server WRITE transport",
         "planningStateAsObserved": "DEFERRED",
@@ -1550,7 +1564,7 @@
         "integrationSlot": "github-first.server-write-extensions"
       },
       {
-        "programOrdinal": 66,
+        "programOrdinal": 67,
         "id": "TB-COND-GH-DELETE",
         "title": "Destructive GitHub operations",
         "planningStateAsObserved": "DEFERRED",
@@ -1563,7 +1577,7 @@
         "integrationSlot": "github.destructive-writes"
       },
       {
-        "programOrdinal": 67,
+        "programOrdinal": 68,
         "id": "TB-COND-STABLECOIN-DEPLOY",
         "title": "Stablecoin application-changing deploy",
         "planningStateAsObserved": "CONDITIONAL",
@@ -1574,7 +1588,7 @@
         "integrationSlot": "deployment.stablecoin-application"
       },
       {
-        "programOrdinal": 68,
+        "programOrdinal": 69,
         "id": "TB-COND-OD08",
         "title": "Distributed Operational Memory concurrency",
         "planningStateAsObserved": "DEFERRED",
@@ -1587,7 +1601,7 @@
         "integrationSlot": "operational-memory.distributed-concurrency"
       },
       {
-        "programOrdinal": 69,
+        "programOrdinal": 70,
         "id": "TB-COND-OD09",
         "title": "Contract/Graph incompatible schema migration",
         "planningStateAsObserved": "DEFERRED",
@@ -1600,7 +1614,7 @@
         "integrationSlot": "governed-workflow.schema-migration"
       },
       {
-        "programOrdinal": 70,
+        "programOrdinal": 71,
         "id": "TB-W3-GGCC-GIT-READ",
         "title": "Generic governed Git READ capability layer",
         "planningStateAsObserved": "READY",
@@ -1614,7 +1628,7 @@
         "integrationSlot": "git.capability.read"
       },
       {
-        "programOrdinal": 71,
+        "programOrdinal": 72,
         "id": "TB-W3-GGCC-GIT-SYNC",
         "title": "Governed Git SYNC capability layer",
         "planningStateAsObserved": "BLOCKED",
@@ -1628,7 +1642,7 @@
         "integrationSlot": "git.capability.sync"
       },
       {
-        "programOrdinal": 72,
+        "programOrdinal": 73,
         "id": "TB-W3-GGCC-GIT-BRANCH-COMMIT",
         "title": "Governed Git branch/commit/state capability layer",
         "planningStateAsObserved": "BLOCKED",
@@ -1642,7 +1656,7 @@
         "integrationSlot": "git.capability.branch-commit"
       },
       {
-        "programOrdinal": 73,
+        "programOrdinal": 74,
         "id": "TB-W3-GGCC-GIT-INTEGRATION-RECOVERY",
         "title": "Governed Git integration/recovery capability layer",
         "planningStateAsObserved": "BLOCKED",
@@ -1656,7 +1670,7 @@
         "integrationSlot": "git.capability.integration-recovery"
       },
       {
-        "programOrdinal": 74,
+        "programOrdinal": 75,
         "id": "TB-W3-GGCC-GIT-REMOTE-WORKTREE",
         "title": "Governed Git remote/worktree capability layer",
         "planningStateAsObserved": "BLOCKED",
@@ -1671,7 +1685,7 @@
         "integrationSlot": "git.capability.remote-worktree"
       },
       {
-        "programOrdinal": 75,
+        "programOrdinal": 76,
         "id": "TB-W3-GGCC-GH-REPO-BRANCH",
         "title": "GitHub repository/branch capability completion",
         "planningStateAsObserved": "READY",
@@ -1684,7 +1698,7 @@
         "integrationSlot": "github.control-plane.repository-branch"
       },
       {
-        "programOrdinal": 76,
+        "programOrdinal": 77,
         "id": "TB-W3-GGCC-GH-COMMIT-FILE",
         "title": "GitHub commit/file/tree capability completion",
         "planningStateAsObserved": "READY",
@@ -1698,7 +1712,7 @@
         "integrationSlot": "github.control-plane.commit-file-tree"
       },
       {
-        "programOrdinal": 77,
+        "programOrdinal": 78,
         "id": "TB-W3-GGCC-GH-PR-REVIEW",
         "title": "GitHub PR/review capability completion",
         "planningStateAsObserved": "READY",
@@ -1711,7 +1725,7 @@
         "integrationSlot": "github.pr-review"
       },
       {
-        "programOrdinal": 78,
+        "programOrdinal": 79,
         "id": "TB-W3-GGCC-GH-ACTIONS",
         "title": "GitHub Actions/checks capability completion",
         "planningStateAsObserved": "READY",
@@ -1725,7 +1739,7 @@
         "integrationSlot": "github.actions-checks"
       },
       {
-        "programOrdinal": 79,
+        "programOrdinal": 80,
         "id": "TB-W3-GGCC-GH-RULESETS",
         "title": "GitHub rulesets/protections capability completion",
         "planningStateAsObserved": "READY",
@@ -1739,7 +1753,7 @@
         "integrationSlot": "github.rulesets-protection"
       },
       {
-        "programOrdinal": 80,
+        "programOrdinal": 81,
         "id": "TB-W3-GGCC-GH-WEBHOOKS",
         "title": "GitHub webhook capability completion",
         "planningStateAsObserved": "READY",
@@ -1753,7 +1767,7 @@
         "integrationSlot": "github.webhooks"
       },
       {
-        "programOrdinal": 81,
+        "programOrdinal": 82,
         "id": "TB-W3-GGCC-GH-ENV-VARS-SECRETS",
         "title": "GitHub environments/variables/secrets capability completion",
         "planningStateAsObserved": "READY",
@@ -1767,7 +1781,7 @@
         "integrationSlot": "github.environments-variables-secrets"
       },
       {
-        "programOrdinal": 82,
+        "programOrdinal": 83,
         "id": "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
         "title": "GitHub releases/deployments capability completion",
         "planningStateAsObserved": "READY",
@@ -1781,7 +1795,7 @@
         "integrationSlot": "github.releases-deployments"
       },
       {
-        "programOrdinal": 83,
+        "programOrdinal": 84,
         "id": "TB-W3-GGCC-GH-ISSUES-PROJECTS",
         "title": "GitHub issues/projects capability completion",
         "planningStateAsObserved": "READY",
@@ -1794,7 +1808,7 @@
         "integrationSlot": "github.issues-projects"
       },
       {
-        "programOrdinal": 84,
+        "programOrdinal": 85,
         "id": "TB-W3-GGCC-GH-ORG",
         "title": "GitHub organization capability completion",
         "planningStateAsObserved": "READY",
@@ -1808,7 +1822,7 @@
         "integrationSlot": "github.organization"
       },
       {
-        "programOrdinal": 85,
+        "programOrdinal": 86,
         "id": "TB-W4-GGCC-AUDIT",
         "title": "GitHub audit/governance-state projection",
         "planningStateAsObserved": "BLOCKED",
@@ -1826,7 +1840,7 @@
         "integrationSlot": "github.audit-governance-state"
       },
       {
-        "programOrdinal": 86,
+        "programOrdinal": 87,
         "id": "TB-W4-GGCC-E2E",
         "title": "E2E autonomous Git/GitHub acceptance",
         "planningStateAsObserved": "BLOCKED",
@@ -1854,7 +1868,7 @@
         "integrationSlot": "control-plane.git-github-e2e"
       },
       {
-        "programOrdinal": 87,
+        "programOrdinal": 88,
         "id": "TB-M-GGCC-GIT-MAINTENANCE",
         "title": "Git maintenance diagnostics",
         "planningStateAsObserved": "DEFERRED",
@@ -1867,7 +1881,7 @@
         "integrationSlot": "maintenance.git-capabilities"
       },
       {
-        "programOrdinal": 88,
+        "programOrdinal": 89,
         "id": "TB-COND-GIT-HISTORY-REWRITE",
         "title": "Git history rewrite capabilities",
         "planningStateAsObserved": "CONDITIONAL",
@@ -1881,7 +1895,7 @@
         "integrationSlot": "git.capability.history-rewrite"
       },
       {
-        "programOrdinal": 89,
+        "programOrdinal": 90,
         "id": "TB-COND-GIT-DESTRUCTIVE",
         "title": "Destructive local Git lifecycle operations",
         "planningStateAsObserved": "CONDITIONAL",
@@ -1895,7 +1909,7 @@
         "integrationSlot": "git.capability.destructive"
       },
       {
-        "programOrdinal": 90,
+        "programOrdinal": 91,
         "id": "TB-W3-SSH-ACCESS-01",
         "title": "Governed repository ephemeral SSH certificate transport",
         "planningStateAsObserved": "DONE",
@@ -1913,7 +1927,7 @@
         "integrationSlot": "transport.repository-ssh"
       },
       {
-        "programOrdinal": 91,
+        "programOrdinal": 92,
         "id": "TB-W3-OAUTH-CONSENT-01",
         "title": "Explicit operator consent before OAuth code issuance",
         "planningStateAsObserved": "DONE",
@@ -1926,7 +1940,7 @@
         "integrationSlot": "connection.oauth-authorization-consent"
       },
       {
-        "programOrdinal": 92,
+        "programOrdinal": 93,
         "id": "TB-W3-OAUTH-WRITE-SCOPE-01",
         "title": "Enforce mcp:write after a token-scope inventory",
         "planningStateAsObserved": "BLOCKED",
@@ -1939,7 +1953,7 @@
         "integrationSlot": "connection.oauth-write-scope-enforcement"
       },
       {
-        "programOrdinal": 93,
+        "programOrdinal": 94,
         "id": "TB-W4-MCP-FINAL-ACCEPTANCE",
         "title": "Global MCP terminal acceptance (GLOBAL_MCP_COMPLETE)",
         "planningStateAsObserved": "BLOCKED",

@@ -55,7 +55,7 @@ Le serveur conserve l'authentification historique :
 Authorization: Bearer <MCP_AUTH_TOKEN>
 ```
 
-Pour être découvrable par ChatGPT Apps SDK sans exposer `MCP_AUTH_TOKEN`, le serveur expose aussi une couche OAuth minimale compatible Authorization Code + PKCE :
+Pour être découvrable par les clients MCP sans exposer `MCP_AUTH_TOKEN`, le serveur expose une couche OAuth compatible Authorization Code + PKCE. Les clients compatibles peuvent demander `offline_access` pour recevoir en plus un refresh token rotatif :
 
 ```text
 GET  /.well-known/oauth-protected-resource
@@ -69,11 +69,38 @@ Principes de sécurité :
 
 - `/mcp` reste protégé ;
 - l'ancien `MCP_AUTH_TOKEN` reste accepté pour les tests administrateur et les scripts existants ;
-- ChatGPT reçoit uniquement des access tokens OAuth temporaires signés côté serveur ;
+- les access tokens OAuth restent temporaires (1 heure par défaut) et signés côté serveur ;
+- sans `offline_access`, la réponse OAuth historique reste inchangée ;
+- avec `offline_access`, `/oauth/token` peut émettre un refresh token durable et accepter ensuite `grant_type=refresh_token` ;
+- un refresh token est remplacé à chaque usage ; la réutilisation d'une génération ancienne révoque la famille ;
+- le refresh token brut n'est jamais persisté : seul son hash courant et des références non secrètes de grant/corrélation sont stockés sous `/app/data` ;
+- les codes `authorization_code` de la candidate #207 sont à usage unique, persistés par **hachage SHA-256 uniquement** avec les bornes client, redirection, ressource, challenge PKCE et expiration ; aucun code brut n'est écrit dans `/app/data/mcp-oauth-authorization-codes.json` ;
+- l'émission/la consommation des codes et la rotation des refresh grants de la candidate utilisent l'exclusion transactionnelle **opt-in** du stockage opérationnel existant ; `fsync` du fichier/dossier avant réponse ;
+- cette exclusion ne vaut que si **tous** les processus OAuth utilisent le **même volume local POSIX**, à opérations `mkdir` et `rename` atomiques ; un déploiement multi-hôte avec volumes indépendants est **non pris en charge** par cette candidate ;
+- un répertoire `*.transaction-lock` abandonné à la suite d'un crash bloque volontairement les écritures : aucune suppression/récupération ne doit intervenir sans avoir établi qu'aucun processus propriétaire n'écrit encore ; cette reprise reste gouvernée et non automatique ;
+- `MCP_OAUTH_CODE_STORE_PATH` permet aux tests d'utiliser un stockage isolé (par défaut `/app/data/mcp-oauth-authorization-codes.json`) ; ne pas confondre cette option de stockage avec une permission OAuth ou une identité de session ;
+
+- les TTL refresh sont configurables, avec 30 jours d'inactivité et 90 jours maximum par défaut ;
 - `MCP_AUTH_TOKEN` n'est jamais renvoyé dans les réponses OAuth ;
 - le login web existant `/login` authentifie l'opérateur ;
 - chaque connexion OAuth affiche ensuite une page de consentement (client, hôte de redirection, accès demandé) : le code n'est émis qu'après un clic « Autoriser » sur cette page, via un POST same-origin lié à la demande exacte et valable 10 minutes ; « Refuser » renvoie `access_denied` au client ;
 - le serveur renvoie un header `WWW-Authenticate` sur les `401` MCP pour permettre à ChatGPT de découvrir `/.well-known/oauth-protected-resource`.
+
+**Statut :** ces mécanismes de persistance sont une candidate non déployée de la PR #207. Les tests CI locaux et multiprocessus ne remplacent ni un audit de la topologie/du filesystem réels, ni une revue de sécurité indépendante, ni un déploiement gouverné attesté.
+
+### Identité OAuth C26 distincte — candidate opt-in de la PR #207
+
+Cette candidate **n'active aucune identité C26 par défaut**. La session historique `mcp_web_session` et le Bearer `MCP_AUTH_TOKEN` restent associés au principal administrateur historique. La connexion C26 ne devient possible que si un secret indépendant, aléatoire et restreint est provisionné par l'opérateur sous le montage de secrets S1 existant :
+
+- chemin du conteneur : `/app/secrets/mcp-c26-oauth-login-token` (montage existant `./secrets:/app/secrets`) ;
+- fichier ordinaire, **ni lien symbolique, ni accès groupe/autres**, mode `0600` ; contenu base64url ou hex aléatoire de 43 à 256 caractères, différent de `MCP_AUTH_TOKEN` ;
+- aucun secret dans GitHub, les journaux CI, les issues ou les conversations ;
+- le login web existant `/login` reconnaît ce secret uniquement pour un retour vers `/oauth/authorize` et émet un cookie signé distinct `mcp_c26_oauth_session` (`HttpOnly; SameSite=Lax; Path=/oauth; Secure` en HTTPS) ;
+- ce cookie n'est accepté ni par `requireWebLogin`, ni par `/dashboard`, `/git`, `/github`, les opérations Plesk, ni par le middleware Bearer de `/mcp` ;
+- après consentement OAuth explicite, le serveur peut signer des access/refresh tokens avec `sub=wealthtech-mcp-c26-agent`, projetés dans le MCP sous `oauth:wealthtech-mcp-c26-agent`, **distinct de `oauth:wealthtech-mcp-admin`** ;
+- la séparation effective du transport MCP, la nouvelle connexion OAuth ChatGPT, un Bootstrap Receipt propre et la permission `SCHEDULED` sont des preuves distinctes qui restent à recueillir.
+
+**Précondition de mise en service** : validation de sécurité sur le SHA exact, audit du montage réel `/app/secrets`/`/app/data`, revue indépendante et déploiement gouverné de la PR #207. Le secret doit être créé sur S1 **en dehors du dépôt suivi**, via les procédures sécurisées de l'opérateur, et conservé dans un gestionnaire de secrets. Tant que ces étapes manquent, aucune certification C26/C27 n'est revendiquée.
 
 Tests publics attendus :
 
@@ -142,7 +169,7 @@ Avant toute modification, lire :
 - Reverse proxy : Nginx/Plesk vers `127.0.0.1:8787`
 - HTTPS obligatoire
 - Authentification historique : header `Authorization: Bearer <MCP_AUTH_TOKEN>`
-- Authentification ChatGPT : OAuth minimal via les routes `.well-known` et `/oauth/*`
+- Authentification clients MCP : OAuth Authorization Code + PKCE, avec `offline_access` / refresh-token rotatif optionnel via les routes `.well-known` et `/oauth/*`
 
 ## Règle de sécurité
 
