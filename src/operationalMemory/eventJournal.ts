@@ -111,6 +111,14 @@ const ALLOWED_METADATA_KEYS: Record<OperationalEventType, ReadonlySet<string>> =
   'client.tool_surface_attested': new Set(['attestationId', 'surface', 'capabilityCount', 'sessionRevision'])
 };
 
+/**
+ * Runtime type guard backed by the journal writer's single canonical allowlist.
+ * The read-only BUS projection uses this rather than maintaining a second catalog.
+ */
+export function isOperationalEventType(value: unknown): value is OperationalEventType {
+  return typeof value === 'string' && Object.prototype.hasOwnProperty.call(ALLOWED_METADATA_KEYS, value);
+}
+
 const OPAQUE_METADATA_KEYS: Partial<Record<OperationalEventType, ReadonlySet<string>>> = {
   'session.opened': new Set(['taskScope', 'agentIdentity']),
   'session.resumed': new Set(['taskScope']),
@@ -122,6 +130,17 @@ const OPAQUE_METADATA_KEYS: Partial<Record<OperationalEventType, ReadonlySet<str
   'lock.expired': new Set(['scope']),
   'blocker.detected': new Set(['scope'])
 };
+
+/** Strictly validate read-side records using the writer's canonical per-type metadata policy. */
+export function isCanonicalOperationalEventMetadata(type: OperationalEventType, value: unknown): value is OperationalEventMetadata {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  try {
+    validateMetadata(type, value as OperationalEventMetadata);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function validateMetadata(type: OperationalEventType, metadata: OperationalEventMetadata): void {
   const entries = Object.entries(metadata);
