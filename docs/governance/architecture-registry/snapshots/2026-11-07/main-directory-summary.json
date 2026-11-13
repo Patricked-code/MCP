@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "snapshotId": "mcp-branches-20261107-7d29ad4212ef",
+  "branch": "main",
+  "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "rootTreeSha": "9b4480b32b663c9c67a30062b1372d174ef2b9a8",
+  "sourceUrl": "https://api.github.com/repos/Patricked-code/MCP/git/trees/7d29ad4212efa0bd343d53f400785e5c9cbf07f4?recursive=1",
+  "gitTreeTruncated": false,
+  "files": 844,
+  "directories": 145,
+  "totalEntries": 989,
+  "indexedDirectoryRecords": 145,
+  "rootDirectoryCount": 11,
+  "topLevelRootFiles": 65,
+  "method": "Git recursive tree; derived hierarchy and counts; no semantic conclusions"
+}

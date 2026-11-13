@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "kind": "BOUNDED_DECLARED_ROLE_EVIDENCE",
+  "repository": "Patricked-code/MCP",
+  "snapshotId": "mcp-branches-20261107-7d29ad4212ef",
+  "mainCommitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+  "files": [
+    {
+      "path": "src/governance/branchGovernance.ts",
+      "blobSha": "4aedf24da4e9b54b9da5d1b4235790b92d6c6d43",
+      "role": "POLICY_PARSER_AND_READER",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 50,
+        "excerpt": "export function parseBranchGovernancePolicy(value: unknown): BranchGovernanceEvidence {"
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    },
+    {
+      "path": "src/governance/e2EntryFlow.ts",
+      "blobSha": "89b07f8b82ddcf741557be0dae11a643a235c806",
+      "role": "E2_RECONCILIATION_ROUTING",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 31,
+        "excerpt": "export function reconcileE2Entry("
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    },
+    {
+      "path": "src/governance/e2LivePreflight.ts",
+      "blobSha": "5b4f3992acbea82900cfc645a294827b0f39add9",
+      "role": "E2_LIVE_PREFLIGHT",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 27,
+        "excerpt": "export function assessE2LivePreflight(snapshot:LiveStateSnapshot):E2Preflight{"
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    },
+    {
+      "path": "src/governance/workEntryContinuityIndex.ts",
+      "blobSha": "bb547a07873075add76bcc4e3208462b5c9cf932",
+      "role": "READONLY_CONTINUITY_INDEX",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 27,
+        "excerpt": "export function buildWorkEntryContinuityIndex(records:readonly GovernedWorkEntryTrace[]):WorkEntryIndexResult{"
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    },
+    {
+      "path": "src/governance/programBlueprintMaterialization.ts",
+      "blobSha": "af3577b4ccf670d14048819bfed6b20bc6161149",
+      "role": "PROGRAM_BLUEPRINT_INTENT",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 83,
+        "excerpt": "export function buildProgramBlueprintIntent("
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    },
+    {
+      "path": "src/governance/nextWorkProjection.ts",
+      "blobSha": "def6a1b4d387f1a003bd823dbe99fcac44bb0af1",
+      "role": "NEXT_WORK_PROJECTION",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 196,
+        "excerpt": "export function deriveNextWork(input: NextWorkInput): NextWorkProjection {"
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    },
+    {
+      "path": "tests/programBlueprintMaterialization.test.ts",
+      "blobSha": "2452f99016442f9f6ff8040abe6515252f37f79f",
+      "role": "PROGRAM_MATERIALIZATION_TEST",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 160,
+        "excerpt": "test('a READY blueprint materializes exactly one unclaimed task bound to its identity and projection', async () => {"
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    },
+    {
+      "path": "tests/programBacklogAutomation.test.ts",
+      "blobSha": "3383963e2ce5ac886867d5b0f7287406af1dbb44",
+      "role": "BACKLOG_READINESS_TEST",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 16,
+        "excerpt": "test('program readiness is a deterministic derived projection over dependency completion', async () => {"
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    },
+    {
+      "path": "tests/externalGovernedRecoveryProfile.test.ts",
+      "blobSha": "a61a74b67f34524e0af17e7c41b4f8539e59773b",
+      "role": "EXTERNAL_RECOVERY_PROFILE_TEST",
+      "status": "VERIFIED_DECLARED_SOURCE_ROLE",
+      "evidence": {
+        "line": 60,
+        "excerpt": "test('external governed recovery is explicitly selectable but neither default nor runtime authority', () => {"
+      },
+      "wholeFileSemanticallyReviewed": false,
+      "runtimeAttestation": "NOT_PERFORMED"
+    }
+  ],
+  "relations": [
+    {
+      "id": "gov-batch02-1",
+      "from": "src/governance/e2EntryFlow.ts",
+      "to": "src/governance/workEntryContinuityIndex.ts",
+      "predicate": "STATIC_TYPE_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "sourceBlobSha": "89b07f8b82ddcf741557be0dae11a643a235c806",
+      "targetBlobSha": "bb547a07873075add76bcc4e3208462b5c9cf932",
+      "evidence": {
+        "line": 6,
+        "excerpt": "import type {WorkEntryIndexResult} from './workEntryContinuityIndex.js';"
+      }
+    },
+    {
+      "id": "gov-batch02-2",
+      "from": "src/governance/workEntryContinuityIndex.ts",
+      "to": "src/governance/workEntryTrace.ts",
+      "predicate": "STATIC_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "sourceBlobSha": "bb547a07873075add76bcc4e3208462b5c9cf932",
+      "targetBlobSha": "e7c999f6786ed583512bb8ce8790e30d15dab3f2",
+      "evidence": {
+        "line": 6,
+        "excerpt": "import {assessGovernedWorkEntryTrace} from './workEntryTrace.js';"
+      }
+    },
+    {
+      "id": "gov-batch02-3",
+      "from": "src/governance/nextWorkProjection.ts",
+      "to": "src/governance/programBlueprintMaterialization.ts",
+      "predicate": "STATIC_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "sourceBlobSha": "def6a1b4d387f1a003bd823dbe99fcac44bb0af1",
+      "targetBlobSha": "af3577b4ccf670d14048819bfed6b20bc6161149",
+      "evidence": {
+        "line": 19,
+        "excerpt": "} from './programBlueprintMaterialization.js';"
+      }
+    },
+    {
+      "id": "gov-batch02-4",
+      "from": "src/governance/programBlueprintMaterialization.ts",
+      "to": "src/operationalMemory/taskQueue.ts",
+      "predicate": "STATIC_TYPE_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "sourceBlobSha": "af3577b4ccf670d14048819bfed6b20bc6161149",
+      "targetBlobSha": "6fa0ee32e18bef35a1cb357b46c3021a04e63abb",
+      "evidence": {
+        "line": 6,
+        "excerpt": "import type { ReconcileIntentInput } from '../operationalMemory/taskQueue.js';"
+      }
+    },
+    {
+      "id": "gov-batch02-5",
+      "from": "tests/programBlueprintMaterialization.test.ts",
+      "to": "src/governance/programBlueprintMaterialization.ts",
+      "predicate": "DYNAMIC_TEST_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "sourceBlobSha": "2452f99016442f9f6ff8040abe6515252f37f79f",
+      "targetBlobSha": "af3577b4ccf670d14048819bfed6b20bc6161149",
+      "evidence": {
+        "line": 32,
+        "excerpt": "} = await import('../src/governance/programBlueprintMaterialization.js');"
+      }
+    },
+    {
+      "id": "gov-batch02-6",
+      "from": "tests/programBacklogAutomation.test.ts",
+      "to": "scripts/program-backlog-convergence-lib.mjs",
+      "predicate": "STATIC_TEST_IMPORT",
+      "status": "VERIFIED_SOURCE_REFERENCE",
+      "sourceBlobSha": "3383963e2ce5ac886867d5b0f7287406af1dbb44",
+      "targetBlobSha": "6777f5c576734ef9d6ca31d2d03050a04fdd35cd",
+      "evidence": {
+        "line": 8,
+        "excerpt": "} from '../scripts/program-backlog-convergence-lib.mjs';"
+      }
+    }
+  ],
+  "wholeRepositorySemanticallyClassified": false,
+  "limitations": [
+    "Code declarations and references only, not complete behavioral audits",
+    "Runtime execution, tests, authorization, deployment not attested",
+    "Snapshot derived; existing Task Queue, sessions, locks and program retain authority"
+  ]
+}

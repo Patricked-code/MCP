@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "kind": "SELECTED_MAIN_TREE_EVOLUTION_OF_MCP_ARCHITECTURE",
+  "authority": "HISTORICAL_GIT_ONLY_NO_RUNTIME_STATUS",
+  "repository": "Patricked-code/MCP",
+  "observations": [
+    {
+      "date": "2026-07-02",
+      "commit": "c296df3f29ed4430c0bd075b5c472cf47b9f8b08",
+      "files": 81,
+      "phase": "Initial tools and documentation"
+    },
+    {
+      "date": "2026-07-09",
+      "commit": "4ae11249a6ec129cbf7289e361416bc248311bca",
+      "files": 208,
+      "phase": "Agent governance, .mcp and onboarding instructions"
+    },
+    {
+      "date": "2026-08-13",
+      "commit": "3838c3918c3411a3317c6ea81047e77a7b627673",
+      "files": 322,
+      "phase": "CI, deploy, live state and sessions"
+    },
+    {
+      "date": "2026-08-31",
+      "commit": "5ef6da355060ef2b3dfd6df6ecc64c83f778a50a",
+      "files": 360,
+      "phase": "Bootstrap, queue and current state"
+    },
+    {
+      "date": "2026-09-20",
+      "commit": "bb81baf7f8424bcb32c3e87b22018335461b1189",
+      "files": 548,
+      "phase": "GWC contracts and candidate"
+    },
+    {
+      "date": "2026-09-24",
+      "commit": "3d5dd39f4342290fd6ddb9f2fbc4cbadd13b870e",
+      "files": 561,
+      "phase": "Program Backlog V2 and UAC"
+    },
+    {
+      "date": "2026-10-15",
+      "commit": "8f804e3113daf37d5fe7e96bda86bf987b7043cb",
+      "files": 709,
+      "phase": "Dispatch, evidence and blueprint crosswalk"
+    },
+    {
+      "date": "2026-10-30",
+      "commit": "1f6961063d27bc85087aab57a8f700fd7729e03f",
+      "files": 810,
+      "phase": "GitHub/Plesk capabilities and E2"
+    },
+    {
+      "date": "2026-11-05",
+      "commit": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "files": 844,
+      "phase": "E2 reconciliation additions"
+    }
+  ],
+  "relatedHistoricalAnchors": [
+    {
+      "block": "ABB-BOOTSTRAP",
+      "pullRequest": 49
+    },
+    {
+      "block": "ABB-LIVE-STATE",
+      "pullRequest": 38
+    },
+    {
+      "block": "ABB-SESSIONS",
+      "pullRequest": 44
+    },
+    {
+      "block": "ABB-GOVERNED-DEPLOY",
+      "pullRequest": 39
+    },
+    {
+      "block": "ABB-GOVERNED-DEPLOY",
+      "pullRequest": 43
+    },
+    {
+      "block": "ABB-GWC-CONTRACTS",
+      "pullRequest": 95
+    },
+    {
+      "block": "ABB-UAC",
+      "pullRequest": 154
+    },
+    {
+      "block": "ABB-PROGRAM-V2",
+      "pullRequest": 171
+    }
+  ],
+  "boundaries": [
+    "NINE_SAMPLED_MAIN_TREES_NOT_EXHAUSTIVE_COMMIT_HISTORY",
+    "LINKED_PR_DOES_NOT_PROVE_ALL_BLOCK_FILES_DELIVERED_BY_PR",
+    "NO_LIVE_PRODUCTION_STATE_INFERRED"
+  ]
+}

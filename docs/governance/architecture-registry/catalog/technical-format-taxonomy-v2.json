@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 2,
+  "taxonomyId": "mcp-technical-file-formats-v2-multibranch",
+  "authority": "DERIVED_NON_AUTHORITY",
+  "classificationLevel": "TECHNICAL_FORMAT_ONLY",
+  "detectionPriority": [
+    "EXACT_FILENAME",
+    "EXTENSION"
+  ],
+  "contentValidation": "NOT_PERFORMED",
+  "semanticClassification": "NOT_PERFORMED",
+  "types": [
+    {
+      "id": "TS",
+      "label": "TypeScript source",
+      "family": "SOURCE_CODE",
+      "extension": ".ts",
+      "exactName": null,
+      "mimeType": "text/typescript",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "MD",
+      "label": "Document Markdown",
+      "family": "MARKUP_DOCUMENT",
+      "extension": ".md",
+      "exactName": null,
+      "mimeType": "text/markdown",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "JSON",
+      "label": "Document JSON",
+      "family": "STRUCTURED_TEXT",
+      "extension": ".json",
+      "exactName": null,
+      "mimeType": "application/json",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "MJS",
+      "label": "Module JavaScript ES",
+      "family": "SOURCE_CODE",
+      "extension": ".mjs",
+      "exactName": null,
+      "mimeType": "text/javascript",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "YML",
+      "label": "Document YAML",
+      "family": "STRUCTURED_TEXT",
+      "extension": ".yml",
+      "exactName": null,
+      "mimeType": "application/yaml",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "TXT",
+      "label": "Texte brut",
+      "family": "TEXT",
+      "extension": ".txt",
+      "exactName": null,
+      "mimeType": "text/plain",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "SH",
+      "label": "Script Shell",
+      "family": "SCRIPT",
+      "extension": ".sh",
+      "exactName": null,
+      "mimeType": "text/x-shellscript",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "PDF",
+      "label": "Document PDF",
+      "family": "BINARY_DOCUMENT",
+      "extension": ".pdf",
+      "exactName": null,
+      "mimeType": "application/pdf",
+      "encoding": "binary",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "ENV_EXAMPLE",
+      "label": "Modèle de variables d'environnement",
+      "family": "CONFIG_TEMPLATE",
+      "extension": null,
+      "exactName": ".env.example",
+      "mimeType": "text/plain",
+      "encoding": "text",
+      "detectBy": "EXACT_FILENAME"
+    },
+    {
+      "id": "GITIGNORE",
+      "label": "Règles d'exclusion Git",
+      "family": "TOOL_CONFIGURATION",
+      "extension": null,
+      "exactName": ".gitignore",
+      "mimeType": "text/plain",
+      "encoding": "text",
+      "detectBy": "EXACT_FILENAME"
+    },
+    {
+      "id": "DOCKERFILE",
+      "label": "Recette de construction Docker",
+      "family": "BUILD_CONFIGURATION",
+      "extension": null,
+      "exactName": "Dockerfile",
+      "mimeType": "text/plain",
+      "encoding": "text",
+      "detectBy": "EXACT_FILENAME"
+    },
+    {
+      "id": "GITATTRIBUTES",
+      "label": "Attributs de fichiers Git",
+      "family": "TOOL_CONFIGURATION",
+      "extension": null,
+      "exactName": ".gitattributes",
+      "mimeType": "text/plain",
+      "encoding": "text",
+      "detectBy": "EXACT_FILENAME"
+    },
+    {
+      "id": "CSV",
+      "label": "Données tabulaires CSV",
+      "family": "STRUCTURED_TEXT",
+      "extension": ".csv",
+      "exactName": null,
+      "mimeType": "text/csv",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "SQL",
+      "label": "Instructions SQL",
+      "family": "DATABASE_LANGUAGE",
+      "extension": ".sql",
+      "exactName": null,
+      "mimeType": "application/sql",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "PY",
+      "label": "Code source Python",
+      "family": "SOURCE_CODE",
+      "extension": ".py",
+      "exactName": null,
+      "mimeType": "text/x-python",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "JSONL",
+      "label": "Données JSON Lines",
+      "family": "STRUCTURED_TEXT",
+      "extension": ".jsonl",
+      "exactName": null,
+      "mimeType": "application/x-ndjson",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    },
+    {
+      "id": "JS",
+      "label": "Code source JavaScript",
+      "family": "SOURCE_CODE",
+      "extension": ".js",
+      "exactName": null,
+      "mimeType": "text/javascript",
+      "encoding": "text",
+      "detectBy": "EXTENSION"
+    }
+  ],
+  "extends": "catalog/technical-format-taxonomy.json",
+  "technicalFormatDetection": "EXACT_FILENAME_THEN_EXTENSION",
+  "contentSignaturesVerified": 0,
+  "semanticRolesVerified": 0
+}

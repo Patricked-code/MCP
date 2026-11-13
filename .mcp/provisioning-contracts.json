@@ -676,6 +676,12 @@
       "note": "Continuous integration."
     },
     {
+      "name": "architecture-registry-validate.yml",
+      "kind": "WORKFLOW",
+      "class": "NOT_PROVISIONING",
+      "note": "Read-only PR validation of versioned Git architectural snapshots and temporary derived SQLite indexes. No runtime, provisioning, deployment, claims or new authority."
+    },
+    {
       "name": "repository-ssh-ca-bootstrap.yml",
       "kind": "WORKFLOW",
       "class": "NOT_PROVISIONING",

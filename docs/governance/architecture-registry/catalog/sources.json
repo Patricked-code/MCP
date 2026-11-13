@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "repository": "Patricked-code/MCP",
+  "observationId": "mcp-branches-20261107-7d29ad4212ef",
+  "policy": "INDEX_ONLY_NO_NEW_RUNTIME_AUTHORITY",
+  "records": [
+    {
+      "id": "src:gittree-main",
+      "kind": "GIT_TREE",
+      "uri": "https://api.github.com/repos/Patricked-code/MCP/git/trees/7d29ad4212efa0bd343d53f400785e5c9cbf07f4?recursive=1",
+      "commitSha": "7d29ad4212efa0bd343d53f400785e5c9cbf07f4",
+      "role": "SOURCE_PHYSICAL"
+    },
+    {
+      "id": "src:agent",
+      "kind": "DOCUMENT",
+      "uri": "https://github.com/Patricked-code/MCP/blob/7d29ad4212efa0bd343d53f400785e5c9cbf07f4/AGENTS.md",
+      "role": "GOVERNANCE"
+    },
+    {
+      "id": "src:truth",
+      "kind": "DOCUMENT",
+      "uri": "https://github.com/Patricked-code/MCP/blob/7d29ad4212efa0bd343d53f400785e5c9cbf07f4/SOURCE_OF_TRUTH.md",
+      "role": "AUTHORITY_HIERARCHY"
+    },
+    {
+      "id": "src:branch-policy",
+      "kind": "REGISTRY",
+      "uri": "https://github.com/Patricked-code/MCP/blob/7d29ad4212efa0bd343d53f400785e5c9cbf07f4/.mcp/branch-governance.json",
+      "role": "POLICY"
+    },
+    {
+      "id": "src:gwc-contracts",
+      "kind": "REGISTRY",
+      "uri": "https://github.com/Patricked-code/MCP/blob/7d29ad4212efa0bd343d53f400785e5c9cbf07f4/.mcp/gwc-contracts.json",
+      "role": "CONTRACT_DEFINITION"
+    },
+    {
+      "id": "src:gwc-graph",
+      "kind": "REGISTRY",
+      "uri": "https://github.com/Patricked-code/MCP/blob/7d29ad4212efa0bd343d53f400785e5c9cbf07f4/.mcp/gwc-workflow-graph.json",
+      "role": "CONTRACT_GRAPH"
+    },
+    {
+      "id": "src:tools",
+      "kind": "REGISTRY",
+      "uri": "https://github.com/Patricked-code/MCP/blob/7d29ad4212efa0bd343d53f400785e5c9cbf07f4/.mcp/function-cartography.json",
+      "role": "TOOL_CATALOG"
+    },
+    {
+      "id": "src:markdown",
+      "kind": "REGISTRY",
+      "uri": "https://github.com/Patricked-code/MCP/blob/7d29ad4212efa0bd343d53f400785e5c9cbf07f4/docs/governance/markdown-inventory.json",
+      "role": "DOC_INDEX"
+    },
+    {
+      "id": "src:pr372",
+      "kind": "GITHUB_PR",
+      "uri": "https://github.com/Patricked-code/MCP/pull/372",
+      "role": "UTL_HISTORY_RECONCILIATION_SEPARATE"
+    },
+    {
+      "id": "src:pr374",
+      "kind": "GITHUB_PR",
+      "uri": "https://github.com/Patricked-code/MCP/pull/374",
+      "role": "GLOBAL_WORK_SEPARATE"
+    },
+    {
+      "id": "src:pr377",
+      "kind": "GITHUB_PR",
+      "uri": "https://github.com/Patricked-code/MCP/pull/377",
+      "role": "AUTOMATION_CONTINUITY_SEPARATE"
+    },
+    {
+      "id": "src:pr95",
+      "kind": "GITHUB_PR",
+      "uri": "https://github.com/Patricked-code/MCP/pull/95",
+      "role": "GWC_HISTORY"
+    }
+  ]
+}
