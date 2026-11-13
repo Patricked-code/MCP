@@ -20,7 +20,7 @@ import { registerE2AutomaticActivationTool } from './tools/e2Activation.js';
 import { registerE2OwnerTools } from './tools/e2OwnerTools.js';
 import { governedContextInstructions } from './tools/governedContext.js';
 import { getGovernedContextToolDependencies } from './tools/governedContext.js';
-import { getGovernedSessionToolDependencies, sessionRequestFromToolExtra } from './tools/governedSessions.js';
+import { getGovernedSessionToolDependencies } from './tools/governedSessions.js';
 import {
   loadGovernedDashboardContext,
   renderGovernedContextDashboardDisabledSection,
@@ -408,54 +408,6 @@ export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   }
 
   return server;
-}
-
-async function autoResumeGovernedSessionForTransport(
-  transportSessionId: string,
-  authInfo: import('@modelcontextprotocol/sdk/server/auth/types.js').AuthInfo | undefined
-): Promise<void> {
-  if (!operationalMemoryConfig.enabled) return;
-
-  try {
-    const result = await getGovernedSessionToolDependencies().sessions.autoResumeCompatibleSession(
-      { repository: 'Patricked-code/MCP' },
-      sessionRequestFromToolExtra({ sessionId: transportSessionId, authInfo })
-    );
-
-    if (result.status === 'ATTACHED') {
-      logger.info(
-        { governedSessionId: result.session.governedSessionId, reasonCode: 'governed_session_auto_attached' },
-        'Transport attaché automatiquement à la governed session active'
-      );
-      return;
-    }
-
-    if (result.status === 'RESUMED') {
-      logger.info(
-        { governedSessionId: result.session.governedSessionId, reasonCode: 'governed_session_auto_resumed' },
-        'Governed session expirée reprise automatiquement'
-      );
-      return;
-    }
-
-    if (result.status === 'AMBIGUOUS') {
-      logger.warn(
-        { reasonCode: 'governed_session_auto_resume_ambiguous' },
-        'Plusieurs governed sessions compatibles; reprise automatique refusée'
-      );
-      return;
-    }
-
-    logger.info(
-      { reasonCode: 'governed_session_auto_resume_none' },
-      'Aucune governed session compatible à reprendre automatiquement'
-    );
-  } catch {
-    logger.warn(
-      { reasonCode: 'governed_session_auto_resume_failed' },
-      'Reprise automatique de governed session impossible'
-    );
-  }
 }
 
 export async function startHttpServer(): Promise<void> {
@@ -1059,7 +1011,6 @@ export async function startHttpServer(): Promise<void> {
   });
 
   const transports: Record<string, StreamableHTTPServerTransport> = {};
-  const transportBootstraps: Record<string, Promise<void>> = {};
 
   app.post('/mcp', async (req, res) => {
     try {
@@ -1068,27 +1019,21 @@ export async function startHttpServer(): Promise<void> {
 
       if (sessionId && transports[sessionId]) {
         transport = transports[sessionId];
-        if (transportBootstraps[sessionId]) {
-          await transportBootstraps[sessionId];
-        }
       } else if (!sessionId && isInitializeRequest(req.body)) {
-        const authInfo = (req as express.Request & {
-          auth?: import('@modelcontextprotocol/sdk/server/auth/types.js').AuthInfo;
-        }).auth;
-
         transport = new StreamableHTTPServerTransport({
           sessionIdGenerator: () => randomUUID(),
           onsessioninitialized: (newSessionId: string) => {
             transports[newSessionId] = transport;
-            transportBootstraps[newSessionId] = autoResumeGovernedSessionForTransport(newSessionId, authInfo);
-            logger.info({ reasonCode: 'mcp_transport_initialized' }, 'MCP session initialisée');
+            // OAuth authenticates the caller, but never selects a governed work session.
+            // A client must explicitly call mcp_open_governed_session or
+            // mcp_resume_governed_session to bind this transport.
+            logger.info({ reasonCode: 'mcp_transport_initialized_unbound' }, 'Transport MCP initialisé sans session gouvernée');
           }
         });
 
         transport.onclose = () => {
           if (transport.sessionId) {
             delete transports[transport.sessionId];
-            delete transportBootstraps[transport.sessionId];
             if (operationalMemoryConfig.enabled) {
               getGovernedSessionToolDependencies().sessions.unbindTransport(transport.sessionId);
             }
@@ -1119,9 +1064,6 @@ export async function startHttpServer(): Promise<void> {
       return;
     }
 
-    if (transportBootstraps[sessionId]) {
-      await transportBootstraps[sessionId];
-    }
     await transports[sessionId].handleRequest(req, res);
   };
 
