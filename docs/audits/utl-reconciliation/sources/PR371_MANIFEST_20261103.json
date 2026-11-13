@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "snapshotUtc": "2026-11-03",
+  "repository": "Patricked-code/MCP",
+  "scope": "Full Git commit history reachable from the exact main HEAD at snapshot; all commits including those not identified as PR merge SHA. Other unmerged/ref-only branches are out of scope.",
+  "mainShaAtSnapshot": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "source": {
+    "api": "GET /repos/Patricked-code/MCP/commits?sha=main&per_page=100&page=N",
+    "pagesScanned": 23,
+    "nonEmptyPages": 22,
+    "ordering": "GitHub API commit history order, newest first; not a guaranteed linear timestamp ordering",
+    "pullRequestMergeSource": "docs/history/MCP_MAIN_MERGE_SHA_REGISTRY_20261103.json"
+  },
+  "bounds": {
+    "oldestGitCommitSha": "34bffc95bb5165ba2d897e11827c90cd5b1f2334",
+    "oldestCommitUtc": "2026-06-30T22:55:34Z",
+    "latestGitMainSha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+    "latestCommitUtc": "2026-10-31T05:08:13Z"
+  },
+  "counts": {
+    "totalCommits": 2151,
+    "uniqueShas": 2151,
+    "knownMergedPrShas": 186,
+    "otherMainReachableShasPrAssociationUnknown": 1965,
+    "commitDateBeforeFirstMergedPr": 122,
+    "parentCountZero": 1,
+    "parentCountOne": 1975,
+    "parentCountTwo": 175
+  },
+  "files": {
+    "csv": [
+      "docs/history/MCP_ALL_MAIN_COMMITS_20261103_P01.csv",
+      "docs/history/MCP_ALL_MAIN_COMMITS_20261103_P02.csv"
+    ],
+    "sqliteSql": [
+      "docs/history/MCP_ALL_MAIN_COMMITS_20261103_P01.sql",
+      "docs/history/MCP_ALL_MAIN_COMMITS_20261103_P02.sql"
+    ],
+    "prMergeLedger": "docs/history/MCP_MAIN_MERGE_SHA_REGISTRY_20261103.json",
+    "prMergeSQLite": "docs/history/MCP_MAIN_MERGE_SHA_DATABASE_20261103.sql"
+  },
+  "sqliteLoadOrder": [
+    "sqlite3 MCP_MAIN_MERGE_SHA_20261103.sqlite '.read docs/history/MCP_MAIN_MERGE_SHA_DATABASE_20261103.sql'",
+    "sqlite3 MCP_MAIN_MERGE_SHA_20261103.sqlite '.read docs/history/MCP_ALL_MAIN_COMMITS_20261103_P01.sql'",
+    "sqlite3 MCP_MAIN_MERGE_SHA_20261103.sqlite '.read docs/history/MCP_ALL_MAIN_COMMITS_20261103_P02.sql'"
+  ],
+  "sqliteVerificationQueries": [
+    "SELECT COUNT(*) FROM main_commits;",
+    "SELECT COUNT(*) FROM main_commits WHERE merge_pr_number IS NOT NULL;",
+    "SELECT COUNT(DISTINCT commit_sha) FROM main_commits;",
+    "SELECT * FROM all_main_commits_linked_to_merges WHERE merge_pr_number=261;",
+    "SELECT commit_sha,commit_date_utc,message_subject FROM main_commits ORDER BY history_position_newest_first DESC LIMIT 1;"
+  ],
+  "classificationSemantics": {
+    "KNOWN_MERGED_PR_SHA": "SHA is exactly the merge_commit_sha of a GitHub PR merged into main; not necessarily a two-parent merge commit.",
+    "OTHER_MAIN_REACHABLE_COMMIT_PR_ASSOCIATION_NOT_VERIFIED": "Commit is reachable from main and not itself one of the 186 known PR merge SHAs. It may be an individual commit included in a merged PR, direct commit or another git history event; actual PR association has not been established."
+  },
+  "limitations": [
+    "Does not assert that every other commit was pushed directly to main.",
+    "Does not cover commits exclusive to unmerged branches or unreachable git history.",
+    "Does not prove an exact runtime deployment/attestation for each commit.",
+    "Only GitHub records as of the snapshot are registered; data may require new snapshot if main evolves.",
+    "SQL scripts are archival import source and have not been executed against production or a remote database."
+  ],
+  "verification": {
+    "csvFilesRecordCounts": [
+      1100,
+      1051
+    ],
+    "csvColumns": 13,
+    "malformedRows": 0,
+    "duplicateShas": 0,
+    "crossFilePositionGaps": 0,
+    "pr261MergeSha": "6576b5287f23566684005adf6032734e2ecdea50",
+    "pr261CiRun": 37817792888,
+    "pr261DeployRun": 37817792904
+  }
+}

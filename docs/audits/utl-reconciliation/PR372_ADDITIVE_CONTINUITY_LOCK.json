@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "kind": "PR372_ADDITIVE_CONTINUITY_SCOPE",
+  "repository": "Patricked-code/MCP",
+  "prNumber": 372,
+  "headBranch": "audit/mcp-historical-merge-traceability-20261103",
+  "baseBranch": "main",
+  "historicalMainSnapshotSha": "05dbb66ed81aa4e7443655c89d10c0c390ff0f10",
+  "baselinePrHeadBeforeV03": "4374852d5c60e5e7987271b0cf41ca49cc8eedcb",
+  "baselineChangedPaths": [
+    ".github/workflows/mcp-ci.yml",
+    "docs/audits/MCP_HISTORICAL_MERGE_MATRIX.md",
+    "docs/audits/MCP_MERGE_MATRIX_RECENT_100.csv",
+    "docs/audits/UTL_RECONCILIATION_DATABASE.md",
+    "docs/audits/utl-reconciliation/source_manifest_and_links.json",
+    "docs/audits/utl-reconciliation/sources/PR370_MERGED_PRS_20261103.csv",
+    "docs/audits/utl-reconciliation/sources/PR371_MAIN_COMMITS_P01.sql",
+    "docs/audits/utl-reconciliation/sources/PR371_MAIN_COMMITS_P02.sql",
+    "docs/audits/utl-reconciliation/sources/PR371_MANIFEST_20261103.json",
+    "docs/audits/utl-reconciliation/sources/PR371_MERGED_PRS_20261103.sql",
+    "docs/audits/utl-reconciliation/utl_reconciliation_schema.sql",
+    "docs/governance/markdown-inventory.json",
+    "scripts/build_utl_reconciliation.py",
+    "scripts/export_merge_traceability.py",
+    "tests/test_utl_reconciliation.py"
+  ],
+  "sourceContractPaths": [
+    "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v02.md",
+    "docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v03.md"
+  ],
+  "governance": {
+    "noNewPrForThisWork": true,
+    "existingPrMustRemain372": true,
+    "noDeletionOfPriorArtifacts": true,
+    "sourceSnapshotsImmutable": true,
+    "additiveExtensionsOnly": true,
+    "noRuntimeMutation": true,
+    "noDirectMainWrites": true,
+    "noSecondTaskQueueOrDispatcher": true,
+    "utlRefOnlyFromCanonicalEvidence": true,
+    "externalE2NoFakeInternalTask": true,
+    "ciAndDeployNeverImplyRuntimeAttestation": true,
+    "changesFutureAllowedWithNewVersionAndEvidence": true,
+    "failClosedOnConflicts": true
+  },
+  "status": "BOUND_TO_PR372",
+  "authority": "OWNER_SCOPE_RULE_NOT_RUNTIME_WRITE_PERMISSION"
+}

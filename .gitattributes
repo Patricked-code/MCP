@@ -1,0 +1,5 @@
+# Preserve exact original Markdown hard-line-break spaces in the two immutable
+# owner-provided UTL v02/v03 reference documents only.
+# All other files retain normal Git whitespace checking.
+docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v02.md whitespace=-blank-at-eol
+docs/audits/utl-reconciliation/reference/MCP_UTL_circuits_matrices_2026-11-03_v03.md whitespace=-blank-at-eol

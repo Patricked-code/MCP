@@ -68,8 +68,56 @@ jobs:
       - name: OAuth consent and PKCE regression tests
         run: npx tsx --test tests/oauthAuthorizeConsent.test.ts tests/oauthTransportSessionIsolation.test.ts
 
+      - name: UTL V03 T_IN–T_OUT TypeScript contract safety tests
+        run: npx tsx --test tests/utlCircuitTrace.test.ts
+
       - name: Docs check
         run: npm run docs:check
+
+      - name: UTL reconciliation offline evidence and non-regression tests
+        run: python3 -m unittest discover -s tests -p 'test_utl_reconciliation.py' -v
+
+      - name: Build UTL reconciliation SQLite evidence artifact
+        run: python3 scripts/build_utl_reconciliation.py --out /tmp/mcp-utl-reconciliation.sqlite --report /tmp/mcp-utl-reconciliation-report.json
+
+      - name: UTL v03 circuit and non-regression tests
+        run: python3 -m unittest discover -s tests -p 'test_utl_circuit_matrix_v03.py' -v
+
+      - name: Enrich existing UTL SQLite with v03 causal circuit contracts
+        run: python3 scripts/enrich_utl_circuit_matrix.py --db /tmp/mcp-utl-reconciliation.sqlite --report /tmp/mcp-utl-circuit-matrix-v03-report.json
+
+      - name: UTL v03 workflow server attestation integrity tests
+        run: python3 -m unittest discover -s tests -p 'test_utl_workflow_evidence_v03.py' -v
+
+      - name: Attach historical exact-SHA S1 workflow receipts
+        run: python3 scripts/attach_utl_workflow_evidence_v03.py --db /tmp/mcp-utl-reconciliation.sqlite --report /tmp/mcp-utl-workflow-evidence-v03-report.json
+
+      - name: UTL v03 five additional workflow receipt tests
+        run: python3 -m unittest discover -s tests -p 'test_utl_workflow_evidence_v03_p02.py' -v
+
+      - name: Extend seven historical exact-SHA S1 workflow receipts
+        run: python3 scripts/append_utl_workflow_evidence_v03.py --db /tmp/mcp-utl-reconciliation.sqlite --report /tmp/mcp-utl-workflow-evidence-v03-p02-report.json
+
+      - name: PR372 deployment event register non-regression tests
+        run: python3 -m unittest discover -s tests -p 'test_utl_deploy_event_registry.py' -v
+
+      - name: Build offline deployment evidence SQLite and quality report
+        run: python3 scripts/build_utl_deploy_event_registry.py --out /tmp/mcp-deployment-evidence.sqlite --report /tmp/mcp-deployment-evidence-report.json
+
+      - name: Upload UTL reconciliation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-utl-reconciliation
+          path: |
+            /tmp/mcp-utl-reconciliation.sqlite
+            /tmp/mcp-utl-reconciliation-report.json
+            /tmp/mcp-utl-circuit-matrix-v03-report.json
+            /tmp/mcp-utl-workflow-evidence-v03-report.json
+            /tmp/mcp-utl-workflow-evidence-v03-p02-report.json
+            /tmp/mcp-deployment-evidence.sqlite
+            /tmp/mcp-deployment-evidence-report.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Governance tests
         run: npm run test:governance
