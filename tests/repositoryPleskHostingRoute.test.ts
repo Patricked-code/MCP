@@ -54,3 +54,34 @@ test('B3j RED: multiple candidate bindings or immature schema fail closed',()=>{
   ...known,sourceSchemaVersion:1
  }).status,'BLOCKED');
 });
+
+test('GD-U-E2: uncanonical absolute paths cannot masquerade as verified bindings',()=>{
+ const malformed=[
+  '/var/www/vhosts/../private/app',
+  '/var/www/vhosts/./site',
+  '/var//www/vhosts/site',
+  '//var/www/vhosts/site',
+  '/var/www/vhosts/site/',
+  '/var/www/\\\\site',
+  '/var/www/vhosts/\u0000site'
+ ];
+ for(const path of malformed){
+  const candidate={...mapped,serverBindings:[
+   {...mapped.serverBindings![0]!,serverPath:path,realPath:'/var/www/vhosts/site'}]};
+  const r=resolveRepositoryPleskHostingRoute(repo,candidate);
+  assert.equal(r.status,'BLOCKED',JSON.stringify(path));
+  assert.equal(r.reason,'EXISTING_BINDING_UNVERIFIED');
+  assert.equal(r.mutationAuthorized,false);
+ }
+});
+test('GD-U-E2: uncanonical resolved physical paths and dot repository names are blocked',()=>{
+ for(const realPath of ['/real/../escape','/real/./site','/real//site']){
+  const r=resolveRepositoryPleskHostingRoute(repo,{
+   ...mapped,serverBindings:[{...mapped.serverBindings![0]!,realPath}]
+  });
+  assert.equal(r.status,'BLOCKED',realPath);
+ }
+ for(const name of ['github:chainsolutions-wealthtech/.','github:chainsolutions-wealthtech/..']){
+  assert.equal(resolveRepositoryPleskHostingRoute(name,mapped).reason,'REPOSITORY_INVALID');
+ }
+});
