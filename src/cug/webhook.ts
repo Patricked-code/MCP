@@ -4,39 +4,21 @@ import { link, lstat, mkdir, open, readdir, unlink } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import express, { type ErrorRequestHandler, type RequestHandler } from 'express';
 import { CUG_APP_ID } from './admission.js';
+import { asRecord, CUG_DELIVERY_ID as DELIVERY_ID, CUG_PILOT_REPOSITORY_ID as PILOT_REPOSITORY_ID,
+  CUG_REGISTER_LIMIT as MAX_RECEIPTS, cugRegisterRecordSchema, makeCugRegisterRecord,
+  readCugRegisterRecord, type CugRegisterRecord } from './discoveryRegister.js';
 
 export const CUG_WEBHOOK_PATH = '/webhooks/github/cug';
-// GitHub's stable ID for chainsolutions-wealthtech/universal-agent-engineering-system.
-const PILOT_REPOSITORY_ID = 1429189311;
-const MAX_RECEIPTS = 10_000;
-const DELIVERY_ID = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 const SIGNATURE = /^sha256=[0-9a-f]{64}$/;
 const ACTION = /^[a-z][a-z_]{0,39}$/;
 const EVENTS = ['repository', 'installation', 'installation_repositories'] as const;
-type Event = typeof EVENTS[number];
-
-type Receipt = Readonly<{
-  version: 1;
-  deliveryId: string;
-  event: Event;
-  action: string;
-  installationId: number;
-  repositoryId: number;
-  receivedAt: string;
-  payloadDigest: string;
-}>;
 type Result = 'stored' | 'duplicate' | 'conflict';
 type Dependencies = {
   enabled: () => boolean;
   pilotInstallationId: () => string;
   readSecret: () => Promise<Buffer>;
-  record: (receipt: Receipt) => Promise<Result>;
+  record: (receipt: CugRegisterRecord) => Promise<Result>;
 };
-
-function asRecord(value: unknown): Record<string, unknown> | undefined {
-  return value !== null && typeof value === 'object' && !Array.isArray(value)
-    ? value as Record<string, unknown> : undefined;
-}
 
 export async function readCugWebhookSecret(path: string): Promise<Buffer> {
   const file = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
@@ -67,7 +49,8 @@ export function createCugWebhookReceiptStore(directory: string): Dependencies['r
   let pending = 0;
   let tail: Promise<unknown> = Promise.resolve();
   return (receipt) => {
-    if (!DELIVERY_ID.test(receipt.deliveryId) || pending >= 32) {
+    if (!cugRegisterRecordSchema.safeParse(receipt).success
+      || receipt.deliveryId !== receipt.deliveryId.toLowerCase() || pending >= 32) {
       return Promise.reject(Error('CUG_WEBHOOK_RECEIPT_STORE_UNAVAILABLE'));
     }
     pending++;
@@ -90,30 +73,12 @@ export function createCugWebhookReceiptStore(directory: string): Dependencies['r
         try { await parent.sync(); } finally { await parent.close(); }
       };
       const existing = async (): Promise<Result | undefined> => {
-        let file;
-        try {
-          file = await open(target, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
-        } catch (error) {
-          if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
-          throw error;
-        }
-        try {
-          const stat = await file.stat();
-          if (!stat.isFile() || (stat.mode & 0o777) !== 0o600 || stat.size < 1 || stat.size > 1024) {
-            throw Error('CUG_WEBHOOK_RECEIPT_STORE_UNAVAILABLE');
-          }
-          const saved = asRecord(JSON.parse(await file.readFile('utf8')));
-          if (!saved || saved.version !== 1 || saved.deliveryId !== receipt.deliveryId
-            || typeof saved.payloadDigest !== 'string' || !/^[0-9a-f]{64}$/.test(saved.payloadDigest)) {
-            throw Error('CUG_WEBHOOK_RECEIPT_STORE_UNAVAILABLE');
-          }
-          await syncReceipt();
-          return saved.payloadDigest === receipt.payloadDigest && saved.event === receipt.event
-            && saved.action === receipt.action && saved.installationId === receipt.installationId
-            && saved.repositoryId === receipt.repositoryId ? 'duplicate' : 'conflict';
-        } finally {
-          await file.close();
-        }
+        const saved = await readCugRegisterRecord(target, receipt.deliveryId);
+        if (!saved) return undefined;
+        await syncReceipt();
+        return saved.payloadDigest === receipt.payloadDigest && saved.event === receipt.event
+          && saved.action === receipt.action && saved.installationId === receipt.installationId
+          && saved.repositoryId === receipt.repositoryId ? 'duplicate' : 'conflict';
       };
       try {
         const previous = await existing();
@@ -201,8 +166,7 @@ export function createCugWebhookRouter(deps: Dependencies) {
         res.sendStatus(204);
         return;
       }
-      const result = await deps.record({
-        version: 1,
+      const result = await deps.record(makeCugRegisterRecord({
         deliveryId: req.get('X-GitHub-Delivery')!.toLowerCase(),
         event,
         action: payload.action,
@@ -210,7 +174,7 @@ export function createCugWebhookRouter(deps: Dependencies) {
         repositoryId: PILOT_REPOSITORY_ID,
         receivedAt: new Date().toISOString(),
         payloadDigest: createHash('sha256').update(req.body).digest('hex')
-      });
+      }, payload.repository));
       res.sendStatus(result === 'stored' ? 202 : result === 'duplicate' ? 204 : 409);
     } catch {
       // Never expose or log the request body, headers, secret or a filesystem path.

@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import test, { type TestContext } from 'node:test';
 import express from 'express';
 import { CUG_WEBHOOK_PATH, createCugWebhookReceiptStore, createCugWebhookRouter, readCugWebhookSecret } from '../src/cug/webhook.js';
+import { listCugRegister } from '../src/cug/discoveryRegister.js';
 
 const key = 'ab'.repeat(32);
 const id = '12345678-1234-1234-1234-123456789abc';
@@ -13,7 +14,12 @@ const installation = 987654321;
 const sample = {
   action: 'renamed',
   installation: { id: installation, app_id: 5417646 },
-  repository: { id: 1429189311, name: 'fixture-raw-value' }
+  repository: {
+    id: 1429189311, name: 'universal-agent-engineering-system',
+    owner: { id: 299685687, login: 'chainsolutions-wealthtech', ignored: 'not-persisted' },
+    html_url: 'https://github.com/chainsolutions-wealthtech/universal-agent-engineering-system',
+    description: 'fixture-raw-value'
+  }
 };
 
 function sign(raw: string) {
@@ -117,13 +123,25 @@ test('persists a minimal receipt before acknowledging, deduplicates across resta
   const content = await readFile(path, 'utf8');
   const saved = JSON.parse(content);
   assert.deepEqual(Object.keys(saved).sort(), [
-    'action', 'deliveryId', 'event', 'installationId', 'payloadDigest', 'receivedAt', 'repositoryId', 'version'
+    'action', 'deliveryId', 'event', 'installationId', 'observation', 'payloadDigest',
+    'receivedAt', 'repositoryId', 'suggestion', 'version'
   ]);
   assert.equal(saved.repositoryId, sample.repository.id);
   assert.equal(saved.event, 'repository');
   assert.equal(saved.action, 'renamed');
   assert.equal(saved.installationId, installation);
-  assert(!content.includes(sample.repository.name));
+  assert.equal(saved.version, 2);
+  assert.deepEqual(saved.observation.repository, {
+    githubRepositoryId: sample.repository.id, githubOwnerId: sample.repository.owner.id,
+    ownerLogin: sample.repository.owner.login, name: sample.repository.name, htmlUrl: sample.repository.html_url
+  });
+  assert.equal(saved.observation.verification, 'PENDING_GITHUB_API');
+  assert.equal(saved.observation.extensions['github.installations.v1'].reportingAppId, 5417646);
+  assert.equal(saved.observation.extensions['github.installations.v1'].reportingAppName, 'CUG');
+  assert.equal(saved.observation.extensions['github.installations.v1'].coverageOfOtherApps, 'UNVERIFIED');
+  assert.deepEqual(saved.suggestion, { kind: 'REFRESH_GITHUB_INVENTORY', status: 'PROPOSED', automaticExecution: false });
+  assert(!content.includes('fixture-raw-value'));
+  assert(!content.includes('not-persisted'));
   assert.equal((await lstat(path)).mode & 0o777, 0o600);
 });
 
@@ -143,6 +161,45 @@ test('accepts installation lifecycle and repository-scope events without retaini
     }), { 'X-GitHub-Event': event, 'X-GitHub-Delivery': id.slice(0, -1) + index })).status, 202);
   }
   assert.equal((await readdir(f.directory)).length, 2);
+  const page = await listCugRegister(f.directory);
+  assert(page.records.every((row) => row.version === 2 && row.observation.repository === null));
+});
+
+test('projects incomplete or non-canonical metadata as unknown and keeps an ID-only trace', async (t) => {
+  const f = await fixture(t);
+  const raw = JSON.stringify({ ...sample, repository: {
+    ...sample.repository, html_url: 'https://example.org/secret-path',
+    serverPath: '/should/not/be/stored', action: 'provision'
+  }});
+  assert.equal((await f.post(raw)).status, 202);
+  const { records } = await listCugRegister(f.directory);
+  assert.equal(records.length, 1);
+  const row = records[0]!;
+  assert.equal(row.version === 2 && row.observation.repository, null);
+  assert(!JSON.stringify(row).includes('secret-path'));
+  assert(!JSON.stringify(row).includes('should/not'));
+});
+
+test('lists paginated records across versions and preserves v1 replay compatibility', async (t) => {
+  const f = await fixture(t);
+  assert.deepEqual(await listCugRegister(f.directory), { records: [], nextCursor: null });
+  assert.equal((await f.post()).status, 202);
+  const path = join(f.directory, id + '.json');
+  const saved = JSON.parse(await readFile(path, 'utf8'));
+  const { observation: _observation, suggestion: _suggestion, ...legacy } = saved;
+  await writeFile(path, JSON.stringify({ ...legacy, version: 1 }));
+  f.reopenStore();
+  assert.equal((await f.post()).status, 204);
+  const id2 = id.slice(0, -1) + 'd';
+  assert.equal((await f.post(undefined, { 'X-GitHub-Delivery': id2 })).status, 202);
+  const page = await listCugRegister(f.directory, { limit: 1 });
+  assert.deepEqual(page.records.map((row) => row.version), [1]);
+  assert.equal(page.nextCursor, id);
+  const next = await listCugRegister(f.directory, { after: page.nextCursor! });
+  assert.deepEqual(next.records.map((row) => row.version), [2]);
+  assert.equal(next.nextCursor, null);
+  await assert.rejects(listCugRegister(f.directory, { after: '../' }));
+  await assert.rejects(listCugRegister(f.directory, { limit: 201 }));
 });
 
 test('fails closed if the operator secret, installation ID, or private storage is unavailable', async (t) => {

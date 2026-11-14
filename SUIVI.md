@@ -1,5 +1,10 @@
 # SUIVI.md
 
+## 2026-11-14 — Webhook CUG, registre d'entrée extensible (#403)
+
+- **Suite du mandat** : réutilise [la même PR #403](https://github.com/Patricked-code/MCP/pull/403) après CI du premier lot. Reçus v1 compatibles, observations v2 typées et suggestion d'inventaire sans effet. Les métadonnées du pilote sont signalées non vérifiées par API.
+- **NEXT_ACTION** : valider la CI du nouvel exact HEAD et la revue, puis attester la réception sur S1 avant de raccorder le collecteur et son candidat GitRegistry. Aucune décision de provisioning ne dérive du webhook seul.
+
 ## 2026-11-14 — Webhook CUG, premier lot de réception
 
 - **Origine** : mandat propriétaire pour la collecte GitHub, distinct de l'admission CUG/GRT [#401](https://github.com/Patricked-code/MCP/pull/401). Préflight MCP lecture seule à 08:40 Paris : GitHub, S1 et runtime alignés sur `9e6223f51d320c7bf80a15a7229174db8c655011`. Ce constat est historique et ne vaut pas attestation de ce lot.
