@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "recordType": "MCP_SELF_CANONICAL_PROJECT_ENTRY_PROJECTION",
+  "status": "CANDIDATE_DOCUMENTARY_BINDING",
+  "projectUid": "WT-PROJECT-MCP-001",
+  "projectKind": "MCP_SELF",
+  "repository": "Patricked-code/MCP",
+  "officialBranch": "main",
+  "runtimeProduct": "wealthtech_ssh_bridge",
+  "serverId": "s1",
+  "serverRoot": "/opt/apps/wealthtech-mcp-ssh-bridge",
+  "sourceAuthority": "GitHub and existing GitRegistry; this is a read-only reference projection, not a project binding",
+  "documentationRoot": "docs/governance/canonical-project/README.md",
+  "historicalSource": "memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md",
+  "historicalMasterPlan": "memory/LOOP_ENGINEERING_WEALTHTECH_MASTER_PLAN_20260702.md",
+  "historicalPlaybook": "memory/LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md",
+  "historicalTraceability": "memory/MATRICE_TRACABILITE_SOURCES_EXIGENCES_TRACKS_20260702.md",
+  "originalDocumentOrder": [
+    "GPT.md",
+    "SUIVI.md",
+    "README.md",
+    "README_DEV.md",
+    "ROADMAP.md",
+    "TODO.md",
+    "TASKS.md",
+    "CODE_REVIEW.md",
+    "CHANGELOG.md",
+    "DEPLOYMENT_PRODUCTION.md",
+    "ARCHITECTURE.md",
+    "DATABASE.md",
+    "MIGRATION.md",
+    "DOCKER.md",
+    "SECURITY.md",
+    "AGENTS_ARCHITECTURE.md",
+    "AI_SKILLS.md"
+  ],
+  "requiredAdditionalHistoricalDocuments": [
+    "KUBERNETES_FUTURE.md",
+    "MONITORING.md",
+    "BACKUP_RESTORE.md"
+  ],
+  "entryWorkflow": [
+    "IDENTIFY_PROJECT",
+    "REVALIDATE_GITHUB_IDENTITY_AND_PERMISSIONS",
+    "READ_CURRENT_INTAKE",
+    "LOAD_FOUNDING_DOCUMENTS",
+    "LOAD_CANONICAL_REGISTRY_INDEXES",
+    "DECIDE_IF_MCP_LIVE_OBSERVATION_REQUIRED",
+    "RECONCILE_GITHUB_S1_RUNTIME_IF_RELEVANT",
+    "DISCOVER_ACCOUNTS_AND_CAPABILITIES_WITH_SCOPED_ACCESS",
+    "RECOVER_WORK_CONTINUITIES",
+    "VERIFY_COLLISIONS_AND_CONFLICTS",
+    "STOP_FOR_OWNER_WORK_CHOICE"
+  ],
+  "registryReferences": [
+    {
+      "id": "GOVERNANCE",
+      "path": "AGENTS.md",
+      "authority": "GitHub",
+      "classification": "ACTIVE_DOCUMENT"
+    },
+    {
+      "id": "FOUNDATIONS",
+      "path": "docs/governance/canonical-project/09-foundations/FOUNDING_DOCUMENTS.md",
+      "authority": "GitHub",
+      "classification": "DOCUMENTARY_CANDIDATE"
+    },
+    {
+      "id": "ORCHESTRATION",
+      "path": "docs/governance/canonical-project/10-orchestration/PROJECT_SELF_WORKFLOW.md",
+      "authority": "GitHub",
+      "classification": "DOCUMENTARY_CANDIDATE"
+    },
+    {
+      "id": "AUTHORIZATION",
+      "path": "docs/governance/canonical-project/10-orchestration/AUTHORIZATION_CONTRACT.md",
+      "authority": "GitHub",
+      "classification": "DOCUMENTARY_CANDIDATE"
+    },
+    {
+      "id": "CONTINUITY",
+      "path": "docs/governance/canonical-project/12-continuity/DEEP_CONTINUITY_AND_HANDOFF.md",
+      "authority": "GitHub",
+      "classification": "DOCUMENTARY_CANDIDATE"
+    },
+    {
+      "id": "GIT_REGISTRY",
+      "path": "data/mcp-git-registry.json",
+      "authority": "GitRegistry",
+      "classification": "LIVE_EVIDENCE_REQUIRED"
+    },
+    {
+      "id": "OPERATIONAL_MEMORY",
+      "path": "src/operationalMemory/",
+      "authority": "Operational Memory",
+      "classification": "LIVE_EVIDENCE_REQUIRED"
+    },
+    {
+      "id": "LIVE_STATE",
+      "path": "src/liveState/",
+      "authority": "Live State",
+      "classification": "LIVE_EVIDENCE_REQUIRED"
+    }
+  ],
+  "discoveryTools": [
+    "get_project_context",
+    "github_account_inventory",
+    "github_org_inventory",
+    "github_durable_accounts_status",
+    "github_get_repository_state",
+    "github_registry_v2_dry_run",
+    "mcp_get_current_state_inventory",
+    "mcp_get_live_state",
+    "mcp_e2_list_continuities"
+  ],
+  "operationCatalog": [
+    {
+      "operation": "READ_DOCUMENTS",
+      "classification": "READ_ONLY_IF_AUTHORIZED",
+      "granted": false
+    },
+    {
+      "operation": "DISCOVER_GITHUB_ACCOUNTS",
+      "classification": "SCOPED_READ_ONLY_IF_AUTHORIZED",
+      "granted": false
+    },
+    {
+      "operation": "OBSERVE_S1_RUNTIME",
+      "classification": "RUNTIME_READ_ONLY_IF_AUTHORIZED",
+      "granted": false
+    },
+    {
+      "operation": "WRITE_BRANCH",
+      "classification": "GITHUB_WRITE_REQUIRES_INDEPENDENT_ADMISSION",
+      "granted": false
+    },
+    {
+      "operation": "CLAIM_GOVERNED_TASK",
+      "classification": "REQUIRES_SESSION_TASK_LOCK_ADMISSION",
+      "granted": false
+    },
+    {
+      "operation": "MERGE_MAIN",
+      "classification": "REQUIRES_CI_REVIEWS_PROTECTED_MERGE",
+      "granted": false
+    },
+    {
+      "operation": "DEPLOY_MCP",
+      "classification": "REQUIRES_OIDC_GOVERNED_DEPLOY",
+      "granted": false
+    }
+  ],
+  "authorizationGranted": false,
+  "runtimeBindingVerified": false,
+  "sessionOrTaskCreated": false,
+  "liveStateAttested": false,
+  "applicationDeployScope": false
+}

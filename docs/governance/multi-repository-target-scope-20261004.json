@@ -143,6 +143,11 @@
       "detail": "Live State observes the MCP runtime/repository alignment; the target project is an additive TargetContext."
     },
     {
+      "path": "src/projectIdentity/canonicalProjectEntry.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "MCP_SELF canonical project entry is a read-only documentary projection bundled with the exact MCP image; its literal Patricked-code/MCP denotes the bridge project itself and never grants GitHub, runtime, session or cross-repository permissions."
+    },
+    {
       "path": "src/tools/e2Activation.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Owner explicitly selected E2 entry for Patricked-code/MCP only; auto-triggered S1 Git correction is guarded and cannot write third-party repositories or bypass E1/CI/deploy."

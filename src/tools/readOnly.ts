@@ -27,6 +27,7 @@ import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 import { extendProjectContextWithUniversalCapabilities } from '../provisioning/universalCapabilityDiscovery.js';
 import { probeExistingAdminReadCapabilities } from '../provisioning/universalAdminLiveProbe.js';
 import { EXTERNAL_GOVERNED_RECOVERY_FULL_NAME } from '../governedContext/githubFirstOperationalContinuity.js';
+import { loadCanonicalMcpProjectEntry } from '../projectIdentity/canonicalProjectEntry.js';
 
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
@@ -48,6 +49,7 @@ export function registerReadOnlyTools(server: McpServer): void {
     }, registered.map(tool => tool.name), registered, liveEvidence);
     return asText(JSON.stringify({
       ...project,
+      canonicalMcpProject: await loadCanonicalMcpProjectEntry(),
       selectableMaintenanceMethod: {
         id: 'EXTERNAL_GOVERNED_RECOVERY',
         fullName: EXTERNAL_GOVERNED_RECOVERY_FULL_NAME,

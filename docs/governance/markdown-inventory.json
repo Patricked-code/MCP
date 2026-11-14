@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 231,
+  "trackedCount": 254,
   "categories": {
     "canonical": 7,
-    "documentation": 80,
+    "documentation": 103,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -232,6 +232,98 @@
     },
     {
       "path": "docs/governance/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/00-project/IDENTITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/01-authorities/REGISTRY_OF_REGISTRIES.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/01-authorities/SOURCE_PRIORITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/02-design/DESIGN_TRACEABILITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/03-planning/DEPENDENCIES.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/04-continuity/HIERARCHY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/04-continuity/DEEP_CONVERSATION_NODE_INDEX.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/04-continuity/POINT_OF_REPRISE_TEMPLATE.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/04-continuity/ROOTS_AND_CHECKPOINTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/05-execution/PROOF_CHAIN.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/06-history/HISTORY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/07-entry/GITHUB_AND_MCP_ENTRY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/08-assurance/ADOPTION_GATES.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/08-assurance/CONTINUITY_HANDOFF.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/09-foundations/FOUNDING_DOCUMENTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/09-foundations/LOOP_ENGINEERING_METHOD.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/09-foundations/ORIGINAL_READING_ORDER.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/10-orchestration/AUTHORIZATION_CONTRACT.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/10-orchestration/PROJECT_SELF_WORKFLOW.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/11-persistence/CAPABILITY_INVENTORY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/11-persistence/S1_GITHUB_INDEXATION.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/12-continuity/DEEP_CONTINUITY_AND_HANDOFF.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/canonical-project/README.md",
       "category": "documentation"
     },
     {
