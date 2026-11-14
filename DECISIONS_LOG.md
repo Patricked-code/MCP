@@ -1,5 +1,9 @@
 # DECISIONS_LOG.md
 
+## 2026-11-14 — Séparer l'instantané CUG du rattachement serveur (#404)
+
+**Décision** : le collecteur pilote écrit un instantané privé d'identité et de couverture GitHub, mais ne modifie pas le GitRegistry canonique. Une correspondance par nom est un candidat à réconcilier, jamais une preuve de remote, de chemin réel, de domaine Plesk ou d'autorisation de provisioning. L'exécution reste une commande opérateur distincte du webhook et nécessite une installation CUG attestée. Les tests simulés ne certifient pas le pilote sur S1. [Contrat et limites](docs/governance/cug-webhook-receiver.md).
+
 ## 2026-11-14 — Séparer la réception CUG de l'inventaire et du provisionnement
 
 La livraison signée est une observation, pas une autorisation. Le premier lot ne conserve que les reçus minimaux du pilote UAES. Le rapprochement GitHub authentifié et la proposition GitRegistry sont des étapes distinctes. Le secret HMAC ne remplace pas la clé privée CUG et la route ne réutilise pas l'admission OAuth ni le pilote `/gouvern`. [Contrat](docs/governance/cug-webhook-receiver.md).

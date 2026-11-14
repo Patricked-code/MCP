@@ -32,3 +32,11 @@ La lecture interne `listCugRegister` est bornée et paginée par ID de livraison
 Le prochain raccordement vérifie le dépôt auprès de l'API GitHub, reconstruit une fiche courante par ID stable à partir de preuves fraîches et propose un candidat au **GitRegistry existant**. Un enrichissement peut ajouter les apps confirmées, leurs App IDs et leurs IDs d'installation, avec une couverture explicite. Absence de preuve ne signifie pas absence d'app.
 
 Pour le provisioning, cette fiche sera un **input**. L'action, sa cible, les preuves serveur, l'idempotence et l'autorisation restent à résoudre dans le flux Governed Deploy Applications et les registres existants. Ni un événement `repository.created`, ni un nom de dépôt, ni un ID d'installation ne suffit à créer un répertoire, lier S1/S2 ou exécuter un déploiement. Aucune seconde file de tâches n'est créée.
+
+## Collecteur pilote opérateur — aucune activation automatique
+
+Sur une version déployée et autorisée qui contient aussi ce lot, la commande à lancer **dans le conteneur MCP** est `node dist/src/cug/runPilotInventory.js`. Elle ne dépend ni d'une livraison webhook ni de l'activation de l'admission CUG. Le pilote est fixé sur UAES et utilise le même ID d'installation attesté, plus la clé CUG protégée `/app/secrets/cug-app-private.pem` en mode `0600`. Aucun nouveau droit GitHub, Plesk ou SSH n'est demandé par le code.
+
+Le collecteur obtient un jeton CUG limité au dépôt pilote et en lecture. Il exige une preuve d'appartenance à l'installation en plus de la réponse de l'API de dépôt. Un dépôt public visible à lui seul n'est pas une preuve de couverture. Renommage, transfert ou réponse ambiguë ne produisent pas une nouvelle fiche pilote. Les autres apps restent non vérifiées et la couverture globale partielle.
+
+Le résultat est écrit en local dans `/app/data/cug-pilot-inventory`, avec une référence de preuve, une empreinte de l'état observé du GitRegistry si lisible et un décompte des correspondances de nom. Un match de nom n'atteste ni le dépôt serveur, ni son remote, ni le chemin réel, ni un domaine Plesk. Le code n'écrit pas le GitRegistry canonique. Le rapprochement serveur, les autorisations d'écriture Plesk et la création de sous-domaines restent hors de ce lot.

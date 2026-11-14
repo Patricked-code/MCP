@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-11-14 — Collecteur pilote d'inventaire CUG (#404)
+
+- Ajoute la commande opérateur `node dist/src/cug/runPilotInventory.js` et le stockage privé d'instantanés dans `/app/data/cug-pilot-inventory`. Identité UAES et couverture CUG vérifiées via GitHub lors de l'exécution, autres apps indiquées non vérifiées. Rapprochement GitRegistry sans écriture ni lancement automatique. Le pilote en production n'est pas encore attesté. [Runbook](docs/governance/cug-webhook-receiver.md).
+
 ## 2026-11-14 — Réception webhook CUG (pilote UAES)
 
 - Ajoute une route HTTPS désactivée par défaut, validation HMAC du corps brut et reçus locaux dédupliqués. Aucun appel GitHub, effet GRT, écriture GitRegistry ou lancement de workflow. [Runbook de mise en service](docs/governance/cug-webhook-receiver.md).

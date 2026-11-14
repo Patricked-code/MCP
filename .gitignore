@@ -46,6 +46,7 @@ secrets/
 
 # MCP local backups / runtime-only folders
 /data/cug-webhook-receipts/
+/data/cug-pilot-inventory/
 .mcp_backups/
 mcp_safe_backups/
 wealthtech_project_memory/

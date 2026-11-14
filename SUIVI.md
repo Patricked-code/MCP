@@ -1,5 +1,11 @@
 # SUIVI.md
 
+## 2026-11-14 — Collecteur d'inventaire CUG, pilote UAES (#404)
+
+- **Périmètre** : la [PR #404](https://github.com/Patricked-code/MCP/pull/404) ajoute une commande opérateur indépendante du webhook. Elle vérifie l'appartenance du dépôt UAES à l'installation CUG, conserve un instantané local privé et propose un rapprochement en lecture avec le GitRegistry existant. Les autres GitHub Apps restent non vérifiées.
+- **Preuves** : collecteur testé avec des réponses GitHub simulées et [CI de la base de revue](https://github.com/Patricked-code/MCP/actions/runs/43575805313) verte sur `6dfa572b0542ab7837680ba72245a8adb322774f`. Le [déploiement attesté de #403](https://github.com/Patricked-code/MCP/actions/runs/43575654205) concerne le récepteur, pas le collecteur. Ni exécution réelle du collecteur, ni livraison GitHub pilote attestées.
+- **NEXT_ACTION** : vérifier la CI et les fils de revue du HEAD exact de #404. Une fois le collecteur déployé, exécuter le [pilote opérateur](docs/governance/cug-webhook-receiver.md#collecteur-pilote-opérateur--aucune-activation-automatique) avec l'installation et la clé CUG attestées. Aucun rattachement S1/S2 ni droit de provisioning n'est déduit du rapprochement.
+
 ## 2026-11-14 — Webhook CUG, registre d'entrée extensible (#403)
 
 - **Suite du mandat** : réutilise [la même PR #403](https://github.com/Patricked-code/MCP/pull/403) après CI du premier lot. Reçus v1 compatibles, observations v2 typées et suggestion d'inventaire sans effet. Les métadonnées du pilote sont signalées non vérifiées par API.
