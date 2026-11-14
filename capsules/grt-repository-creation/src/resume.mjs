@@ -17,7 +17,17 @@ const centralActiveKinds = new Map([
   ['WAITING_FOR_PLAN_APPROVAL', new Set(['PLAN_APPROVAL'])],
   ['EXECUTING_PREPARATION', new Set(['ACTION_REQUEST'])],
 ]);
-const localKinds = new Set(['QUESTION', 'PLAN_APPROVAL', 'CREDENTIAL_GATE', 'MCP_DISCOVERY', 'APPLY_BASELINE']);
+const localActiveKinds = new Map([
+  ['WAITING_FOR_ANSWER', new Set(['QUESTION'])],
+  ['WAITING_FOR_SETUP_ANSWER', new Set(['QUESTION'])],
+  ['WAITING_FOR_BASELINE_APPROVAL', new Set(['PLAN_APPROVAL'])],
+  ['WAITING_FOR_DISCOVERY_APPROVAL', new Set(['PLAN_APPROVAL'])],
+  ['WAITING_FOR_SETUP_APPROVAL', new Set(['PLAN_APPROVAL'])],
+  ['MCP_CREDENTIAL_REQUIRED', new Set(['CREDENTIAL_GATE'])],
+  ['MCP_DISCOVERY_REQUIRED', new Set(['MCP_DISCOVERY'])],
+  ['MCP_DISCOVERY_FAILED_RETRYABLE', new Set(['MCP_DISCOVERY'])],
+  ['APPLYING_BASELINE', new Set(['APPLY_BASELINE'])],
+]);
 const unavailable = () => ({ status: 'UNAVAILABLE' });
 const blocked = () => ({ status: 'BLOCKED', reason: 'INCONSISTENT_EVIDENCE' });
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -125,11 +135,9 @@ export async function resumeRepositoryCreation(input, ports) {
           || handoff.project_continuity.github_repository_id !== repository.id
           || !sameRepo(handoff.project_continuity.github_repository, repository.name)) return blocked();
     }
-    const active = new Set(['WAITING_FOR_ANSWER', 'WAITING_FOR_BASELINE_APPROVAL', 'WAITING_FOR_SETUP_ANSWER',
-      'APPLYING_BASELINE', 'MCP_CREDENTIAL_REQUIRED', 'MCP_DISCOVERY_REQUIRED', 'WAITING_FOR_SETUP_APPROVAL',
-      'WAITING_FOR_DISCOVERY_APPROVAL', 'MCP_DISCOVERY_FAILED_RETRYABLE']);
-    if (!held && !terminal && !active.has(s.status)) return blocked();
-    const cp = checkpoint(local, 'GRT_LOCAL', localKinds, {
+    const kinds = localActiveKinds.get(s.status);
+    if (!held && !terminal && !kinds) return blocked();
+    const cp = checkpoint(local, 'GRT_LOCAL', kinds, {
       terminal: held || terminal,
       matchPhase: !['BASELINE_APPROVAL', 'MCP_DISCOVERY_APPROVAL', 'SETUP_APPROVAL'].includes(s.phase),
     });

@@ -160,3 +160,9 @@ test('a central question status never projects an action request',async()=>{
     next_request:{kind:'ACTION_REQUEST',id:'Q_ARCH'}};
   assert.deepEqual(await get(state).result,{status:'BLOCKED',reason:'INCONSISTENT_EVIDENCE'});
 });
+
+test('a local question status never projects a baseline write action',async()=>{
+  const state={...fixture.local,status:'WAITING_FOR_ANSWER',phase:'Q_AGENT',
+    next_request:{kind:'APPLY_BASELINE',id:'Q_AGENT'}};
+  assert.deepEqual(await get(fixture.after,local(state)).result,{status:'BLOCKED',reason:'INCONSISTENT_EVIDENCE'});
+});
