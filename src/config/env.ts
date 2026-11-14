@@ -33,6 +33,8 @@ const EnvSchema = z.object({
   MCP_PLESK_ALLOWED_PARENTS: z.string().default(''),
   MCP_CUG_ADMISSION_ENABLED: EnvBooleanSchema.default(false),
   MCP_CUG_GRT_SUBMISSION_ENABLED: EnvBooleanSchema.default(false),
+  MCP_CUG_WEBHOOK_ENABLED: EnvBooleanSchema.default(false),
+  MCP_CUG_WEBHOOK_PILOT_INSTALLATION_ID: z.string().default(''),
   MCP_GOUVERN_PILOT_ENABLED: EnvBooleanSchema.default(false),
   MCP_GRT_GITHUB_APP_ID: z.string().default(''),
   MCP_GRT_GITHUB_INSTALLATION_ID: z.string().default(''),

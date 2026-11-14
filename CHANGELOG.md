@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-11-14 — Réception webhook CUG (pilote UAES)
+
+- Ajoute une route HTTPS désactivée par défaut, validation HMAC du corps brut et reçus locaux dédupliqués. Aucun appel GitHub, effet GRT, écriture GitRegistry ou lancement de workflow. [Runbook de mise en service](docs/governance/cug-webhook-receiver.md).
+
 ## 2026-11-14 — CUG/GRT : questionnaire CASE 1 et reprise (#401)
 
 - Relie le choix du compte, le formulaire et le dossier central GRT. Ajoute une soumission opt-in sur une cible exacte et une lecture de reprise, sans session de code, fusion ni déploiement implicites.

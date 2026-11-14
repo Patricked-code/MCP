@@ -45,6 +45,7 @@ secrets/
 *.inspect.*
 
 # MCP local backups / runtime-only folders
+/data/cug-webhook-receipts/
 .mcp_backups/
 mcp_safe_backups/
 wealthtech_project_memory/
