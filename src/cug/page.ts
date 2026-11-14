@@ -41,7 +41,7 @@ let bearer='',appId='',formRef=''
 function show(value){q('result').textContent=value}
 window.addEventListener('pagehide',()=>{bearer=''})
 async function send(action, body){
-  const res=await fetch('/repo-template/auth/'+action,{method:'POST',credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',
+  const res=await fetch('/repo-template/auth/'+action,{method:'POST',credentials:action==='select'?'same-origin':'omit',cache:'no-store',referrerPolicy:'no-referrer',
     headers:{'Content-Type':'application/json',Authorization:'Bearer '+bearer},body:JSON.stringify({...body,appId,request})})
   if(!res.ok)throw Error('REFUSED')
   return res.json()

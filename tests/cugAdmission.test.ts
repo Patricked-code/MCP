@@ -73,6 +73,7 @@ test('the dedicated Express page has two fields and rejects foreign origin and e
     assert.equal([...html.matchAll(/<input\b/g)].length,5);
     assert.match(html,/id="questionnaire" hidden/);
     assert.match(html,/Je demande à GRT/);
+    assert.ok(html.includes("credentials:action==='select'?'same-origin':'omit'"), 'browser accepts the questionnaire cookie on account selection');
     assert.match(html,/Bearer/);
     assert.doesNotMatch(html,/Client ID/);
     const started=await f.service.begin(credential);
