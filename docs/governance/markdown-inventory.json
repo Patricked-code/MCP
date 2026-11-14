@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 232,
+  "trackedCount": 233,
   "categories": {
     "canonical": 7,
-    "documentation": 81,
+    "documentation": 82,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -216,6 +216,10 @@
     },
     {
       "path": "docs/governance/cug-grt-capsule.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/cug-webhook-receiver.md",
       "category": "documentation"
     },
     {

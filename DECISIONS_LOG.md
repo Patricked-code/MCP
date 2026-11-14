@@ -1,5 +1,9 @@
 # DECISIONS_LOG.md
 
+## 2026-11-14 — Séparer la réception CUG de l'inventaire et du provisionnement
+
+La livraison signée est une observation, pas une autorisation. Le premier lot ne conserve que les reçus minimaux du pilote UAES. Le rapprochement GitHub authentifié et la proposition GitRegistry sont des étapes distinctes. Le secret HMAC ne remplace pas la clé privée CUG et la route ne réutilise pas l'admission OAuth ni le pilote `/gouvern`. [Contrat](docs/governance/cug-webhook-receiver.md).
+
 ## 2026-11-14 — CUG/GRT : identité, admission et continuité séparées (#401)
 
 **Décision** : l’admission web temporaire ne devient ni jeton OAuth cumulatif, ni droit d’exécution, ni identité de projet. GRT attribue l’identifiant projet durable. Le dossier peut être relu depuis GitHub ou l’outil MCP. Un dispatch GitHub accepté ne prouve pas que GRT a créé le dossier ni le dépôt.
