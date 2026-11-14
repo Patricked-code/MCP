@@ -705,6 +705,18 @@
       "note": "Additive S1/S2 Plesk subdomain creation using existing web-consent and SSH facilities. No approval by an agent instruction or a bare allow_write flag."
     },
     {
+      "name": "POST /repo-template/auth/verify",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "CUG admission only; no session, repository or provisioning write."
+    },
+    {
+      "name": "POST /repo-template/auth/select",
+      "kind": "HTTP_ROUTE",
+      "class": "NOT_PROVISIONING",
+      "note": "CUG admission only; no session, repository or provisioning write."
+    },
+    {
       "name": "POST /gouvern/deploy",
       "kind": "HTTP_ROUTE",
       "class": "COMPOSABLE",

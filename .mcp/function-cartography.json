@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "0017b2ffda39f3bee137690ffe41ea64c08b5cab51afe4561785fd4918ce5fba",
-  "registeredToolCount": 150,
-  "readOnlyToolCount": 93,
+  "catalogueDigest": "5b31cb611785de7967bf0d0da814b12b6e4c18491720c312ecb1125bed4f19cb",
+  "registeredToolCount": 151,
+  "readOnlyToolCount": 94,
   "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
@@ -4140,6 +4140,23 @@
         "additionalProperties": false
       },
       "contractDigest": "6acc514dc0f567cb8accd1a8cef87539889e7f71bbde61db8b6e7b1e096116bb"
+    },
+    {
+      "name": "mcp_start_governed_request_auth",
+      "title": null,
+      "description": "Ouvre l’entrée CUG/GRT sans créer de session, tâche ou dépôt.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "1ff8114a887b06a14be4bb613fd63b2ba6aace962e7cf9557286e41d06cc25c5"
     },
     {
       "name": "mcp_sync_from_github_s1",

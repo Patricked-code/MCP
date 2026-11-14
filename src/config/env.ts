@@ -31,6 +31,7 @@ const EnvSchema = z.object({
   ENABLE_WRITE_TOOLS: EnvBooleanSchema.default(false),
   MCP_PLESK_PROVISIONING_ENABLED: EnvBooleanSchema.default(false),
   MCP_PLESK_ALLOWED_PARENTS: z.string().default(''),
+  MCP_CUG_ADMISSION_ENABLED: EnvBooleanSchema.default(false),
   MCP_GOUVERN_PILOT_ENABLED: EnvBooleanSchema.default(false),
   MCP_GRT_GITHUB_APP_ID: z.string().default(''),
   MCP_GRT_GITHUB_INSTALLATION_ID: z.string().default(''),

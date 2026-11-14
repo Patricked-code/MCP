@@ -1,5 +1,9 @@
 # DECISIONS_LOG.md
 
+## 2026-11-14 — Admission CUG séparée du pilote et des sessions (#401)
+
+**Décision** : adopter un point d’entrée MCP isolé et désactivé par défaut. Un jeton OAuth, son client admis et une installation vérifiée bornent l’accès. Le secret MCP partagé, une demande GRT et une session gouvernée sont distincts. Aucune création n’est admise dans ce lot. [Contrat et limites](docs/governance/cug-grt-capsule.md).
+
 ## 2026-11-14 — Isoler le raccordement CUG/GRT (#401)
 
 **Décision** : conserver GRT comme autorité du workflow et des reçus. La capsule ne projette qu’un état de lecture. Le pilote `/gouvern` et les sessions existantes sont hors périmètre. Aucun montage en production à ce stade.

@@ -1,5 +1,10 @@
 # SUIVI.md
 
+## 2026-11-14 — Raccordement réel de l’admission CUG à MCP (#401)
+
+- **Continuité** `WT-MCP-CUG-GRT-20261114-01`. Le serveur intègre le nouveau point d’entrée MCP et la page App ID + Bearer. Fonction désactivée par défaut. Pas de session gouvernée, de création GRT ou de mutation de `/gouvern`.
+- **NEXT_ACTION** : valider la CI et la revue exactes, puis déployer par le circuit existant après admission et vérifier séparément le profil protégé CUG et son test réel. [Contrat et retrait](docs/governance/cug-grt-capsule.md).
+
 ## 2026-11-14 — Capsule CUG/GRT, reprise isolée (#401)
 
 - **Continuité** `WT-MCP-CUG-GRT-20261114-01`. Branche `mcp/cug-grt-capsule-20261114`. [Contrat et point de reprise](docs/governance/cug-grt-capsule.md).

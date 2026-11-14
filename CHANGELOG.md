@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-11-14 — Admission CUG raccordée au serveur (#401, non déployée)
+
+- Ajoute l’appel MCP et la page dédiée, liés au jeton OAuth exact. La vérification GitHub d’une installation reste en lecture seule. Activation explicite et profil opérateur séparé. [Contrat CUG/GRT](docs/governance/cug-grt-capsule.md).
+
 ## 2026-11-14 — Capsule CUG/GRT isolée (#401, non déployée)
 
 - Ajout d’une projection de reprise GRT en lecture seule et de ses tests de non-régression. Autorisation avant lecture, rapprochement du dépôt, du SHA, du handoff et du reçu.

@@ -6,6 +6,8 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { env } from './config/env.js';
 import { requireBearerToken } from './auth.js';
+import { createCugRouter, registerCugAdmissionTool } from './cug/admission.js';
+import { cugAdmission, cugEnabled, cugOrigin } from './cug/wiring.js';
 import {
   isSameOriginSubmission,
   issueWebConsentTicket,
@@ -364,6 +366,7 @@ export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   });
 
   registerReadOnlyTools(decorateRegistrationCatalogServer(server, 'read'));
+  registerCugAdmissionTool(decorateRegistrationCatalogServer(server, 'read'), cugAdmission);
   if(pairing){
     // Authenticated ToolExtra, not a browser field, is the only transport source.
     registerPleskWebMcpPairingTool(
@@ -499,6 +502,7 @@ export async function startHttpServer(): Promise<void> {
       maxOutputBytes: 32_768
     })
   }));
+  app.use(createCugRouter(cugAdmission, cugOrigin(), cugEnabled));
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: false, limit: '64kb' }));
 
