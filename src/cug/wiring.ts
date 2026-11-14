@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { env } from '../config/env.js';
 import { inspectOauthAccessToken, oauthIssuer } from '../oauth.js';
 import { probeGithubAppReadOnlyRepository } from '../github/installationLiveReadiness.js';
+import { observeGrtRequest, submitToGrt } from './questionnaire.js';
 import { CUG_APP_ID, createCugAdmission, type CugConfig } from './admission.js';
 
 const login = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/);
@@ -11,6 +12,11 @@ const configSchema=z.object({
   clientId:z.string().min(1).max(256),
   subject:z.string().min(1).max(256),
   identityKey:z.string().regex(/^[0-9a-f]{64}$/),
+  grt:z.object({
+    installationId:z.number().int().positive(),
+    allowedTarget:z.string().regex(/^[A-Za-z0-9][A-Za-z0-9-]{0,38}\/[A-Za-z0-9_.-]{1,100}$/),
+    expectedGrtMain:z.string().regex(/^[0-9a-f]{40}$/)
+  }).strict().optional(),
   accounts:z.array(z.object({
     login,installationId:z.number().int().positive(),
     probeRepository:z.string().regex(/^[A-Za-z0-9][A-Za-z0-9-]{0,38}\/[A-Za-z0-9_.-]{1,100}$/)
@@ -43,7 +49,7 @@ async function readProtected(file:string, max:number) {
     return buffer.subarray(0,offset).toString('utf8');
   }finally{await handle.close();}
 }
-async function getConfig():Promise<CugConfig|null> {
+async function getConfig():Promise<(CugConfig & Pick<z.infer<typeof configSchema>,'grt'>)|null> {
   if(!env.MCP_CUG_ADMISSION_ENABLED)return null;
   try {
     const parsed=configSchema.safeParse(JSON.parse(await readProtected('/app/secrets/cug-admission.json',16_384)));
@@ -61,6 +67,22 @@ export const cugAdmission=createCugAdmission({
   origin:cugOrigin(),
   getConfig,
   inspect:token=>inspectOauthAccessToken(token,'mcp:read'),
+  submit:async (input,target)=>{
+    if(!env.ENABLE_WRITE_TOOLS||!env.MCP_CUG_GRT_SUBMISSION_ENABLED)return 'NOT_AVAILABLE';
+    const config=await getConfig();
+    if(!config?.grt)return 'NOT_AVAILABLE';
+    return submitToGrt(input,{...config.grt,appId:CUG_APP_ID},target,{
+      readPrivateKey:()=>readProtected('/app/secrets/cug-app-private.pem',16_384),
+      fetchImpl:(input,init)=>fetch(input,{...init,redirect:'error'}),
+      now:()=>new Date()
+    });
+  },
+  observe:async (login,target,continuityId)=>{
+    const config=await getConfig();
+    if(!config?.grt||config.grt.allowedTarget.split('/')[0]!.toLowerCase()!==login.toLowerCase())
+      return {status:'UNCONFIRMED'};
+    return observeGrtRequest(target??config.grt.allowedTarget,config.grt,fetch,continuityId);
+  },
   probe:async account=>{
     const result=await probeGithubAppReadOnlyRepository({
       installation:{appId:CUG_APP_ID,installationId:account.installationId,accountLogin:account.login},

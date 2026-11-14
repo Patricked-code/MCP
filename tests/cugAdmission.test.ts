@@ -70,7 +70,9 @@ test('the dedicated Express page has two fields and rejects foreign origin and e
     assert.equal(page.status,200);
     assert.equal(page.headers.get('cache-control'),'no-store');
     const html=await page.text();
-    assert.equal([...html.matchAll(/<input\b/g)].length,2);
+    assert.equal([...html.matchAll(/<input\b/g)].length,5);
+    assert.match(html,/id="questionnaire" hidden/);
+    assert.match(html,/Je demande à GRT/);
     assert.match(html,/Bearer/);
     assert.doesNotMatch(html,/Client ID/);
     const started=await f.service.begin(credential);
@@ -129,7 +131,7 @@ test('an MCP sessionless client calls the actual tool registration without creat
     await client.connect(new StreamableHTTPClientTransport(new URL('http://127.0.0.1:'+address.port+'/mcp'),{
       requestInit:{headers:{Authorization:'Bearer '+credential}}
     }));
-    assert.deepEqual((await client.listTools()).tools.map(x=>x.name),['mcp_start_governed_request_auth']);
+    assert.deepEqual((await client.listTools()).tools.map(x=>x.name).sort(),['mcp_read_governed_request_checkpoint','mcp_start_governed_request_auth']);
     const result=await client.callTool({name:'mcp_start_governed_request_auth',arguments:{}});
     assert.equal(result.structuredContent?.status,'AUTHENTICATION_REQUIRED');
     assert.match(String(result.structuredContent?.authUrl), /^https:\/\/mcp\.example\.test\/repo-template\/auth#request=/);

@@ -1,5 +1,9 @@
 # DECISIONS_LOG.md
 
+## 2026-11-14 — CUG/GRT : identité, admission et continuité séparées (#401)
+
+**Décision** : l’admission web temporaire ne devient ni jeton OAuth cumulatif, ni droit d’exécution, ni identité de projet. GRT attribue l’identifiant projet durable. Le dossier peut être relu depuis GitHub ou l’outil MCP. Un dispatch GitHub accepté ne prouve pas que GRT a créé le dossier ni le dépôt.
+
 ## 2026-11-14 — Admission CUG séparée du pilote et des sessions (#401)
 
 **Décision** : adopter un point d’entrée MCP isolé et désactivé par défaut. Un jeton OAuth, son client admis et une installation vérifiée bornent l’accès. Le secret MCP partagé, une demande GRT et une session gouvernée sont distincts. Aucune création n’est admise dans ce lot. [Contrat et limites](docs/governance/cug-grt-capsule.md).

@@ -1,5 +1,10 @@
 # SUIVI.md
 
+## 2026-11-14 — CUG/GRT : questionnaire et reprise centrale (#401)
+
+- **Continuité** `WT-MCP-CUG-GRT-20261114-01`. Le compte vérifié ouvre le questionnaire CASE 1. Les consentements de publication et de création sont distincts. La soumission et la reprise centrale sont bornées à une cible configurée, sans toucher à `/gouvern`.
+- **NEXT_ACTION** : CI/revue exact-HEAD de MCP #401 et admission du contrat GRT #343, puis test séparé sur cible autorisée. Ni activation S1 ni lancement du premier pilote ne sont attestés.
+
 ## 2026-11-14 — Raccordement réel de l’admission CUG à MCP (#401)
 
 - **Continuité** `WT-MCP-CUG-GRT-20261114-01`. Le serveur intègre le nouveau point d’entrée MCP et la page App ID + Bearer. Fonction désactivée par défaut. Pas de session gouvernée, de création GRT ou de mutation de `/gouvern`.

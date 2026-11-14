@@ -30,3 +30,43 @@ Le point de reprise est référencé dans [MCP #389](https://github.com/Patricke
 - Désactiver le flag suffit à retirer l’accès. Le retour de code passe par le pipeline gouverné existant. Ne pas activer la création ni annoncer de reprise GRT live tant que le raccordement et le contrat de #343 ne sont pas attestés.
 
 Tests hôte : `node --import tsx --test tests/cugAdmission.test.ts`. Le test de transport emploie le vrai client et serveur SDK MCP, sans session de travail, avec des preuves OAuth et GitHub simulées.
+
+
+## Lot 2 — Questionnaire CASE 1, soumission et reprise centrale
+
+Après le choix du compte vérifié, l’interface collecte le nom, la visibilité et
+l’objectif du dépôt. Le propriétaire vient du compte vérifié, jamais de la
+requête du navigateur. Le plan de contrôle GRT est public, y compris pour un
+dépôt cible privé. Les deux choix explicites sont la publication du dossier
+et la demande de création sous les contrôles du moteur. Aucun champ de secret,
+de Plesk ou de serveur n’est envoyé. Le formulaire ne remplace pas les étapes
+adaptatives et les questions locales du moteur.
+
+La soumission exige un profil OAuth `mcp:write`, une installation re-vérifiée,
+`ENABLE_WRITE_TOOLS` et `MCP_CUG_GRT_SUBMISSION_ENABLED`, faux par défaut.
+Dans le profil protégé existant, `grt` est facultatif et contient
+`installationId` de l’installation CUG sur GRT, `allowedTarget` (un seul
+`owner/repo` autorisé) et `expectedGrtMain` (SHA revu qui contient le contrat
+machine). Le contrôle du SHA est un préflight, pas un verrou atomique du
+workflow GitHub. L’adaptateur émet seulement le `repository_dispatch` existant
+`governed_request_start` sur le GRT exact. Il ne crée pas le dépôt lui-même.
+Le jeton éphémère de dispatch est borné à GRT, distinct de la sonde d’admission
+sur le compte cible. Le profil et le pilote historique ne sont pas réutilisés.
+
+Le formulaire emploie un cookie temporaire HttpOnly et une référence
+aléatoire de formulaire pour éviter qu’un onglet réemploie l’admission d’un
+autre. Aucun jeton OAuth ou CUG n’est porté par ces références. Le flux
+initial demande toujours au navigateur le Bearer OAuth de l’appel MCP, et
+l’usage depuis un client qui ne l’expose pas reste à raccorder.
+
+Une réponse GitHub 204 signifie **événement accepté**, pas dossier ou dépôt
+créé. Les résultats incertains ne sont pas rejoués automatiquement. Le verrou
+de soumission est local au processus et borné dans le temps. La déduplication
+durable du dossier appartient au moteur GRT. La lecture retourne uniquement
+un checkpoint corrélé à la cible configurée, issu du dossier central.
+Le lien GitHub vers le dossier et `mcp_read_governed_request_checkpoint`
+retrouvent la même autorité. `mcp_start_governed_request_auth` accepte aussi
+une reprise par nom ou par `projectContinuityId`, en lecture seule après
+sélection. Pas de connexion GitHub web indépendante ni de démarrage
+automatique du codeur dans ce lot. Un checkpoint central n’est pas le reçu
+local ni une autorisation de coder.

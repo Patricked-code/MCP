@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-11-14 — CUG/GRT : questionnaire CASE 1 et reprise (#401)
+
+- Relie le choix du compte, le formulaire et le dossier central GRT. Ajoute une soumission opt-in sur une cible exacte et une lecture de reprise, sans session de code, fusion ni déploiement implicites.
+
 ## 2026-11-14 — Admission CUG raccordée au serveur (#401, non déployée)
 
 - Ajoute l’appel MCP et la page dédiée, liés au jeton OAuth exact. La vérification GitHub d’une installation reste en lecture seule. Activation explicite et profil opérateur séparé. [Contrat CUG/GRT](docs/governance/cug-grt-capsule.md).

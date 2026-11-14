@@ -717,6 +717,20 @@
       "note": "CUG admission only; no session, repository or provisioning write."
     },
     {
+      "name": "POST /repo-template/auth/submit",
+      "kind": "HTTP_ROUTE",
+      "class": "COMPOSABLE",
+      "resourceTypes": ["REPOSITORY"],
+      "guards": [
+        "Same-origin JSON and server-held account binding from the short-lived OAuth admission; mcp:write and CUG installation reverified",
+        "Explicit exact-target repository creation and public GRT publication consent",
+        "ENABLE_WRITE_TOOLS and MCP_CUG_GRT_SUBMISSION_ENABLED gates; protected configuration pins one target and GRT main SHA",
+        "Repository-scoped CUG event only; GRT owns repository creation, authorization checks, deduplication and preparation",
+        "Ambiguous delivery is never automatically retried"
+      ],
+      "note": "Submits a bounded creation request to GRT; never directly creates a repository, opens a governed session or deploys."
+    },
+    {
       "name": "POST /gouvern/deploy",
       "kind": "HTTP_ROUTE",
       "class": "COMPOSABLE",
