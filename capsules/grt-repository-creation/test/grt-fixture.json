@@ -1,0 +1,424 @@
+{
+  "fixtureSource": "GRT PR 343 b1fe9bf60480680e80b4654d7c4c059894b4812e / synthetic data",
+  "before": {
+    "schema_version": "1.0.0",
+    "request_id": "GR-000099",
+    "control_plane_repository": "chainsolutions-wealthtech/Governed-Repository-Template",
+    "status": "EXECUTING_PREPARATION",
+    "phase": "PREP-001",
+    "revision": 5,
+    "agent": {
+      "identity": "fixture-agent",
+      "provider": "CHATGPT"
+    },
+    "initial_context": "synthetic",
+    "answers": {
+      "entry_action": "CREATE_NEW_REPOSITORY",
+      "creation_target_owner": "Patricked",
+      "repository_name": "fixture",
+      "visibility": "private",
+      "plan_approved": true,
+      "creation_authority_basis": "EXPLICIT_CREATE_FLOW_OWNER_AND_NAME_SELECTION",
+      "private_canary": "secret-canary"
+    },
+    "execution_plan": [
+      {
+        "id": "PREP-001",
+        "name": "CREATE_FROM_GOVERNED_TEMPLATE",
+        "mutation_class": "TARGET_REPOSITORY_CREATE",
+        "target": "Patricked-code/fixture",
+        "status": "PENDING",
+        "instructions": "Crée Patricked-code/fixture directement depuis le template chainsolutions-wealthtech/Governed-Repository-Template, scope PERSONAL_ACCOUNT, visibilité PRIVATE, sans README/.gitignore/licence ajoutés manuellement. Le repository doit recevoir le template complet afin de déclencher son zero-touch bootstrap.",
+        "required_evidence": {
+          "repository": "Patricked-code/fixture",
+          "template_repository": "chainsolutions-wealthtech/Governed-Repository-Template",
+          "repository_scope": "PERSONAL_ACCOUNT",
+          "visibility": "private",
+          "created": true,
+          "initial_head_sha": "<40-hex-sha>"
+        }
+      },
+      {
+        "id": "PREP-002",
+        "name": "VERIFY_ZERO_TOUCH_BOOTSTRAP",
+        "mutation_class": "READ_VERIFY",
+        "target": "Patricked-code/fixture",
+        "status": "PENDING",
+        "instructions": "Vérifie que le bootstrap zero-touch termine en PASS, que le HEAD distant est le commit d'attestation et que la version de template est celle attendue.",
+        "required_evidence": {
+          "bootstrap_success": true,
+          "template_version": "<version>",
+          "final_head_sha": "<40-hex-sha>",
+          "run_id": "<id>"
+        }
+      },
+      {
+        "id": "PREP-003",
+        "name": "DISCOVER_INITIAL_INFRASTRUCTURE_STATE",
+        "mutation_class": "READ_DISCOVERY",
+        "target": "Patricked-code/fixture",
+        "status": "PENDING",
+        "instructions": "Observe ou laisse explicitement non résolus serveur, domaine, répertoire, base et route d'accès MCP/SSH. N'invente aucun fait.",
+        "required_evidence": {
+          "server_status": "<status>",
+          "directory_status": "<status>",
+          "database_status": "<status>",
+          "access_status": "<status>"
+        }
+      },
+      {
+        "id": "PREP-004",
+        "name": "CAPTURE_TARGET_BASELINE",
+        "mutation_class": "READ_VERIFY",
+        "target": "Patricked-code/fixture",
+        "status": "PENDING",
+        "instructions": "Capture la branche par défaut et le HEAD exact après bootstrap comme baseline de handoff.",
+        "required_evidence": {
+          "default_branch": "<branch>",
+          "head_sha": "<40-hex-sha>"
+        }
+      }
+    ],
+    "evidence": [],
+    "next_request": {
+      "kind": "ACTION_REQUEST",
+      "id": "PREP-001",
+      "action_id": "PREP-001",
+      "text": "Crée Patricked-code/fixture directement depuis le template chainsolutions-wealthtech/Governed-Repository-Template, scope PERSONAL_ACCOUNT, visibilité PRIVATE, sans README/.gitignore/licence ajoutés manuellement. Le repository doit recevoir le template complet afin de déclencher son zero-touch bootstrap.",
+      "target": "Patricked-code/fixture",
+      "mutation_class": "TARGET_REPOSITORY_CREATE",
+      "required_evidence": {
+        "repository": "Patricked-code/fixture",
+        "template_repository": "chainsolutions-wealthtech/Governed-Repository-Template",
+        "repository_scope": "PERSONAL_ACCOUNT",
+        "visibility": "private",
+        "created": true,
+        "initial_head_sha": "<40-hex-sha>"
+      }
+    },
+    "handoff": null,
+    "hold_reason": null,
+    "credential_provider": "CUG",
+    "project_continuity_id": "WT-PROJECT-GRT-1386478935-GR-000099"
+  },
+  "after": {
+    "schema_version": "1.0.0",
+    "request_id": "GR-000099",
+    "control_plane_repository": "chainsolutions-wealthtech/Governed-Repository-Template",
+    "status": "HANDOFF_READY",
+    "phase": "HANDOFF",
+    "revision": 9,
+    "agent": {
+      "identity": "fixture-agent",
+      "provider": "CHATGPT"
+    },
+    "initial_context": "synthetic",
+    "answers": {
+      "entry_action": "CREATE_NEW_REPOSITORY",
+      "creation_target_owner": "Patricked",
+      "repository_name": "fixture",
+      "visibility": "private",
+      "plan_approved": true,
+      "creation_authority_basis": "EXPLICIT_CREATE_FLOW_OWNER_AND_NAME_SELECTION",
+      "private_canary": "secret-canary"
+    },
+    "execution_plan": [
+      {
+        "id": "PREP-001",
+        "name": "CREATE_FROM_GOVERNED_TEMPLATE",
+        "mutation_class": "TARGET_REPOSITORY_CREATE",
+        "target": "Patricked-code/fixture",
+        "status": "DONE",
+        "instructions": "Crée Patricked-code/fixture directement depuis le template chainsolutions-wealthtech/Governed-Repository-Template, scope PERSONAL_ACCOUNT, visibilité PRIVATE, sans README/.gitignore/licence ajoutés manuellement. Le repository doit recevoir le template complet afin de déclencher son zero-touch bootstrap.",
+        "required_evidence": {
+          "repository": "Patricked-code/fixture",
+          "template_repository": "chainsolutions-wealthtech/Governed-Repository-Template",
+          "repository_scope": "PERSONAL_ACCOUNT",
+          "visibility": "private",
+          "created": true,
+          "initial_head_sha": "<40-hex-sha>"
+        }
+      },
+      {
+        "id": "PREP-002",
+        "name": "VERIFY_ZERO_TOUCH_BOOTSTRAP",
+        "mutation_class": "READ_VERIFY",
+        "target": "Patricked-code/fixture",
+        "status": "DONE",
+        "instructions": "Vérifie que le bootstrap zero-touch termine en PASS, que le HEAD distant est le commit d'attestation et que la version de template est celle attendue.",
+        "required_evidence": {
+          "bootstrap_success": true,
+          "template_version": "<version>",
+          "final_head_sha": "<40-hex-sha>",
+          "run_id": "<id>"
+        }
+      },
+      {
+        "id": "PREP-003",
+        "name": "DISCOVER_INITIAL_INFRASTRUCTURE_STATE",
+        "mutation_class": "READ_DISCOVERY",
+        "target": "Patricked-code/fixture",
+        "status": "DONE",
+        "instructions": "Observe ou laisse explicitement non résolus serveur, domaine, répertoire, base et route d'accès MCP/SSH. N'invente aucun fait.",
+        "required_evidence": {
+          "server_status": "<status>",
+          "directory_status": "<status>",
+          "database_status": "<status>",
+          "access_status": "<status>"
+        }
+      },
+      {
+        "id": "PREP-004",
+        "name": "CAPTURE_TARGET_BASELINE",
+        "mutation_class": "READ_VERIFY",
+        "target": "Patricked-code/fixture",
+        "status": "DONE",
+        "instructions": "Capture la branche par défaut et le HEAD exact après bootstrap comme baseline de handoff.",
+        "required_evidence": {
+          "default_branch": "<branch>",
+          "head_sha": "<40-hex-sha>"
+        }
+      }
+    ],
+    "evidence": [
+      {
+        "action_id": "PREP-001",
+        "result": "PASS",
+        "evidence": {
+          "repository": "Patricked-code/fixture",
+          "template_repository": "chainsolutions-wealthtech/Governed-Repository-Template",
+          "repository_scope": "PERSONAL_ACCOUNT",
+          "visibility": "private",
+          "created": true,
+          "initial_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "github_repository_id": 123456
+        }
+      },
+      {
+        "action_id": "PREP-002",
+        "result": "PASS",
+        "evidence": {
+          "bootstrap_success": true,
+          "template_version": "2.8.6",
+          "final_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "run_id": "31"
+        }
+      },
+      {
+        "action_id": "PREP-003",
+        "result": "PASS",
+        "evidence": {
+          "server_status": "UNKNOWN",
+          "directory_status": "UNKNOWN",
+          "database_status": "UNKNOWN",
+          "access_status": "UNKNOWN"
+        }
+      },
+      {
+        "action_id": "PREP-004",
+        "result": "PASS",
+        "evidence": {
+          "default_branch": "main",
+          "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    ],
+    "next_request": {
+      "kind": "HANDOFF",
+      "id": "HANDOFF_READY",
+      "text": "La préparation gouvernée est terminée. L'agent peut maintenant entrer dans le repository cible en respectant le handoff.",
+      "handoff": {
+        "status": "HANDOFF_READY",
+        "request_id": "GR-000099",
+        "entry_action": "CREATE_NEW_REPOSITORY",
+        "target_repository": "Patricked-code/fixture",
+        "target_branch": "main",
+        "expected_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "allowed_next_operation": "DISCOVER_PROJECT_BASELINE",
+        "required_reads": [
+          "00_START_HERE.md",
+          "GOVERNANCE.md",
+          "AGENTS.md",
+          "SOURCE_OF_TRUTH.md",
+          "NEXT_ACTION.md",
+          "STATUS.md"
+        ],
+        "project_continuity": {
+          "schema_version": "1.0.0",
+          "project_continuity_id": "WT-PROJECT-GRT-1386478935-GR-000099",
+          "source_request_id": "GR-000099",
+          "github_repository_id": "123456",
+          "github_repository": "Patricked-code/fixture",
+          "server_binding_status": "NOT_BOUND"
+        },
+        "evidence_summary": [
+          {
+            "action_id": "PREP-001",
+            "result": "PASS",
+            "evidence": {
+              "repository": "Patricked-code/fixture",
+              "template_repository": "chainsolutions-wealthtech/Governed-Repository-Template",
+              "repository_scope": "PERSONAL_ACCOUNT",
+              "visibility": "private",
+              "created": true,
+              "initial_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "github_repository_id": 123456
+            }
+          },
+          {
+            "action_id": "PREP-002",
+            "result": "PASS",
+            "evidence": {
+              "bootstrap_success": true,
+              "template_version": "2.8.6",
+              "final_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "run_id": "31"
+            }
+          },
+          {
+            "action_id": "PREP-003",
+            "result": "PASS",
+            "evidence": {
+              "server_status": "UNKNOWN",
+              "directory_status": "UNKNOWN",
+              "database_status": "UNKNOWN",
+              "access_status": "UNKNOWN"
+            }
+          },
+          {
+            "action_id": "PREP-004",
+            "result": "PASS",
+            "evidence": {
+              "default_branch": "main",
+              "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          }
+        ],
+        "constraints": [
+          "REOBSERVE_HEAD_BEFORE_TARGET_WRITE",
+          "NO_AUTHORITY_INFERENCE",
+          "ZERO_REGRESSION",
+          "PRESERVE_EXISTING_AUTHORITIES"
+        ]
+      }
+    },
+    "handoff": {
+      "status": "HANDOFF_READY",
+      "request_id": "GR-000099",
+      "entry_action": "CREATE_NEW_REPOSITORY",
+      "target_repository": "Patricked-code/fixture",
+      "target_branch": "main",
+      "expected_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "allowed_next_operation": "DISCOVER_PROJECT_BASELINE",
+      "required_reads": [
+        "00_START_HERE.md",
+        "GOVERNANCE.md",
+        "AGENTS.md",
+        "SOURCE_OF_TRUTH.md",
+        "NEXT_ACTION.md",
+        "STATUS.md"
+      ],
+      "project_continuity": {
+        "schema_version": "1.0.0",
+        "project_continuity_id": "WT-PROJECT-GRT-1386478935-GR-000099",
+        "source_request_id": "GR-000099",
+        "github_repository_id": "123456",
+        "github_repository": "Patricked-code/fixture",
+        "server_binding_status": "NOT_BOUND"
+      },
+      "evidence_summary": [
+        {
+          "action_id": "PREP-001",
+          "result": "PASS",
+          "evidence": {
+            "repository": "Patricked-code/fixture",
+            "template_repository": "chainsolutions-wealthtech/Governed-Repository-Template",
+            "repository_scope": "PERSONAL_ACCOUNT",
+            "visibility": "private",
+            "created": true,
+            "initial_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "github_repository_id": 123456
+          }
+        },
+        {
+          "action_id": "PREP-002",
+          "result": "PASS",
+          "evidence": {
+            "bootstrap_success": true,
+            "template_version": "2.8.6",
+            "final_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "run_id": "31"
+          }
+        },
+        {
+          "action_id": "PREP-003",
+          "result": "PASS",
+          "evidence": {
+            "server_status": "UNKNOWN",
+            "directory_status": "UNKNOWN",
+            "database_status": "UNKNOWN",
+            "access_status": "UNKNOWN"
+          }
+        },
+        {
+          "action_id": "PREP-004",
+          "result": "PASS",
+          "evidence": {
+            "default_branch": "main",
+            "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      ],
+      "constraints": [
+        "REOBSERVE_HEAD_BEFORE_TARGET_WRITE",
+        "NO_AUTHORITY_INFERENCE",
+        "ZERO_REGRESSION",
+        "PRESERVE_EXISTING_AUTHORITIES"
+      ]
+    },
+    "hold_reason": null,
+    "credential_provider": "CUG",
+    "project_continuity_id": "WT-PROJECT-GRT-1386478935-GR-000099",
+    "project_continuity": {
+      "schema_version": "1.0.0",
+      "project_continuity_id": "WT-PROJECT-GRT-1386478935-GR-000099",
+      "source_request_id": "GR-000099",
+      "github_repository_id": "123456",
+      "github_repository": "Patricked-code/fixture",
+      "server_binding_status": "NOT_BOUND"
+    }
+  },
+  "local": {
+    "schema_version": "1.1.0",
+    "request_id": "LOCAL-000009",
+    "repository": "Patricked-code/fixture",
+    "mode": "FIRST_AGENT_BOOTSTRAP",
+    "status": "WAITING_FOR_ANSWER",
+    "phase": "Q_AGENT",
+    "revision": 1,
+    "expected_head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "answers": {},
+    "next_request": {
+      "kind": "QUESTION",
+      "id": "Q_AGENT",
+      "field": "agent_identity",
+      "text": "Quel agent se connecte au repository ?",
+      "required": true,
+      "response_type": "string"
+    },
+    "baseline_package": null,
+    "setup_package": null,
+    "mcp_discovery": null,
+    "credentials_verified": false,
+    "handoff": null,
+    "hold_reason": null,
+    "project_continuity": {
+      "schema_version": "1.0.0",
+      "project_continuity_id": "WT-PROJECT-GRT-1386478935-GR-000099",
+      "source_request_id": "GR-000099",
+      "github_repository_id": "123456",
+      "github_repository": "Patricked-code/fixture",
+      "server_binding_status": "NOT_BOUND"
+    }
+  }
+}
