@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## 2026-11-14 — CUG/GRT : questionnaire CASE 1 et reprise (#401)
+
+- Relie le choix du compte, le formulaire et le dossier central GRT. Ajoute une soumission opt-in sur une cible exacte et une lecture de reprise, sans session de code, fusion ni déploiement implicites.
+
+## 2026-11-14 — Admission CUG raccordée au serveur (#401, non déployée)
+
+- Ajoute l’appel MCP et la page dédiée, liés au jeton OAuth exact. La vérification GitHub d’une installation reste en lecture seule. Activation explicite et profil opérateur séparé. [Contrat CUG/GRT](docs/governance/cug-grt-capsule.md).
+
+## 2026-11-14 — Capsule CUG/GRT isolée (#401, non déployée)
+
+- Ajout d’une projection de reprise GRT en lecture seule et de ses tests de non-régression. Autorisation avant lecture, rapprochement du dépôt, du SHA, du handoff et du reçu.
+- CI dédiée classée `NOT_PROVISIONING`. Pas de nouvelle route, d’outil MCP enregistré ni de déclenchement de création. [Contrat et limites](docs/governance/cug-grt-capsule.md).
+
 ## 2026-11-10 — PR #396 : deuxième durcissement de l'exécuteur S2
 
 - Refus d'un Live State périmé même si l'ancien verdict était `FULLY_ALIGNED`.

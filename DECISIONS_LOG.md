@@ -1,5 +1,19 @@
 # DECISIONS_LOG.md
 
+## 2026-11-14 — CUG/GRT : identité, admission et continuité séparées (#401)
+
+**Décision** : l’admission web temporaire ne devient ni jeton OAuth cumulatif, ni droit d’exécution, ni identité de projet. GRT attribue l’identifiant projet durable. Le dossier peut être relu depuis GitHub ou l’outil MCP. Un dispatch GitHub accepté ne prouve pas que GRT a créé le dossier ni le dépôt.
+
+## 2026-11-14 — Admission CUG séparée du pilote et des sessions (#401)
+
+**Décision** : adopter un point d’entrée MCP isolé et désactivé par défaut. Un jeton OAuth, son client admis et une installation vérifiée bornent l’accès. Le secret MCP partagé, une demande GRT et une session gouvernée sont distincts. Aucune création n’est admise dans ce lot. [Contrat et limites](docs/governance/cug-grt-capsule.md).
+
+## 2026-11-14 — Isoler le raccordement CUG/GRT (#401)
+
+**Décision** : conserver GRT comme autorité du workflow et des reçus. La capsule ne projette qu’un état de lecture. Le pilote `/gouvern` et les sessions existantes sont hors périmètre. Aucun montage en production à ce stade.
+
+La passerelle d’écriture reste un lot séparé et ne sera pas dirigée vers un contrat GRT non disponible sur la branche par défaut. La mise en service et le retrait éventuel devront passer par GitHub et le déploiement gouverné. [Contrat et critères](docs/governance/cug-grt-capsule.md).
+
 ## 2026-11-10 — PR #396 : preuve de fraîcheur et maintien de l'autorité jusqu'au déplacement
 
 **Décision** : pour un nettoyage gouverné de serveur, `FULLY_ALIGNED` sur une observation périmée est insuffisant. L'admission exige `freshness=CURRENT`, une réévaluation Task/Receipt/Lock après la lecture SSH et un bail dont le temps restant couvre le timeout maximal de l'exécuteur, avec contrôle temporel sur S2 avant `mv`.

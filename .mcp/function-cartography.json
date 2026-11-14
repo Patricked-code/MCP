@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "0017b2ffda39f3bee137690ffe41ea64c08b5cab51afe4561785fd4918ce5fba",
-  "registeredToolCount": 150,
-  "readOnlyToolCount": 93,
+  "catalogueDigest": "919aa32bd97121952dfb08dd56d1d3d2d64676c876a68a46e41c30f7e83097e9",
+  "registeredToolCount": 152,
+  "readOnlyToolCount": 95,
   "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
@@ -3791,6 +3791,31 @@
       "contractDigest": "2d3b0589561e5e28c53ca4f55a67eb9cd4525c202e25ab21f9ef802785eb71fe"
     },
     {
+      "name": "mcp_read_governed_request_checkpoint",
+      "title": null,
+      "description": "Retrouve le dossier central GRT par ID de continuité sans ouvrir de session ni modifier GitHub.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "projectContinuityId": {
+            "type": "string",
+            "pattern": "^WT-PROJECT-GRT-1386478935-GR-[0-9]{6,12}$"
+          }
+        },
+        "required": [
+          "projectContinuityId"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "75a684617b597c967e98fcd366c300fdf763a1884a8a41275ca034b0d226d109"
+    },
+    {
       "name": "mcp_reconcile_agent_intent",
       "title": null,
       "description": "Classe une projection bornée de la nouvelle instruction et ajoute uniquement une nouvelle tâche sûre. Une session ciblée transmet son TargetScope, restreint au besoin par targetMappingIds.",
@@ -4140,6 +4165,32 @@
         "additionalProperties": false
       },
       "contractDigest": "6acc514dc0f567cb8accd1a8cef87539889e7f71bbde61db8b6e7b1e096116bb"
+    },
+    {
+      "name": "mcp_start_governed_request_auth",
+      "title": null,
+      "description": "Ouvre l’entrée CUG/GRT sans créer de session, tâche ou dépôt.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "resumeRepositoryName": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,100}$"
+          },
+          "projectContinuityId": {
+            "type": "string",
+            "pattern": "^WT-PROJECT-GRT-1386478935-GR-[0-9]{6,12}$"
+          }
+        },
+        "additionalProperties": false
+      },
+      "contractDigest": "05d12caf9db4db46710e4e9a8e0cb9abe7efd66b799691270894ff9ef5d42868"
     },
     {
       "name": "mcp_sync_from_github_s1",
