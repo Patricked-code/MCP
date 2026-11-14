@@ -676,6 +676,12 @@
       "note": "Continuous integration."
     },
     {
+      "name": "repository-creation-capsule-ci.yml",
+      "kind": "WORKFLOW",
+      "class": "NOT_PROVISIONING",
+      "note": "Tests isolated, read-only GRT capsule fixtures. No credentials, repository creation, or deployment."
+    },
+    {
       "name": "repository-ssh-ca-bootstrap.yml",
       "kind": "WORKFLOW",
       "class": "NOT_PROVISIONING",
