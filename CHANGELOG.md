@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 2026-11-14 — Capsule CUG/GRT isolée (#401, non déployée)
+
+- Ajout d’une projection de reprise GRT en lecture seule et de ses tests de non-régression. Autorisation avant lecture, rapprochement du dépôt, du SHA, du handoff et du reçu.
+- CI dédiée classée `NOT_PROVISIONING`. Pas de nouvelle route, d’outil MCP enregistré ni de déclenchement de création. [Contrat et limites](docs/governance/cug-grt-capsule.md).
+
 ## 2026-11-10 — PR #396 : deuxième durcissement de l'exécuteur S2
 
 - Refus d'un Live State périmé même si l'ancien verdict était `FULLY_ALIGNED`.

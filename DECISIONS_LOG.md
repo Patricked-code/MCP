@@ -1,5 +1,11 @@
 # DECISIONS_LOG.md
 
+## 2026-11-14 — Isoler le raccordement CUG/GRT (#401)
+
+**Décision** : conserver GRT comme autorité du workflow et des reçus. La capsule ne projette qu’un état de lecture. Le pilote `/gouvern` et les sessions existantes sont hors périmètre. Aucun montage en production à ce stade.
+
+La passerelle d’écriture reste un lot séparé et ne sera pas dirigée vers un contrat GRT non disponible sur la branche par défaut. La mise en service et le retrait éventuel devront passer par GitHub et le déploiement gouverné. [Contrat et critères](docs/governance/cug-grt-capsule.md).
+
 ## 2026-11-10 — PR #396 : preuve de fraîcheur et maintien de l'autorité jusqu'au déplacement
 
 **Décision** : pour un nettoyage gouverné de serveur, `FULLY_ALIGNED` sur une observation périmée est insuffisant. L'admission exige `freshness=CURRENT`, une réévaluation Task/Receipt/Lock après la lecture SSH et un bail dont le temps restant couvre le timeout maximal de l'exécuteur, avec contrôle temporel sur S2 avant `mv`.

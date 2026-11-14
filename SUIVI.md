@@ -1,5 +1,11 @@
 # SUIVI.md
 
+## 2026-11-14 — Capsule CUG/GRT, reprise isolée (#401)
+
+- **Continuité** `WT-MCP-CUG-GRT-20261114-01`. Branche `mcp/cug-grt-capsule-20261114`. [Contrat et point de reprise](docs/governance/cug-grt-capsule.md).
+- Capsule de lecture testée en isolation. Aucun montage MCP, appel réel CUG, dépôt d’essai ou changement du pilote `/gouvern`. La PR reste distincte de la réconciliation #400.
+- **NEXT_ACTION** : valider la CI et la revue du nouveau HEAD, puis tester le raccordement au contrat GRT sans créer de dépôt avant disponibilité et validation du workflow CUG/GRT #343.
+
 ## 2026-11-10 — PR #396 : deuxième passe P1/P2 d'admission S2
 
 - Après le correctif des cinq premiers constats, une nouvelle revue du SHA `1828ac3bbe584c1ddfb89db0e9bfdd0ce056066e` a soulevé trois risques : Live State `STALE` malgré un ancien alignement, expiration du verrou pendant les préflights SSH et faux négatif Plesk par `grep -q` + `pipefail`.
