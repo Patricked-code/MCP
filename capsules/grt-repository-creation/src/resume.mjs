@@ -3,10 +3,20 @@ const grt = 'chainsolutions-wealthtech/Governed-Repository-Template';
 const root = /^WT-PROJECT-GRT-1386478935-(GR-[0-9]{6,12})$/;
 const localId = /^LOCAL-([0-9]{6,12})$/;
 const repo = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}\/[A-Za-z0-9_.-]{1,100}$/;
+const branch = value => typeof value === 'string' && value.length <= 255
+  && /^[A-Za-z0-9_][A-Za-z0-9._/-]*$/.test(value)
+  && !value.includes('..') && !value.endsWith('.') && !value.startsWith('refs/')
+  && value.split('/').every(part => part.length > 0 && !part.startsWith('.') && !part.endsWith('.lock'));
 const githubId = /^[1-9][0-9]{0,19}$/;
 const sha = /^[0-9a-f]{40}$/i;
 const step = /^[A-Z][A-Z0-9_-]{0,79}$/;
 const centralKinds = new Set(['QUESTION', 'AGENT_REQUEST', 'PLAN_APPROVAL', 'ACTION_REQUEST']);
+const centralActiveKinds = new Map([
+  ['WAITING_FOR_ANSWER', new Set(['QUESTION', 'AGENT_REQUEST'])],
+  ['PLAN_READY', new Set(['PLAN_APPROVAL'])],
+  ['WAITING_FOR_PLAN_APPROVAL', new Set(['PLAN_APPROVAL'])],
+  ['EXECUTING_PREPARATION', new Set(['ACTION_REQUEST'])],
+]);
 const localKinds = new Set(['QUESTION', 'PLAN_APPROVAL', 'CREDENTIAL_GATE', 'MCP_DISCOVERY', 'APPLY_BASELINE']);
 const unavailable = () => ({ status: 'UNAVAILABLE' });
 const blocked = () => ({ status: 'BLOCKED', reason: 'INCONSISTENT_EVIDENCE' });
@@ -43,6 +53,7 @@ function receiptArchitecture(receipt, local, projectId, requestId, target, id) {
       || !sameRepo(receipt.repository, target) || !timestamp(receipt.completed_at)
       || !projection(receipt.project_continuity, projectId, requestId)
       || receipt.project_continuity.github_repository_id !== id
+      || !sameRepo(receipt.project_continuity.github_repository, target)
       || !is(sha, receipt.baseline_subject_head)
       || receipt.baseline_subject_head !== local.state.expected_head_sha) return no;
   // This receipt attests the baseline, not deployment or target architecture.
@@ -58,24 +69,25 @@ export async function resumeRepositoryCreation(input, ports) {
   let grant;
   try { grant = await ports.authorize({ projectId, principalRef: input.principalRef }); }
   catch { return unavailable(); }
-  if (grant?.projectId !== projectId || !positive(grant.centralIssue)) return unavailable();
+  if (grant?.projectId !== projectId || !positive(grant.centralIssue)
+      || Number(requestId.slice(3)) !== grant.centralIssue) return unavailable();
 
   try {
     const central = await ports.readCentral({ projectId, issue: grant.centralIssue });
     if (!central) return unavailable();
     const c = central.state;
     if (!object(c) || central.evidence?.repository !== grt || central.evidence.issue !== grant.centralIssue
-        || Number(requestId.slice(3)) !== grant.centralIssue || c.schema_version !== '1.0.0'
+        || c.schema_version !== '1.0.0'
         || c.control_plane_repository !== grt || c.request_id !== requestId
         || c.project_continuity_id !== projectId || c.credential_provider !== 'CUG'
         || c.answers?.entry_action !== 'CREATE_NEW_REPOSITORY') return blocked();
     const base = { projectId, centralRequestId: requestId, architecture: { status: 'NOT_ATTESTED' } };
 
     if (c.status !== 'HANDOFF_READY') {
-      const active = new Set(['WAITING_FOR_ANSWER', 'PLAN_READY', 'WAITING_FOR_PLAN_APPROVAL', 'EXECUTING_PREPARATION']);
       const held = c.status === 'HOLD_FOR_REVIEW';
-      if (!held && !active.has(c.status)) return blocked();
-      const cp = checkpoint(central, 'GRT_CENTRAL', centralKinds, {
+      const kinds = held ? centralKinds : centralActiveKinds.get(c.status);
+      if (!kinds) return blocked();
+      const cp = checkpoint(central, 'GRT_CENTRAL', kinds, {
         terminal: held, matchPhase: c.phase !== 'PLAN_APPROVAL',
       });
       return cp ? { ...base, status: held ? 'HELD' : 'READY', checkpoint: cp } : blocked();
@@ -90,8 +102,7 @@ export async function resumeRepositoryCreation(input, ports) {
         || projected.github_repository_id !== h.project_continuity.github_repository_id
         || !sameRepo(projected.github_repository, h.project_continuity.github_repository)
         || !sameRepo(projected.github_repository, h.target_repository)
-        || !is(sha, h.expected_head_sha) || typeof h.target_branch !== 'string'
-        || !h.target_branch.trim() || h.target_branch.length > 255) return blocked();
+        || !is(sha, h.expected_head_sha) || !branch(h.target_branch)) return blocked();
     const repository = { id: projected.github_repository_id, name: h.target_repository, branch: h.target_branch };
     const local = await ports.readLocal({ projectId, repository, centralIssue: grant.centralIssue });
     if (!local) return { ...base, repository, status: 'WAITING_LOCAL', reason: 'LOCAL_ENTRY_NOT_OBSERVED', checkpoint: centralCheckpoint };
@@ -99,13 +110,21 @@ export async function resumeRepositoryCreation(input, ports) {
     const s = local.state;
     if (!object(s) || s.schema_version !== '1.1.0' || s.mode !== 'FIRST_AGENT_BOOTSTRAP'
         || !sameRepo(s.repository, repository.name) || !sameRepo(local.evidence?.repository, repository.name)
-        || local.evidence.repositoryId !== repository.id || !is(sha, s.expected_head_sha)
+        || local.evidence.repositoryId !== repository.id || s.expected_head_sha !== h.expected_head_sha
         || !is(localId, s.request_id) || Number(s.request_id.slice(6)) !== local.evidence.issue
         || !projection(s.project_continuity, projectId, requestId)
         || s.project_continuity.github_repository_id !== repository.id
         || !sameRepo(s.project_continuity.github_repository, repository.name)) return blocked();
     const held = s.status === 'HOLD_FOR_REVIEW';
     const terminal = s.status === 'LOCAL_HANDOFF_READY';
+    if (terminal) {
+      const handoff = s.handoff;
+      if (s.phase !== 'HANDOFF' || !object(handoff) || handoff.status !== 'LOCAL_HANDOFF_READY'
+          || !sameRepo(handoff.repository, repository.name) || !is(sha, handoff.baseline_commit_sha)
+          || !projection(handoff.project_continuity, projectId, requestId)
+          || handoff.project_continuity.github_repository_id !== repository.id
+          || !sameRepo(handoff.project_continuity.github_repository, repository.name)) return blocked();
+    }
     const active = new Set(['WAITING_FOR_ANSWER', 'WAITING_FOR_BASELINE_APPROVAL', 'WAITING_FOR_SETUP_ANSWER',
       'APPLYING_BASELINE', 'MCP_CREDENTIAL_REQUIRED', 'MCP_DISCOVERY_REQUIRED', 'WAITING_FOR_SETUP_APPROVAL',
       'WAITING_FOR_DISCOVERY_APPROVAL', 'MCP_DISCOVERY_FAILED_RETRYABLE']);

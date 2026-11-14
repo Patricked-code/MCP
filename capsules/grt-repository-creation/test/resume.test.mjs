@@ -6,6 +6,11 @@ import { resumeRepositoryCreation } from '../src/resume.mjs';
 const fixture = JSON.parse(readFileSync(new URL('./grt-fixture.json', import.meta.url), 'utf8'));
 const projectId = fixture.before.project_continuity_id;
 const sha = 'a'.repeat(40);
+const terminal = {
+  ...fixture.local, status: 'LOCAL_HANDOFF_READY', phase: 'HANDOFF',
+  handoff: { status: 'LOCAL_HANDOFF_READY', repository: fixture.local.repository,
+    baseline_commit_sha: 'b'.repeat(40), project_continuity: fixture.local.project_continuity },
+};
 const central = state => ({ state, evidence: { repository: 'chainsolutions-wealthtech/Governed-Repository-Template', issue: 99, observedAt: '2026-11-14T01:00:00Z' } });
 const local = (state = fixture.local, overrides = {}) => ({ state, evidence: { repository: 'Patricked-code/fixture', repositoryId: '123456', issue: 9, observedAt: '2026-11-14T01:01:00Z', ...overrides } });
 const get = (centralState, localState = null, grant = true, expected = true) => {
@@ -41,7 +46,7 @@ test('reads the first local entry only after the central handoff is correlated b
 });
 
 test('unauthorized and malformed identities do not read central or local states', async () => {
-  for (const x of [get(fixture.after, local(), null), get(fixture.after, local(), { projectId: 'other', centralIssue: 99 }), get(fixture.after, local(), true, false)]) {
+  for (const x of [get(fixture.after, local(), null), get(fixture.after, local(), { projectId: 'other', centralIssue: 99 }), get(fixture.after, local(), true, false), get(fixture.after, local(), { projectId, centralIssue: 100 })]) {
     assert.deepEqual(await x.result, { status: 'UNAVAILABLE' });
     assert.deepEqual(x.calls, []);
   }
@@ -55,7 +60,7 @@ test('missing local state is a point of observation, not authority to rerun crea
 });
 
 test('wrong GitHub repository ID, scope or continuity fails closed without leaking details', async () => {
-  for (const candidate of [local(fixture.local, { repositoryId: '654321' }), local(fixture.local, { repository: 'Other/fixture' }), local({ ...fixture.local, project_continuity: { ...fixture.local.project_continuity, source_request_id: 'GR-000098' } })]) {
+  for (const candidate of [local({ ...fixture.local, expected_head_sha: 'c'.repeat(40) }), local(fixture.local, { repositoryId: '654321' }), local(fixture.local, { repository: 'Other/fixture' }), local({ ...fixture.local, project_continuity: { ...fixture.local.project_continuity, source_request_id: 'GR-000098' } })]) {
     assert.deepEqual(await get(fixture.after, candidate).result, { status: 'BLOCKED', reason: 'INCONSISTENT_EVIDENCE' });
   }
 });
@@ -70,10 +75,26 @@ test('held central states do not consult or dispatch the local entry', async () 
 
 test('terminal or held local states never claim an executable next step', async () => {
   for (const [status, output] of [['LOCAL_HANDOFF_READY', 'HANDOFF'], ['HOLD_FOR_REVIEW', 'HELD']]) {
-    const r = await get(fixture.after, local({ ...fixture.local, status, next_request: { id: 'PREP-001', kind: 'ACTION_REQUEST' } })).result;
+    const r = await get(fixture.after, local({ ...(status === 'LOCAL_HANDOFF_READY' ? terminal : fixture.local), status, next_request: status === 'LOCAL_HANDOFF_READY' ? { id: 'LOCAL_HANDOFF_READY', kind: 'HANDOFF', handoff: terminal.handoff } : null })).result;
     assert.equal(r.status, output);
     assert.equal(r.checkpoint.next, null);
   }
+});
+
+test('an invalid branch never selects a local state', async () => {
+  for (const target_branch of ['../main', 'bad branch', 'refs/heads/main', '-test']) {
+    const x = get({ ...fixture.after, handoff: { ...fixture.after.handoff, target_branch } }, local());
+    assert.equal((await x.result).status, 'BLOCKED');
+    assert.deepEqual(x.calls, ['central']);
+  }
+});
+
+test('a status alone cannot prove terminal handoff', async () => {
+  for (const state of [
+    { ...fixture.local, status: 'LOCAL_HANDOFF_READY' },
+    { ...terminal, handoff: { ...terminal.handoff, baseline_commit_sha: null } },
+    { ...terminal, handoff: { ...terminal.handoff, project_continuity: { ...fixture.local.project_continuity, github_repository: 'Other/fixture' } } },
+  ]) assert.deepEqual(await get(fixture.after, local(state)).result, { status: 'BLOCKED', reason: 'INCONSISTENT_EVIDENCE' });
 });
 
 test('a handoff with no verified branch or exact SHA cannot select local state', async () => {
@@ -112,7 +133,7 @@ test('validates the local GRT states for approval, credentials and discovery ret
 });
 
 test('reports architecture baseline evidence only from a receipt correlated to this local entry', async () => {
-  const record = local({ ...fixture.local, status: 'LOCAL_HANDOFF_READY', phase: 'HANDOFF' });
+  const record = local(terminal);
   const receipt = {
     schema_version: '1.0.0', repository: 'Patricked-code/fixture', request_id: 'LOCAL-000009',
     baseline_subject_head: sha, completed_at: '2026-11-14T01:02:00Z',
@@ -120,6 +141,8 @@ test('reports architecture baseline evidence only from a receipt correlated to t
   };
   assert.deepEqual((await get(fixture.after, { ...record, baselineReceipt: receipt }).result).architecture,
     { status: 'BASELINE_ATTESTED', subjectHead: sha, completedAt: receipt.completed_at });
+  const wrongProjection = { ...receipt, project_continuity: { ...receipt.project_continuity, github_repository: 'Other/fixture' } };
+  assert.deepEqual((await get(fixture.after, { ...record, baselineReceipt: wrongProjection }).result).architecture, { status: 'NOT_ATTESTED' });
   assert.deepEqual((await get(fixture.after, { ...record, baselineReceipt: { ...receipt, request_id: 'LOCAL-000010' } }).result).architecture,
     { status: 'NOT_ATTESTED' });
 });
@@ -130,4 +153,10 @@ test('does not disclose connector exception text or convert it into authority', 
     readCentral: async () => { throw new Error('secret-canary'); },
   });
   assert.deepEqual(r, { status: 'BLOCKED', reason: 'SOURCE_UNAVAILABLE' });
+});
+
+test('a central question status never projects an action request',async()=>{
+  const state={...fixture.before,status:'WAITING_FOR_ANSWER',phase:'Q_ARCH',
+    next_request:{kind:'ACTION_REQUEST',id:'Q_ARCH'}};
+  assert.deepEqual(await get(state).result,{status:'BLOCKED',reason:'INCONSISTENT_EVIDENCE'});
 });
