@@ -1,6 +1,7 @@
 import express from 'express';
 import type { Router } from 'express';
 
+import type { G1Evidence } from './g1Documentation.js';
 import type { GithubOidcClaims } from './githubOidc.js';
 import {
   buildS1DeployJobId,
@@ -24,6 +25,7 @@ export interface GithubDeployRouteDependencies {
   writeEnabled: () => boolean;
   runWrite: (command: string) => Promise<CommandResultLike>;
   runRead: (command: string) => Promise<CommandResultLike>;
+  readG1Evidence?: (sha: string) => Promise<G1Evidence>;
 }
 
 function bearerToken(value: string | undefined): string | null {
@@ -171,12 +173,18 @@ export function createGithubDeployRouter(dependencies: GithubDeployRouteDependen
     const sha = requestedSha(request.query.sha);
     if (!sha) return jsonError(response, 400, 'invalid_request');
 
+    let claims: GithubOidcClaims | null;
     try {
-      await authenticate(dependencies, request.header('authorization'), sha);
+      claims = await authenticate(dependencies, request.header('authorization'), sha);
     } catch {
       return jsonError(response, 403, 'github_oidc_invalid');
     }
 
+    const g1 = request.query.g1 === '1' && dependencies.readG1Evidence;
+    if (g1 && (typeof claims?.run_id !== 'string' || !/^[0-9]{1,30}$/.test(claims.run_id)
+      || buildS1DeployJobId(claims.run_id, sha) !== request.params.jobId)) {
+      return jsonError(response, 403, 'g1_run_mismatch');
+    }
     let command: string;
     try {
       command = buildS1DeployStatusCommand(request.params.jobId, sha);
@@ -196,6 +204,12 @@ export function createGithubDeployRouter(dependencies: GithubDeployRouteDependen
 
     try {
       const status = parseS1DeployStatus(result.stdout, request.params.jobId, sha);
+      if (g1 && status.status === 'succeeded' && status.phase === 'attested'
+        && status.runtimeRevision === sha && status.rollbackStatus === 'not_needed'
+        && status.healthOk === true && status.oauthOk === true && status.mcpAuthOk === true) {
+        const evidence = await g1(sha).catch((): G1Evidence => ({ status: 'UNVERIFIED' }));
+        return response.status(200).json({ ...status, g1: evidence });
+      }
       return response.status(200).json(status);
     } catch {
       return jsonError(response, 502, 's1_deploy_status_invalid');
