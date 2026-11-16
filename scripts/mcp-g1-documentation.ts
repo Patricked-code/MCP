@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { G1_MANIFEST, G1_REPOSITORY, prepareG1Candidate, type G1Drift } from '../src/deploy/g1Documentation.js';
+import { G1_MANIFEST, G1_REPOSITORY, findG1OpenCorrection, prepareG1Candidate, type G1Drift } from '../src/deploy/g1Documentation.js';
 import { createGovernedContractSubstrate } from '../src/governedWorkflow/contractSubstrate.js';
 import { planGw60DocumentationReconciliation, planGw61DocumentationPr } from '../src/governedWorkflow/terminal/index.js';
 
@@ -33,22 +33,10 @@ async function assertMain() {
   assertFresh();
   if (await readHead('main') !== sha) throw new Error('g1_main_changed_reobserve');
 }
-async function findOpenCorrection() {
-  for (let page = 1; page <= 5; page++) {
-    const prs = await api(root + '/pulls?state=open&base=main&per_page=100&page=' + page);
-    if (!Array.isArray(prs)) throw new Error('g1_invalid_pr_list');
-    const existing = prs.find(pr => pr.head?.repo?.full_name === G1_REPOSITORY
-      && (pr.head?.ref === branch || String(pr.head?.ref ?? '').startsWith('mcp/docs-reconcile-')));
-    if (existing) return existing;
-    if (prs.length < 100) return null;
-  }
-  throw new Error('g1_pr_scan_limit');
-}
-
 await assertMain();
-const prior = await findOpenCorrection();
-if (prior) {
-  console.log('G1 existing documentation PR #' + Number(prior.number) + ' — no duplicate created.');
+const prior = await findG1OpenCorrection(api);
+if (prior !== null) {
+  console.log('G1 existing documentation PR #' + prior + ' — no duplicate created.');
 } else {
   const raw = await readFile(G1_MANIFEST, 'utf8');
   const content = prepareG1Candidate(raw, evidence, sha, Date.parse(evidence.observedAt));
@@ -96,9 +84,9 @@ if (prior) {
   }
   const pr = planGw61DocumentationPr({ repository: G1_REPOSITORY, branchName: branch, baseBranch: 'main', headSha: head, title }, substrate);
   if (pr.status !== 'READY' || pr.effectPlan?.toolName !== 'github_create_pull_request') throw new Error('g1_gw61_rejected');
+  if (await findG1OpenCorrection(api) !== null) throw new Error('g1_correction_already_open');
   await assertMain();
   if (await readHead(branch) !== pr.effectPlan.expectedHeadSha) throw new Error('g1_candidate_head_changed');
-  if (await findOpenCorrection()) throw new Error('g1_correction_already_open');
   const payload = pr.effectPlan.payload;
   const created = await api(root + '/pulls', 'POST', { head: payload.head, base: payload.targetBase,
     title: payload.title, draft: payload.draft,

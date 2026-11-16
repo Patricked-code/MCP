@@ -11,6 +11,42 @@ export type G1Drift = {
 };
 export type G1Evidence = G1Drift | { status: 'ALIGNED' | 'UNVERIFIED' };
 
+// Use the base repository's file list so manually named and fork PRs are visible.
+// Never interpret unavailable or truncated file data as absence of a collision.
+export async function findG1OpenCorrection(get: (path: string) => Promise<unknown>): Promise<number | null> {
+  const pageSize = 100;
+  const seen = new Set<number>();
+  const query = (page: number) => 'per_page=' + pageSize + '&page=' + page;
+  const root = '/repos/' + G1_REPOSITORY + '/pulls';
+  for (let page = 1; page <= 5; page++) {
+    const prs = await get(root + '?state=open&base=main&sort=created&direction=asc&' + query(page));
+    if (!Array.isArray(prs) || prs.length > pageSize) throw new Error('g1_invalid_pr_list');
+    for (const pr of prs) {
+      const number = pr?.number;
+      if (!Number.isSafeInteger(number) || number < 1 || seen.has(number)) throw new Error('g1_invalid_pr_number');
+      seen.add(number);
+      for (let filePage = 1; filePage <= 10; filePage++) {
+        const files = await get(root + '/' + number + '/files?' + query(filePage));
+        if (!Array.isArray(files) || files.length > pageSize || (filePage === 1 && files.length === 0)) {
+          throw new Error('g1_invalid_pr_file_list');
+        }
+        for (const file of files) {
+          if (typeof file?.filename !== 'string' || !file.filename || typeof file.status !== 'string'
+            || (file.status === 'renamed' && (typeof file.previous_filename !== 'string' || !file.previous_filename))
+            || (file.previous_filename !== undefined && typeof file.previous_filename !== 'string')) {
+            throw new Error('g1_invalid_pr_filename');
+          }
+          if (file.filename === G1_MANIFEST || file.previous_filename === G1_MANIFEST) return number;
+        }
+        if (files.length < pageSize) break;
+        if (filePage === 10) throw new Error('g1_pr_file_scan_limit');
+      }
+    }
+    if (prs.length < pageSize) return null;
+  }
+  throw new Error('g1_pr_scan_limit');
+}
+
 export function projectG1Evidence(state: LiveStateSnapshot, sha: string, now = Date.now()): G1Evidence {
   const age = now - Date.parse(state.generatedAt);
   if (!SHA.test(sha) || state.repository !== G1_REPOSITORY || state.schemaVersion !== 1
