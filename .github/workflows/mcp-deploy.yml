@@ -194,6 +194,8 @@ jobs:
     if: github.repository == 'Patricked-code/MCP' && github.ref == 'refs/heads/main' && needs.deploy.outputs.g1-evidence != ''
     runs-on: ubuntu-latest
     timeout-minutes: 6
+    # A documentary failure must not suppress existing successful-deploy observers.
+    continue-on-error: true
     permissions:
       contents: read
     concurrency:
@@ -237,3 +239,8 @@ jobs:
           evidence_file="$RUNNER_TEMP/mcp-g1-evidence.json"
           printf '%s' "$G1_EVIDENCE" > "$evidence_file"
           G1_EVIDENCE_FILE="$evidence_file" node --import tsx scripts/mcp-g1-documentation.ts
+
+      - name: Record blocked documentary follow-up
+        if: failure()
+        run: |
+          printf '%s\n' '### G1 documentation follow-up blocked' 'No merge was attempted. Inspect the failed G1 step before retrying. The deployment attestation is independent.' >> "$GITHUB_STEP_SUMMARY"

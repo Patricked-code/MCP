@@ -126,6 +126,7 @@ test('G1 job inherits only the attested projection and has no OIDC or workflow w
   const [deploy, g1] = (await workflowSource()).split('  reconcile-documentation:');
   assert.match(deploy!, /succeeded\)[\s\S]*&g1=1/);
   assert.match(g1!, /needs: deploy/);
+  assert.match(g1!, /continue-on-error: true/);
   assert.match(g1!, /permission-contents: write/);
   assert.match(g1!, /permission-pull-requests: write/);
   assert.doesNotMatch(g1!, /id-token: write|actions: write|merge_pull_request/);
