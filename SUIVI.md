@@ -1,5 +1,11 @@
 # SUIVI.md
 
+## 2026-11-16 — Réconciliation documentaire G1 après déploiement (#406)
+
+- **Raccord** : [PR #406](https://github.com/Patricked-code/MCP/pull/406), basée sur `540a8f0a3b5b15483abb17438e3e74cdb35bcf45`. Après attestation du Governed Deploy, l'observation Live State du même run alimente GW‑60/GW‑61. En cas de dérive documentaire seule et de preuve fraîche, le job peut préparer un commit limité à `PRODUCTION_STATE.json` et ouvrir une PR brouillon, sans fusion. Le suivi de déploiement et le résultat documentaire sont distincts.
+- **À distinguer** : [#405](https://github.com/Patricked-code/MCP/pull/405) corrige le snapshot après #404. Elle n'active pas le raccord G1 et ne doit pas être dupliquée. Pas de preuve d'exécution réelle de #406 ni de configuration de son identité d'écriture à ce stade.
+- **NEXT_ACTION** : CI et revue du HEAD exact, puis intégration autorisée et vérification sur un déploiement attesté avec l'identité GitHub App bornée. L'acceptation exige une seule PR documentaire ou une reprise explicite d'une PR existante, aucun effet si les preuves divergent, puis une observation sans drift après intégration du correctif.
+
 ## 2026-11-14 — Collecteur d'inventaire CUG, pilote UAES (#404)
 
 - **Périmètre** : la [PR #404](https://github.com/Patricked-code/MCP/pull/404) ajoute une commande opérateur indépendante du webhook. Elle vérifie l'appartenance du dépôt UAES à l'installation CUG, conserve un instantané local privé et propose un rapprochement en lecture avec le GitRegistry existant. Les autres GitHub Apps restent non vérifiées.

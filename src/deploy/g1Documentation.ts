@@ -1,6 +1,7 @@
 import type { LiveStateSnapshot } from '../liveState/types.js';
+import { GITHUB_OIDC_POLICY } from './githubOidc.js';
 
-export const G1_REPOSITORY = 'Patricked-code/MCP';
+export const G1_REPOSITORY = GITHUB_OIDC_POLICY.repository;
 export const G1_MANIFEST = 'PRODUCTION_STATE.json';
 const SHA = /^[0-9a-f]{40}$/;
 const IMAGE = /^sha256:[0-9a-f]{64}$/;

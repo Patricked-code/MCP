@@ -131,3 +131,14 @@ test('G1 job inherits only the attested projection and has no OIDC or workflow w
   assert.match(g1!, /permission-pull-requests: write/);
   assert.doesNotMatch(g1!, /id-token: write|actions: write|merge_pull_request/);
 });
+
+test('G1 retries only the post-attestation proof and keeps UNVERIFIED on bounded exhaustion', async () => {
+  const [deploy] = (await workflowSource()).split('  reconcile-documentation:');
+  const followUp = deploy!.slice(deploy!.indexOf('Deployment attested for exact SHA'));
+  assert.match(followUp, /G1_EVIDENCE='\{"status":"UNVERIFIED"\}'/);
+  assert.match(followUp, /G1_DEADLINE=\$\(\(SECONDS \+ 60\)\)/);
+  assert.match(followUp, /for g1_attempt in 1 2 3/);
+  assert.match(followUp, /status\/\$\{JOB_ID\}\?sha=\$\{GITHUB_SHA\}&g1=1/);
+  assert.doesNotMatch(followUp, /\/deploy\/github\/s1\/start/);
+  assert.match(followUp, /g1-evidence=%s[\s\S]*exit 0/);
+});
