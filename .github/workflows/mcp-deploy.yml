@@ -15,6 +15,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      g1-evidence: ${{ steps.deploy.outputs.g1-evidence }}
     steps:
       - name: Checkout governed policy
         uses: actions/checkout@v4
@@ -80,6 +82,7 @@ jobs:
           printf 'ci_run_id=%s\n' "$ci_run_id" >> "$GITHUB_OUTPUT"
 
       - name: Deploy exact main SHA through MCP
+        id: deploy
         if: steps.gate.outputs.enabled == 'true'
         shell: bash
         env:
@@ -148,10 +151,36 @@ jobs:
             unset OIDC_TOKEN
 
             STATE="$(printf '%s' "$STATUS_RESPONSE" | validate_status)"
-            unset STATUS_RESPONSE
             case "$STATE" in
               succeeded)
                 printf 'Deployment attested for exact SHA %s.\n' "$GITHUB_SHA"
+                unset STATUS_RESPONSE
+                if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+                  # Preserve successful deployment separately from documentary evidence collection.
+                  G1_EVIDENCE='{"status":"UNVERIFIED"}'
+                  # HTTP health can pass before the Docker health status becomes healthy.
+                  # Retry only the read-only proof, within a single bounded window.
+                  G1_DEADLINE=$((SECONDS + 60))
+                  for g1_attempt in 1 2 3; do
+                    G1_REMAINING=$((G1_DEADLINE - SECONDS))
+                    if (( G1_REMAINING <= 10 )); then break; fi
+                    if OIDC_TOKEN="$(get_oidc)"; then
+                      printf '::add-mask::%s\n' "$OIDC_TOKEN"
+                      if G1_STATUS="$(curl --fail --silent --show-error --max-time "$((G1_REMAINING - 10))" \
+                        --header "Authorization: Bearer ${OIDC_TOKEN}" \
+                        "${MCP_BASE_URL}/deploy/github/s1/status/${JOB_ID}?sha=${GITHUB_SHA}&g1=1")"; then
+                        if [[ "$(printf '%s' "$G1_STATUS" | validate_status)" == 'succeeded' ]] &&
+                          G1_CANDIDATE="$(node -e 'const {g1}=JSON.parse(require("fs").readFileSync(0,"utf8")); if (!["ALIGNED","DRIFT"].includes(g1?.status)) process.exit(1); process.stdout.write(JSON.stringify(g1));' <<<"$G1_STATUS")"; then
+                          G1_EVIDENCE="$G1_CANDIDATE"
+                          break
+                        fi
+                      fi
+                    fi
+                    if [[ "$g1_attempt" != 3 ]] && (( SECONDS + 10 < G1_DEADLINE )); then sleep 10; fi
+                  done
+                  printf 'g1-evidence=%s\n' "$G1_EVIDENCE" >> "$GITHUB_OUTPUT"
+                  unset OIDC_TOKEN G1_EVIDENCE G1_STATUS G1_CANDIDATE
+                fi
                 exit 0
                 ;;
               failed)
@@ -169,3 +198,59 @@ jobs:
 
           printf 'Deployment status polling timed out for %s.\n' "$GITHUB_SHA" >&2
           exit 1
+
+  reconcile-documentation:
+    needs: deploy
+    if: github.repository == 'Patricked-code/MCP' && github.ref == 'refs/heads/main' && needs.deploy.outputs.g1-evidence != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    # A documentary failure must not suppress existing successful-deploy observers.
+    continue-on-error: true
+    permissions:
+      contents: read
+    concurrency:
+      group: mcp-g1-documentation
+      cancel-in-progress: false
+    steps:
+      - name: Classify released evidence
+        id: g1
+        env:
+          G1_EVIDENCE: ${{ needs.deploy.outputs.g1-evidence }}
+        run: |
+          node -e 'const {status}=JSON.parse(process.env.G1_EVIDENCE); if (!["DRIFT","ALIGNED"].includes(status)) throw Error("G1 proof unavailable; no GitHub write attempted"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT,"drift="+(status==="DRIFT")+"\n");'
+      - uses: actions/checkout@v4
+        if: steps.g1.outputs.drift == 'true'
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        if: steps.g1.outputs.drift == 'true'
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --ignore-scripts
+        if: steps.g1.outputs.drift == 'true'
+      - name: Mint repository-scoped documentation token
+        id: g1-token
+        if: steps.g1.outputs.drift == 'true'
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ vars.MCP_G1_APP_ID }}
+          private-key: ${{ secrets.MCP_G1_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+      - name: Publish or reuse exact-SHA docs-only draft
+        if: steps.g1.outputs.drift == 'true'
+        env:
+          G1_EVIDENCE: ${{ needs.deploy.outputs.g1-evidence }}
+          G1_GITHUB_TOKEN: ${{ steps.g1-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          evidence_file="$RUNNER_TEMP/mcp-g1-evidence.json"
+          printf '%s' "$G1_EVIDENCE" > "$evidence_file"
+          G1_EVIDENCE_FILE="$evidence_file" node --import tsx scripts/mcp-g1-documentation.ts
+
+      - name: Record blocked documentary follow-up
+        if: failure()
+        run: |
+          printf '%s\n' '### G1 documentation follow-up blocked' 'No merge was attempted. Inspect the failed G1 step before retrying. The deployment attestation is independent.' >> "$GITHUB_STEP_SUMMARY"
