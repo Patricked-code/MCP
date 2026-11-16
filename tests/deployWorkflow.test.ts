@@ -18,7 +18,7 @@ test('la politique post-bootstrap est versionnée et active le push gouverné', 
 });
 
 test('le workflow possède uniquement les permissions minimales OIDC + lecture', async () => {
-  const source = await workflowSource();
+  const source = (await workflowSource()).split('  reconcile-documentation:')[0]!;
 
   assert.match(source, /permissions:\s*\n\s+contents:\s*read\s*\n\s+actions:\s*read\s*\n\s+id-token:\s*write/);
   assert.doesNotMatch(source, /contents:\s*write|packages:\s*write|actions:\s*write|pull-requests:\s*write|issues:\s*write/);
@@ -54,7 +54,7 @@ test('workflow_dispatch est toujours disponible et push main est gouverné par l
 });
 
 test('le workflow demande un OIDC GitHub frais avec audience fixe sans secret SSH', async () => {
-  const source = await workflowSource();
+  const source = (await workflowSource()).split('  reconcile-documentation:')[0]!;
 
   assert.match(source, /ACTIONS_ID_TOKEN_REQUEST_URL/);
   assert.match(source, /ACTIONS_ID_TOKEN_REQUEST_TOKEN/);
@@ -120,4 +120,25 @@ test('GWC-15 self-review: push gate propagates its authorizing CI run into the b
   assert.match(source, /workflow_dispatch_manual/);
   assert.match(source, /steps\.gate\.outputs\./);
   assert.match(source, /\/deploy\/github\/s1\/start/);
+});
+
+test('G1 job inherits only the attested projection and has no OIDC or workflow write rights', async () => {
+  const [deploy, g1] = (await workflowSource()).split('  reconcile-documentation:');
+  assert.match(deploy!, /succeeded\)[\s\S]*&g1=1/);
+  assert.match(g1!, /needs: deploy/);
+  assert.match(g1!, /continue-on-error: true/);
+  assert.match(g1!, /permission-contents: write/);
+  assert.match(g1!, /permission-pull-requests: write/);
+  assert.doesNotMatch(g1!, /id-token: write|actions: write|merge_pull_request/);
+});
+
+test('G1 retries only the post-attestation proof and keeps UNVERIFIED on bounded exhaustion', async () => {
+  const [deploy] = (await workflowSource()).split('  reconcile-documentation:');
+  const followUp = deploy!.slice(deploy!.indexOf('Deployment attested for exact SHA'));
+  assert.match(followUp, /G1_EVIDENCE='\{"status":"UNVERIFIED"\}'/);
+  assert.match(followUp, /G1_DEADLINE=\$\(\(SECONDS \+ 60\)\)/);
+  assert.match(followUp, /for g1_attempt in 1 2 3/);
+  assert.match(followUp, /status\/\$\{JOB_ID\}\?sha=\$\{GITHUB_SHA\}&g1=1/);
+  assert.doesNotMatch(followUp, /\/deploy\/github\/s1\/start/);
+  assert.match(followUp, /g1-evidence=%s[\s\S]*exit 0/);
 });

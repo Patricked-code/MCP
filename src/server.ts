@@ -57,6 +57,8 @@ import {
 import { deriveRepositoryMappingCompletion, safeWebReturnPath } from './governedContext/contextCompletion.js';
 import { decideConnectConsent } from './github/connectConsent.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
+import { projectG1Evidence } from './deploy/g1Documentation.js';
+import { liveStateEngine } from './liveState/engine.js';
 import {
   verifyGithubOidcToken,
   verifyGithubReadonlyEvidenceOidcToken,
@@ -427,6 +429,7 @@ export async function startHttpServer(): Promise<void> {
   const app = express();
   app.use(createGithubDeployRouter({
     verifyOidc: verifyGithubOidcToken,
+    readG1Evidence: async (sha) => projectG1Evidence(await liveStateEngine.reconcileNow(), sha),
     writeEnabled: () => env.ENABLE_WRITE_TOOLS,
     runWrite: async (command) => runGuardedCommand('s1', command, {
       intent: 'github_oidc_s1_deploy_start',

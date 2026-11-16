@@ -340,3 +340,26 @@ test('GWC-15 self-review: push admission requires bounded same-SHA CI evidence w
     assert.equal(manual.status, 202);
   });
 });
+
+test('G1 projection requires the same OIDC run attested and does not alter legacy status', async () => {
+  let calls = 0;
+  await withServer(dependencies({
+    readG1Evidence: async () => {
+      calls += 1;
+      return { status: 'ALIGNED' };
+    }
+  }), async baseUrl => {
+    const opts = { headers: { authorization: 'Bearer valid-oidc' } };
+    const statusUrl = `${baseUrl}/deploy/github/s1/status/${JOB_ID}?sha=${SHA}`;
+    const ordinary = await fetch(statusUrl, opts);
+    assert.equal(ordinary.status, 200);
+    assert.equal((await ordinary.json()).g1, undefined);
+    const another = await fetch(statusUrl.replace(RUN_ID, '100') + '&g1=1', opts);
+    assert.equal(another.status, 403);
+    assert.equal(calls, 0);
+    const bounded = await fetch(statusUrl + '&g1=1', opts);
+    assert.equal(bounded.status, 200);
+    assert.deepEqual((await bounded.json()).g1, { status: 'ALIGNED' });
+    assert.equal(calls, 1);
+  });
+});
