@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { generateKeyPairSync } from 'node:crypto';
 import { lstat, mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
-import { collectCugPilotInventory, persistCugPilotInventory } from '../src/cug/pilotInventory.js';
+import { collectCugPilotInventory, collectCugScopedInventory, persistCugPilotInventory } from '../src/cug/pilotInventory.js';
 
 const { privateKey } = generateKeyPairSync('rsa', { modulusLength: 2048,
   privateKeyEncoding: { type: 'pkcs8', format: 'pem' }, publicKeyEncoding: { type: 'spki', format: 'pem' } });
@@ -17,7 +18,7 @@ const repo = { id: 1429189311, full_name: fullName, name, html_url: 'https://git
 const now = new Date('2026-11-14T08:00:00Z');
 const digest = 'a'.repeat(64);
 
-function deps(membership: unknown = { total_count: 1, repositories: [repo] }, repository: unknown = repo) {
+function deps(membership: unknown = { total_count: 1, repositories: [repo] }, repository: unknown = repo, expected = repo) {
   const calls: string[] = [];
   const fetchImpl: typeof fetch = async (target, options) => {
     assert.equal(options?.redirect, 'error');
@@ -26,13 +27,13 @@ function deps(membership: unknown = { total_count: 1, repositories: [repo] }, re
     calls.push(url.pathname);
     if (options?.method === 'POST') {
       assert.equal(url.pathname, '/app/installations/42/access_tokens');
-      assert.deepEqual(JSON.parse(String(options.body)), { repositories: [name], permissions: { contents: 'read' } });
+      assert.deepEqual(JSON.parse(String(options.body)), { repositories: [expected.name], permissions: { contents: 'read' } });
       return Response.json({ token: 'test-token-only', expires_at: '2026-11-14T09:00:00Z' }, { status: 201 });
     }
     assert.equal(options?.method, 'GET');
     assert.equal(new Headers(options.headers).get('Authorization'), 'Bearer test-token-only');
     if (url.pathname === '/installation/repositories') return Response.json(membership);
-    assert.equal(url.pathname, '/repos/' + fullName);
+    assert.equal(url.pathname, '/repos/' + expected.full_name);
     return Response.json(repository);
   };
   return {
@@ -94,4 +95,43 @@ test('stores one private immutable file for identical snapshots', async (t) => {
   assert.equal((await lstat(directory)).mode & 0o777, 0o700);
   assert.equal((await lstat(join(directory, filename))).mode & 0o777, 0o600);
   assert.deepEqual(JSON.parse(await readFile(join(directory, filename), 'utf8')), inventory);
+});
+
+const grtName = 'Governed-Repository-Template';
+const grt = { ...repo, id: 1386478935, name: grtName, full_name: owner + '/' + grtName,
+  html_url: 'https://github.com/' + owner + '/' + grtName };
+const grtTarget = { installationId: 42, githubRepositoryId: grt.id, githubOwnerId: grt.owner.id,
+  ownerLogin: grt.owner.login, name: grt.name };
+
+test('B2 proves a second explicit CUG repository without suggesting a server or modifying the registry', async () => {
+  const fixture = deps({ total_count: 1, repositories: [grt] }, grt, grt);
+  const inventory = await collectCugScopedInventory(grtTarget, fixture);
+  assert.deepEqual(fixture.calls, [
+    '/app/installations/42/access_tokens', '/installation/repositories', '/repos/' + grt.full_name
+  ]);
+  assert.equal(inventory.repository.githubRepositoryId, 1386478935);
+  assert.equal(inventory.repository.githubOwnerId, 299685687);
+  assert.equal(inventory.registryCandidate.status, 'NO_NAME_MATCH');
+  assert.equal(inventory.registryCandidate.serverBinding, 'NOT_VERIFIED');
+  assert.equal(inventory.registryCandidate.provisioningAuthorized, false);
+});
+
+test('B2 refuses swapped IDs, foreign paths and a second repository in membership without producing evidence', async () => {
+  await assert.rejects(collectCugScopedInventory({ ...grtTarget, githubRepositoryId: repo.id },
+    deps({ total_count: 1, repositories: [grt] }, grt, grt)), /CUG_PILOT_INSTALLATION_NOT_ATTESTED/);
+  const fixture = deps({ total_count: 1, repositories: [grt] }, grt, grt);
+  await assert.rejects(collectCugScopedInventory({ ...grtTarget, name: '../repos' }, fixture));
+  assert.deepEqual(fixture.calls, []);
+  await assert.rejects(collectCugScopedInventory(grtTarget,
+    deps({ total_count: 1, repositories: [grt, repo] }, grt, grt)), /CUG_PILOT_INSTALLATION_NOT_ATTESTED/);
+  await assert.rejects(collectCugScopedInventory(grtTarget,
+    deps({ total_count: 1, repositories: [grt] }, { ...grt, owner: { ...grt.owner, id: 1 } }, grt)));
+});
+
+test('B2 operator command rejects an invalid scope with a bounded error and no file or GitHub access required', () => {
+  const result = spawnSync(process.execPath, ['--import', 'tsx', 'src/cug/runScopedInventory.ts', '42',
+    '1386478935', '299685687', 'chainsolutions-wealthtech/../another-repo'], { encoding: 'utf8' });
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, 'CUG_SCOPED_INVENTORY_SCOPE_INVALID\n');
 });

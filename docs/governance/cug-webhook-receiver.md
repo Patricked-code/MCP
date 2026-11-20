@@ -80,3 +80,24 @@ MCP. Comparer ensuite les compteurs du consommateur et la présence d’un fichi
 et préserver `200` sur `/health` et `401` pour le POST non signé. Désactiver le seul nouveau
 flag pour arrêter le consommateur au prochain redémarrage du service. Le webhook et les
 preuves restent en place. Aucune écriture GitRegistry, Plesk ou GRT n’est déclenchée.
+
+
+## B2 — Vérifier un deuxième dépôt sans élargir le webhook
+
+Après déploiement gouverné de la révision qui inclut la commande, lancer dans le conteneur MCP :
+
+```sh
+node dist/src/cug/runScopedInventory.js INSTALLATION_ID REPOSITORY_ID OWNER_ID OWNER/REPOSITORY
+```
+
+L'opérateur donne les quatre valeurs à partir de GitHub. Aucun nom n'est dérivé d'un reçu.
+La commande réutilise la clé protégée, le jeton borné en lecture à un seul dépôt, la vérification
+d'appartenance à l'installation, le recoupement des IDs et le stockage privé déjà utilisé pour UAES.
+Un dépôt public simplement visible ne suffit toujours pas. Toute identité divergente est refusée.
+`CUG_SCOPED_SNAPSHOT_STORED` désigne une preuve locale par empreinte. `CUG_SCOPED_COVERAGE_UNVERIFIED`
+ne constitue pas une preuve d'absence. Aucun jeton, chemin serveur ni contenu privé n'est affiché.
+
+CUG reste la seule App prouvée par cette commande. Le webhook et le consommateur automatique
+restent bornés à UAES. Le stockage existant est borné à 1 000 entrées et n'est pas purgé par
+cette commande. Ce mode opérateur n'active pas un abonnement multi-dépôts et ne transforme
+jamais un rapprochement de nom en autorisation GitRegistry, Plesk ou GRT.
