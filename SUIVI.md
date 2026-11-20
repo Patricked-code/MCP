@@ -6,6 +6,12 @@
 - **B2, tranche opérateur** : un dépôt explicitement borné par installation, propriétaire et ID stable. Réutilise le collecteur et le stockage de A sans changer le webhook ni le consommateur B1. La collecte automatique hors UAES reste à traiter et aucun rapprochement n'est un rattachement.
 - **NEXT_ACTION** : CI, revue et déploiement sur le SHA exact, puis vérifier un deuxième dépôt CUG par la commande du runbook. Ne pas extrapoler ce résultat à l'ensemble de l'organisation, à S1/S2 ou à la création via GRT.
 
+## 2026-11-20 — CUG, recette du cockpit de preuves GRT/GRGS (#423)
+
+- **Continuité** : `WT-MCP-CUG-GRT-20261114-01`. Le [cockpit finement raccordé](docs/governance/cug-grt-capsule.md#recette-du-cockpit-cuggrtgrgs) lit la capsule depuis une admission CUG prouvée. Le dossier central, l’existence du dépôt, le checkpoint local, le reçu et la classification sont des preuves séparées.
+- **Preuves de ce lot** : RED avant ajout du cockpit, puis GREEN sur des comptes et sources GitHub simulés, avec refus d’une autre admission et sans création. La CI, la fusion et Governed Deploy restent des preuves distinctes de la recette réelle.
+- **NEXT_ACTION** : vérifier le SHA chargé et lire un dossier déjà autorisé depuis le client OAuth CUG prévu, sans soumission. Une entrée CUG qui répond 404 n’atteste ni admission ni preuve GRGS en production.
+
 ## 2026-11-20 — CUG, clôture A et candidat B1 (WT-MCP-CUG-GRT-20261114-01)
 
 - **A validé sur UAES** — collecteur #404 exécuté sur S1, webhook #403 signé, livraison réelle `202`, rejeu `204` avec reçu unique confirmé. Les preuves et la séparation avec la création GRT sont dans le [runbook CUG](docs/governance/cug-webhook-receiver.md#reprise-wt-mcp-cug-grt-20261114-01--b1-consommateur-automatique-uaes).

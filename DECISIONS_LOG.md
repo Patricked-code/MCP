@@ -4,6 +4,10 @@
 
 **Décision** : le job documentaire consomme une projection du Live State reliée au run OIDC et au SHA réellement déployé. Seul un écart documentaire isolé autorise la préparation du snapshot, sans droit implicite de fusion ni remplacement du suivi GitHub. L'identité du dépôt est celle de la politique OIDC existante. Les écritures GitHub nécessitent une installation d'application limitée à ce dépôt et des permissions dédiées à la préparation de la PR. [Preuves et activation](https://github.com/Patricked-code/MCP/pull/406)
 
+## 2026-11-20 — Réutiliser la capsule pour le cockpit CUG (#423)
+
+**Décision** : utiliser le cookie CUG et la référence du même formulaire, revérifier compte et installation, puis borner à un dossier GRT corrélé côté serveur. Pas de nouveau stockage d’identité, d’exposition de jeton, de droit d’écriture ni de duplication de la capsule. La réception du dispatch, la publication du dossier, l’observation du dépôt, le reçu et GRGS ne se substituent pas. [Recette et autorités](docs/governance/cug-grt-capsule.md#recette-du-cockpit-cuggrtgrgs)
+
 ## 2026-11-14 — Séparer l'instantané CUG du rattachement serveur (#404)
 
 **Décision** : le collecteur pilote écrit un instantané privé d'identité et de couverture GitHub, mais ne modifie pas le GitRegistry canonique. Une correspondance par nom est un candidat à réconcilier, jamais une preuve de remote, de chemin réel, de domaine Plesk ou d'autorisation de provisioning. L'exécution reste une commande opérateur distincte du webhook et nécessite une installation CUG attestée. Les tests simulés ne certifient pas le pilote sur S1. [Contrat et limites](docs/governance/cug-webhook-receiver.md).
