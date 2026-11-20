@@ -160,3 +160,44 @@ supplémentaire. Le guide public, le formulaire d’admission OAuth CUG et
 la page de consentement OAuth conservent leurs points d’entrée et leurs
 frontières de sécurité. Le tableau de bord continue d’être renvoyé par
 `GET /`, sans créer d’alias d’index.
+
+## Recette du cockpit CUG/GRT/GRGS
+
+Ce lot raccorde le suivi web au lecteur de la capsule autonome. Pour ouvrir
+le parcours, utiliser le lien éphémère de `mcp_start_governed_request_auth`.
+L’écran préremplit l’App ID CUG à partir de la route dédiée, sans en tirer
+d’autorisation. Fournir ensuite le même jeton OAuth MCP que lors de l’appel,
+puis choisir un compte dont l’installation a été vérifiée. Ni un nom de
+compte, ni un App ID, ni une session web historique ne suffisent. Les comptes
+autorisés restent dans le profil protégé existant. Les références de session
+du navigateur sont temporaires. Il n’y a ni nouvelle base d’identités, ni
+stockage du Bearer par le cockpit, ni changement du pilote `/gouvern`.
+
+Le bouton **Consulter le cockpit de preuves** appelle
+`GET /repo-template/auth/evidence`. Le cookie CUG et la référence de formulaire
+doivent correspondre à la même admission. Le serveur revérifie l’installation,
+résout le dossier depuis la cible ou la référence déjà admise et transmet seulement
+ce dossier au lecteur. Aucun paramètre du navigateur ne sélectionne un autre
+compte ou dépôt. L’appel ne retransmet aucun événement de création. Les
+endpoints d’admission, de création et de suivi central restent en place.
+
+| Signal | Autorité et limite |
+| --- | --- |
+| Demande transmise | Accusé de réception du dispatch. N’atteste ni la publication du dossier ni la création du dépôt. |
+| Dossier central observé | Checkpoint GRT issu du dossier central corrélé. N’atteste pas à lui seul l’existence du dépôt. |
+| Dépôt observé et corrélé | Identité du dépôt confirmée par l’installation GitHub bornée, après un transfert GRT cohérent. Le checkpoint local peut encore manquer. |
+| Checkpoint local | Dossier local unique et corrélé au dossier central, à l’ID du dépôt et à la révision attendue. Un échec de lecture ne prouve pas son absence. |
+| Référence attestée | Reçu corrélé à la baseline. Ce n’est ni un déploiement ni une attestation d’architecture. |
+| Synthèse GRGS | Classification candidate des chemins sur le commit observé, avec politique, compteurs et empreinte. Elle est indépendante du reçu de référence. Aucun chemin brut, contenu, droit d’écriture ou approbation n’est retourné. |
+
+Recette de production en lecture seule sur un dossier déjà autorisé : vérifier
+le SHA réellement chargé et les contrôles de santé, obtenir un lien depuis
+le client OAuth CUG, sélectionner un compte autorisé, puis lire un dossier
+de reprise. Comparer les états du cockpit avec la capsule MCP de reprise
+sur la même référence. Vérifier que la session historique et une référence
+d’un autre onglet ne donnent pas accès aux preuves. Ne pas soumettre le
+questionnaire pour cette recette. Si la route opérationnelle reste en 404,
+relever la condition d’activation et l’origine HTTPS avec l’opérateur,
+sans exposer les secrets ou activer l’écriture GRT. Les fixtures couvrent
+les refus, l’état partiel et le raccordement capsule, mais ne remplacent
+pas cette observation sur un dossier réel.

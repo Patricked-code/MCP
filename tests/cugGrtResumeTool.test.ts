@@ -5,7 +5,7 @@ import test from 'node:test';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createGrtResumeRead, registerGrtResumeTool } from '../src/cug/grtResumeTool.js';
+import { createGrtEvidenceReaders, registerGrtResumeTool } from '../src/cug/grtResumeTool.js';
 
 const fixture=JSON.parse(readFileSync(new URL('../capsules/grt-repository-creation/test/grt-fixture.json',import.meta.url),'utf8'));
 const project=fixture.before.project_continuity_id;
@@ -27,7 +27,7 @@ function fake(opts:Options={}){
     body:'<!-- GRT_PROJECT_REQUEST:GR-000099 -->\n<!-- GOVERNED_LOCAL_ENTRY_STATE:'+enc(state)+' -->'};
   const config={clientId:'oauth-client',subject:'approved',identityKey:'f'.repeat(64),
     accounts:[{login:'Patricked-code',installationId:22,probeRepository:target}],grt:{allowedTarget:target}};
-  const read=createGrtResumeRead({
+  const readers=createGrtEvidenceReaders({
     getConfig:async()=>config,now:()=>now,readPrivateKey:async()=>pem,
     inspect:token=>token==='approved-token'?{clientId:config.clientId,subject:config.subject,scopes:['mcp:read'],
       expiresAt:now.getTime()/1000+600}:null,
@@ -64,7 +64,7 @@ function fake(opts:Options={}){
       throw Error('unexpected URL '+url);
     }
   });
-  return {read,calls};
+  return {read:readers.forToken,web:readers.forAdmission,calls};
 }
 
 test('the standalone SDK tool accepts only the continuity ID, and missing transport OAuth cannot read',async ()=>{
@@ -124,4 +124,18 @@ test('terminal receipt is pinned to the baseline commit and GRGS is independentl
     assert.ok(f.calls.every(([,init])=>!init?.method||init.method==='POST'));
     assert.equal(f.calls.filter(([,init])=>init?.method==='POST').length,1);
   }
+});
+
+test('web proof reader denies wrong admission scopes before GitHub and reuses exact capsule sources', async()=>{
+  const f=fake({terminal:true});
+  const actor={subject:'approved',clientId:'oauth-client',scopes:['mcp:read'],expiresAt:now.getTime()/1000+600};
+  const admitted={actor,login:'Patricked-code',installationId:22,target,projectId:project};
+  for(const scope of [
+    {...admitted,login:'other'}, {...admitted,installationId:23}, {...admitted,target:'Patricked-code/unrelated'},
+    {...admitted,actor:{...actor,clientId:'legacy'}},{...admitted,actor:{...actor,scopes:[]}},
+    {...admitted,actor:{...actor,expiresAt:now.getTime()/1000}}
+  ]) assert.deepEqual(await f.web(scope),{status:'UNAVAILABLE'});
+  assert.equal(f.calls.length,0);
+  assert.deepEqual(await f.web(admitted),await f.read('approved-token',project));
+  assert.ok(f.calls.every(([url,init])=>init?.method!=='POST'||url.endsWith('/app/installations/22/access_tokens')));
 });

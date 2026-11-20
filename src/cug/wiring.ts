@@ -5,7 +5,7 @@ import { env } from '../config/env.js';
 import { inspectOauthAccessToken, oauthIssuer } from '../oauth.js';
 import { probeGithubAppReadOnlyRepository } from '../github/installationLiveReadiness.js';
 import { observeGrtRequest, submitToGrt } from './questionnaire.js';
-import { createGrtResumeRead } from './grtResumeTool.js';
+import { createGrtEvidenceReaders } from './grtResumeTool.js';
 import { CUG_APP_ID, createCugAdmission, type CugConfig } from './admission.js';
 
 const login = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/);
@@ -64,6 +64,16 @@ export function cugOrigin():string {
   }catch{return '';}
 }
 export const cugEnabled=()=>env.MCP_CUG_ADMISSION_ENABLED && cugOrigin()!=='';
+const grtEvidence=createGrtEvidenceReaders({
+  getConfig,
+  inspect:token=>inspectOauthAccessToken(token,'mcp:read'),
+  readPrivateKey:()=>readProtected('/app/secrets/cug-app-private.pem',16_384),
+  fetchImpl:fetch,
+  now:()=>new Date()
+});
+
+export const cugGrtResumeRead=grtEvidence.forToken;
+
 export const cugAdmission=createCugAdmission({
   origin:cugOrigin(),
   getConfig,
@@ -84,6 +94,7 @@ export const cugAdmission=createCugAdmission({
       return {status:'UNCONFIRMED'};
     return observeGrtRequest(target??config.grt.allowedTarget,config.grt,fetch,continuityId);
   },
+  readEvidence:grtEvidence.forAdmission,
   probe:async account=>{
     const result=await probeGithubAppReadOnlyRepository({
       installation:{appId:CUG_APP_ID,installationId:account.installationId,accountLogin:account.login},
@@ -95,12 +106,4 @@ export const cugAdmission=createCugAdmission({
     });
     return result.status==='PERMISSION_OBSERVED';
   }
-});
-
-export const cugGrtResumeRead=createGrtResumeRead({
-  getConfig,
-  inspect:token=>inspectOauthAccessToken(token,'mcp:read'),
-  readPrivateKey:()=>readProtected('/app/secrets/cug-app-private.pem',16_384),
-  fetchImpl:fetch,
-  now:()=>new Date()
 });
