@@ -1,3 +1,5 @@
+import { createAdmissionsRouter } from './web/admissions.js';
+import { consoleNav, consoleStyleTag, viewportTag } from './web/consoleUi.js';
 import express from 'express';
 import { readFile, stat } from 'node:fs/promises';
 import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
@@ -205,11 +207,11 @@ function requireWebLogin(req: express.Request, res: express.Response, next: expr
 }
 
 function renderLoginPage(error?: string, next = '/dashboard'): string {
-  const safeError = error ? `<p style="color:#b91c1c;font-weight:700">${escapeHtml(error)}</p>` : '';
+  const safeError = error ? `<p class="wt-error" role="alert">${escapeHtml(error)}</p>` : '';
   // E2: a completion link returns to the surface that asks for the missing context.
   const destination = next === '/dashboard'
     ? ''
-    : `<p>Après connexion : retour à <code>${escapeHtml(next)}</code> pour compléter le contexte demandé.</p>`;
+    : `<p>Après connexion, vous reprendrez la page demandée <code>${escapeHtml(next)}</code>.</p>`;
 
   return `<!doctype html>
 <html lang="fr">
@@ -217,18 +219,19 @@ function renderLoginPage(error?: string, next = '/dashboard'): string {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Connexion MCP WealthTech</title>
+  ${consoleStyleTag}
 </head>
-<body style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f9fafb;margin:0;color:#111827">
-  <main style="max-width:540px;margin:10vh auto;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:28px">
+<body>
+  <main class="wt-login">
     <h1>Connexion MCP WealthTech</h1>
-    <p>Entre le token MCP pour accéder au tableau de bord.</p>
+    <p>Saisissez votre jeton MCP pour accéder à la console.</p>
     ${destination}
     ${safeError}
     <form method="post" action="/login">
       <input type="hidden" name="next" value="${escapeHtml(next)}" />
-      <label style="display:block;margin:14px 0 6px;font-weight:700">Token MCP</label>
-      <input name="token" type="password" autocomplete="current-password" required autofocus style="width:100%;padding:12px;box-sizing:border-box" />
-      <button type="submit" style="margin-top:16px;width:100%;padding:12px">Accéder</button>
+      <label for="mcp-login-token">Jeton MCP</label>
+      <input id="mcp-login-token" name="token" type="password" autocomplete="current-password" required autofocus />
+      <button type="submit">Accéder</button>
     </form>
     <p><a href="${cugJourneyGuidePath}">Guide de création et de reprise CUG / GRT</a></p>
   </main>
@@ -241,17 +244,11 @@ function normalizeAccountParam(value: string): string {
 }
 
 function nav(): string {
-  return `<p>
-    <a href="/dashboard">Dashboard</a> ·
-    <a href="${cugJourneyGuidePath}">Guide CUG / GRT</a> ·
-    <a href="/git">Paramétrage Git</a> ·
-    <a href="/github">GitHub</a> ·
-    <a href="/github/status">Statut JSON</a> ·
-    <a href="/github/Patricked-code">Patricked-code</a> ·
-    <a href="/github/chainsolutions-wealthtech">chainsolutions-wealthtech</a> ·
-    <a href="/provisioning/project-runtime">Provisioning</a> ·
-    <a href="/logout">Déconnexion</a>
-  </p>`;
+  return `<nav class="wt-links" aria-label="Accès rapides GitHub">
+    <a href="/github/status">Statut GitHub JSON</a>
+    <a href="/github/Patricked-code">Patricked-code</a>
+    <a href="/github/chainsolutions-wealthtech">chainsolutions-wealthtech</a>
+  </nav>`;
 }
 
 async function renderDashboardPage(): Promise<string> {
@@ -283,34 +280,42 @@ async function renderDashboardPage(): Promise<string> {
 <head>
   <meta charset="utf-8" />
   <title>MCP WealthTech — Dashboard</title>
+  ${viewportTag}${consoleStyleTag}
 </head>
-<body style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:32px;color:#111827;line-height:1.45">
+<body>
+  ${consoleNav()}
+  <main class="wt-main">
   <h1>MCP WealthTech — Tableau de bord</h1>
+  <p class="wt-copy">Consultez les connexions, les dépôts et l’état gouverné du service.</p>
+  <div class="wt-links" aria-label="Parcours opérateur">
+    <a class="wt-action" href="/admissions">Choisir un parcours d’admission</a>
+    <a class="wt-action wt-secondary" href="/provisioning/project-runtime">Voir les cibles S1</a>
+  </div>
   ${nav()}
-
-  <h2>GitHub</h2>
+  <div class="wt-grid">
+  <section class="wt-card"><h2>GitHub</h2>
   <p>Connexion : <strong>${escapeHtml(connected)}</strong></p>
   <p>Compte : <strong>${escapeHtml(status.login || 'non détecté')}</strong></p>
   <p>Organisation : <strong>${escapeHtml(status.org || 'non définie')}</strong></p>
   <p>Repos visibles : <strong>${escapeHtml(status.reposVisible ?? 'n/a')}</strong></p>
   <p>Expiration token : <strong>${escapeHtml(status.tokenExpiresAt || 'non communiquée')}</strong></p>
 
-  <h2>MCP</h2>
+  </section><section class="wt-card"><h2>MCP</h2>
   <p>Service : <strong>wealthtech_ssh_bridge</strong></p>
   <p>Mode : <strong>${env.ENABLE_WRITE_TOOLS ? 'read-only-plus-scoped-write' : 'read-only-first'}</strong></p>
   <p>GitHub bootstrapped : <strong>${env.MCP_GITHUB_BOOTSTRAPPED ? 'oui' : 'non'}</strong></p>
   <p>Token GitHub : <code>${escapeHtml(status.tokenFile)}</code></p>
 
-  <h2>Registre Git</h2>
+  </section><section class="wt-card"><h2>Registre Git</h2>
   <p>Comptes enregistrés : <strong>${registry.accounts.length}</strong></p>
   <p>Mappings repo ↔ serveur : <strong>${registry.repoMappings.length}</strong></p>
   <p>Dernière mise à jour : <strong>${escapeHtml(registry.updatedAt)}</strong></p>
-  <p><a href="/git/status">Voir JSON</a></p>
+  <p><a href="/git/status">Voir JSON</a></p></section></div>
 
   ${governedContext
     ? renderGovernedContextDashboardSection(governedContext, activeSessionCount ?? 0)
     : renderGovernedContextDashboardDisabledSection()}
-</body>
+</main></body>
 </html>`;
 }
 
@@ -512,6 +517,7 @@ export async function startHttpServer(): Promise<void> {
     })
   }));
   app.use(createCugJourneyGuideRouter());
+  app.use(createAdmissionsRouter(requireWebLogin, cugEnabled));
   app.use(createCugRouter(cugAdmission, cugOrigin(), cugEnabled));
   app.use(createCugWebhookRouter({
     enabled: () => env.MCP_CUG_WEBHOOK_ENABLED,

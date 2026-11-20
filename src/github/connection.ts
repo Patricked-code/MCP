@@ -1,3 +1,4 @@
+import { consoleDocument } from '../web/consoleUi.js';
 import { mkdir, readFile, writeFile, chmod, stat } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { env } from '../config/env.js';
@@ -456,33 +457,14 @@ export function renderGithubConnectionPage(
     ? `<ul>${status.warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join('')}</ul>`
     : '<p>Aucun avertissement.</p>';
 
-  return `<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WealthTech MCP — GitHub Connection</title>
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 32px; line-height: 1.45; color: #111827; }
-    .card { border: 1px solid #d1d5db; border-radius: 12px; padding: 20px; margin: 16px 0; max-width: 980px; }
-    .ok { color: #047857; font-weight: 700; }
-    .ko { color: #b91c1c; font-weight: 700; }
-    code { background: #f3f4f6; padding: 2px 5px; border-radius: 4px; }
-    label { display: block; margin: 10px 0 4px; font-weight: 600; }
-    input, select, textarea { width: 100%; max-width: 680px; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; }
-    button { margin-top: 12px; padding: 10px 16px; border: 0; border-radius: 8px; background: #111827; color: white; font-weight: 700; }
-    table { border-collapse: collapse; width: 100%; max-width: 980px; }
-    td { border-bottom: 1px solid #e5e7eb; padding: 8px; vertical-align: top; }
-    td:first-child { font-weight: 700; width: 280px; }
-  </style>
-</head>
-<body>
+  return consoleDocument('WealthTech MCP — Connexion GitHub', `
   <h1>WealthTech MCP — Connexion GitHub</h1>
+  <p class="wt-copy">Vérifiez le compte actif et ses accès avant d’intervenir sur un dépôt.</p>
   ${renderGithubCredentialCompletion(status)}
   <div class="card">
-    <h2>État actuel</h2>
+    <h2 id="github-current">État actuel</h2>
     <p>Connexion : <span class="${status.connected ? 'ok' : 'ko'}">${status.connected ? 'connectée' : 'non connectée'}</span></p>
-    <table>
+    <div class="wt-table" role="region" aria-labelledby="github-current" tabindex="0"><table>
       <tr><td>Organisation</td><td>${escapeHtml(status.org || env.GITHUB_ORG || 'non définie')}</td></tr>
       <tr><td>Compte GitHub</td><td>${escapeHtml(status.login || 'non détecté')}</td></tr>
       <tr><td>Token visible par le conteneur</td><td>${status.tokenFileExists ? 'oui' : 'non'} — <code>${escapeHtml(status.tokenFile)}</code></td></tr>
@@ -494,7 +476,7 @@ export function renderGithubConnectionPage(
       <tr><td>Lecture repos</td><td>${status.canReadReposHint ? 'probable' : 'non détectée'}</td></tr>
       <tr><td>Écriture repos</td><td>${status.canWriteReposHint ? 'à tester / probable' : 'non détectée'}</td></tr>
       <tr><td>Admin organisation</td><td>${status.canAdminOrgHint ? 'à tester / possible' : 'non détectée'}</td></tr>
-    </table>
+    </table></div>
     ${status.error ? `<p class="ko">Erreur : ${escapeHtml(status.error)}</p>` : ''}
     <h3>Avertissements</h3>
     ${warnings}
@@ -506,12 +488,12 @@ export function renderGithubConnectionPage(
     optional: 'Remplacer le token GitHub (facultatif)'
   }, `<p>Le token sera stocké dans le fichier secret du conteneur MCP. Il ne doit jamais être commité dans Git.</p>
     <form method="post" action="/github/connect">
-      <label>Organisation GitHub</label>
-      <input name="org" value="${escapeHtml(status.org || env.GITHUB_ORG || 'chainsolutions-wealthtech')}" />
-      <label>Token GitHub</label>
-      <input name="token" type="password" autocomplete="off" required />
-      <label>Niveau souhaité</label>
-      <select name="mode">
+      <label for="github-org">Organisation GitHub</label>
+      <input id="github-org" name="org" value="${escapeHtml(status.org || env.GITHUB_ORG || 'chainsolutions-wealthtech')}" />
+      <label for="github-token">Token GitHub</label>
+      <input id="github-token" name="token" type="password" autocomplete="off" required />
+      <label for="github-mode">Niveau souhaité</label>
+      <select id="github-mode" name="mode">
         <option value="read">Lecture seule</option>
         <option value="write">Lecture / écriture repos</option>
         <option value="admin">Administration repos</option>
@@ -525,6 +507,5 @@ export function renderGithubConnectionPage(
     <h2>Contexte projet</h2>
     <p>Le mapping dépôt ↔ projet ↔ serveur d’un dépôt se consulte sur <a href="/git">/git</a> (<code>/git?repository=Owner/Name</code>) : seules les informations manquantes y sont demandées.</p>
   </div>
-</body>
-</html>`;
+`);
 }

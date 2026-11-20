@@ -1,3 +1,4 @@
+import { consoleStyleHash, consoleStyleTag } from './web/consoleUi.js';
 import type { Express, Request, Response } from 'express';
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { env } from './config/env.js';
@@ -474,7 +475,7 @@ function renderAuthorizationConsent(res: Response, request: AuthorizationConsent
   res.setHeader('Referrer-Policy', 'no-referrer');
   res.setHeader(
     'Content-Security-Policy',
-    `default-src 'none'; style-src 'unsafe-inline'; form-action 'self' ${redirectOrigin}; frame-ancestors 'none'; base-uri 'none'`
+    `default-src 'none'; style-src ${consoleStyleHash}; form-action 'self' ${redirectOrigin}; frame-ancestors 'none'; base-uri 'none'`
   );
   res.status(200).type('html').send(`<!doctype html>
 <html lang="fr">
@@ -482,21 +483,10 @@ function renderAuthorizationConsent(res: Response, request: AuthorizationConsent
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Autoriser une connexion MCP</title>
-  <style>
-    body { font-family: system-ui, sans-serif; background: #f5f6f8; color: #1f2933; margin: 0; padding: 24px 16px; }
-    main { max-width: 520px; margin: 40px auto; background: #fff; border: 1px solid #d9dee5; border-radius: 10px; padding: 24px; }
-    h1 { font-size: 20px; margin: 0 0 16px; }
-    dl { margin: 0 0 16px; }
-    dt { font-size: 12px; color: #52606d; margin-top: 12px; }
-    dd { margin: 4px 0 0; font-family: ui-monospace, monospace; word-break: break-all; }
-    p { font-size: 14px; line-height: 1.5; }
-    .actions { display: flex; gap: 12px; margin-top: 20px; }
-    button { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #9aa5b1; background: #fff; font-size: 15px; cursor: pointer; }
-    button[value="approve"] { background: #1f6feb; border-color: #1f6feb; color: #fff; }
-  </style>
+  ${consoleStyleTag}
 </head>
 <body>
-  <main>
+  <main class="wt-card wt-consent">
     <h1>Autoriser une connexion MCP</h1>
     <p>Une application demande un accès au serveur MCP WealthTech avec votre session opérateur.</p>
     <dl>
@@ -518,7 +508,7 @@ function renderAuthorizationConsent(res: Response, request: AuthorizationConsent
       ${hidden('code_challenge', request.codeChallenge)}
       ${hidden('code_challenge_method', request.codeChallengeMethod)}
       ${hidden('consent_ticket', issueConsentTicket(request))}
-      <div class="actions">
+      <div class="wt-links">
         <button type="submit" name="decision" value="deny">Refuser</button>
         <button type="submit" name="decision" value="approve">Autoriser</button>
       </div>
