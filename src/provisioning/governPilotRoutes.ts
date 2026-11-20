@@ -1,3 +1,4 @@
+import { consoleDocument, consoleStyleHash } from '../web/consoleUi.js';
 import express from 'express';
 import type { Request, RequestHandler, Router } from 'express';
 import { z } from 'zod';
@@ -41,7 +42,7 @@ export function createGovernPilotRouter(deps:GovernPilotWebDeps):Router {
   const router=express.Router();
   router.get('/gouvern',deps.requireLogin,async(req,res)=>{
     res.setHeader('Cache-Control','no-store');
-    res.setHeader('Content-Security-Policy',"default-src 'none'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
+    res.setHeader('Content-Security-Policy',`default-src 'none'; style-src ${consoleStyleHash}; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`);
     const enabled=deps.enabled();
     let snapshot:null|Awaited<ReturnType<typeof deps.read>>=null;
     try { snapshot=await deps.read(); } catch { /* fail closed */ }
@@ -55,14 +56,14 @@ export function createGovernPilotRouter(deps:GovernPilotWebDeps):Router {
         +'J’autorise l’archivage privé de cette révision GitHub sur S1</label>'
         +'<button type="submit">Préparer le snapshot privé</button></form>'
       : '';
-    res.type('html').status(200).send('<!doctype html><html lang="fr"><head><meta charset="utf-8">'
-      +'<title>Gouvernance — projet pilote</title></head><body>'
+    res.type('html').status(200).send(consoleDocument('Gouvernance — projet pilote', ''
       +'<h1>Governed-Repository-Template</h1>'
+      +'<p class="wt-copy">Pilote historique · préparation d’une archive privée sur S1</p><section class="card" aria-label="État du pilote">'
       +'<p>Source : '+escapeHtml(GOUVERN_SOURCE)+'</p>'
       +'<p>Revision : '+GOUVERN_SHA+'</p>'
       +'<p>État : '+escapeHtml(state)+'</p>'
       +'<p>Archive privée et non exécutable ; aucun fichier brut exposé par cette route.</p>'
-      +form+'</body></html>');
+      +form+'</section>'));
   });
   router.post('/gouvern/deploy',deps.requireLogin,async(req,res)=>{
     res.setHeader('Cache-Control','no-store');

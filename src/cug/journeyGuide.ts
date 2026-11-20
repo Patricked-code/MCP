@@ -27,7 +27,7 @@ ol{padding:0;list-style-position:inside;display:grid;gap:.8rem;grid-template-col
   <p class="eyebrow">WEALTHTECH MCP · GUIDE DE PARCOURS</p>
   <h1>Créer ou reprendre un dépôt gouverné</h1>
   <p>Deux parcours distincts, une même règle. Chaque action s’appuie sur des autorisations vérifiées et chaque étape affiche uniquement les preuves réellement disponibles.</p>
-  <nav class="actions" aria-label="Points d’entrée"><a href="/dashboard">Tableau de bord MCP</a><a href="https://github.com/Patricked-code/MCP/blob/main/docs/governance/cug-grt-capsule.md#guide-web-et-routes-de-référence">Documentation GitHub</a></nav>
+  <nav class="actions" aria-label="Points d’entrée"><a href="/dashboard">Tableau de bord MCP</a><a href="/admissions">Parcours après connexion</a><a href="https://github.com/Patricked-code/MCP/blob/main/docs/governance/cug-grt-capsule.md#guide-web-et-routes-de-référence">Documentation GitHub</a></nav>
 </header>
 <section aria-labelledby="etapes"><h2 id="etapes">Le parcours, étape par étape</h2>
 <ol>

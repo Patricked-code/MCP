@@ -1,3 +1,4 @@
+import { consoleDocument, consoleStyleHash } from '../web/consoleUi.js';
 import express from 'express';
 import type { Request, RequestHandler, Response, Router } from 'express';
 
@@ -76,26 +77,14 @@ function secure(res: Response): void {
   res.setHeader('Referrer-Policy', 'no-referrer');
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
+    `default-src 'none'; style-src ${consoleStyleHash}; form-action 'self'; frame-ancestors 'none'; base-uri 'none'`
   );
 }
 
 function page(title: string, body: string): string {
-  return `<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>${escapeHtml(title)}</title>
-</head>
-<body style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f9fafb;margin:0;color:#111827">
-  <main style="max-width:960px;margin:32px auto;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:28px">
-    <p><a href="/dashboard">Dashboard</a> · <a href="${PAGE_PATH}">Provisioning</a> · <a href="${STATUS_PATH}">Statut</a></p>
-    <h1>${escapeHtml(title)}</h1>
-    ${body}
-  </main>
-</body>
-</html>`;
+  return consoleDocument(escapeHtml(title), `<h1>${escapeHtml(title)}</h1>
+    <nav class="wt-links" aria-label="Provisionnement"><a href="${PAGE_PATH}">Cibles S1</a><a href="${STATUS_PATH}">Statut JSON</a><a href="/admissions/historique">Pilote historique</a></nav>
+    <section class="card" aria-label="Détails du provisionnement">${body}</section>`);
 }
 
 function field(source: Record<string, unknown>, name: string): string | null {
@@ -143,17 +132,17 @@ async function renderTargets(deps: ProjectRuntimeProvisioningRouteDependencies):
         <td><form method="get" action="${PAGE_PATH}">
           <input type="hidden" name="projectId" value="${escapeHtml(target.projectId)}" />
           <input type="hidden" name="mappingId" value="${escapeHtml(target.mappingId)}" />
-          <input name="revision" required pattern="[0-9a-f]{40}" placeholder="SHA exact (40 caractères)" />
+          <input name="revision" aria-label="Révision Git" required pattern="[0-9a-f]{40}" placeholder="SHA exact (40 caractères)" />
           <button type="submit">Planifier</button>
         </form></td>
       </tr>`).join('\n');
   return `${intro}
-    <table style="border-collapse:collapse" cellpadding="6">
+    <div class="wt-table" tabindex="0" role="region" aria-label="Tableau du plan de provisionnement"><table>
       <thead><tr><th>Projet</th><th>Mapping</th><th>Dépôt</th><th>Chemin S1</th><th>Révision</th></tr></thead>
       <tbody>
       ${rows}
       </tbody>
-    </table>
+    </table></div>
     <p>La révision doit appartenir à l’historique revu de la branche par défaut, avec une CI ni en échec ni en cours ; elle est revérifiée juste avant toute écriture.</p>`;
 }
 
@@ -180,7 +169,7 @@ function renderPlan(plan: ProjectRuntimeProvisioningPlan, request: ProvisioningR
   return `<p>Décision : <strong>${escapeHtml(plan.decision)}</strong> : ${DECISIONS[plan.decision]}</p>
     <p>Raisons : ${codes(plan.reasonCodes)}</p>
     ${targetPart}
-    <table style="border-collapse:collapse" cellpadding="6"><thead><tr><th>Étape</th><th>État</th></tr></thead><tbody>${steps}</tbody></table>
+    <div class="wt-table" tabindex="0" role="region" aria-label="Tableau du plan de provisionnement"><table><thead><tr><th>Étape</th><th>État</th></tr></thead><tbody>${steps}</tbody></table></div>
     ${form}`;
 }
 

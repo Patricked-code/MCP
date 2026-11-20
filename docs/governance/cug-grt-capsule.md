@@ -135,3 +135,28 @@ statut des preuves. En cas de réception incertaine, consulter le statut
 avant tout nouvel envoi. Un test de reprise ne doit pas créer de dépôt.
 Le suivi web reste central dans ce lot. La preuve locale et la synthèse
 GRGS restent consultables par l'outil MCP, pas par le guide public.
+
+## Console authentifiée des admissions
+
+Depuis le tableau de bord, **Choisir un parcours d’admission** ouvre
+`/admissions`. Le choix est explicite dans ce menu et dans le slug, jamais
+inféré d’un nom de dépôt, d’un paramètre libre, d’une session supposée ou d’un
+code de réponse. Une session web permet de lire les pages de la console.
+Elle n’autorise ni l’admission OAuth CUG ni une opération GRT. La console
+n’ajoute aucun formulaire ni POST et ne déclenche aucune opération sur les
+dépôts. Les actions existantes restent dans les routes qui en ont l’autorité.
+
+| Page après connexion | Entrée opérationnelle et contrôles | Suivi |
+| --- | --- | --- |
+| `/admissions/cug` | Client OAuth autorisé → `mcp_start_governed_request_auth` → lien temporaire `GET /repo-template/auth` → `POST /repo-template/auth/verify` puis `POST /repo-template/auth/select` | Vérification du jeton d’origine, de l’installation et du compte. La mention « route activée » ne confirme ni un profil valide ni une installation autorisée. |
+| `/admissions/grt` | Nouvelle demande via l’admission CUG ou reprise avec `projectContinuityId` / `resumeRepositoryName`. Pour la création, consentements distincts soumis à `POST /repo-template/auth/submit`. | `GET /repo-template/auth/status` consulte le dossier central dans le contexte admis. `mcp_resume_grt_repository_creation` consulte les preuves de reprise quand le handoff est démontré. Aucun rejeu automatique. |
+| `/admissions/historique` | `GET /gouvern` consulte le pilote. Le `POST /gouvern/deploy` existant est réservé à la préparation de son archive quand les conditions et le consentement sont réunis. | Statut du pilote préconfiguré, sans création de dépôt, ni admission CUG. |
+| `/provisioning/project-runtime` | Parcours de provisionnement séparé, cibles et consentement propres. | Statut du provisionnement, distinct des dossiers GRT et du pilote historique. |
+
+Le site reste servi par Express, à partir du JavaScript compilé depuis
+TypeScript. La navigation et les styles intégrés sont partagés par les
+pages de la console, sans dépendance frontend, CDN ni appel applicatif
+supplémentaire. Le guide public, le formulaire d’admission OAuth CUG et
+la page de consentement OAuth conservent leurs points d’entrée et leurs
+frontières de sécurité. Le tableau de bord continue d’être renvoyé par
+`GET /`, sans créer d’alias d’index.

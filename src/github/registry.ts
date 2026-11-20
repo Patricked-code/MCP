@@ -1,3 +1,4 @@
+import { consoleDocument } from '../web/consoleUi.js';
 import { mkdir, open, readFile, writeFile, chmod } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -441,5 +442,45 @@ export function renderGitSettingsPage(
   registry: GitRegistry,
   options: { mapping?: RepositoryMappingCompletion; consentTicket?: string } = {}
 ): string {
-  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"/><title>MCP WealthTech - Git</title><style>body{font-family:system-ui;margin:32px}.card{border:1px solid #ddd;border-radius:12px;padding:16px;margin:16px 0}.warning{background:#fff7ed}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}table{border-collapse:collapse;width:100%}code{background:#f3f4f6;padding:2px 4px}</style></head><body><h1>MCP WealthTech - Git</h1><p><a href="/dashboard">Dashboard</a> | <a href="/github/status">GitHub JSON</a> | <a href="/git/status">Registry JSON</a></p>${renderGithubCredentialCompletion(status)}${mappingCompletionHtml(options.mapping)}${ctxHtml(registry)}<section class="card"><h2>GitHub status</h2><p>connected=${status.connected ? 'yes' : 'no'} login=${esc(status.login || 'none')} org=${esc(status.org || org())} repos=${esc(status.reposVisible ?? 'n/a')}</p><p>Auto-discovery runs only with its explicit consent and synchronizes visible repositories additively. No clone, no delete, no deploy, no force push.</p></section>${renderGithubCredentialRequest(status, { request: 'Connect GitHub', optional: 'Reconnect GitHub (optional)' }, `<form method="post" action="/git/connect"><input name="org" value="${esc(status.org || org())}"/><input name="token" type="password" required/><select name="mode"><option value="read">read</option><option value="write">write</option><option value="admin">admin</option><option value="org_admin">org_admin</option></select>${renderConnectConsentFields({ ticket: options.consentTicket ?? '', org: status.org || org() })}<button type="submit">Connect GitHub</button></form>`)}<section class="card"><h2>Mappings matching active GitHub</h2><table><tbody>${matched(registry, status)}</tbody></table></section><section class="card"><h2>All repo/server mappings</h2><table><thead><tr><th>Repo</th><th>Project</th><th>Server</th><th>Path</th><th>Branch</th><th>Access</th><th>Deploy</th></tr></thead><tbody>${rows(registry)}</tbody></table></section></body></html>`;
+  const connectForm = `<form method="post" action="/git/connect">
+    <label for="git-org">Organisation GitHub</label>
+    <input id="git-org" name="org" value="${esc(status.org || org())}"/>
+    <label for="git-token">Jeton GitHub</label>
+    <input id="git-token" name="token" type="password" required/>
+    <label for="git-mode">Niveau souhaité</label>
+    <select id="git-mode" name="mode">
+      <option value="read">Lecture seule</option>
+      <option value="write">Lecture / écriture dépôts</option>
+      <option value="admin">Administration dépôts</option>
+      <option value="org_admin">Administration organisation</option>
+    </select>
+    ${renderConnectConsentFields({ ticket: options.consentTicket ?? '', org: status.org || org() })}
+    <button type="submit">Connect GitHub</button>
+  </form>`;
+  return consoleDocument('MCP WealthTech - Git', `
+    <h1>MCP WealthTech - Git</h1>
+    <p class="wt-copy">Consultez l’accès GitHub et les rattachements de dépôts aux environnements.</p>
+    <nav class="wt-links" aria-label="Données du registre">
+      <a href="/github/status">GitHub JSON</a><a href="/git/status">Registry JSON</a>
+    </nav>
+    ${renderGithubCredentialCompletion(status)}
+    ${mappingCompletionHtml(options.mapping)}
+    ${ctxHtml(registry)}
+    <section class="card">
+      <h2>GitHub status</h2>
+      <p>connected=${status.connected ? 'yes' : 'no'} login=${esc(status.login || 'none')} org=${esc(status.org || org())} repos=${esc(status.reposVisible ?? 'n/a')}</p>
+      <p>Auto-discovery runs only with its explicit consent and synchronizes visible repositories additively. No clone, no delete, no deploy, no force push.</p>
+    </section>
+    ${renderGithubCredentialRequest(status, { request: 'Connect GitHub', optional: 'Reconnect GitHub (optional)' }, connectForm)}
+    <section class="card">
+      <h2 id="git-matched">Mappings matching active GitHub</h2>
+      <div class="wt-table" role="region" aria-labelledby="git-matched" tabindex="0"><table><tbody>${matched(registry, status)}</tbody></table></div>
+    </section>
+    <section class="card">
+      <h2 id="git-all">All repo/server mappings</h2>
+      <div class="wt-table" role="region" aria-labelledby="git-all" tabindex="0"><table>
+        <thead><tr><th>Repo</th><th>Project</th><th>Server</th><th>Path</th><th>Branch</th><th>Access</th><th>Deploy</th></tr></thead>
+        <tbody>${rows(registry)}</tbody>
+      </table></div>
+    </section>`);
 }

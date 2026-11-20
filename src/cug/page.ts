@@ -5,6 +5,7 @@ export function renderCugAdmission(nonce: string): string {
 :root{color-scheme:light;--ink:#15233d;--muted:#52647e;--line:#d9e2ef;--accent:#2358bb;--focus:#f3b746}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 8% 0%,#dce9ff 0%,transparent 48%),linear-gradient(145deg,#f7faff,#edf2f9);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
 main{max-width:42rem;margin:clamp(1rem,7vh,5rem) auto;padding:clamp(1.25rem,4vw,2.75rem);background:#fff;border:1px solid var(--line);border-radius:1.4rem;box-shadow:0 18px 60px #142e5720}
+form:not([hidden]){margin:1.25rem 0 0;padding:clamp(1rem,3vw,1.5rem);border:1px solid var(--line);border-radius:.9rem;background:#f7faff}form label:first-child,form h2:first-child{margin-top:0}
 h1{font-size:clamp(1.9rem,4vw,2.6rem);letter-spacing:-.045em;line-height:1.15;margin:.55rem 0 1.3rem}h2{font-size:1.3rem;letter-spacing:-.025em;margin-top:1.7rem}section{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:.3rem}
 label{display:block;margin:1rem 0 .4rem;font-weight:650}input,select,textarea,button{font:inherit;box-sizing:border-box;padding:.8rem .9rem;width:100%;border-radius:.65rem;border:1px solid #9eafc7;background:#fff;color:var(--ink)}
 input:hover,select:hover,textarea:hover{border-color:#567ab2}input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
@@ -12,7 +13,8 @@ button{background:var(--accent);border-color:var(--accent);color:#fff;cursor:poi
 input[type=checkbox]{width:auto;accent-color:var(--accent);margin-right:.5rem}label:has(input[type=checkbox]){font-weight:500;display:flex;align-items:baseline}small{color:var(--muted);font-weight:600;letter-spacing:.035em}code{overflow-wrap:anywhere;background:#f1f5fb;padding:.1rem .25rem;border-radius:.25rem}#result:not(:empty),#checkpointResult:not(:empty){border-left:3px solid var(--accent);background:#eff5ff;padding:.8rem 1rem;border-radius:.25rem .6rem .6rem .25rem}[hidden]{display:none!important}
 @media(max-width:44rem){main{margin:1rem;padding:1.3rem;border-radius:1rem}}@media(prefers-reduced-motion:reduce){button{transition:none}}
 </style>
-<main><small>CUG / ENTRÉE AUTHENTIFIÉE</small><h1>Requête gouvernée</h1>
+<main><small>CUG / ENTRÉE OAUTH</small><h1>Requête gouvernée</h1>
+<p>Vérifiez le contexte qui a émis le lien, puis choisissez votre compte. La session du tableau de bord est distincte.</p>
 <form id="auth" autocomplete="off">
 <label for="app">App ID GitHub</label><input id="app" required inputmode="numeric" pattern="[0-9]{1,20}">
 <label for="bearer">Bearer token MCP</label><input id="bearer" type="password" autocomplete="off" required>

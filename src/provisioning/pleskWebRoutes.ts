@@ -1,3 +1,4 @@
+import { consoleDocument, consoleStyleHash } from '../web/consoleUi.js';
 import express from 'express';
 import type { Request, RequestHandler, Router } from 'express';
 import { z } from 'zod';
@@ -74,7 +75,7 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
   router.get('/provisioning/plesk-subdomain', deps.requireLogin, async (req, res) => {
     res.setHeader('Cache-Control','no-store');
     res.setHeader('X-Frame-Options','DENY');
-    res.setHeader('Content-Security-Policy',"default-src 'none'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
+    res.setHeader('Content-Security-Policy',`default-src 'none'; style-src ${consoleStyleHash}; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`);
     const request = Params.safeParse(req.query);
     if (!request.success) { res.status(400).send('INVALID_PLESK_TARGET'); return; }
     const p = request.data;
@@ -98,10 +99,10 @@ export function createPleskSubdomainRouter(deps: PleskWebDependencies): Router {
           +'Je confirme la création de '+escapeHtml(fqdn)+'</label>'
           +'<button type="submit">Créer le sous-domaine</button></form>';
       })();
-      res.type('html').send('<!doctype html><html lang="fr"><head><meta charset="utf-8">'
-        +'<title>Provisionnement Plesk</title></head><body><h1>'+escapeHtml(fqdn)+'</h1>'
+      res.type('html').send(consoleDocument('Provisionnement Plesk', '<h1>'+escapeHtml(fqdn)+'</h1>'
+        +'<p class="wt-copy">Provisionnement Plesk · préflight du sous-domaine demandé</p><section class="card" aria-label="Plan de provisionnement">'
         +'<p>Plan: '+escapeHtml(plan.decision)+' ; '+escapeHtml(plan.reason)+'</p>'
-        +form+'</body></html>');
+        +form+'</section>'));
     } catch {
       res.status(503).send('PLESK_PREFLIGHT_UNAVAILABLE');
     }
