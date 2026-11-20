@@ -30,7 +30,7 @@ export function assessGrgsDocumentPath(path: string): GrgsDocumentAssessment {
     return { ...base, classification: 'CONVENTIONAL_EXCEPTION', requiresReview: false };
   }
   const match = named.exec(filename);
-  if (match && entityId.test(match[1]) && documentType.test(match[2])) {
+  if (match?.[1] !== undefined && match[2] !== undefined && entityId.test(match[1]) && documentType.test(match[2])) {
     return { ...base, classification: 'SCOPED_DOCUMENT', entityId: match[1], documentType: match[2], requiresReview: false };
   }
   return { ...base, classification: 'LEGACY_REVIEW', requiresReview: true };
