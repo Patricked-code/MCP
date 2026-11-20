@@ -1,0 +1,47 @@
+import { randomBytes } from 'node:crypto';
+import { Router } from 'express';
+
+export const cugJourneyGuidePath = '/guide/cug-grt';
+
+export function createCugJourneyGuideRouter() {
+  const router = Router();
+  router.get('/guide/cug-grt', (_req, res) => {
+    const nonce = randomBytes(18).toString('base64');
+    res.set({
+      'Content-Security-Policy': `default-src 'none'; style-src 'nonce-${nonce}'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
+      'Referrer-Policy': 'no-referrer',
+      'X-Content-Type-Options': 'nosniff'
+    });
+    res.type('html').send(`<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide CUG / GRT · WealthTech MCP</title>
+<style nonce="${nonce}">
+:root{color-scheme:dark;--ink:#f1f6ff;--muted:#bac8e0;--line:#3b5275;--accent:#8be8dc;--surface:#10213d}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(ellipse at 4% 0%,#233451,transparent 55%),#091426;font:1rem/1.6 system-ui,sans-serif}
+main{max-width:65rem;margin:auto;padding:clamp(1.25rem,5vw,4.5rem)}h1,h2,h3{line-height:1.18;letter-spacing:-.025em}h1{font-size:clamp(2rem,6vw,4rem);max-width:18ch;margin:.5rem 0}h2{font-size:1.55rem;margin:2rem 0 1rem}
+p{color:var(--muted);max-width:72ch}a{color:var(--accent);text-underline-offset:.22em}a:focus-visible,summary:focus-visible{outline:.18rem solid #f8cd78;outline-offset:.25rem}code{overflow-wrap:anywhere;background:#0b172c;padding:.08em .28em;border-radius:.25rem}
+.eyebrow{color:var(--accent);font-size:.8rem;font-weight:750;letter-spacing:.13em}.actions{display:flex;flex-wrap:wrap;gap:.8rem 1.3rem;margin:1.2rem 0}.actions a{padding:.55rem .8rem;border:1px solid var(--line);border-radius:.6rem}
+ol{padding:0;list-style-position:inside;display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));margin:0}li,.notice,details{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:1rem;padding:1rem 1.15rem}li::marker{color:var(--accent);font-weight:750}li h3{display:inline;margin:0}li p{margin:.55rem 0 0}summary{cursor:pointer;color:var(--ink);font-weight:700}
+</style></head><body><main id="contenu">
+<header>
+  <p class="eyebrow">WEALTHTECH MCP · GUIDE DE PARCOURS</p>
+  <h1>Créer ou reprendre un dépôt gouverné</h1>
+  <p>Deux parcours distincts, une même règle. Chaque action s’appuie sur des autorisations vérifiées et chaque étape affiche uniquement les preuves réellement disponibles.</p>
+  <nav class="actions" aria-label="Points d’entrée"><a href="/dashboard">Tableau de bord MCP</a><a href="https://github.com/Patricked-code/MCP/blob/main/docs/governance/cug-grt-capsule.md#guide-web-et-routes-de-référence">Documentation GitHub</a></nav>
+</header>
+<section aria-labelledby="etapes"><h2 id="etapes">Le parcours, étape par étape</h2>
+<ol>
+  <li><h3>Ouvrir depuis le client MCP</h3><p>Appeler <code>mcp_start_governed_request_auth</code> depuis le client OAuth CUG habilité. Utiliser le lien d’admission temporaire que le client retourne. Cette page de guide ne délivre pas de lien ni de jeton.</p></li>
+  <li><h3>Choisir le bon compte</h3><p>L’admission vérifie le profil OAuth et l’installation GitHub App. Seuls les comptes et la cible autorisés sont utilisables. Le jeton du tableau de bord ne remplace pas le profil OAuth CUG.</p></li>
+  <li><h3>Créer, si la création est autorisée</h3><p>Renseigner le dépôt, sa visibilité et l’objectif public. Confirmer séparément la publication du dossier dans GRT et la demande de création. Une transmission à GitHub ne prouve pas que le dépôt a été créé.</p></li>
+  <li><h3>Reprendre sans relancer</h3><p>Utiliser l’identifiant de continuité. Le suivi web consulte le dossier central. La capsule MCP <code>mcp_resume_grt_repository_creation</code> peut ensuite lire le dossier local et ses preuves lorsque le transfert est vérifié. En cas de réception incertaine, consulter le statut avant tout nouvel envoi.</p></li>
+</ol></section>
+<section aria-labelledby="routes"><h2 id="routes">Quelle entrée utiliser ?</h2>
+<details><summary>Accueil, admission ou pilote historique</summary>
+<p><code>/</code> mène au tableau de bord protégé. <code>/index</code> et <code>/index.html</code> ne sont pas des points d’entrée. <code>/repo-template/auth</code> est réservé au lien d’admission CUG délivré par le client. Un <code>404</code> n’autorise pas à contourner l’admission. <code>/gouvern</code> reste le pilote historique distinct. <code>/mcp</code> est le point d’entrée du client MCP, pas une page web.</p>
+</details></section>
+<p class="notice">Le reçu de référence et le bilan GRGS, lorsqu’ils sont disponibles, ne valent ni autorisation de provisionner ni attestation de déploiement. Ce guide est statique et n’affiche aucune donnée de dossier, de compte ou de configuration.</p>
+</main></body></html>`);
+  });
+  return router;
+}
