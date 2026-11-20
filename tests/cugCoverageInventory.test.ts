@@ -88,3 +88,21 @@ test('selected coverage remains selected, even after the complete repository lis
   const row = report.owners.find(value => value.owner === owner.login);
   assert.equal(row?.status === 'VERIFIED' && row.mode, 'selected');
 });
+
+test('suspended installation is fail-closed before token creation', async () => {
+  const fixture = github({ selected: { ...installation, suspended_at: '2026-11-20T07:00:00Z' } });
+  const report = await collectCugCoverage(fixture.deps);
+  assert.deepEqual(report.owners.find(row => row.owner === owner.login), {
+    owner: owner.login, ownerId: owner.id, status: 'UNVERIFIED', reason: 'INSTALLATION_SUSPENDED'
+  });
+  assert.equal(fixture.requests.some(line => line.startsWith('POST')), false);
+});
+
+test('expired metadata-only grant cannot authorize repository enumeration', async () => {
+  const fixture = github({ grant: { ...token, expires_at: '2026-11-20T07:59:59Z' } });
+  const report = await collectCugCoverage(fixture.deps);
+  assert.deepEqual(report.owners.find(row => row.owner === owner.login), {
+    owner: owner.login, ownerId: owner.id, status: 'UNVERIFIED', reason: 'GRANT_UNVERIFIED'
+  });
+  assert.equal(fixture.requests.includes('GET /installation/repositories'), false);
+});
