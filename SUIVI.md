@@ -1,5 +1,11 @@
 # SUIVI.md
 
+## 2026-11-20 — CUG, clôture A et candidat B1 (WT-MCP-CUG-GRT-20261114-01)
+
+- **A validé sur UAES** — collecteur #404 exécuté sur S1, webhook #403 signé, livraison réelle `202`, rejeu `204` avec reçu unique confirmé. Les preuves et la séparation avec la création GRT sont dans le [runbook CUG](docs/governance/cug-webhook-receiver.md#reprise-wt-mcp-cug-grt-20261114-01--b1-consommateur-automatique-uaes).
+- **B1 candidat** — raccord automatique opt-in sur l’installation pilote. Journal existant en lecture seule, publication locale privée reprise par identifiant, aucun effet GitRegistry, Plesk ni GRT. Pas d’activation ni de déploiement dans ce changement.
+- **NEXT_ACTION** — CI et revue sur le SHA exact du candidat, puis mise en service gouvernée du consommateur UAES et vérification d’une projection unique. L’élargissement B2, le rapprochement C et le pilote GRT D restent distincts.
+
 ## 2026-11-16 — Réconciliation documentaire G1 après déploiement (#406)
 
 - **Raccord** : [PR #406](https://github.com/Patricked-code/MCP/pull/406), basée sur `540a8f0a3b5b15483abb17438e3e74cdb35bcf45`. Après attestation du Governed Deploy, l'observation Live State du même run alimente GW‑60/GW‑61. En cas de dérive documentaire seule et de preuve fraîche, le job peut préparer un commit limité à `PRODUCTION_STATE.json` et ouvrir une PR brouillon, sans fusion. Le suivi de déploiement et le résultat documentaire sont distincts.

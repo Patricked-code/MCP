@@ -3,6 +3,12 @@
 ## Rôle
 Journal de revue technique et dette du MCP.
 
+## 2026-11-20 — CUG B1, risques et critères de revue
+
+- Référence `WT-MCP-CUG-GRT-20261114-01`. Récepteur et collecteur opérateur conservés. Le démarrage du consommateur est opt-in, avec une installation et le seul dépôt pilote UAES.
+- Risques à vérifier : arrivée hors ordre pendant un scan, panne en cours de projection, conflit de publication, perte de couverture GitHub et absence d’effet sur le GitRegistry ou le provisioning. Une seule projection durable est garantie par livraison, pas un seul appel GitHub lors de processus concurrents ou d’une panne avant publication.
+- Retrait : seul le nouveau flag à désactiver. Reçus historiques conservés. Pas d’élargissement automatique des permissions ou de la portée des dépôts. Rétention, généralisation et attestation de mise en service restent distinctes de ce candidat.
+
 ## Points initiaux
 - Deux fichiers applicatifs étaient déjà modifiés avant la passe documentaire : data/mcp-git-registry.json et src/github/registry.ts.
 - Ne pas les mélanger avec le commit documentaire sans revue spécifique.

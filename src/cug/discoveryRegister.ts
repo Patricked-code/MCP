@@ -133,10 +133,10 @@ export async function readCugRegisterRecord(path: string, deliveryId: string): P
 }
 
 /** Local, read-only listing. Cursor is the last delivery ID, not a timestamp. */
-export async function listCugRegister(
+export async function listCugRegisterDeliveryIds(
   directory: string,
   options: { after?: string; limit?: number } = {}
-): Promise<{ records: CugRegisterRecord[]; nextCursor: string | null }> {
+): Promise<{ deliveryIds: string[]; nextCursor: string | null }> {
   const { after = '', limit = 50 } = options;
   if ((after !== '' && (!CUG_DELIVERY_ID.test(after) || after !== after.toLowerCase()))
     || !Number.isInteger(limit) || limit < 1 || limit > 200) {
@@ -144,7 +144,7 @@ export async function listCugRegister(
   }
   let metadata;
   try { metadata = await lstat(directory); } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return { records: [], nextCursor: null };
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return { deliveryIds: [], nextCursor: null };
     throw error;
   }
   if (!metadata.isDirectory() || (metadata.mode & 0o777) !== 0o700) {
@@ -158,11 +158,19 @@ export async function listCugRegister(
   });
   if (ids.length > CUG_REGISTER_LIMIT) throw Error('CUG_REGISTER_LIMIT_EXCEEDED');
   const page = ids.sort().filter((id) => id > after).slice(0, limit + 1);
+  return { deliveryIds: page.slice(0, limit), nextCursor: page.length > limit ? page[limit - 1]! : null };
+}
+
+export async function listCugRegister(
+  directory: string,
+  options: { after?: string; limit?: number } = {}
+): Promise<{ records: CugRegisterRecord[]; nextCursor: string | null }> {
+  const { deliveryIds, nextCursor } = await listCugRegisterDeliveryIds(directory, options);
   const records = [];
-  for (const id of page.slice(0, limit)) {
+  for (const id of deliveryIds) {
     const record = await readCugRegisterRecord(join(directory, id + '.json'), id);
     if (!record) throw Error('CUG_REGISTER_RECORD_UNAVAILABLE');
     records.push(record);
   }
-  return { records, nextCursor: page.length > limit ? page[limit - 1]! : null };
+  return { records, nextCursor };
 }
