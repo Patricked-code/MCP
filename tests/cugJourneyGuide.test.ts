@@ -27,6 +27,16 @@ test('public CUG guide describes existing routes without exposing an action or r
     assert.match(html, /href="\/dashboard"/);
     assert.match(html, /mcp_start_governed_request_auth/);
     assert.match(html, /mcp_resume_grt_repository_creation/);
+    assert.match(html, /Choisir un parcours d’admission/);
+    assert.match(html, /Connecter un client MCP par HTTP/);
+    assert.match(html, /Admettre une demande CUG par OAuth/);
+    assert.match(html, /Créer ou adopter un dépôt/);
+    assert.match(html, /Observer ou reprendre un chantier/);
+    assert.match(html, /événements webhook GitHub App/);
+    assert.match(html, /SSE hérités, stdio/);
+    assert.match(html, /ne sont pas annoncés comme disponibles/);
+    assert.match(html, /<code>\/mcp<\/code>/);
+    assert.match(html, /<code>\/gouvern<\/code>/);
     assert.match(html, /<code>\/repo-template\/auth<\/code>/);
     assert.doesNotMatch(html, /<script|<form|<input|fixture-should-not-render|href="\/repo-template\/auth/);
     const second = await fetch(base + cugJourneyGuidePath);
