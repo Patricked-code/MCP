@@ -46,6 +46,20 @@ ol{padding:0;list-style-position:inside;display:grid;gap:.8rem;grid-template-col
 </ol>
 <details><summary>Autres transports et accès historiques</summary><p>Le transport HTTP du client MCP, l’admission OAuth CUG et les événements webhook GitHub App remplissent des fonctions différentes. Un webhook signé est une source d’événements, pas une connexion utilisateur. Les modes SSE hérités, stdio ou autres ne sont pas annoncés comme disponibles sans preuve de configuration et de compatibilité du client. <code>/gouvern</code> conserve son parcours historique indépendant.</p></details>
 </section>
+<section aria-labelledby="catalogue"><h2 id="catalogue">Les dix entrées du parcours gouverné</h2>
+<p>Ces entrées sont des objectifs ou des événements, et non dix authentifications indépendantes. « Conditionnel » signifie que l’accès exige des autorisations ou des capacités non attestées par cette page. Aucun lien ci-dessous ne déclenche une écriture.</p>
+<ol>
+<li><h3>01 · Client MCP</h3><p>Point protocolaire <code>/mcp</code>, à configurer dans un client compatible. <strong>Conditionnel :</strong> transport et authentification à négocier avec le serveur.</p></li>
+<li><h3>02 · Autorisation OAuth</h3><p>Demander <code>mcp_start_governed_request_auth</code> depuis le client habilité. <strong>Conditionnel :</strong> même jeton OAuth et lien temporaire valide.</p></li>
+<li><h3>03 · GitHub App CUG</h3><p>Vérifier l’installation et les permissions avant toute sélection de compte. <strong>Conditionnel :</strong> couverture effective de l’installation, non déduite de son identifiant.</p></li>
+<li><h3>04 · Interface web</h3><p>Consulter le <a href="/dashboard">tableau de bord protégé</a> puis les <a href="/admissions">admissions</a>. <strong>Conditionnel :</strong> session et autorisations nécessaires.</p></li>
+<li><h3>05 · API HTTP</h3><p>Accès programmatique uniquement aux routes publiées et autorisées. <strong>Non vérifié :</strong> aucune API REST générique d’admission n’est promise par ce guide.</p></li>
+<li><h3>06 · Création ou adoption GRT</h3><p>Le questionnaire et la création sont soumis à l’identité admise, à la confirmation explicite et aux droits du dépôt. <strong>Conditionnel :</strong> ne jamais assimiler un reçu à une création.</p></li>
+<li><h3>07 · Gouvernance GRGS</h3><p>Consulter les preuves et décisions dans le cockpit existant. <strong>Conditionnel :</strong> une preuve n’est ni une autorisation ni un déploiement.</p></li>
+<li><h3>08 · Session gouvernée</h3><p>Associer l’acteur, la cible, les permissions et la continuité via les outils MCP gouvernés existants. <strong>Conditionnel :</strong> le login seul ne crée pas de session.</p></li>
+<li><h3>09 · Webhook GitHub</h3><p>Réception et rapprochement d’événements vérifiés par le collecteur CUG. <strong>Événement technique :</strong> ce n’est pas une entrée utilisateur ni une preuve automatique de couverture.</p></li>
+<li><h3>10 · Agent codeur</h3><p>Rattacher une tâche bornée à une session et à un projet après qualification et autorisation. <strong>Conditionnel :</strong> aucune tâche ni écriture n’est déclenchée depuis ce guide.</p></li>
+</ol></section>
 <section aria-labelledby="routes"><h2 id="routes">Quelle entrée utiliser ?</h2>
 <details><summary>Accueil, admission ou pilote historique</summary>
 <p><code>/</code> mène au tableau de bord protégé. <code>/index</code> et <code>/index.html</code> ne sont pas des points d’entrée. <code>/repo-template/auth</code> est réservé au lien d’admission CUG délivré par le client. Un <code>404</code> n’autorise pas à contourner l’admission. <code>/gouvern</code> reste le pilote historique distinct. <code>/mcp</code> est le point d’entrée du client MCP, pas une page web.</p>
