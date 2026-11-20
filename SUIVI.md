@@ -1,5 +1,9 @@
 # SUIVI.md
 
+## 2026-11-20 — Continuité documentaire du chantier CUG
+
+Le chantier `WT-MCP-CUG-GRT-20261114-01` possède un [suivi dédié](docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/SUIVI.md). Il conserve séparément la clôture A/B1 sur UAES et la preuve du deuxième dépôt B2 en mode opérateur, sans extrapoler la couverture. Son unique `NEXT_ACTION` et ses références d'architecture, décisions, feuille de route et backlog sont dans le [dossier de continuité](docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/README.md).
+
 ## 2026-11-20 — CUG, B1 attesté et vérification opérateur B2
 
 - **B1 en service sur S1** : [déploiement MCP #206](https://github.com/Patricked-code/MCP/actions/runs/44663633992) sur `ea4d043592df22b9530d0850535815d6091b8dec`. La [preuve opérateur dans #407](https://github.com/Patricked-code/MCP/pull/407) confirme la projection privée du reçu UAES réel et l'arbre Git propre.
