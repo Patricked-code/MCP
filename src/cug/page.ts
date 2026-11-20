@@ -1,4 +1,4 @@
-export function renderCugAdmission(nonce: string): string {
+export function renderCugAdmission(nonce: string, cugAppId: string): string {
   return `<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Requête gouvernée · CUG</title>
 <style nonce="${nonce}">
@@ -11,10 +11,11 @@ label{display:block;margin:1rem 0 .4rem;font-weight:650}input,select,textarea,bu
 input:hover,select:hover,textarea:hover{border-color:#567ab2}input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
 button{background:var(--accent);border-color:var(--accent);color:#fff;cursor:pointer;font-weight:700;margin-top:1rem;min-height:3rem;transition:background-color .15s ease,transform .15s ease}button:hover:not(:disabled){background:#17438e}button:active:not(:disabled){transform:translateY(1px)}button:disabled{opacity:.6;cursor:wait}
 input[type=checkbox]{width:auto;accent-color:var(--accent);margin-right:.5rem}label:has(input[type=checkbox]){font-weight:500;display:flex;align-items:baseline}small{color:var(--muted);font-weight:600;letter-spacing:.035em}code{overflow-wrap:anywhere;background:#f1f5fb;padding:.1rem .25rem;border-radius:.25rem}#result:not(:empty),#checkpointResult:not(:empty){border-left:3px solid var(--accent);background:#eff5ff;padding:.8rem 1rem;border-radius:.25rem .6rem .6rem .25rem}[hidden]{display:none!important}
+.proof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:.75rem}.proof-grid article{border:1px solid var(--line);border-top:3px solid #16857e;background:#f5fafc;border-radius:.75rem;padding:.85rem;min-width:0}.proof-grid h3{font-size:1rem;margin:0}.proof-grid p{margin:.5rem 0 0;overflow-wrap:anywhere}.proof-grid article:last-child{border-color:var(--line);border-top-color:#2358bb}.proof-caption{color:var(--muted)}
 @media(max-width:44rem){main{margin:1rem;padding:1.3rem;border-radius:1rem}}@media(prefers-reduced-motion:reduce){button{transition:none}}
 </style>
 <main><small>CUG / ENTRÉE OAUTH</small><h1>Requête gouvernée</h1>
-<p>Vérifiez le contexte qui a émis le lien, puis choisissez votre compte. La session du tableau de bord est distincte.</p>
+<p>Le lien MCP sélectionne le parcours CUG. Vérifiez l’identifiant de l’application, puis fournissez le jeton OAuth qui a demandé le lien. La session du tableau de bord est distincte. Seuls les comptes effectivement vérifiés seront proposés.</p>
 <form id="auth" autocomplete="off">
 <label for="app">App ID GitHub</label><input id="app" required inputmode="numeric" pattern="[0-9]{1,20}">
 <label for="bearer">Bearer token MCP</label><input id="bearer" type="password" autocomplete="off" required>
@@ -38,12 +39,25 @@ input[type=checkbox]{width:auto;accent-color:var(--accent);margin-right:.5rem}la
 <section id="checkpoint" hidden><h2>Suivi de la demande</h2>
 <button type="button" id="observe">Vérifier le dossier GRT</button>
 <p id="checkpointResult" role="status" aria-live="polite"></p>
+<button type="button" id="observeProofs">Consulter le cockpit de preuves</button>
+<p id="proofMessage" role="status" aria-live="polite"></p>
+<div id="proofs" hidden>
+  <p class="proof-caption">Lecture seule. Une demande transmise ou un dossier publié ne prouve pas que le dépôt existe.</p>
+  <div class="proof-grid">
+    <article><h3>Dossier central GRT</h3><p id="proofCentral"></p></article>
+    <article><h3>Dépôt GitHub</h3><p id="proofRepository"></p></article>
+    <article><h3>Checkpoint local</h3><p id="proofLocal"></p></article>
+    <article><h3>Reçu de référence</h3><p id="proofBaseline"></p></article>
+    <article><h3>Synthèse documentaire GRGS</h3><p id="proofDocs"></p></article>
+  </div>
+</div>
 </section>
 </main>
 <script nonce="${nonce}">
 const q=id=>document.getElementById(id)
 const request=new URLSearchParams(location.hash.slice(1)).get('request')
 history.replaceState(null,'',location.pathname)
+if(/^[A-Za-z0-9_-]{43}$/.test(request??''))q('app').value=${JSON.stringify(cugAppId)}
 let bearer='',appId='',formRef=''
 function show(value){q('result').textContent=value}
 window.addEventListener('pagehide',()=>{bearer=''})
@@ -139,6 +153,49 @@ q('observe').addEventListener('click',async()=>{
     a.rel='noreferrer'
     result.append(a)
   }catch{result.textContent='Le suivi est indisponible. Aucun renvoi automatique.'}
+  finally{button.disabled=false}
+})
+q('observeProofs').addEventListener('click',async()=>{
+  const button=q('observeProofs')
+  if(button.disabled)return
+  button.disabled=true
+  const message=q('proofMessage')
+  q('proofs').hidden=true
+  message.textContent='Vérification des preuves GRT et GRGS…'
+  try{
+    const res=await fetch('/repo-template/auth/evidence',{credentials:'same-origin',cache:'no-store',
+      referrerPolicy:'no-referrer',headers:{'X-CUG-Form':formRef}})
+    const state=await res.json()
+    if(!state.central){
+      message.textContent=state.status==='AUTHORIZATION_REQUIRED'?'Admission expirée ou accès retiré.':
+        state.status==='RETRY_LATER'?'Une vérification vient d’être lancée. Réessayez dans quelques secondes.':
+        state.status==='UNCONFIRMED'?'Aucun dossier n’a été confirmé. Cela ne prouve pas son absence.':
+        'Les preuves sont indisponibles. Aucun renvoi automatique.'
+      return
+    }
+    const {central,repository,local,baseline,documentation}=state
+    q('proofCentral').textContent='Dossier observé · '+central.projectContinuityId+' · '+central.grtState+' · '+central.phase+' · révision '+central.revision
+    q('proofRepository').textContent=repository.status==='OBSERVED'
+      ? 'Dépôt observé et corrélé : '+repository.name+' · ID '+repository.id
+      : 'Existence non confirmée pour ce dossier.'
+    q('proofLocal').textContent=local
+      ? local.phase+' · révision '+local.revision+' · issue #'+local.evidence.issue
+        +(local.next?' · prochaine étape : '+local.next.id:'')
+      : 'Checkpoint local non observé.'
+    q('proofBaseline').textContent=baseline.status==='BASELINE_ATTESTED'
+      ? 'Référence attestée au commit '+baseline.subjectHead+'. Ce reçu ne vaut pas déploiement.'
+      : 'Référence non attestée.'
+    q('proofDocs').textContent=documentation.status==='CLASSIFIED'
+      ? 'Classification candidate · '+documentation.policyId+' v'+documentation.policyVersion+' · commit '
+        +documentation.observedCommit+' · empreinte '+documentation.evidenceDigest+' · '
+        +(documentation.counts.SCOPED_DOCUMENT??0)+' documents classés, '
+        +(documentation.counts.CONVENTIONAL_EXCEPTION??0)+' exceptions, '
+        +(documentation.counts.LEGACY_REVIEW??0)+' à revoir. Aucune modification documentaire.'
+      : 'Classification non observée.'
+    q('proofs').hidden=false
+    message.textContent=state.status==='ATTENTION'?'Dossier central observé. Les autres preuves ne sont pas confirmées.':
+      state.status==='HELD'?'Dossier en attente de revue. Aucune action lancée.':'Lecture terminée. Aucune action lancée.'
+  }catch{message.textContent='Les preuves sont indisponibles. Aucun renvoi automatique.'}
   finally{button.disabled=false}
 })
 </script></html>`

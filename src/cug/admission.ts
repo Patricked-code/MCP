@@ -3,6 +3,7 @@ import { Router, json } from 'express';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { renderCugAdmission } from './page.js';
+import { projectCugCockpit } from './cockpit.js';
 import { cugAnswers, cugRepositoryName, grtContinuityId, prepareGrtRequest, type DispatchOutcome, type GrtRequest, type GrtCheckpoint } from './questionnaire.js';
 
 export const CUG_APP_ID = '5417646';
@@ -14,6 +15,7 @@ const selectInput = verifyInput.extend({accountId:login});
 export type CugAccount = {login:string; installationId:number; probeRepository:string};
 export type CugConfig = {clientId:string; subject:string; identityKey:string; accounts:CugAccount[]};
 type VerifiedToken = {subject:string; clientId:string; scopes:string[]; expiresAt:number};
+export type CugEvidenceScope = { actor:VerifiedToken; login:string; installationId:number; target?:string; projectId:string };
 type Ports = {
   origin:string;
   getConfig:()=>Promise<CugConfig|null>;
@@ -22,6 +24,7 @@ type Ports = {
   now?:()=>number;
   submit?:(request:GrtRequest, target:string)=>Promise<DispatchOutcome>;
   observe?:(account:string,target?:string,continuityId?:string)=>Promise<GrtCheckpoint|{status:'UNCONFIRMED'}>;
+  readEvidence?:(scope:CugEvidenceScope)=>Promise<unknown>;
 };
 const denied = {status:'AUTHORIZATION_REQUIRED'} as const;
 const unavailable = {status:'UNAVAILABLE'} as const;
@@ -32,7 +35,7 @@ export function createCugAdmission(ports:Ports) {
   const now=ports.now??Date.now;
   type Attempt = { expiresAt:number; tokenDigest:string; phase:'PENDING'|'VERIFYING'|'VERIFIED'|'SELECTING'; permitted:string[]; resume?:string; continuityId?:string };
   const attempts=new Map<string,Attempt>();
-  type Questionnaire = {expiresAt:number; login:string; installationId:number; actor:VerifiedToken; busy:boolean; delivered:boolean; formRef:string; resumeOnly:boolean; target?:string; continuityId?:string};
+  type Questionnaire = {expiresAt:number; login:string; installationId:number; actor:VerifiedToken; busy:boolean; delivered:boolean; formRef:string; resumeOnly:boolean; target?:string; continuityId?:string; proofInFlight?:boolean; proofAfter?:number};
   const questionnaires=new Map<string,Questionnaire>();
   const submissions=new Map<string,{expiresAt:number; status:'PENDING'|'QUEUED'|'DELIVERY_UNKNOWN'}>();
   const challengeKey=randomBytes(32).toString('hex');
@@ -167,6 +170,30 @@ export function createCugAdmission(ports:Ports) {
       return q.expiresAt>now()?result:denied;
     }catch{return {status:'UNCONFIRMED'} as const;}
   }
+  async function evidence(handle:string,formRef:string){
+    sweep();
+    const q=requestId.safeParse(handle).success?questionnaires.get(requestKey(handle)):undefined;
+    if(!q||q.expiresAt<=now()||!requestId.safeParse(formRef).success||!same(q.formRef,formRef))return denied;
+    if(!ports.observe||!ports.readEvidence)return unavailable;
+    if((!q.target&&!q.continuityId)||q.busy)return {status:'UNCONFIRMED'} as const;
+    if(q.proofInFlight||(q.proofAfter??0)>now())return {status:'RETRY_LATER'} as const;
+    q.proofInFlight=true;
+    q.proofAfter=now()+5_000;
+    try{
+      const config=await ports.getConfig();
+      const account=config?.accounts.find(a=>a.login===q.login&&a.installationId===q.installationId);
+      if(!account||config?.subject!==q.actor.subject||config.clientId!==q.actor.clientId
+        ||!await ports.probe(account)||q.expiresAt<=now())return denied;
+      const central=await ports.observe(q.login,q.target,q.continuityId);
+      if(q.expiresAt<=now())return denied;
+      if(central.status!=='FOUND'||!grtContinuityId.safeParse(central.projectContinuityId).success
+        ||(q.continuityId&&central.projectContinuityId!==q.continuityId))return {status:'UNCONFIRMED'} as const;
+      const result=await ports.readEvidence({actor:q.actor,login:q.login,installationId:q.installationId,
+        target:q.target,projectId:central.projectContinuityId});
+      return q.expiresAt>now()?projectCugCockpit(central,result):denied;
+    }catch{return unavailable;}
+    finally{q.proofInFlight=false;}
+  }
   async function recover(token:string,projectContinuityId:string){
     if(!ports.observe||!grtContinuityId.safeParse(projectContinuityId).success)return denied;
     try{
@@ -182,7 +209,7 @@ export function createCugAdmission(ports:Ports) {
     }catch{return {status:'UNCONFIRMED'} as const;}
     return {status:'UNCONFIRMED'} as const;
   }
-  return {begin,verify,select,submit,observe,recover};
+  return {begin,verify,select,submit,observe,evidence,recover};
 }
 
 type Admission = ReturnType<typeof createCugAdmission>;
@@ -196,7 +223,7 @@ export function createCugRouter(service:Admission, origin:string, enabled:()=>bo
   router.get('/repo-template/auth',(_req,res)=>{
     const nonce=randomBytes(18).toString('base64');
     res.set('Content-Security-Policy',`default-src 'none'; script-src 'nonce-${nonce}'; style-src 'nonce-${nonce}'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`);
-    res.type('html').send(renderCugAdmission(nonce));
+    res.type('html').send(renderCugAdmission(nonce,CUG_APP_ID));
   });
   const prepare:import('express').RequestHandler=(req,res,next)=>{
     if(req.header('origin')!==origin){res.status(403).json(denied);return;}
@@ -234,6 +261,17 @@ export function createCugRouter(service:Admission, origin:string, enabled:()=>bo
   router.get('/repo-template/auth/status',async(req,res)=>{
     const result=await service.observe(cookie(req.header('cookie')),req.header('x-cug-form')??'');
     res.status(result.status==='AUTHORIZATION_REQUIRED'?401:200).json(result);
+  });
+  router.get('/repo-template/auth/evidence',async(req,res)=>{
+    const from=req.header('origin');
+    const fetchSite=req.header('sec-fetch-site');
+    if((from&&from!==origin)||(fetchSite&&fetchSite!=='same-origin')){
+      res.status(403).json(denied);return;
+    }
+    const result=await service.evidence(cookie(req.header('cookie')),req.header('x-cug-form')??'');
+    if(result.status==='RETRY_LATER')res.set('Retry-After','5');
+    res.status(result.status==='AUTHORIZATION_REQUIRED'?401:result.status==='RETRY_LATER'?429:
+      result.status==='UNAVAILABLE'?503:200).json(result);
   });
   router.use(route,((error:unknown,_req,res,_next)=>{
     const status=(error as {status?:number}|null)?.status;

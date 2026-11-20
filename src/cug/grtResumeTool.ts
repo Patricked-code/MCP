@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { resumeRepositoryCreation } from '../../capsules/grt-repository-creation/src/resume.mjs';
 import { projectGrgsInventory } from './grgsInventoryProjection.js';
-import { CUG_APP_ID, type CugConfig } from './admission.js';
+import { CUG_APP_ID, type CugConfig, type CugEvidenceScope } from './admission.js';
 import { GRT_CONTROL_REPOSITORY, grtContinuityId, readGrtResumeState } from './questionnaire.js';
 import { mintGithubAppRepoToken, type GithubAppTokenDeps } from '../github/appInstallationToken.js';
 
@@ -40,17 +40,18 @@ const treeSchema=z.object({
 type DocumentationReader=()=>Promise<Record<string,unknown>>;
 const sameRepo=(a:string,b:string)=>a.toLowerCase()===b.toLowerCase();
 
-export function createGrtResumeRead(deps:Deps) {
-  return async (token:string,projectId:string)=>{
+export function createGrtEvidenceReaders(deps:Deps) {
+  async function read(projectId:string,resolveActor:()=>Actor|null,scope?:CugEvidenceScope){
     try {
-      if(!grtContinuityId.safeParse(projectId).success||!/^[!-~]{1,8192}$/.test(token))return unavailable;
+      if(!grtContinuityId.safeParse(projectId).success)return unavailable;
       const config=await deps.getConfig();
-      const actor=deps.inspect(token);
+      const actor=resolveActor();
       const target=config?.grt?.allowedTarget;
       if(!config||!target||!actor||actor.subject!==config.subject||actor.clientId!==config.clientId
         ||!actor.scopes.includes('mcp:read')||!(actor.expiresAt*1000>deps.now().getTime()))return unavailable;
       const account=config.accounts.find(a=>target.split('/')[0]?.toLowerCase()===a.login.toLowerCase());
-      if(!account)return unavailable;
+      if(!account||scope&&(scope.login.toLowerCase()!==account.login.toLowerCase()
+        ||scope.installationId!==account.installationId||scope.target!==undefined&&!sameRepo(scope.target,target)))return unavailable;
       const principalRef=createHmac('sha256',config.identityKey)
         .update(JSON.stringify(['grt-resume',actor.subject,actor.clientId,account.installationId])).digest('hex');
       const centralIssue=Number(projectId.split('-').at(-1));
@@ -150,7 +151,18 @@ export function createGrtResumeRead(deps:Deps) {
       }catch{return actor.expiresAt*1000>deps.now().getTime()
         ? {...result,documentation:{status:'NOT_OBSERVED'}} : unavailable;}
     }catch{return unavailable;}
+  }
+  return {
+    forToken: (token:string,projectId:string)=>/^[!-~]{1,8192}$/.test(token)
+      ? read(projectId,()=>deps.inspect(token)) : Promise.resolve(unavailable),
+    // Only called after the HTTP admission rechecks the selected account and
+    // discovers the continuity ID from the server-side central observer.
+    forAdmission: (scope:CugEvidenceScope)=>read(scope.projectId,()=>scope.actor,scope)
   };
+}
+
+export function createGrtResumeRead(deps:Deps) {
+  return createGrtEvidenceReaders(deps).forToken;
 }
 
 export function registerGrtResumeTool(server:McpServer,read:ReturnType<typeof createGrtResumeRead>){
