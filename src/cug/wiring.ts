@@ -5,6 +5,7 @@ import { env } from '../config/env.js';
 import { inspectOauthAccessToken, oauthIssuer } from '../oauth.js';
 import { probeGithubAppReadOnlyRepository } from '../github/installationLiveReadiness.js';
 import { observeGrtRequest, submitToGrt } from './questionnaire.js';
+import { createGrtResumeRead } from './grtResumeTool.js';
 import { CUG_APP_ID, createCugAdmission, type CugConfig } from './admission.js';
 
 const login = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/);
@@ -94,4 +95,12 @@ export const cugAdmission=createCugAdmission({
     });
     return result.status==='PERMISSION_OBSERVED';
   }
+});
+
+export const cugGrtResumeRead=createGrtResumeRead({
+  getConfig,
+  inspect:token=>inspectOauthAccessToken(token,'mcp:read'),
+  readPrivateKey:()=>readProtected('/app/secrets/cug-app-private.pem',16_384),
+  fetchImpl:fetch,
+  now:()=>new Date()
 });

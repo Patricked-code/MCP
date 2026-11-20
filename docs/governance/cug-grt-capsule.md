@@ -70,3 +70,34 @@ une reprise par nom ou par `projectContinuityId`, en lecture seule après
 sélection. Pas de connexion GitHub web indépendante ni de démarrage
 automatique du codeur dans ce lot. Un checkpoint central n’est pas le reçu
 local ni une autorisation de coder.
+
+## Lot 3 — Capsule autonome de reprise
+
+`mcp_resume_grt_repository_creation` prend uniquement
+`projectContinuityId`. Le module `src/cug/grtResumeTool.ts` adapte la capsule
+isolée au transport MCP. Il conserve l'admission et le checkpoint central
+existants, le webhook et le pilote `/gouvern` sans modification de leur
+contrat. Il ne crée ni session, ni dossier, ni dépôt, ni tâche. L'accès
+exige le profil OAuth CUG protégé, le flag d’admission existant et une seule
+cible `grt.allowedTarget`. Le jeton CUG local est éphémère, limité à ce dépôt
+et à `contents:read` et `issues:read` (plus métadonnées GitHub implicites).
+Il n'est demandé qu'après un handoff central valide. GitRegistry ne reçoit
+aucune écriture. Un manque d'autorisation ne se transforme pas en absence de
+preuve locale.
+
+La réponse sépare le checkpoint, la preuve de baseline et la classification
+GRGS. La baseline nécessite le reçu du commit immuable indiqué par le dossier
+local et sa correspondance au commit sujet. Son attestation ne vaut ni
+déploiement ni autorisation opérationnelle. Si la preuve manque,
+`NOT_ATTESTED` est retourné. Le bilan GRGS peut produire des compteurs et une
+empreinte sur les chemins Markdown de l'arbre immuable. C’est une
+classification candidate par dépôt, sans déplacement de document, sans
+lecture du contenu des documents classés, et sans approbation. Un arbre
+non vérifiable ou tronqué produit `NOT_OBSERVED`. Open Engineering peut
+exploiter ces observations en lecture sans en hériter de droit d'exécution.
+
+Validation hôte : `node --import tsx --test tests/cugGrtResumeTool.test.ts`.
+Avant d'attester S1, l'opérateur doit vérifier le SHA effectif et le catalogue
+du runtime, puis effectuer un appel avec un identifiant de continuité autorisé
+et un profil CUG réel. Une réponse de CI avec fixtures ne remplace pas
+cette preuve.
