@@ -1,5 +1,7 @@
 # Webhook CUG — réception seule et pilote UAES
 
+**Continuité documentaire** — [Chantier `WT-MCP-CUG-GRT-20261114-01`](continuities/WT-MCP-CUG-GRT-20261114-01/README.md). Les objectifs, décisions, preuves et le prochain point de reprise sont tenus dans ce dossier. Ce runbook conserve le contrat et les procédures techniques.
+
 Ce lot prolonge la découverte GitHub envisagée dans [MCP #401](https://github.com/Patricked-code/MCP/pull/401), sans modifier l'admission CUG/GRT. Il organise les observations du webhook dans un registre d'entrée local et privé, sans écrire dans le GitRegistry canonique. Il ne réalise pas encore l'inventaire par API, ne déclenche aucune tâche, création, écriture GitHub ou opération serveur. Aucun token d'installation ou clé privée CUG n'est nécessaire pour vérifier une livraison signée.
 
 ## Déployer et valider

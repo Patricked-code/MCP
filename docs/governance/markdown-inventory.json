@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 234,
+  "trackedCount": 244,
   "categories": {
     "canonical": 7,
-    "documentation": 83,
+    "documentation": 93,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -216,6 +216,46 @@
     },
     {
       "path": "docs/governance/agent-historical-continuity-breadcrumbs-20261016.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/ARCHITECTURE.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/CARTOGRAPHIE.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/CONTINUITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/DECISIONS_LOG.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/EXIGENCES.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/PREUVES.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/README.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/ROADMAP.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/SUIVI.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/TODO.md",
       "category": "documentation"
     },
     {

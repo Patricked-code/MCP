@@ -1,5 +1,9 @@
 # Gouvernance documentaire MCP
 
+## Continuité du chantier CUG
+
+Le [dossier du chantier `WT-MCP-CUG-GRT-20261114-01`](continuities/WT-MCP-CUG-GRT-20261114-01/README.md) relie l'identité du chantier à son projet hôte, à son suivi et à ses preuves. Le runbook technique conserve son rôle opérateur.
+
 ## Point d'entrée commun — INTAKE et reprise à froid (16 octobre 2026)
 
 **Directive de coordination immédiatement disponible : [issue maîtresse #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094).** Elle complète, sans remplacer, les autorités déjà en place et le [protocole d'entrée de AGENTS.md](../../AGENTS.md). Un agent nouvellement connecté reconstruit l'état depuis GitHub, vérifie le HEAD, les PR et la CI/deploy, puis seulement les autorités runtime nécessaires. Ne jamais déduire la présence active d'un agent, son ownership ou ses permissions d'un commentaire ou d'un snapshot.
