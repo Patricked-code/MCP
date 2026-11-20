@@ -68,6 +68,11 @@
   ],
   "legitimateSelfManagementBoundaries": [
     {
+      "path": "src/cug/journeyGuide.ts",
+      "disposition": "ACCEPTED_BOUNDARY",
+      "detail": "The public guide links to the MCP host repository’s versioned documentation. This navigational link never selects or authorizes a CUG target."
+    },
+    {
       "path": "src/currentState/service.ts",
       "disposition": "ACCEPTED_BOUNDARY",
       "detail": "Reclassified by B3.2: the Current-State Inventory describes the MCP server itself; target identity is exposed by Live State TargetContext through the governed context."

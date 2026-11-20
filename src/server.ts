@@ -6,6 +6,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { env } from './config/env.js';
 import { requireBearerToken } from './auth.js';
+import { createCugJourneyGuideRouter, cugJourneyGuidePath } from './cug/journeyGuide.js';
 import { createCugRouter, registerCugAdmissionTool } from './cug/admission.js';
 import { registerGrtResumeTool } from './cug/grtResumeTool.js';
 import { cugAdmission, cugEnabled, cugOrigin, cugGrtResumeRead } from './cug/wiring.js';
@@ -229,6 +230,7 @@ function renderLoginPage(error?: string, next = '/dashboard'): string {
       <input name="token" type="password" autocomplete="current-password" required autofocus style="width:100%;padding:12px;box-sizing:border-box" />
       <button type="submit" style="margin-top:16px;width:100%;padding:12px">Accéder</button>
     </form>
+    <p><a href="${cugJourneyGuidePath}">Guide de création et de reprise CUG / GRT</a></p>
   </main>
 </body>
 </html>`;
@@ -241,6 +243,7 @@ function normalizeAccountParam(value: string): string {
 function nav(): string {
   return `<p>
     <a href="/dashboard">Dashboard</a> ·
+    <a href="${cugJourneyGuidePath}">Guide CUG / GRT</a> ·
     <a href="/git">Paramétrage Git</a> ·
     <a href="/github">GitHub</a> ·
     <a href="/github/status">Statut JSON</a> ·
@@ -508,6 +511,7 @@ export async function startHttpServer(): Promise<void> {
       maxOutputBytes: 32_768
     })
   }));
+  app.use(createCugJourneyGuideRouter());
   app.use(createCugRouter(cugAdmission, cugOrigin(), cugEnabled));
   app.use(createCugWebhookRouter({
     enabled: () => env.MCP_CUG_WEBHOOK_ENABLED,
