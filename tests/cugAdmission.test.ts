@@ -19,6 +19,14 @@ function fixture() {
 }
 const request = (authUrl: string) => new URLSearchParams(new URL(authUrl).hash.slice(1)).get('request')!;
 
+test('OAuth admission frontend links to the existing ten-entry guide without changing authentication', async () => {
+  const { renderCugAdmission } = await import('../src/cug/page.js');
+  const html = renderCugAdmission('testnonce', '5417646');
+  assert.match(html, /href="\/guide\/cug-grt"/);
+  assert.match(html, /Voir les dix parcours d’admission/);
+  assert.match(html, /Bearer token MCP/);
+});
+
 test('the sessionless tool issues a fragment-bound challenge only for an individually admitted OAuth client', async () => {
   const { service } = fixture();
   assert.equal((await service.begin('shared-fixture')).status, 'AUTHORIZATION_REQUIRED');
