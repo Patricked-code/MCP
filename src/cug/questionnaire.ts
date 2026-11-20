@@ -67,8 +67,8 @@ export async function submitToGrt(input:GrtRequest, config:{
 
 export type GrtCheckpoint={status:'FOUND';projectContinuityId:string;phase:string;grtState:string;revision:number;issueUrl:string};
 const unknown={status:'UNCONFIRMED'} as const;
-export async function observeGrtRequest(target:string,config:{allowedTarget:string},
-  fetchImpl:typeof fetch, continuityId?:string):Promise<GrtCheckpoint|typeof unknown>{
+async function readGrtRequest(target:string,config:{allowedTarget:string},
+  fetchImpl:typeof fetch, continuityId?:string):Promise<{checkpoint:GrtCheckpoint;state:unknown}|typeof unknown>{
   if(target.toLowerCase()!==config.allowedTarget.toLowerCase()||(continuityId&&!grtContinuityId.safeParse(continuityId).success))return unknown;
   const api='https://api.github.com/repos/'+GRT_CONTROL_REPOSITORY;
   const marker='<!-- GRT_CUG_CREATE_TARGET:'+target.toLowerCase()+' -->';
@@ -106,11 +106,24 @@ export async function observeGrtRequest(target:string,config:{allowedTarget:stri
           ||typeof state.phase!=='string'||!/^[A-Z][A-Z0-9_-]{0,79}$/.test(state.phase)
           ||!['REQUEST_CREATED','WAITING_FOR_ANSWER','PLAN_READY','WAITING_FOR_PLAN_APPROVAL','EXECUTING_PREPARATION','HOLD_FOR_REVIEW','HANDOFF_READY','CLOSED'].includes(state.status)
           ||!Number.isSafeInteger(state.revision)||state.revision<1)return unknown;
-        return {status:'FOUND',projectContinuityId,phase:state.phase,grtState:state.status,revision:state.revision,
-          issueUrl:'https://github.com/'+GRT_CONTROL_REPOSITORY+'/issues/'+issue.number};
+        return {state,checkpoint:{status:'FOUND',projectContinuityId,phase:state.phase,grtState:state.status,revision:state.revision,
+          issueUrl:'https://github.com/'+GRT_CONTROL_REPOSITORY+'/issues/'+issue.number}};
       }
       if(entries.length<50)return unknown;
     }
   }catch{return unknown;}
   return unknown;
+}
+
+export async function observeGrtRequest(target:string,config:{allowedTarget:string},
+  fetchImpl:typeof fetch, continuityId?:string):Promise<GrtCheckpoint|typeof unknown>{
+  const result=await readGrtRequest(target,config,fetchImpl,continuityId);
+  return 'checkpoint' in result ? result.checkpoint : result;
+}
+
+/** Host-only bounded read. The raw state is never returned over MCP. */
+export async function readGrtResumeState(target:string, fetchImpl:typeof fetch, continuityId:string){
+  if(!grtContinuityId.safeParse(continuityId).success)return null;
+  const result=await readGrtRequest(target,{allowedTarget:target},fetchImpl,continuityId);
+  return 'checkpoint' in result ? result.state : null;
 }

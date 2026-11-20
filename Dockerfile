@@ -14,6 +14,7 @@ COPY .mcp/branch-governance.json ./.mcp/branch-governance.json
 COPY docs/governance/program-backlog-convergence.json ./docs/governance/program-backlog-convergence.json
 COPY scripts/program-backlog-convergence-lib.mjs ./scripts/program-backlog-convergence-lib.mjs
 COPY src ./src
+COPY capsules/grt-repository-creation/src ./capsules/grt-repository-creation/src
 RUN npm run build
 ENV NODE_ENV=production
 EXPOSE 8787

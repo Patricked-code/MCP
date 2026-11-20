@@ -17,14 +17,14 @@ Les formulations ci-dessous sont les messages de clarification dans le présent 
 
 > Mais avant tout partait de cug grt
 
-> D'abord l'idée est que cug s'installe sur tout les repo github.  
+> D'abord l'idée est que cug s'installe sur tout les repo github.
 > Et pour celà il fallait écouter des évènements
 
-> Et cug devait aussi avoir des registres et des pages sur le front end 
+> Et cug devait aussi avoir des registres et des pages sur le front end
 
-> Faut aussi  noter tout sur le chantier pour après ensuite les exploiter les ajouter.  
-> Déjà tu as quoi quoi informations déjà existantes dsnnsle chantier 
+> Faut aussi  noter tout sur le chantier pour après ensuite les exploiter les ajouter.
+> Déjà tu as quoi quoi informations déjà existantes dsnnsle chantier
 
-> Faut que cette documentation soit lié au projet et a sa continuité pour que ce projet ai son fichier de suivi et décisions et aussi l'architecture la roadmap les todo etc.. mais propre au chantier 
+> Faut que cette documentation soit lié au projet et a sa continuité pour que ce projet ai son fichier de suivi et décisions et aussi l'architecture la roadmap les todo etc.. mais propre au chantier
 
 Les échanges historiques du 14 novembre sont restitués d'après des traces datées, pas comme citations littérales intégrales. [Chronologie et sources](PREUVES.md).

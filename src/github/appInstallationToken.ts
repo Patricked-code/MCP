@@ -16,6 +16,7 @@ export type GithubAppTokenInput = Readonly<{
   installation: GithubAppInstallation;
   repository: string;
   contentsPermission: 'read' | 'write';
+  issuesRead?: true;
 }>;
 export type GithubAppTokenResult = Readonly<{
   token: string;
@@ -44,7 +45,8 @@ function targetRepository(input: GithubAppTokenInput): string {
     || !/^[0-9]{1,20}$/.test(installation.appId)
     || !Number.isSafeInteger(installation.installationId)
     || installation.installationId <= 0
-    || (contentsPermission !== 'read' && contentsPermission !== 'write')) {
+    || (contentsPermission !== 'read' && contentsPermission !== 'write')
+    || (input.issuesRead && contentsPermission !== 'read')) {
     throw new Error('GITHUB_APP_TARGET_INVALID');
   }
   return names[1]!;
@@ -98,7 +100,7 @@ export async function mintGithubAppRepoToken(
         },
         body: JSON.stringify({
           repositories: [repoName],
-          permissions: { contents: input.contentsPermission }
+          permissions: { contents: input.contentsPermission, ...(input.issuesRead ? {issues:'read'} : {}) }
         }),
         signal: AbortSignal.timeout(15000)
       }
@@ -128,6 +130,14 @@ export async function mintGithubAppRepoToken(
     || exp <= now.getTime() + 60_000
     || exp > now.getTime() + 2 * 60 * 60 * 1000) {
     throw new Error('GITHUB_APP_INSTALLATION_TOKEN_INVALID');
+  }
+  if (input.issuesRead) {
+    const permissions=grant.permissions as Record<string, unknown>|undefined;
+    if (input.contentsPermission!=='read' || permissions?.issues!=='read' || permissions.contents!=='read'
+      || Object.keys(permissions).some(key=>!['contents','issues','metadata'].includes(key))
+      || (permissions.metadata!==undefined && permissions.metadata!=='read')) {
+      throw new Error('GITHUB_APP_READ_GRANT_INVALID');
+    }
   }
   // Never write this short-lived token to an on-disk registry.
   return {

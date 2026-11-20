@@ -1,6 +1,6 @@
 # Capsule isolée CUG/GRT — WT-MCP-CUG-GRT-20261114-01
 
-## Premier incrément
+## Premier incrément — état historique
 
 Le dépôt MCP embarque sous `capsules/grt-repository-creation/` un module de consultation de reprise. Le module de lecture n’est ni monté dans Express ni enregistré comme outil MCP. L’admission CUG est raccordée séparément dans le serveur, sans dépendance au module de lecture. Le moteur GRT reste propriétaire du questionnaire, du workflow de création, du handoff et des reçus. La capsule ne contient aucune copie de ce moteur. Le pilote existant `/gouvern` reste distinct et intact. Aucun pilote à lancer avec le propriétaire pour valider cet incrément.
 
@@ -70,3 +70,68 @@ une reprise par nom ou par `projectContinuityId`, en lecture seule après
 sélection. Pas de connexion GitHub web indépendante ni de démarrage
 automatique du codeur dans ce lot. Un checkpoint central n’est pas le reçu
 local ni une autorisation de coder.
+
+## Lot 3 — Capsule autonome de reprise
+
+`mcp_resume_grt_repository_creation` prend uniquement
+`projectContinuityId`. Le module `src/cug/grtResumeTool.ts` adapte la capsule
+isolée au transport MCP. Il conserve l'admission et le checkpoint central
+existants, le webhook et le pilote `/gouvern` sans modification de leur
+contrat. Il ne crée ni session, ni dossier, ni dépôt, ni tâche. L'accès
+exige le profil OAuth CUG protégé, le flag d’admission existant et une seule
+cible `grt.allowedTarget`. Le jeton CUG local est éphémère, limité à ce dépôt
+et à `contents:read` et `issues:read` (plus métadonnées GitHub implicites).
+Il n'est demandé qu'après un handoff central valide. GitRegistry ne reçoit
+aucune écriture. Un manque d'autorisation ne se transforme pas en absence de
+preuve locale.
+
+La réponse sépare le checkpoint, la preuve de baseline et la classification
+GRGS. La baseline nécessite le reçu du commit immuable indiqué par le dossier
+local et sa correspondance au commit sujet. Son attestation ne vaut ni
+déploiement ni autorisation opérationnelle. Si la preuve manque,
+`NOT_ATTESTED` est retourné. Le bilan GRGS peut produire des compteurs et une
+empreinte sur les chemins Markdown de l'arbre immuable. C’est une
+classification candidate par dépôt, sans déplacement de document, sans
+lecture du contenu des documents classés, et sans approbation. Un arbre
+non vérifiable ou tronqué produit `NOT_OBSERVED`. Open Engineering peut
+exploiter ces observations en lecture sans en hériter de droit d'exécution.
+
+Validation hôte : `node --import tsx --test tests/cugGrtResumeTool.test.ts`.
+Avant d'attester S1, l'opérateur doit vérifier le SHA effectif et le catalogue
+du runtime, puis effectuer un appel avec un identifiant de continuité autorisé
+et un profil CUG réel. Une réponse de CI avec fixtures ne remplace pas
+cette preuve.
+
+## Guide web et routes de référence
+
+Le [guide de parcours sur le site](https://mcp.wealthtechinnovations.com/guide/cug-grt)
+est une page informative sans accès à un dossier ou à une configuration. Elle
+est reliée depuis la page de connexion et le tableau de bord. Elle ne se
+substitue à aucune route d'admission, de reprise ou de provisioning.
+
+| Route | Rôle et comportement attendu sans session |
+| --- | --- |
+| `GET /` | Redirection vers `/dashboard`, puis vers la connexion si nécessaire |
+| `GET /index`, `GET /index.html` | Aucun alias d'accueil prévu |
+| `GET /login` | Connexion au tableau de bord, distincte de l'admission OAuth CUG |
+| `GET /guide/cug-grt` | Guide public statique, sans formulaire et sans exécution |
+| `GET /repo-template/auth` | Page d'admission à ouvrir depuis le lien temporaire du client MCP CUG, uniquement quand l'entrée est disponible |
+| `GET /gouvern` | Pilote historique distinct, protégé par la connexion web |
+| `/mcp` | Transport MCP, jamais une page d'accueil |
+
+Le 20 novembre 2026, sur la base S1 `7037d8c74ab7…`, les sondes sans
+authentification ont confirmé la chaîne `/ → /dashboard → /login`, le
+`404` des alias d'index et le rejet `401` de `/mcp`. La route d'admission
+a répondu `404` et la route historique `/gouvern` a redirigé vers la
+connexion. Le code d'admission peut rendre ce `404` si le flag est désactivé
+ou si l'origine OAuth HTTPS est indisponible. La sonde seule ne distingue
+pas la configuration du runtime d'un filtrage en amont. Le guide n'active
+rien et ne constitue pas une preuve que l'admission fonctionne sur S1.
+
+Pour une recette métier, tester un dossier autorisé depuis le véritable
+client OAuth CUG. Vérifier le compte autorisé, l'expiration, la distinction
+entre création et reprise, la corrélation du dossier central/local et le
+statut des preuves. En cas de réception incertaine, consulter le statut
+avant tout nouvel envoi. Un test de reprise ne doit pas créer de dépôt.
+Le suivi web reste central dans ce lot. La preuve locale et la synthèse
+GRGS restent consultables par l'outil MCP, pas par le guide public.
