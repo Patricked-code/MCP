@@ -47,6 +47,9 @@ ol{padding:0;list-style-position:inside;display:grid;gap:.8rem;grid-template-col
 <details><summary>Autres transports et accès historiques</summary><p>Le transport HTTP du client MCP, l’admission OAuth CUG et les événements webhook GitHub App remplissent des fonctions différentes. Un webhook signé est une source d’événements, pas une connexion utilisateur. Les modes SSE hérités, stdio ou autres ne sont pas annoncés comme disponibles sans preuve de configuration et de compatibilité du client. <code>/gouvern</code> conserve son parcours historique indépendant.</p></details>
 </section>
 <section aria-labelledby="catalogue"><h2 id="catalogue">Les dix entrées du parcours gouverné</h2>
+<nav class="actions" aria-label="Pages spécialisées d’admission">
+<a href="/guide/cug-grt/client-mcp">Client MCP HTTP</a><a href="/guide/cug-grt/oauth">OAuth CUG</a><a href="/guide/cug-grt/github-app">GitHub App</a><a href="/guide/cug-grt/grt">Création GRT</a><a href="/guide/cug-grt/grgs">Gouvernance GRGS</a><a href="/guide/cug-grt/continuity">Sessions et continuité</a><a href="/guide/cug-grt/events">Événements GitHub</a><a href="/guide/cug-grt/agents">Agents codeurs</a>
+</nav>
 <p>Ces entrées sont des objectifs ou des événements, et non dix authentifications indépendantes. « Conditionnel » signifie que l’accès exige des autorisations ou des capacités non attestées par cette page. Aucun lien ci-dessous ne déclenche une écriture.</p>
 <ol>
 <li><h3>01 · Client MCP</h3><p>Point protocolaire <code>/mcp</code>, à configurer dans un client compatible. <strong>Conditionnel :</strong> transport et authentification à négocier avec le serveur.</p></li>
