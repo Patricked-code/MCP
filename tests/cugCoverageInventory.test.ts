@@ -106,3 +106,38 @@ test('expired metadata-only grant cannot authorize repository enumeration', asyn
   });
   assert.equal(fixture.requests.includes('GET /installation/repositories'), false);
 });
+
+test('coverage rejects repositories attributed to a different owner, without exposing their names', async () => {
+  const fixture = github();
+  const originalFetch = fixture.deps.fetchImpl;
+  fixture.deps.fetchImpl = async (input, init) => {
+    const response = await originalFetch(input, init);
+    if (new URL(String(input)).pathname !== '/installation/repositories') return response;
+    const body = await response.json() as {total_count:number,repositories:Array<{id:number,owner:typeof owner,full_name:string}>};
+    if (body.repositories.length) body.repositories[0] = {
+      ...body.repositories[0]!, owner: { login: 'different-owner', id: 123456789 }
+    };
+    return Response.json(body);
+  };
+  const report = await collectCugCoverage(fixture.deps);
+  assert.deepEqual(report.owners.find(row => row.owner === owner.login), {
+    owner: owner.login, ownerId: owner.id, status: 'UNVERIFIED', reason: 'REPOSITORIES_UNVERIFIED'
+  });
+  assert.doesNotMatch(JSON.stringify(report), /different-owner|private-fixture/);
+});
+
+test('coverage refuses a truncated or inconsistent repository page', async () => {
+  const fixture = github();
+  const originalFetch = fixture.deps.fetchImpl;
+  fixture.deps.fetchImpl = async (input, init) => {
+    const response = await originalFetch(input, init);
+    const url = new URL(String(input));
+    if (url.pathname !== '/installation/repositories' || url.searchParams.get('page') !== '2') return response;
+    const body = await response.json() as {total_count:number,repositories:unknown[]};
+    return Response.json({...body,total_count:102});
+  };
+  const report = await collectCugCoverage(fixture.deps);
+  assert.deepEqual(report.owners.find(row => row.owner === owner.login), {
+    owner: owner.login, ownerId: owner.id, status: 'UNVERIFIED', reason: 'REPOSITORIES_UNVERIFIED'
+  });
+});
