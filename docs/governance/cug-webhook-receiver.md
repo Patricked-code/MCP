@@ -40,3 +40,43 @@ Sur une version déployée et autorisée qui contient aussi ce lot, la commande 
 Le collecteur obtient un jeton CUG limité au dépôt pilote et en lecture. Il exige une preuve d'appartenance à l'installation en plus de la réponse de l'API de dépôt. Un dépôt public visible à lui seul n'est pas une preuve de couverture. Renommage, transfert ou réponse ambiguë ne produisent pas une nouvelle fiche pilote. Les autres apps restent non vérifiées et la couverture globale partielle.
 
 Le résultat est écrit en local dans `/app/data/cug-pilot-inventory`, avec une référence de preuve, une empreinte de l'état observé du GitRegistry si lisible et un décompte des correspondances de nom. Un match de nom n'atteste ni le dépôt serveur, ni son remote, ni le chemin réel, ni un domaine Plesk. Le code n'écrit pas le GitRegistry canonique. Le rapprochement serveur, les autorisations d'écriture Plesk et la création de sous-domaines restent hors de ce lot.
+
+## Reprise WT-MCP-CUG-GRT-20261114-01 — B1, consommateur automatique UAES
+
+Le pilote A a été vérifié le 20 novembre 2026. Le collecteur a écrit l’instantané privé
+`11ac25dfd077a1d946cb70e038920622eb6b609873665a10171657e0e05461ea`, avec `NO_NAME_MATCH`
+et sans autorisation de provisioning. Dans [l’historique CUG](https://github.com/organizations/chainsolutions-wealthtech/settings/apps/chainsolutions-universal-gateway/advanced),
+le `repository.edited` `fa8dc2d0-e47f-11f1-92bf-fd9772b274a6` a donné `202`, puis `204`
+au rejeu du même identifiant. Le contrôle opérateur sur S1 a trouvé un reçu unique et
+non vide, de 914 octets, mode `0600`. `/health` renvoyait `200` et le POST non signé `401`.
+La description UAES a été rétablie et son SHA de branche principale n’a pas changé.
+
+B1 conserve le récepteur, les reçus v1/v2 et la commande opérateur du lot A. Le traitement
+se fait au démarrage du service puis toutes les minutes, hors requête HTTP, seulement avec
+`MCP_CUG_RECEIPT_CONSUMER_ENABLED=true`, le récepteur actif et l’installation pilote configurée.
+Le réglage est inactif par défaut. Il n’existe ni nouvelle route ni nouvelle tâche MCP.
+Le consommateur relit le journal privé et n’utilise pas un nom de dépôt provenant du webhook
+pour choisir le dépôt à lire. Il réutilise la vérification GitHub en lecture seule de #404.
+
+Chaque cycle examine au plus 100 reçus et tente au plus quatre rafraîchissements, l’un après
+l’autre, sans chevauchement des cycles. Le curseur reprend au début après le dernier ID et
+n’est pas une preuve de traitement. Les fichiers dans `/app/data/cug-receipt-inventory` sont
+les seuls marqueurs durables de traitement réussi. Un résultat privé et atomique par
+`deliveryId` combine l’empreinte liée au reçu et l’instantané vérifié. Une relance évite le
+nouvel appel GitHub si ce résultat est déjà valide. Deux processus peuvent appeler GitHub
+pour le même reçu, mais ne publient qu’un seul résultat. Les anciennes installations sont
+ignorées, les échecs sont repris lors d’un cycle suivant et n’empêchent pas de poursuivre
+les autres reçus de la page. Une couverture non attestée est signalée séparément,
+sans produire de fiche positive ni être assimilée à une absence. Un résultat incohérent n’est jamais écrasé automatiquement.
+Le journal des entrées n’est ni purgé ni modifié. Ce lot est limité au stockage et au volume
+du pilote, pas à la collecte continue multi-compte. Les fiches par livraison sont des preuves
+historiques, pas un index canonique courant. La rétention et la gestion des signaux de perte
+de couverture font partie de l’élargissement avant une activation multi-compte.
+
+Mise en service et retrait par le circuit de configuration existant, sans nouvelle clé ni
+nouvelle permission. Avant activation, passer les contrôles de revue et de déploiement du
+MCP. Comparer ensuite les compteurs du consommateur et la présence d’un fichier de projection
+`0600` pour un reçu connu, sans relever son contenu. Confirmer le comportement après relance
+et préserver `200` sur `/health` et `401` pour le POST non signé. Désactiver le seul nouveau
+flag pour arrêter le consommateur au prochain redémarrage du service. Le webhook et les
+preuves restent en place. Aucune écriture GitRegistry, Plesk ou GRT n’est déclenchée.
