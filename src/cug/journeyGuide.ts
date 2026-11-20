@@ -67,5 +67,23 @@ ol{padding:0;list-style-position:inside;display:grid;gap:.8rem;grid-template-col
 <p class="notice">Le reçu de référence et le bilan GRGS, lorsqu’ils sont disponibles, ne valent ni autorisation de provisionner ni attestation de déploiement. Ce guide est statique et n’affiche aucune donnée de dossier, de compte ou de configuration.</p>
 </main></body></html>`);
   });
+  // Read-only specialized admission pages. Existing authentication and MCP routes remain authoritative.
+  const specialized = [
+    {path:'/guide/cug-grt/client-mcp',title:'Connexion d’un client MCP',body:'Le client utilise /mcp comme endpoint protocolaire. Configurer son transport et son OAuth dans le client. Cette page ne délivre aucun jeton et ne crée aucune session.'},
+    {path:'/guide/cug-grt/oauth',title:'Admission OAuth CUG',body:'Demander mcp_start_governed_request_auth dans un client autorisé, puis suivre le lien temporaire retourné vers /repo-template/auth. La vérification exige le même bearer et une installation GitHub App autorisée.'},
+    {path:'/guide/cug-grt/github-app',title:'Rattachement GitHub App CUG',body:'Les installations et permissions sont contrôlées côté serveur. Une installation détectée ne constitue pas une autorisation. Utiliser /admissions après connexion.'},
+    {path:'/guide/cug-grt/grt',title:'Création ou reprise GRT',body:'Le questionnaire GRT est disponible après admission CUG et vérification des droits. La création exige une confirmation distincte. Consulter /repo-template/auth/status uniquement dans une session autorisée.'},
+    {path:'/guide/cug-grt/grgs',title:'Gouvernance et preuves GRGS',body:'Le cockpit projette uniquement les preuves corrélées. Une preuve ne vaut ni autorisation de déploiement ni attestation runtime. Consulter /dashboard dans une session autorisée.'},
+    {path:'/guide/cug-grt/continuity',title:'Session et continuité gouvernées',body:'Les outils de session et de reprise MCP requièrent une identité, une cible et des permissions effectives. Le login GitHub ne crée pas une session gouvernée.'},
+    {path:'/guide/cug-grt/events',title:'Webhooks et événements GitHub',body:'Les webhooks alimentent les registres de découverte après vérification. Ils ne sont pas un formulaire d’admission utilisateur et ne prouvent pas seuls les permissions.'},
+    {path:'/guide/cug-grt/agents',title:'Admission d’un agent codeur',body:'Un agent intervient sur une tâche bornée et autorisée après qualification, rattachement au projet et contrôle des dépendances. Cette page ne déclenche aucun travail.'}
+  ] as const;
+  for (const page of specialized) router.get(page.path, (_req,res)=>{
+    const nonce=randomBytes(18).toString('base64');
+    res.set({'Content-Security-Policy':`default-src 'none'; style-src 'nonce-${nonce}'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
+      'Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Cache-Control':'no-store'});
+    const escape=(value:string)=>value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+    res.type('html').send(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.title)} · WealthTech MCP</title><style nonce="${nonce}">:root{color-scheme:dark}body{background:#091426;color:#f1f6ff;font:1rem/1.6 system-ui,sans-serif;margin:0}main{max-width:48rem;margin:4rem auto;padding:1.5rem}a{color:#8be8dc}a:focus-visible{outline:3px solid #f8cd78;outline-offset:4px}p{max-width:70ch}</style></head><body><main><nav aria-label="Navigation d’admission"><a href="/guide/cug-grt">Tous les parcours</a> · <a href="/dashboard">Tableau de bord</a> · <a href="/admissions">Admissions</a></nav><h1>${escape(page.title)}</h1><p>${escape(page.body)}</p><p>Les actions nécessitent les autorisations du serveur. Aucun droit n’est accordé depuis cette page.</p></main></body></html>`);
+  });
   return router;
 }
