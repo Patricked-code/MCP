@@ -1,3 +1,4 @@
+import { admissionCatalogueIndex, admissionDetails, findAdmission, publicAdmissionIds } from '../web/admissionCatalogue.js';
 import { randomBytes } from 'node:crypto';
 import { Router } from 'express';
 
@@ -63,6 +64,9 @@ ol{padding:0;list-style-position:inside;display:grid;gap:.8rem;grid-template-col
 <li><h3>09 · Webhook GitHub</h3><p>Réception et rapprochement d’événements vérifiés par le collecteur CUG. <strong>Événement technique :</strong> ce n’est pas une entrée utilisateur ni une preuve automatique de couverture.</p></li>
 <li><h3>10 · Agent codeur</h3><p>Rattacher une tâche bornée à une session et à un projet après qualification et autorisation. <strong>Conditionnel :</strong> aucune tâche ni écriture n’est déclenchée depuis ce guide.</p></li>
 </ol></section>
+<section aria-labelledby="catalogue-detail"><h2 id="catalogue-detail">Catalogue des connexions et des parcours</h2>
+<p>Les dix repères précédents ne sont pas dix connexions distinctes. Les fiches séparent transport, identité, prérequis et périmètre. Les fiches de configuration ChatGPT, Claude et Bearer sont publiques. Le lien vers la console demande une session web.</p>
+${admissionCatalogueIndex(true)}</section>
 <section aria-labelledby="routes"><h2 id="routes">Quelle entrée utiliser ?</h2>
 <details><summary>Accueil, admission ou pilote historique</summary>
 <p><code>/</code> mène au tableau de bord protégé. <code>/index</code> et <code>/index.html</code> ne sont pas des points d’entrée. <code>/repo-template/auth</code> est réservé au lien d’admission CUG délivré par le client. Un <code>404</code> n’autorise pas à contourner l’admission. <code>/gouvern</code> reste le pilote historique distinct. <code>/mcp</code> est le point d’entrée du client MCP, pas une page web.</p>
@@ -87,6 +91,20 @@ ol{padding:0;list-style-position:inside;display:grid;gap:.8rem;grid-template-col
       'Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Cache-Control':'no-store'});
     const escape=(value:string)=>value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
     res.type('html').send(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.title)} · WealthTech MCP</title><style nonce="${nonce}">:root{color-scheme:dark}body{background:#091426;color:#f1f6ff;font:1rem/1.6 system-ui,sans-serif;margin:0}main{max-width:48rem;margin:4rem auto;padding:1.5rem}a{color:#8be8dc}a:focus-visible{outline:3px solid #f8cd78;outline-offset:4px}p{max-width:70ch}</style></head><body><main><nav aria-label="Navigation d’admission"><a href="/guide/cug-grt">Tous les parcours</a> · <a href="/dashboard">Tableau de bord</a> · <a href="/admissions">Admissions</a></nav><h1>${escape(page.title)}</h1><p>${escape(page.body)}</p><p>Les actions nécessitent les autorisations du serveur. Aucun droit n’est accordé depuis cette page.</p></main></body></html>`);
+  });
+  router.get('/guide/cug-grt/:connectionId', (req, res, next) => {
+    const id = req.params.connectionId;
+    const entry = typeof id === 'string' && publicAdmissionIds.has(id) ? findAdmission(id) : undefined;
+    if (!entry) { next(); return; }
+    const nonce = randomBytes(18).toString('base64');
+    res.set({
+      'Content-Security-Policy': `default-src 'none'; style-src 'nonce-${nonce}'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
+      'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff', 'Cache-Control': 'no-store'
+    });
+    res.type('html').send(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${entry.title} · WealthTech MCP</title>
+    <style nonce="${nonce}">:root{color-scheme:dark}body{margin:0;background:#091426;color:#f1f6ff;font:1rem/1.65 system-ui,sans-serif}main{max-width:48rem;margin:3rem auto;padding:1.5rem}a{color:#8be8dc}a:focus-visible{outline:3px solid #f8cd78;outline-offset:4px}dt{font-weight:700;margin-top:1rem}dd{margin:0}li{margin:.5rem 0}</style></head>
+    <body><main><nav aria-label="Navigation d’admission"><a href="/guide/cug-grt">Tous les parcours</a> · <a href="/admissions">Console</a></nav>
+    <h1>${entry.title}</h1>${admissionDetails(entry, true)}</main></body></html>`);
   });
   return router;
 }

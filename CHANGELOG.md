@@ -9,6 +9,10 @@
 
 - Ajoute un GET borné à l’admission CUG et un écran de preuves en lecture seule, sans modifier les endpoints de soumission ni le pilote historique. Le lecteur de la capsule est réutilisé. Le contrôle sur dossier OAuth réel reste distinct des fixtures et du déploiement.
 
+## 2026-11-20 — Catalogue des parcours d’admission (#425)
+
+- Raccorde le guide et la console à un catalogue commun. Ajoute les fiches ChatGPT, Claude et Bearer sans modifier les flux OAuth, les routes opérationnelles ni leurs droits.
+
 ## 2026-11-16 — Préparation automatique d'une correction G1 documentaire (#406)
 
 - Raccorde l'attestation de déploiement et le Live State à GW‑60/GW‑61 pour proposer une correction bornée de `PRODUCTION_STATE.json` sur GitHub. Le job dédié n'écrit ni dans `main` directement ni sur S1 et ne change pas les permissions du job de déploiement. La mise en service reste à attester. [PR #406](https://github.com/Patricked-code/MCP/pull/406)

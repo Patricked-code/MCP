@@ -1,4 +1,5 @@
 import { Router, type RequestHandler } from 'express';
+import { admissionCatalogueIndex, admissionDetails, findAdmission } from './admissionCatalogue.js';
 import { consoleDocument, consoleStyleHash } from './consoleUi.js';
 
 const paths = [
@@ -53,8 +54,9 @@ export function createAdmissionsRouter(requireWebLogin: RequestHandler, cugEntry
       <h2>${p.title}</h2><p>${p.description}</p><p class="wt-meta">${p.seal}</p>
       <a class="wt-action" href="/admissions/${p.slug}">Voir le parcours <span aria-hidden="true">&nbsp;→</span></a></article>`).join('');
     res.type('html').send(consoleDocument('Parcours d’admission · WealthTech MCP',
-      `<h1>Parcours d’admission</h1><p class="wt-copy">Choisissez votre objectif. Chaque parcours conserve son identité, ses contrôles et son suivi.</p>
-      <div class="wt-grid">${cards}</div><nav class="wt-links" aria-label="Ressources"><a href="/provisioning/project-runtime">Provisionnement</a><a href="/guide/cug-grt">Guide des routes</a></nav>
+      `<h1>Parcours d’admission</h1><p class="wt-copy">Choisissez votre objectif. Une connexion, une admission à un dépôt et une prise en charge de chantier n’accordent pas les mêmes droits.</p>
+      <nav class="wt-links" aria-label="Connecter un client"><a href="/admissions/chatgpt">Connecter ChatGPT</a><a href="/admissions/claude">Connecter Claude</a><a href="/admissions/client-http">Autre client MCP</a></nav>
+      <div class="wt-grid">${cards}</div><h2>Catalogue des connexions et parcours</h2><div class="wt-grid">${admissionCatalogueIndex(false)}</div><nav class="wt-links" aria-label="Ressources"><a href="/provisioning/project-runtime">Provisionnement</a><a href="/guide/cug-grt">Guide des routes</a></nav>
       <aside class="wt-notice"><strong>La navigation ne délivre aucun droit.</strong><p>Ces pages expliquent le parcours. Elles ne créent pas de dépôt, ne délivrent pas de jeton et n’ouvrent pas de session MCP.</p></aside>`));
   });
   const detail = (p: typeof paths[number]): RequestHandler => (_req, res) => {
@@ -69,5 +71,16 @@ export function createAdmissionsRouter(requireWebLogin: RequestHandler, cugEntry
   router.get('/admissions/cug', secure, requireWebLogin, detail(paths[0]));
   router.get('/admissions/grt', secure, requireWebLogin, detail(paths[1]));
   router.get('/admissions/historique', secure, requireWebLogin, detail(paths[2]));
+  router.get('/admissions/:catalogId', (req, _res, next) => {
+    const id = req.params.catalogId;
+    if (typeof id === 'string' && findAdmission(id)) next();
+    else next('route');
+  }, secure, requireWebLogin, (req, res, next) => {
+    const id = req.params.catalogId;
+    const entry = typeof id === 'string' ? findAdmission(id) : undefined;
+    if (!entry) { next(); return; }
+    res.type('html').send(consoleDocument(entry.title + ' · WealthTech MCP',
+      `<a href="/admissions">← Tous les parcours</a><h1>${entry.title}</h1>${admissionDetails(entry)}`));
+  });
   return router;
 }
