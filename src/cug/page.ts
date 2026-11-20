@@ -15,6 +15,7 @@ input[type=checkbox]{width:auto;accent-color:var(--accent);margin-right:.5rem}la
 @media(max-width:44rem){main{margin:1rem;padding:1.3rem;border-radius:1rem}}@media(prefers-reduced-motion:reduce){button{transition:none}}
 </style>
 <main><small>CUG / ENTRÉE OAUTH</small><h1>Requête gouvernée</h1>
+<nav aria-label="Aide à l’admission"><a href="/guide/cug-grt">Voir les dix parcours d’admission et leurs prérequis</a></nav>
 <p>Le lien MCP sélectionne le parcours CUG. Vérifiez l’identifiant de l’application, puis fournissez le jeton OAuth qui a demandé le lien. La session du tableau de bord est distincte. Seuls les comptes effectivement vérifiés seront proposés.</p>
 <form id="auth" autocomplete="off">
 <label for="app">App ID GitHub</label><input id="app" required inputmode="numeric" pattern="[0-9]{1,20}">

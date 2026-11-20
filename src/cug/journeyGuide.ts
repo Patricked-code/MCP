@@ -36,12 +36,57 @@ ol{padding:0;list-style-position:inside;display:grid;gap:.8rem;grid-template-col
   <li><h3>Créer, si la création est autorisée</h3><p>Renseigner le dépôt, sa visibilité et l’objectif public. Confirmer séparément la publication du dossier dans GRT et la demande de création. Une transmission à GitHub ne prouve pas que le dépôt a été créé.</p></li>
   <li><h3>Reprendre sans relancer</h3><p>Utiliser l’identifiant de continuité. Le suivi web consulte le dossier central. La capsule MCP <code>mcp_resume_grt_repository_creation</code> peut ensuite lire le dossier local et ses preuves lorsque le transfert est vérifié. En cas de réception incertaine, consulter le statut avant tout nouvel envoi.</p></li>
 </ol></section>
+<section aria-labelledby="admission-modes"><h2 id="admission-modes">Choisir un parcours d’admission</h2>
+<p>Ce guide décrit les entrées observées dans le code. La disponibilité effective dépend du client, de ses autorisations et de la configuration du serveur. Aucun choix affiché ici ne crée une session ni un droit.</p>
+<ol>
+  <li><h3>Connecter un client MCP par HTTP</h3><p>Le client MCP utilise <code>/mcp</code> comme point d’entrée protocolaire. Il ne s’agit pas d’une page à ouvrir dans un navigateur. L’authentification et la négociation de transport sont assurées par le client et le serveur ; ce guide ne fournit aucun jeton.</p></li>
+  <li><h3>Admettre une demande CUG par OAuth</h3><p>Depuis un client OAuth CUG déjà autorisé, demander <code>mcp_start_governed_request_auth</code>, ouvrir uniquement le lien temporaire retourné, puis vérifier le même jeton OAuth et sélectionner une installation GitHub App autorisée. La présence d’un compte GitHub ne prouve pas son autorisation.</p></li>
+  <li><h3>Créer ou adopter un dépôt</h3><p>Le formulaire GRT n’est proposé qu’après vérification de l’identité et de l’installation. Le parcours de création exige une confirmation explicite. L’adoption et les autres opérations restent conditionnées aux capacités réellement exposées par les outils gouvernés ; elles ne sont pas déclenchées par ce guide.</p></li>
+  <li><h3>Observer ou reprendre un chantier</h3><p>Consulter <code>/admissions</code> après connexion pour les parcours disponibles, ou utiliser <code>mcp_resume_grt_repository_creation</code> lorsque l’identité, le dossier et les preuves de transfert sont vérifiés. Une réception incertaine doit être rapprochée avant toute nouvelle soumission.</p></li>
+</ol>
+<details><summary>Autres transports et accès historiques</summary><p>Le transport HTTP du client MCP, l’admission OAuth CUG et les événements webhook GitHub App remplissent des fonctions différentes. Un webhook signé est une source d’événements, pas une connexion utilisateur. Les modes SSE hérités, stdio ou autres ne sont pas annoncés comme disponibles sans preuve de configuration et de compatibilité du client. <code>/gouvern</code> conserve son parcours historique indépendant.</p></details>
+</section>
+<section aria-labelledby="catalogue"><h2 id="catalogue">Les dix entrées du parcours gouverné</h2>
+<nav class="actions" aria-label="Pages spécialisées d’admission">
+<a href="/guide/cug-grt/client-mcp">Client MCP HTTP</a><a href="/guide/cug-grt/oauth">OAuth CUG</a><a href="/guide/cug-grt/github-app">GitHub App</a><a href="/guide/cug-grt/grt">Création GRT</a><a href="/guide/cug-grt/grgs">Gouvernance GRGS</a><a href="/guide/cug-grt/continuity">Sessions et continuité</a><a href="/guide/cug-grt/events">Événements GitHub</a><a href="/guide/cug-grt/agents">Agents codeurs</a>
+</nav>
+<p>Ces entrées sont des objectifs ou des événements, et non dix authentifications indépendantes. « Conditionnel » signifie que l’accès exige des autorisations ou des capacités non attestées par cette page. Aucun lien ci-dessous ne déclenche une écriture.</p>
+<ol>
+<li><h3>01 · Client MCP</h3><p>Point protocolaire <code>/mcp</code>, à configurer dans un client compatible. <strong>Conditionnel :</strong> transport et authentification à négocier avec le serveur.</p></li>
+<li><h3>02 · Autorisation OAuth</h3><p>Demander <code>mcp_start_governed_request_auth</code> depuis le client habilité. <strong>Conditionnel :</strong> même jeton OAuth et lien temporaire valide.</p></li>
+<li><h3>03 · GitHub App CUG</h3><p>Vérifier l’installation et les permissions avant toute sélection de compte. <strong>Conditionnel :</strong> couverture effective de l’installation, non déduite de son identifiant.</p></li>
+<li><h3>04 · Interface web</h3><p>Consulter le <a href="/dashboard">tableau de bord protégé</a> puis les <a href="/admissions">admissions</a>. <strong>Conditionnel :</strong> session et autorisations nécessaires.</p></li>
+<li><h3>05 · API HTTP</h3><p>Accès programmatique uniquement aux routes publiées et autorisées. <strong>Non vérifié :</strong> aucune API REST générique d’admission n’est promise par ce guide.</p></li>
+<li><h3>06 · Création ou adoption GRT</h3><p>Le questionnaire et la création sont soumis à l’identité admise, à la confirmation explicite et aux droits du dépôt. <strong>Conditionnel :</strong> ne jamais assimiler un reçu à une création.</p></li>
+<li><h3>07 · Gouvernance GRGS</h3><p>Consulter les preuves et décisions dans le cockpit existant. <strong>Conditionnel :</strong> une preuve n’est ni une autorisation ni un déploiement.</p></li>
+<li><h3>08 · Session gouvernée</h3><p>Associer l’acteur, la cible, les permissions et la continuité via les outils MCP gouvernés existants. <strong>Conditionnel :</strong> le login seul ne crée pas de session.</p></li>
+<li><h3>09 · Webhook GitHub</h3><p>Réception et rapprochement d’événements vérifiés par le collecteur CUG. <strong>Événement technique :</strong> ce n’est pas une entrée utilisateur ni une preuve automatique de couverture.</p></li>
+<li><h3>10 · Agent codeur</h3><p>Rattacher une tâche bornée à une session et à un projet après qualification et autorisation. <strong>Conditionnel :</strong> aucune tâche ni écriture n’est déclenchée depuis ce guide.</p></li>
+</ol></section>
 <section aria-labelledby="routes"><h2 id="routes">Quelle entrée utiliser ?</h2>
 <details><summary>Accueil, admission ou pilote historique</summary>
 <p><code>/</code> mène au tableau de bord protégé. <code>/index</code> et <code>/index.html</code> ne sont pas des points d’entrée. <code>/repo-template/auth</code> est réservé au lien d’admission CUG délivré par le client. Un <code>404</code> n’autorise pas à contourner l’admission. <code>/gouvern</code> reste le pilote historique distinct. <code>/mcp</code> est le point d’entrée du client MCP, pas une page web.</p>
 </details></section>
 <p class="notice">Le reçu de référence et le bilan GRGS, lorsqu’ils sont disponibles, ne valent ni autorisation de provisionner ni attestation de déploiement. Ce guide est statique et n’affiche aucune donnée de dossier, de compte ou de configuration.</p>
 </main></body></html>`);
+  });
+  // Read-only specialized admission pages. Existing authentication and MCP routes remain authoritative.
+  const specialized = [
+    {path:'/guide/cug-grt/client-mcp',title:'Connexion d’un client MCP',body:'Le client utilise /mcp comme endpoint protocolaire. Configurer son transport et son OAuth dans le client. Cette page ne délivre aucun jeton et ne crée aucune session.'},
+    {path:'/guide/cug-grt/oauth',title:'Admission OAuth CUG',body:'Demander mcp_start_governed_request_auth dans un client autorisé, puis suivre le lien temporaire retourné vers /repo-template/auth. La vérification exige le même bearer et une installation GitHub App autorisée.'},
+    {path:'/guide/cug-grt/github-app',title:'Rattachement GitHub App CUG',body:'Les installations et permissions sont contrôlées côté serveur. Une installation détectée ne constitue pas une autorisation. Utiliser /admissions après connexion.'},
+    {path:'/guide/cug-grt/grt',title:'Création ou reprise GRT',body:'Le questionnaire GRT est disponible après admission CUG et vérification des droits. La création exige une confirmation distincte. Consulter /repo-template/auth/status uniquement dans une session autorisée.'},
+    {path:'/guide/cug-grt/grgs',title:'Gouvernance et preuves GRGS',body:'Le cockpit projette uniquement les preuves corrélées. Une preuve ne vaut ni autorisation de déploiement ni attestation runtime. Consulter /dashboard dans une session autorisée.'},
+    {path:'/guide/cug-grt/continuity',title:'Session et continuité gouvernées',body:'Les outils de session et de reprise MCP requièrent une identité, une cible et des permissions effectives. Le login GitHub ne crée pas une session gouvernée.'},
+    {path:'/guide/cug-grt/events',title:'Webhooks et événements GitHub',body:'Les webhooks alimentent les registres de découverte après vérification. Ils ne sont pas un formulaire d’admission utilisateur et ne prouvent pas seuls les permissions.'},
+    {path:'/guide/cug-grt/agents',title:'Admission d’un agent codeur',body:'Un agent intervient sur une tâche bornée et autorisée après qualification, rattachement au projet et contrôle des dépendances. Cette page ne déclenche aucun travail.'}
+  ] as const;
+  for (const page of specialized) router.get(page.path, (_req,res)=>{
+    const nonce=randomBytes(18).toString('base64');
+    res.set({'Content-Security-Policy':`default-src 'none'; style-src 'nonce-${nonce}'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
+      'Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Cache-Control':'no-store'});
+    const escape=(value:string)=>value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+    res.type('html').send(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.title)} · WealthTech MCP</title><style nonce="${nonce}">:root{color-scheme:dark}body{background:#091426;color:#f1f6ff;font:1rem/1.6 system-ui,sans-serif;margin:0}main{max-width:48rem;margin:4rem auto;padding:1.5rem}a{color:#8be8dc}a:focus-visible{outline:3px solid #f8cd78;outline-offset:4px}p{max-width:70ch}</style></head><body><main><nav aria-label="Navigation d’admission"><a href="/guide/cug-grt">Tous les parcours</a> · <a href="/dashboard">Tableau de bord</a> · <a href="/admissions">Admissions</a></nav><h1>${escape(page.title)}</h1><p>${escape(page.body)}</p><p>Les actions nécessitent les autorisations du serveur. Aucun droit n’est accordé depuis cette page.</p></main></body></html>`);
   });
   return router;
 }

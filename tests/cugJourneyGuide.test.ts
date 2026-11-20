@@ -27,8 +27,38 @@ test('public CUG guide describes existing routes without exposing an action or r
     assert.match(html, /href="\/dashboard"/);
     assert.match(html, /mcp_start_governed_request_auth/);
     assert.match(html, /mcp_resume_grt_repository_creation/);
+    assert.match(html, /Choisir un parcours d’admission/);
+    assert.match(html, /Les dix entrées du parcours gouverné/);
+    for (const entry of ['01 · Client MCP','02 · Autorisation OAuth','03 · GitHub App CUG','04 · Interface web','05 · API HTTP','06 · Création ou adoption GRT','07 · Gouvernance GRGS','08 · Session gouvernée','09 · Webhook GitHub','10 · Agent codeur']) {
+      assert.ok(html.includes(entry), 'missing governed entry: ' + entry);
+    }
+    assert.match(html, /aucune API REST générique d’admission n’est promise/);
+    assert.match(html, /aucune tâche ni écriture n’est déclenchée/);
+    assert.match(html, /Connecter un client MCP par HTTP/);
+    assert.match(html, /Admettre une demande CUG par OAuth/);
+    assert.match(html, /Créer ou adopter un dépôt/);
+    assert.match(html, /Observer ou reprendre un chantier/);
+    assert.match(html, /événements webhook GitHub App/);
+    assert.match(html, /SSE hérités, stdio/);
+    assert.match(html, /ne sont pas annoncés comme disponibles/);
+    assert.match(html, /<code>\/mcp<\/code>/);
+    assert.match(html, /<code>\/gouvern<\/code>/);
     assert.match(html, /<code>\/repo-template\/auth<\/code>/);
     assert.doesNotMatch(html, /<script|<form|<input|fixture-should-not-render|href="\/repo-template\/auth/);
+    for (const path of ['/client-mcp','/oauth','/github-app','/grt','/grgs','/continuity','/events','/agents']) {
+      const url = cugJourneyGuidePath + path;
+      assert.ok(html.includes('href="' + url + '"'), 'missing page link ' + url);
+      const page = await fetch(base + url);
+      const body = await page.text();
+      assert.equal(page.status, 200);
+      assert.match(page.headers.get('content-security-policy') ?? '', /default-src 'none'/);
+      assert.match(page.headers.get('content-security-policy') ?? '', /form-action 'none'/);
+      assert.match(page.headers.get('cache-control') ?? '', /no-store/);
+      assert.match(body, /href="\/guide\/cug-grt"/);
+      assert.match(body, /Aucun droit n’est accordé depuis cette page/);
+      assert.doesNotMatch(body, /<form|<script|<input/);
+      assert.equal((await fetch(base + url, {method:'POST'})).status, 404);
+    }
     const second = await fetch(base + cugJourneyGuidePath);
     assert.notEqual(second.headers.get('content-security-policy'), csp);
     for (const [path,method] of [[cugJourneyGuidePath,'POST'],['/repo-template/auth','GET'],['/gouvern','GET'],['/index','GET']] as const) {
