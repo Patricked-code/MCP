@@ -2,10 +2,15 @@ export function renderCugAdmission(nonce: string): string {
   return `<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Requête gouvernée · CUG</title>
 <style nonce="${nonce}">
-body{margin:0;background:#f1f5f9;color:#162438;font:16px system-ui,sans-serif}main{max-width:35rem;margin:8vh auto;padding:1.8rem;background:white;border-radius:1rem;box-shadow:0 5px 22px #16243816}
-@media(max-width:44rem){main{margin:1rem}}h1{line-height:1.15}label{display:block;margin:1rem 0 .35rem;font-weight:650}
-input,select,textarea,button{font:inherit;box-sizing:border-box;padding:.65rem .8rem;width:100%;border-radius:.45rem;border:1px solid #64748b}
-button{background:#153968;color:white;cursor:pointer;margin-top:1rem}button:disabled{opacity:.65}input[type=checkbox]{width:auto}small{color:#475569}code{overflow-wrap:anywhere}[hidden]{display:none!important}
+:root{color-scheme:light;--ink:#15233d;--muted:#52647e;--line:#d9e2ef;--accent:#2358bb;--focus:#f3b746}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 8% 0%,#dce9ff 0%,transparent 48%),linear-gradient(145deg,#f7faff,#edf2f9);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:42rem;margin:clamp(1rem,7vh,5rem) auto;padding:clamp(1.25rem,4vw,2.75rem);background:#fff;border:1px solid var(--line);border-radius:1.4rem;box-shadow:0 18px 60px #142e5720}
+h1{font-size:clamp(1.9rem,4vw,2.6rem);letter-spacing:-.045em;line-height:1.15;margin:.55rem 0 1.3rem}h2{font-size:1.3rem;letter-spacing:-.025em;margin-top:1.7rem}section{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:.3rem}
+label{display:block;margin:1rem 0 .4rem;font-weight:650}input,select,textarea,button{font:inherit;box-sizing:border-box;padding:.8rem .9rem;width:100%;border-radius:.65rem;border:1px solid #9eafc7;background:#fff;color:var(--ink)}
+input:hover,select:hover,textarea:hover{border-color:#567ab2}input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+button{background:var(--accent);border-color:var(--accent);color:#fff;cursor:pointer;font-weight:700;margin-top:1rem;min-height:3rem;transition:background-color .15s ease,transform .15s ease}button:hover:not(:disabled){background:#17438e}button:active:not(:disabled){transform:translateY(1px)}button:disabled{opacity:.6;cursor:wait}
+input[type=checkbox]{width:auto;accent-color:var(--accent);margin-right:.5rem}label:has(input[type=checkbox]){font-weight:500;display:flex;align-items:baseline}small{color:var(--muted);font-weight:600;letter-spacing:.035em}code{overflow-wrap:anywhere;background:#f1f5fb;padding:.1rem .25rem;border-radius:.25rem}#result:not(:empty),#checkpointResult:not(:empty){border-left:3px solid var(--accent);background:#eff5ff;padding:.8rem 1rem;border-radius:.25rem .6rem .6rem .25rem}[hidden]{display:none!important}
+@media(max-width:44rem){main{margin:1rem;padding:1.3rem;border-radius:1rem}}@media(prefers-reduced-motion:reduce){button{transition:none}}
 </style>
 <main><small>CUG / ENTRÉE AUTHENTIFIÉE</small><h1>Requête gouvernée</h1>
 <form id="auth" autocomplete="off">
