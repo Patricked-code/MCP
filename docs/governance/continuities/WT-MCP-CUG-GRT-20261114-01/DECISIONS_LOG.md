@@ -11,6 +11,7 @@ Les décisions du propriétaire, les limites actées dans GitHub et les choix en
 | CUG-D05 | 19–20 novembre | Préserver A, B, C et D comme blocs distincts. Le résultat B2 sur un dépôt GRT est une observation de dépôt, pas l'exécution du parcours de création GRT. | [Suivi](SUIVI.md), [#411](https://github.com/Patricked-code/MCP/pull/411) |
 | CUG-D06 | 20 novembre | Les registres extensibles et les pages dédiées font partie du livrable. Réutiliser les branchements actuels. La page d'admission GRT ne remplace pas les vues CUG. | [Exigences](EXIGENCES.md), [#401](https://github.com/Patricked-code/MCP/pull/401) |
 | CUG-D07 | 20 novembre | Le chantier possède sa propre documentation liée à son ID. Le runbook et les registres du projet hôte conservent leur autorité ; pas de mémoire runtime parallèle. | [Continuité](CONTINUITY.md), [index gouvernance](../../README.md) |
+| CUG-D08 | 20 novembre | CUG–GRT est le point de départ du chantier. L'écoute GitHub, l'inventaire, les registres et les vues CUG constituent une extension distincte. Le pilote d'écoute UAES ne constitue ni l'origine du chantier ni une preuve de création GRT. | [Clarification du propriétaire et exigence fondatrice](EXIGENCES.md) |
 
 ## Choix encore ouverts
 

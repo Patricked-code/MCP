@@ -10,6 +10,6 @@
 | Domaine de collision | Documentation et continuité CUG ; liens racine uniquement, sans modification du code ni des autres chantiers |
 | Autorité runtime | Aucune revendiquée par ce dossier. Pas de session, de claim, de permission S1/S2, de provisioning ni de déploiement implicite |
 
-Le 14 novembre 2026, le besoin explicite porte sur la couverture GitHub par CUG et la collecte des données par dépôt, puis sur un registre ou une table extensible. Le 20 novembre, le propriétaire confirme que les registres **et les pages du front-end** font partie du résultat attendu. Le texte intégral et l'URL historique de la conversation d'origine ne sont pas disponibles ; les traces datées sont identifiées dans [PREUVES.md](PREUVES.md).
+Pour l'intention fondatrice CUG–GRT et ses extensions successives, lire les [exigences du chantier](EXIGENCES.md) et la [clarification CUG-D08](DECISIONS_LOG.md). Les [preuves](PREUVES.md) distinguent les traces datées, les confirmations du propriétaire et ce qui n'est pas attesté. Le texte intégral et l'URL de la conversation d'origine ne sont pas vérifiés.
 
 Le checkpoint courant, sa portée et son `NEXT_ACTION` n'ont **qu'un emplacement documentaire** dans ce dossier, [SUIVI.md](SUIVI.md). À chaque reprise, relire GitHub au SHA exact et vérifier les collisions, les preuves et l'autorité pertinente. Les attestations datées restent historiques, même quand elles sont accessibles dans le dossier.

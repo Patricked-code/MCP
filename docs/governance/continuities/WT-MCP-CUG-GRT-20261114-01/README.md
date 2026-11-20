@@ -1,8 +1,10 @@
-# Chantier CUG — couverture GitHub, écoute et inventaire
+# Chantier CUG — admission GRT et couverture GitHub
 
 Identifiant de continuité **`WT-MCP-CUG-GRT-20261114-01`**. Projet hôte **[Patricked-code/MCP](../../../../README.md)**, branche de référence `main`. Le chantier est documentairement rattaché à ce projet. **`WT-PROJECT-MCP-001`** est le Project UID candidat du projet MCP dans [la PR #389](https://github.com/Patricked-code/MCP/pull/389), pas un binding runtime créé par ce dossier. Le projet GRT conserve ses propres autorités dans son dépôt.
 
 ## Ce que le chantier doit livrer
+
+Le point de départ est [l'admission CUG–GRT](EXIGENCES.md). L'extension consacrée à l'observation GitHub est décrite ci-dessous.
 
 CUG doit couvrir, en mode **Tous les dépôts**, les dépôts actuels et futurs des comptes et organisations GitHub visés. Un webhook central écoute les changements. Le collecteur vérifie les informations auprès de GitHub. Les bonnes données alimentent des registres extensibles et des pages dédiées dans le front-end, en réutilisant les raccordements existants. UAES est le premier pilote, pas la limite de l'objectif.
 

@@ -2,6 +2,7 @@
 
 | ID | Exigence | Critère ou limite actuelle |
 | --- | --- | --- |
+| CUG-E00 | **Intention fondatrice — entrer dans GRT via CUG et le MCP.** Identifier le compte GitHub autorisé et le périmètre, puis orienter vers la création gouvernée, la réutilisation d'un dépôt existant ou la reprise d'un dossier. | Ne pas recréer un dossier à chaque reprise. Le dossier GRT porte son propre identifiant et ses points de reprise. La création (CASE 1) est soumise à ses propres consentements et preuves. [Intake GRT #342](https://github.com/chainsolutions-wealthtech/Governed-Repository-Template/issues/342) · [Contrat GRT #343](https://github.com/chainsolutions-wealthtech/Governed-Repository-Template/pull/343) · [Admission MCP #401](https://github.com/Patricked-code/MCP/pull/401) |
 | CUG-E01 | Une App centrale CUG, couverture de tous les dépôts actuels et futurs des comptes et organisations visés. | Pour chaque propriétaire attendu, séparer état voulu, installation attestée, mode d'accès et dépôts réellement visibles. |
 | CUG-E02 | Écouter les changements d'installation, de couverture et de dépôt. | Les familles `installation`, `installation_repositories` et `repository` sont distinctes. Relire GitHub avant de promouvoir un état courant. |
 | CUG-E03 | Recenser propriétaire, nom, URL, identifiants et Apps installées, avec noms et IDs. | Dépôt identifié par ID stable. CUG confirmée pour les cibles testées. Pour les autres Apps, inconnu n'est pas absent. |
@@ -13,6 +14,8 @@
 ## Demandes source
 
 Les formulations ci-dessous sont les messages de clarification dans le présent fil. L'interprétation et les critères figurent séparément dans le tableau.
+
+> Mais avant tout partait de cug grt
 
 > D'abord l'idée est que cug s'installe sur tout les repo github.  
 > Et pour celà il fallait écouter des évènements
