@@ -201,3 +201,36 @@ relever la condition d’activation et l’origine HTTPS avec l’opérateur,
 sans exposer les secrets ou activer l’écriture GRT. Les fixtures couvrent
 les refus, l’état partiel et le raccordement capsule, mais ne remplacent
 pas cette observation sur un dossier réel.
+
+## Catalogue des connexions et parcours MCP (#425)
+
+Le [catalogue public](https://mcp.wealthtechinnovations.com/guide/cug-grt) et la console protégée
+`/admissions` présentent les mêmes fiches d’orientation. Les dix anciens
+repères et les URL spécialisées du guide restent en place. Les 23 fiches
+actuelles ne sont pas 23 authentifications. Elles séparent quatre familles :
+connexions, dépôts et preuves, travail gouverné, événements et compatibilité.
+Toutes les nouvelles fiches sont en lecture seule.
+
+| Famille | Fiches et autorités |
+| --- | --- |
+| Connexions | ChatGPT OAuth, Claude OAuth, client distant Streamable HTTP, Bearer historique, Codex à vérifier, session web, connexion GitHub de la console. |
+| Dépôts et preuves | Admission OAuth CUG et GitHub App, création/reprise GRT, adoption via GRT sans nouveau déclencheur web, checkpoints et GRGS. |
+| Travail gouverné | Sessions explicites, E2, agent et tâche, projet S1, arrivée GitHub-first, Plesk, pilote historique. |
+| Événements et compatibilité | Webhook CUG signé, GitHub Actions OIDC, REST générique non attesté, SSE hérité séparé et stdio non montés. |
+
+ChatGPT et Claude partagent l’autorité OAuth existante et ont des fiches
+publiques distinctes. L’URL protocolaire est `/mcp`. L’échange Authorization
+Code + PKCE, la découverte, le consentement et le validateur de jeton demeurent
+dans les routes existantes. L’historique de l’intégration ChatGPT est dans
+le commit `2803b9f` et celui des alias ChatGPT/Claude dans `f92f621`.
+`AVAILABLE` indique une surface montée, pas un accès anonyme, une
+compatibilité universelle ni des permissions garanties. `CONDITIONAL`
+signale les prérequis, `UNVERIFIED` une preuve manquante, `NOT_SUPPORTED`
+un mode absent de ce serveur. Un événement signé n’est pas une connexion
+utilisateur. Aucune nouvelle écriture, session ou identité n’est créée.
+
+Recette : contrôler le défi OAuth de `/mcp` sans jeton, puis réunir la session
+du navigateur et le consentement depuis un vrai client ChatGPT configuré.
+Vérifier `ping` et l’absence de rattachement implicite. Effectuer séparément
+la recette CUG sur un dossier autorisé. L’état du catalogue et les tests
+locaux n’attestent pas une connexion réelle.

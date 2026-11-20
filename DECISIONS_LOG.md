@@ -8,6 +8,10 @@
 
 **Décision** : utiliser le cookie CUG et la référence du même formulaire, revérifier compte et installation, puis borner à un dossier GRT corrélé côté serveur. Pas de nouveau stockage d’identité, d’exposition de jeton, de droit d’écriture ni de duplication de la capsule. La réception du dispatch, la publication du dossier, l’observation du dépôt, le reçu et GRGS ne se substituent pas. [Recette et autorités](docs/governance/cug-grt-capsule.md#recette-du-cockpit-cuggrtgrgs)
 
+## 2026-11-20 — Distinguer connexion, périmètre et travail gouverné (#425)
+
+**Décision** : présenter les parcours dans un catalogue typé, mais conserver l’autorité de chaque route et outil. ChatGPT et Claude partagent OAuth/PKCE. CUG, GRT, sessions, E2 et prise en charge d’une tâche conservent chacun leurs prérequis. Les événements ne sont pas des logins. Aucun mode non observé n’est annoncé comme disponible.
+
 ## 2026-11-14 — Séparer l'instantané CUG du rattachement serveur (#404)
 
 **Décision** : le collecteur pilote écrit un instantané privé d'identité et de couverture GitHub, mais ne modifie pas le GitRegistry canonique. Une correspondance par nom est un candidat à réconcilier, jamais une preuve de remote, de chemin réel, de domaine Plesk ou d'autorisation de provisioning. L'exécution reste une commande opérateur distincte du webhook et nécessite une installation CUG attestée. Les tests simulés ne certifient pas le pilote sur S1. [Contrat et limites](docs/governance/cug-webhook-receiver.md).

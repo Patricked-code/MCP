@@ -12,6 +12,12 @@
 - **Preuves de ce lot** : RED avant ajout du cockpit, puis GREEN sur des comptes et sources GitHub simulés, avec refus d’une autre admission et sans création. La CI, la fusion et Governed Deploy restent des preuves distinctes de la recette réelle.
 - **NEXT_ACTION** : vérifier le SHA chargé et lire un dossier déjà autorisé depuis le client OAuth CUG prévu, sans soumission. Une entrée CUG qui répond 404 n’atteste ni admission ni preuve GRGS en production.
 
+## 2026-11-20 — Catalogue d’admission et connexions clientes (#425)
+
+- Le [catalogue CUG/GRT](https://mcp.wealthtechinnovations.com/guide/cug-grt) et la console utilisent une projection commune. Le parcours historique ChatGPT OAuth/PKCE est retrouvé, ainsi que le Bearer, les autres clients et les admissions de travail. Les URL existantes de #426 sont conservées.
+- RED/GREEN couvre la visibilité des fiches et leurs barrières. Aucun résultat de fixture ne constitue une admission S1 réelle.
+- NEXT_ACTION : après CI et déploiement autorisés, vérifier une connexion ChatGPT depuis un client réel, puis une admission CUG sur un dossier autorisé séparé.
+
 ## 2026-11-20 — CUG, clôture A et candidat B1 (WT-MCP-CUG-GRT-20261114-01)
 
 - **A validé sur UAES** — collecteur #404 exécuté sur S1, webhook #403 signé, livraison réelle `202`, rejeu `204` avec reçu unique confirmé. Les preuves et la séparation avec la création GRT sont dans le [runbook CUG](docs/governance/cug-webhook-receiver.md#reprise-wt-mcp-cug-grt-20261114-01--b1-consommateur-automatique-uaes).
