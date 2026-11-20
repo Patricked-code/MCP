@@ -1,5 +1,11 @@
 # SUIVI.md
 
+## 2026-11-20 — CUG, B1 attesté et vérification opérateur B2
+
+- **B1 en service sur S1** : [déploiement MCP #206](https://github.com/Patricked-code/MCP/actions/runs/44663633992) sur `ea4d043592df22b9530d0850535815d6091b8dec`. La [preuve opérateur dans #407](https://github.com/Patricked-code/MCP/pull/407) confirme la projection privée du reçu UAES réel et l'arbre Git propre.
+- **B2, tranche opérateur** : un dépôt explicitement borné par installation, propriétaire et ID stable. Réutilise le collecteur et le stockage de A sans changer le webhook ni le consommateur B1. La collecte automatique hors UAES reste à traiter et aucun rapprochement n'est un rattachement.
+- **NEXT_ACTION** : CI, revue et déploiement sur le SHA exact, puis vérifier un deuxième dépôt CUG par la commande du runbook. Ne pas extrapoler ce résultat à l'ensemble de l'organisation, à S1/S2 ou à la création via GRT.
+
 ## 2026-11-20 — CUG, clôture A et candidat B1 (WT-MCP-CUG-GRT-20261114-01)
 
 - **A validé sur UAES** — collecteur #404 exécuté sur S1, webhook #403 signé, livraison réelle `202`, rejeu `204` avec reçu unique confirmé. Les preuves et la séparation avec la création GRT sont dans le [runbook CUG](docs/governance/cug-webhook-receiver.md#reprise-wt-mcp-cug-grt-20261114-01--b1-consommateur-automatique-uaes).

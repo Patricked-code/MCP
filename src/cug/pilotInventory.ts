@@ -10,21 +10,46 @@ import { asRecord, CUG_PILOT_REPOSITORY_ID } from './discoveryRegister.js';
 
 const OWNER = 'chainsolutions-wealthtech';
 const REPOSITORY = 'universal-agent-engineering-system';
-const FULL_NAME = OWNER + '/' + REPOSITORY;
 const OWNER_ID = 299685687;
 const API = 'https://api.github.com';
 const POSITIVE_ID = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
-const metadata = z.object({
-  id: z.literal(CUG_PILOT_REPOSITORY_ID),
-  full_name: z.literal(FULL_NAME),
-  name: z.literal(REPOSITORY),
-  html_url: z.literal('https://github.com/' + FULL_NAME),
-  owner: z.object({ id: z.literal(OWNER_ID), login: z.literal(OWNER) }),
-  default_branch: z.string().min(1).max(255).regex(/^[^\u0000-\u001f\u007f]+$/),
-  visibility: z.enum(['public', 'private', 'internal']),
-  archived: z.boolean(),
-  fork: z.boolean()
-});
+const targetSchema = z.object({
+  installationId: POSITIVE_ID,
+  githubRepositoryId: POSITIVE_ID,
+  githubOwnerId: POSITIVE_ID,
+  ownerLogin: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/),
+  name: z.string().regex(/^[A-Za-z0-9_.-]{1,100}$/).refine(name => name !== '.' && name !== '..')
+}).strict();
+
+export type CugInventoryTarget = Readonly<z.infer<typeof targetSchema>>;
+
+/** Parse only the bounded operator syntax, before any credential is requested. */
+export function parseCugInventoryTargetArgs(args: readonly string[]): CugInventoryTarget | null {
+  const [installation, repository, owner, fullName] = args;
+  if (args.length !== 4 || ![installation, repository, owner].every(id => /^[1-9][0-9]{0,15}$/.test(id ?? ''))) {
+    return null;
+  }
+  const names = fullName?.split('/');
+  if (names?.length !== 2) return null;
+  const parsed = targetSchema.safeParse({ installationId: Number(installation),
+    githubRepositoryId: Number(repository), githubOwnerId: Number(owner), ownerLogin: names[0], name: names[1] });
+  return parsed.success ? parsed.data : null;
+}
+
+
+function repositorySchema(target: CugInventoryTarget, fullName: string) {
+  return z.object({
+    id: z.literal(target.githubRepositoryId),
+    full_name: z.literal(fullName),
+    name: z.literal(target.name),
+    html_url: z.literal('https://github.com/' + fullName),
+    owner: z.object({ id: z.literal(target.githubOwnerId), login: z.literal(target.ownerLogin) }),
+    default_branch: z.string().min(1).max(255).regex(/^[^\u0000-\u001f\u007f]+$/),
+    visibility: z.enum(['public', 'private', 'internal']),
+    archived: z.boolean(),
+    fork: z.boolean()
+  });
+}
 
 type Dependencies = GithubAppTokenDeps & { readRegistryEvidence: () => Promise<GitRegistryEvidence> };
 type Status = 'GIT_REGISTRY_UNAVAILABLE' | 'NO_NAME_MATCH' | 'NAME_MATCH_REQUIRES_BINDING_PROOF'
@@ -52,16 +77,19 @@ async function boundedJson(response: Response, limit: number): Promise<unknown> 
   return JSON.parse(Buffer.concat(chunks, size).toString('utf8')) as unknown;
 }
 
-export async function collectCugPilotInventory(installationId: number, deps: Dependencies) {
-  POSITIVE_ID.parse(installationId);
+/** One trusted operator target, never a name or identity asserted by a webhook. */
+export async function collectCugScopedInventory(input: CugInventoryTarget, deps: Dependencies) {
+  const target = targetSchema.parse(input);
+  const { installationId, ownerLogin, name } = target;
+  const fullName = ownerLogin + '/' + name;
   const fetchGitHub: typeof fetch = async (input, options) => {
     const url = new URL(String(input));
     if (url.origin !== API || url.username || url.password) throw Error('CUG_PILOT_GITHUB_HOST_INVALID');
     return deps.fetchImpl(url.toString(), { ...options, redirect: 'error' });
   };
   const grant = await mintGithubAppRepoToken({
-    installation: { appId: CUG_APP_ID, installationId, accountLogin: OWNER },
-    repository: FULL_NAME,
+    installation: { appId: CUG_APP_ID, installationId, accountLogin: ownerLogin },
+    repository: fullName,
     contentsPermission: 'read'
   }, { ...deps, fetchImpl: async (input, options) => {
     const response = await fetchGitHub(input, options);
@@ -92,13 +120,13 @@ export async function collectCugPilotInventory(installationId: number, deps: Dep
   const membership = asRecord(await get('/installation/repositories?per_page=2'));
   const repos = membership?.repositories;
   const covered = Array.isArray(repos) && repos.length === 1 ? asRecord(repos[0]) : undefined;
-  if (membership?.total_count !== 1 || covered?.id !== CUG_PILOT_REPOSITORY_ID
-    || covered?.full_name !== FULL_NAME) throw Error('CUG_PILOT_INSTALLATION_NOT_ATTESTED');
-  const repository = metadata.parse(await get('/repos/' + FULL_NAME));
+  if (membership?.total_count !== 1 || covered?.id !== target.githubRepositoryId
+    || covered?.full_name !== fullName) throw Error('CUG_PILOT_INSTALLATION_NOT_ATTESTED');
+  const repository = repositorySchema(target, fullName).parse(await get('/repos/' + fullName));
   const observedAt = deps.now().toISOString();
   const registry = await deps.readRegistryEvidence();
   const matchCount = registry.available
-    ? registry.mappings.filter((item) => (item.githubOwner + '/' + item.githubRepo).toLowerCase() === FULL_NAME).length
+    ? registry.mappings.filter((item) => (item.githubOwner + '/' + item.githubRepo).toLowerCase() === fullName.toLowerCase()).length
     : null;
   const status: Status = matchCount === null ? 'GIT_REGISTRY_UNAVAILABLE'
     : matchCount === 0 ? 'NO_NAME_MATCH'
@@ -122,6 +150,11 @@ export async function collectCugPilotInventory(installationId: number, deps: Dep
       serverBinding: 'NOT_VERIFIED' as const, provisioningAuthorized: false as const
     }
   };
+}
+
+export function collectCugPilotInventory(installationId: number, deps: Dependencies) {
+  return collectCugScopedInventory({ installationId, githubRepositoryId: CUG_PILOT_REPOSITORY_ID,
+    githubOwnerId: OWNER_ID, ownerLogin: OWNER, name: REPOSITORY }, deps);
 }
 
 export type CugPilotInventory = Awaited<ReturnType<typeof collectCugPilotInventory>>;
