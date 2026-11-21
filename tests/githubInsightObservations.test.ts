@@ -84,6 +84,10 @@ test('stale or malformed project identity prevents all reads',async()=>{
     observeAuthorizedGithubInsights({scope:{...scope,repository:'ExampleOrg/Other/Repo'},observedAt:now,read}),
     /GITHUB_INSIGHTS_VERIFIED_SCOPE_REQUIRED/
   );
+  await assert.rejects(
+    observeAuthorizedGithubInsights({scope:{...scope,repository:'ExampleOrg/..'},observedAt:now,read}),
+    /GITHUB_INSIGHTS_VERIFIED_SCOPE_REQUIRED/
+  );
   assert.equal(calls,0);
 });
 test('untrusted API exceptions do not crash observation or leak provider error',async()=>{
