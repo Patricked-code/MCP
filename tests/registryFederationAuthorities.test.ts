@@ -96,3 +96,33 @@ test('V2 mapping with missing repository fails closed; no invented repo', () => 
   assert.deepEqual(graph.links[0]?.reasons, ['FEDERATION_ENDPOINT_UNRESOLVED']);
   assert.equal(graph.links[0]?.verification, 'DECLARED');
 });
+
+test('projectId and projectUid are kept separately with evidence', () => {
+  const source = legacy('P-1');
+  const registry: GitRegistryV1 = {
+    ...source,
+    repoMappings: source.repoMappings.map((mapping) => ({ ...mapping, projectUid: 'WT-PROJECT-MCP-001' }))
+  };
+  const graph = projectExistingMcpAuthorities({ observedAt, registry, queue: null });
+  const project = graph.entities.find(x => x.identity.kind === 'PROJECT');
+  assert.equal(project?.identity.sourceId, 'P-1');
+  assert.deepEqual(project?.identifiers.map(x => [x.namespace, x.value]),
+    [['PROJECT_UID', 'WT-PROJECT-MCP-001']]);
+  assert.equal(project?.identifiers[0]?.evidence.verification, 'DECLARED');
+});
+
+test('two incompatible projectUid claims for the same projectId are CONFLICT', () => {
+  const source = legacy('P-1');
+  const original = source.repoMappings[0]!;
+  const registry: GitRegistryV1 = {
+    ...source,
+    repoMappings: [
+      { ...original, projectUid: 'UID-A' },
+      { ...original, id: 'mapping-two', githubRepo: 'Another', projectUid: 'UID-B' }
+    ]
+  };
+  const graph = projectExistingMcpAuthorities({ observedAt, registry, queue: null });
+  const project = graph.entities.find(x => x.identity.kind === 'PROJECT');
+  assert.equal(project?.evidence.verification, 'CONFLICT');
+  assert.ok(project?.reasons.includes('FEDERATION_SOURCE_CONFLICT'));
+});
