@@ -182,3 +182,28 @@ test('ambiguous duplicate task IDs cannot create arbitrary cross-repository depe
   assert.equal(dependency.verification, 'AMBIGUOUS');
   assert.deepEqual(dependency.reasons, ['FEDERATION_ENDPOINT_UNRESOLVED']);
 });
+
+test('conflicting project UID mappings force scoped task link CONFLICT in either order', () => {
+  const source = legacy('P-1');
+  const first = source.repoMappings[0]!;
+  const a = { ...first, id: 'm-uid-a', projectUid: 'UID-A' };
+  const b = { ...first, id: 'm-uid-b', githubRepo: 'AnotherComponent', projectUid: 'UID-B' };
+  const work = {
+    taskId: 'TASK-20261120-010', repository: 'Patricked-code/MCP',
+    title: 'Existing scoped task', status: 'READY' as const, updatedAt: observedAt,
+    targetScope: {
+      schemaVersion: 1 as const, targetId: 'S1', projectId: 'P-1', projectUid: 'UID-A',
+      components: [{ mappingId: 'm-uid-a', repositoryId: 'github:Patricked-code/MCP', role: 'app' }]
+    }, dependencies: []
+  };
+  for (const order of [[a,b], [b,a]]) {
+    const registry: GitRegistryV1 = { ...source, repoMappings: order };
+    const graph = projectExistingMcpAuthorities({
+      observedAt, registry, queue: { storeRevision: 245, tasks: [work] }
+    });
+    const link = graph.links.find(x => x.relation === 'BELONGS_TO');
+    assert.equal(link?.verification, 'CONFLICT');
+    assert.deepEqual(graph.entities.find(x => x.identity.kind === 'PROJECT')
+      ?.identifiers.map(x => x.value).sort(), ['UID-A', 'UID-B']);
+  }
+});
