@@ -130,3 +130,34 @@ test('conflicting READY and SUPERSEDED always expose terminal history in either 
     assert.equal(item.evidence.verification, 'CONFLICT');
   }
 });
+
+test('compatible multi-component mappings retain both proof references', () => {
+  const a = {
+    fromKey: federatedIdentityKey(project), toKey: federatedIdentityKey(repo),
+    relation: 'MAPS_TO' as const, authority: 'GIT_REGISTRY',
+    evidence: { ...proof('gitregistry:mapping-api'), verification: 'DECLARED' as const }
+  };
+  const b = { ...a, evidence: { ...a.evidence, evidenceRef: 'gitregistry:mapping-worker' } };
+  const graph = buildFederatedRegistryProjection({
+    observedAt,
+    entities: [entity(project, 'gitregistry:project-1'), entity(repo, 'github:repository-1285534440')],
+    links: [a, b, a]
+  });
+  assert.equal(graph.links.length, 2);
+  assert.deepEqual(graph.links.map(x => x.evidence.evidenceRef).sort(),
+    ['gitregistry:mapping-api', 'gitregistry:mapping-worker']);
+  assert.ok(graph.links.every(x => x.verification === 'DECLARED'));
+  assert.ok(graph.links.every(x => !x.reasons.includes('FEDERATION_LINK_CONFLICT')));
+});
+
+test('valid task titles with tabs/newlines are normalized for display without dropping task', () => {
+  const source = { ...entity(task, 'queue:revision-244'),
+    label: 'Update API\nand\tworker', taskStatus: 'READY' as const };
+  const graph = buildFederatedRegistryProjection({
+    observedAt, entities: [source, entity(repo, 'github:repository-1285534440')], links: []
+  });
+  assert.equal(graph.entities.length, 2);
+  const value = graph.entities.find(x => x.identity.kind === 'TASK');
+  assert.equal(value?.label, 'Update API and worker');
+  assert.equal(value?.identity.sourceId, task.sourceId);
+});
