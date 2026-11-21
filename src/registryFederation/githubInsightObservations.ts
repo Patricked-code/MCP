@@ -8,6 +8,7 @@
  * creates a project/task, or treats a security 403/404 as a disabled feature.
  */
 import { createHash } from 'node:crypto';
+import { githubJsonRequestWithServerCredential, type GitHubJsonRequestOptions, type GitHubJsonResponse } from '../github/connection.js';
 
 export const GITHUB_INSIGHT_SOURCES = [
   'REPOSITORY', 'SBOM', 'DEPENDABOT_ALERTS', 'CODE_SCANNING_ALERTS',
@@ -200,5 +201,37 @@ export async function observeAuthorizedGithubInsights(input: Readonly<{
     status: observations.some(o => o.status !== 'OBSERVED') ? 'PARTIAL' : 'SOURCE_VERIFIED',
     observations: Object.freeze(observations),
     coverageClaims: false, executionAuthorized: false, mutationPerformed: false
+  });
+}
+
+/**
+ * Optional read-only implementation of the injected port using MCP's existing
+ * server credential. The caller must resolve and prove its GitRegistry/CUG
+ * project binding before supplying a verified scope. This adapter cannot
+ * establish that authority and must never be used on raw browser input.
+ *
+ * The API is deliberately a bounded nine-endpoint GET-only observer, NOT
+ * a credential-permission escalator or an installation-wide crawler.
+ */
+export type GithubInsightsCredentialRequest = (
+  endpoint: string, options: GitHubJsonRequestOptions
+) => Promise<Pick<GitHubJsonResponse, 'status' | 'json'>>;
+
+export async function observeAuthorizedGithubInsightsWithServerCredential(input: Readonly<{
+  scope: GithubVerifiedInsightScope;
+  observedAt: string;
+  /** Test seam. Production uses the existing server-side token, never UI input. */
+  request?: GithubInsightsCredentialRequest;
+}>): Promise<GithubInsightsSnapshot> {
+  validScope(input.scope, input.observedAt);
+  const allow = new Set(Object.values(paths(input.scope.repository)));
+  const request = input.request ?? githubJsonRequestWithServerCredential;
+  return observeAuthorizedGithubInsights({
+    scope: input.scope, observedAt: input.observedAt,
+    read: async (path) => {
+      if (!allow.has(path)) throw Error('GITHUB_INSIGHTS_ENDPOINT_OUT_OF_SCOPE');
+      const response = await request(path, { method: 'GET', timeoutMs: 8_000 });
+      return { status: response.status, data: response.json };
+    }
   });
 }
