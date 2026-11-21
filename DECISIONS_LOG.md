@@ -1,5 +1,16 @@
 # DECISIONS_LOG.md
 
+## 2026-11-21 — Décision transverse : mission registres unique, reprise G1/E2 sans seconde autorité (#430)
+
+**Décision** : `WT-MCP-REGISTRY-RESOLUTION-20261121-01` conserve l'ordre RG-001…RG-056 et le point d'arrêt **avant parenthèse**, inscrit dans [continuité canonique](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__CONTINUITY.md). Le périmètre UAES `WT-MCP-AUTONOMY-24X7-20261121-01` reste son enfant ; consulter [plan RG-001…RG-056](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__IMPLEMENTATION_PLAN.md) et [décisions locales](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__DECISIONS.md), sans recopier les registres propriétaires ni réinitialiser les tâches historiques.
+
+**G1** : conserver Live State, OIDC Governed Deploy, GW-60/61/62 et le verdict fail-closed ; améliorer les attestations après déploiement à l'intérieur de la fenêtre existante (16 essais/180s dans #430). Une CI et un merge GitHub ne valent pas réattestation S1/runtime/doc.
+
+**E2** : l'issue #359 conserve les reçus historiques ; son POST 403 ne se contourne pas par un autre token ChatGPT. La reprise documentaire en lecture seule reste distincte du droit de sélectionner un propriétaire ou d'ouvrir une tâche. Le journal de l'Operational Memory peut devenir autorité successeur **seulement après** preuve d'équivalence append-only, rétention, readback, contrôles de doublons, authentification et migration des anciennes entrées. Aucun changement d'autorité n'est déclaré effectif.
+
+**Continuité** : chaque agent doit recharger l'ancrage pré-parenthèse et les checkpoints datés plus récents avant nouvelle intervention ; aucune mise à jour de `main` sans CI et contrôles applicables.
+
+
 ## 2026-11-16 — Réutiliser l'attestation Governed Deploy pour G1 (#406)
 
 **Décision** : le job documentaire consomme une projection du Live State reliée au run OIDC et au SHA réellement déployé. Seul un écart documentaire isolé autorise la préparation du snapshot, sans droit implicite de fusion ni remplacement du suivi GitHub. L'identité du dépôt est celle de la politique OIDC existante. Les écritures GitHub nécessitent une installation d'application limitée à ce dépôt et des permissions dédiées à la préparation de la PR. [Preuves et activation](https://github.com/Patricked-code/MCP/pull/406)

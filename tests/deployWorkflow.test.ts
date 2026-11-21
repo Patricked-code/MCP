@@ -137,7 +137,7 @@ test('G1 retries only the post-attestation proof and keeps UNVERIFIED on bounded
   const followUp = deploy!.slice(deploy!.indexOf('Deployment attested for exact SHA'));
   assert.match(followUp, /G1_EVIDENCE='\{"status":"UNVERIFIED","reasonCodes":\["G1_POST_DEPLOY_PROOF_PENDING"\]\}'/);
   assert.match(followUp, /G1_DEADLINE=\$\(\(SECONDS \+ 180\)\)/);
-  assert.match(followUp, /for g1_attempt in 1 2 3 4 5 6/);
+  assert.match(followUp, /for g1_attempt in \$\(seq 1 16\)/);
   assert.match(followUp, /status\/\$\{JOB_ID\}\?sha=\$\{GITHUB_SHA\}&g1=1/);
   assert.doesNotMatch(followUp, /\/deploy\/github\/s1\/start/);
   assert.match(followUp, /g1-evidence=%s[\s\S]*exit 0/);

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 2026-11-21 — Registres fédérés, continuité et reprise G1/E2 (#430)
+
+- Mission existante `WT-MCP-REGISTRY-RESOLUTION-20261121-01` et sous-chantier `WT-MCP-AUTONOMY-24X7-20261121-01` : [continuité canonique](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__CONTINUITY.md), [plan RG-001…RG-056](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__IMPLEMENTATION_PLAN.md). Pas de nouvel identifiant Task runtime, pas de nouveau moteur.
+- Développement additif sur la même branche de mission : workflow Governed Deploy G1 après attestation OIDC, fenêtre 180 s conservée avec 16 tentatives au lieu de 6 ; `UNVERIFIED` reste bloquant. Tests workflow synchronisés avec le socle fusionné de #439 ; déploiement non présumé avant preuve SHA.
+- Rapprochement non forcé de la branche avec `main`, préservation des fichiers de #434/#439 et des documents historiques. La revue et la CI du nouveau HEAD restent les gates de promotion.
+- Revue de l'issue E2 #359 et du journal opérationnel existant : migration non activée tant que provenance, intégrité, readback et historique ne sont pas prouvés. Toute suite figure dans [décisions locales](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__DECISIONS.md).
+
+
 ## 2026-11-20 — Vérification CUG opérateur d'un dépôt borné (B2)
 
 - Réutilise la vérification de l'installation et le stockage privé du collecteur UAES pour une cible d'opérateur explicitement désignée. Le webhook et le consommateur restent sur UAES. Aucun changement des permissions ni écriture dans GitRegistry.

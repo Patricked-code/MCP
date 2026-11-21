@@ -161,7 +161,7 @@ jobs:
                   # HTTP health can pass before the Docker health status becomes healthy.
                   # Retry only the read-only proof, within a single bounded window.
                   G1_DEADLINE=$((SECONDS + 180))
-                  for g1_attempt in 1 2 3 4 5 6; do
+                  for g1_attempt in $(seq 1 16); do
                     G1_REMAINING=$((G1_DEADLINE - SECONDS))
                     if (( G1_REMAINING <= 10 )); then break; fi
                     if OIDC_TOKEN="$(get_oidc)"; then
@@ -179,7 +179,7 @@ jobs:
                         fi
                       fi
                     fi
-                    if [[ "$g1_attempt" != 6 ]] && (( SECONDS + 10 < G1_DEADLINE )); then sleep 10; fi
+                    if [[ "$g1_attempt" != 16 ]] && (( SECONDS + 10 < G1_DEADLINE )); then sleep 10; fi
                   done
                   printf 'g1-evidence=%s\n' "$G1_EVIDENCE" >> "$GITHUB_OUTPUT"
                   unset OIDC_TOKEN G1_EVIDENCE G1_STATUS G1_CANDIDATE
