@@ -44,3 +44,11 @@ Documents connexes : [PR #389](https://github.com/Patricked-code/MCP/pull/389) (
 **Non réalisé :** fonctionnalité de corrélation, activation de cibles, nouvelles tâches runtime, modification GitRegistry, changement d'accès, merge, déploiement, modifications des autres dépôts.
 
 La mission doit être reprise sous l'intitulé exact **« mission de résolution du problème des registres »** ou par son ID `WT-MCP-REGISTRY-RESOLUTION-20261121-01` : lire ce dossier, vérifier GitHub HEAD et Live State avant toute opération, classer les évolutions depuis la dernière preuve et conserver la même continuité.
+
+## 2026-11-21 — Admission documentaire de l'étude externe « Loop Engineering.docx »
+
+La source remise par le propriétaire a été **lue intégralement** (39 pages, 637 paragraphes, 12 tableaux ; SHA256 `91eb8a4f733c417d394c2ed6680a5ac395d309f95910476edf4eb136d84c0548`). Son analyse sourcée figure dans [la lecture intégrale et la matrice de convergence](./WT-MCP-REGISTRY-RESOLUTION-20261121-01__SOURCE_READING_LOOP_ENGINEERING_20261121.md).
+
+La partie B proposait `WT-MCP-AUTONOMY-24X7-20261121-01` en précisant qu'il n'avait pas été créé : **il est désormais réservé ici comme sous-chantier documentaire**, fils de **cette même mission** et non comme nouveau projet/queue. Son [mandat](./subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__MANDATE.md), son [architecture](./subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__ARCHITECTURE.md), ses [décisions](./subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__DECISIONS.md) et sa [continuité](./subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__CONTINUITY.md) ne transfèrent ni les autorités runtime MCP ni les droits du dépôt UAES.
+
+**Mandat maintenu :** achever R01–R07 puis les RG-001…056 sans reprendre à zéro ; l'autonomie est l'exécution de Loop Engineering sur un hôte UAES durable et isolé, pas le fait de mettre davantage de prompts dans ChatGPT. Les statuts restent séparés : BRANCH_ONLY, MERGED_MAIN, DEPLOY_WORKFLOW, RUNTIME_ATTESTED, FULLY_ALIGNED et 24X7_HOST_CERTIFIED.
