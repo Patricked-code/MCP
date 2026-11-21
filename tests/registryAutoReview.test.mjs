@@ -110,3 +110,13 @@ test('read-before-write revalidation refuses renamed branch, new draft or new SH
     event: f.event, current: f.pr, comments: f.comments, planned
   }).status, 'READY');
 });
+
+test('draft-to-ready transition reruns MCP CI to trigger trusted post-CI review', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const ci = await readFile('.github/workflows/mcp-ci.yml', 'utf8');
+  assert.match(ci, /pull_request:\\s*types:\\s*\\[opened, synchronize, reopened, ready_for_review\\]/);
+  const review = await readFile('.github/workflows/mcp-registry-independent-review.yml', 'utf8');
+  assert.match(review, /workflow_run:/);
+  assert.match(review, /ref: main/);
+  assert.doesNotMatch(review, /ref:\\s*\\$\\{\\{\\s*github\\.event\\.workflow_run\\.head_sha/);
+});
