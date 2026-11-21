@@ -47,6 +47,32 @@ export type MissionIdentityCrosswalk = Readonly<{
 const same = (left: string, right: string): boolean =>
   left.trim().toLowerCase() === right.trim().toLowerCase();
 
+/**
+ * A GitHub blob reference is provenance only when owner/repo, commit and
+ * document path are consistent with the supplied mission declaration.
+ * Content verification is performed by the owning GitHub reader, not here.
+ * An arbitrary URL or abbreviated SHA cannot attest a document.
+ */
+function matchesDocumentRevision(document: MissionIdentityDocument): boolean {
+  const repository = /^github:([^/\s]+)\/([^/\s]+)$/i.exec(document.repositoryId);
+  if (!repository || !/^[0-9a-f]{40}$/i.test(document.sourceCommitSha)) return false;
+  let url: URL;
+  try {
+    url = new URL(document.evidenceRef);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== 'https:' || url.hostname !== 'github.com'
+    || url.port !== '' || url.username || url.password || url.search || url.hash) return false;
+  const segments = url.pathname.split('/').filter(Boolean);
+  return segments.length >= 5
+    && same(segments[0]!, repository[1]!)
+    && same(segments[1]!, repository[2]!)
+    && segments[2] === 'blob'
+    && same(segments[3]!, document.sourceCommitSha)
+    && segments.slice(4).every(part => part !== '.' && part !== '..' && !/%/.test(part));
+}
+
 export function assessMissionIdentityCrosswalk(
   input: MissionIdentityCrosswalkInput
 ): MissionIdentityCrosswalk {
@@ -63,7 +89,7 @@ export function assessMissionIdentityCrosswalk(
     add('MISSION_IDENTITY_INPUT_MISSING');
   }
   const documentShaValid = /^[0-9a-f]{40}$/i.test(document.sourceCommitSha);
-  if (!documentShaValid || !document.evidenceRef.trim()) {
+  if (!documentShaValid || !matchesDocumentRevision(document)) {
     add('MISSION_DOCUMENT_PROVENANCE_UNVERIFIED');
   }
   if (!registry.available || !registry.digest || !registry.candidateDigest) {
