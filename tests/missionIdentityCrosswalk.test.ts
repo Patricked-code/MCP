@@ -150,6 +150,35 @@ test('document not sourced to a commit cannot be counted as verified', () => {
   assert.equal(status.sourceCommitSha, null);
 });
 
+test('documentary reference with mismatching SHA cannot certify mission identity', () => {
+  const base = fixture();
+  const otherSha = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  const result = assessMissionIdentityCrosswalk({
+    ...base,
+    document: {
+      ...base.document,
+      evidenceRef: 'https://github.com/Patricked-code/MCP/blob/' + otherSha + '/docs/mission.md'
+    }
+  });
+  assert.equal(result.status, 'UNVERIFIED');
+  assert.equal(result.matchedProjectId, null);
+  assert.ok(result.reasonCodes.includes('MISSION_DOCUMENT_PROVENANCE_UNVERIFIED'));
+});
+
+test('documentary blob reference to another repository cannot certify identity', () => {
+  const base = fixture();
+  const result = assessMissionIdentityCrosswalk({
+    ...base,
+    document: {
+      ...base.document,
+      evidenceRef: 'https://github.com/OtherAccount/MCP/blob/' + SHA + '/docs/mission.md'
+    }
+  });
+  assert.equal(result.status, 'UNVERIFIED');
+  assert.equal(result.matchedProjectId, null);
+  assert.ok(result.reasonCodes.includes('MISSION_DOCUMENT_PROVENANCE_UNVERIFIED'));
+});
+
 test('missing project component or mapping UID remains unverified', () => {
   const base = fixture();
   const status = assessMissionIdentityCrosswalk({
