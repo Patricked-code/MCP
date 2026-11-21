@@ -42,3 +42,9 @@ Divergence d'HEAD, source/ownership absent, chemin GitHub interdit, identité de
 - Le plan détaillé **35 opérations RG-001…RG-035** a été créé dans `WT-MCP-REGISTRY-RESOLUTION-20261121-01__IMPLEMENTATION_PLAN.md`. Il inclut l'intégration des modules existants, la fédération read-only, les admissions CUG/Queue, la UI cockpit, les tests historiques et la chaîne Governed Deploy.
 - **Réalité déploiement :** `.github/workflows/mcp-deploy.yml` décrit OIDC → S1 Docker Compose. Aucun déploiement Kubernetes MCP actuel n'est attesté ; une migration Kubernetes ne saurait être annoncée ni intercalée sans mission/gates distincts.
 - **NEXT_ACTION** : clore G1 en procédure documentée (PR #429 revue, merge admissible, Governed Deploy, attestation), revalider E2 ; compléter P01 en lecture, puis commencer P03 après gates. Aucun code runtime ni autre dépôt modifié dans cette session.
+
+### Limites de poursuite automatique (constat après le checkpoint)
+
+- La continuité est publiée sur la branche GitHub et la PR #430, mais **son enregistrement comme continuité E2 runtime visible par `mcp_e2_list_continuities` n'est pas attesté** : le préflight E2 reste BLOCKED.
+- Une tentative de création d'une automation horaire propre à cette mission a échoué avec `too_many_active_automations` : 5 tâches existantes pour une limite de 5. **Aucune automation supplémentaire n'a été créée et aucune automation existante n'a été modifiée.** La poursuite sans nouveau message n'est donc pas garantie par cette tentative.
+- Le dernier HEAD observé de la PR #430 est `94412a39a0cf9b20c38d3b9207690b9a2b29629f` ; run MCP CI #44933287364 `in_progress` lors de l'observation. Son issue doit être réobservée avant toute validation.
