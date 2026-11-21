@@ -1,9 +1,9 @@
 # WT-MCP-REGISTRY-RESOLUTION-20261121-01 — Plan d'intégration technique, de codage, tests et mise en production
 
-> **Mission : résolution du problème des registres**  
-> Dépôt initial : `Patricked-code/MCP`, entrée GitHub-first / E2.  
-> **Type** : plan d'implémentation **non autoritaire**, à exécuter en incréments gouvernés.  
-> Créé le 2026-11-21 ; première base : `main@5bc5e2b4c0b2aa176c1f6131826afbea7af2f164`.  
+> **Mission : résolution du problème des registres**\
+> Dépôt initial : `Patricked-code/MCP`, entrée GitHub-first / E2.\
+> **Type** : plan d'implémentation **non autoritaire**, à exécuter en incréments gouvernés.\
+> Créé le 2026-11-21 ; première base : `main@5bc5e2b4c0b2aa176c1f6131826afbea7af2f164`.\
 > **ATTENTION : E2 préflight** `BLOCKED/E2_DOCUMENTATION_DRIFT` à 2026-11-21T17:59Z ; pas de travail ordinaire ni de mutation runtime avant correction/revue. G1 correction existante : PR #429. Ce plan ne déclare aucun correctif exécuté.
 
 ## 0. Séquence universelle, sans régression ni autorité concurrente
