@@ -1,0 +1,91 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  buildFederatedRegistryProjection, federatedIdentityKey,
+  type FederatedIdentity
+} from '../src/registryFederation/projection.js';
+import { renderFederatedRegistryCockpit } from '../src/web/federatedRegistryCockpit.js';
+
+const now = '2026-11-21T18:45:00Z';
+const proof = (ref: string) => ({
+  observedAt: now, sourceVersion: 'git:exact-sha', evidenceRef: ref,
+  verification: 'VERIFIED' as const
+});
+const project: FederatedIdentity = {
+  kind: 'PROJECT', authority: 'GIT_REGISTRY', authorityScope: 'MCP_GIT_REGISTRY', sourceId: 'P-1'
+};
+const repo: FederatedIdentity = {
+  kind: 'REPOSITORY', authority: 'GIT_REGISTRY', authorityScope: 'MCP_GIT_REGISTRY',
+  sourceId: 'github:Patricked-code/MCP'
+};
+const task: FederatedIdentity = {
+  kind: 'TASK', authority: 'GOVERNED_TASK_QUEUE', authorityScope: 'Patricked-code/MCP',
+  sourceId: 'TASK-20260913-001'
+};
+const graph = buildFederatedRegistryProjection({
+  observedAt: now,
+  entities: [
+    {
+      identity: project, evidence: proof('gitregistry:project:P-1'),
+      label: '<script>alert("XSS")</script>',
+      identifiers: [{ namespace: 'PROJECT_UID', value: 'WT-PROJECT-MCP-001',
+        evidence: { ...proof('gitregistry:uid:WT-PROJECT-MCP-001'), verification: 'DECLARED' } }]
+    },
+    { identity: repo, evidence: { ...proof('gitregistry:repo'), verification: 'DECLARED' } },
+    { identity: task, evidence: proof('queue:revision-244'), taskStatus: 'SUPERSEDED' },
+    { identity: { ...task, authorityScope: 'AnotherOrg/Other', sourceId: 'TASK-20260913-002' },
+      evidence: proof('other:queue'), taskStatus: 'READY' }
+  ],
+  links: [
+    {
+      fromKey: federatedIdentityKey(project), toKey: federatedIdentityKey(repo),
+      authority: 'GIT_REGISTRY', relation: 'MAPS_TO',
+      evidence: { ...proof('gitregistry:mapping'), verification: 'DECLARED' }
+    },
+    {
+      fromKey: federatedIdentityKey(task), toKey: federatedIdentityKey(project),
+      authority: 'GOVERNED_TASK_QUEUE', relation: 'BELONGS_TO',
+      evidence: { ...proof('queue:scope'), verification: 'DECLARED' }
+    }
+  ]
+});
+
+test('global cockpit shows historical tasks, UID, evidence and partial coverage', () => {
+  const html = renderFederatedRegistryCockpit(graph, { scope: 'global', id: '', queueAvailable: true });
+  assert.match(html, /SUPERSEDED/);
+  assert.match(html, /PROJECT_UID|WT-PROJECT-MCP-001/);
+  assert.match(html, /Couverture partielle/);
+  assert.match(html, /Registres fédérés/);
+  assert.doesNotMatch(html, /<script>alert\("XSS"\)<\/script>/);
+  assert.match(html, /&lt;script&gt;/);
+  assert.match(html, /<form method="get"/);
+});
+
+test('repository filtering does not leak unrelated task scope', () => {
+  const html = renderFederatedRegistryCockpit(graph, {
+    scope: 'repository', id: 'Patricked-code/MCP', queueAvailable: true
+  });
+  assert.match(html, /TASK-20260913-001/);
+  assert.doesNotMatch(html, /TASK-20260913-002/);
+});
+
+test('project filters return linked repository and task, not unsupported claims', () => {
+  const html = renderFederatedRegistryCockpit(graph, {
+    scope: 'project', id: 'P-1', queueAvailable: false
+  });
+  assert.match(html, /P-1/);
+  assert.match(html, /github:Patricked-code\/MCP/);
+  assert.match(html, /TASK-20260913-001/);
+  assert.match(html, /File de tâches MCP indisponible/);
+});
+
+test('missing workstream and unexpected filter values are fail-closed', () => {
+  const html = renderFederatedRegistryCockpit(graph, {
+    scope: 'workstream', id: 'CH-UNKNOWN', queueAvailable: true
+  });
+  assert.match(html, /Aucune entité/);
+  assert.doesNotMatch(html, /TASK-20260913-001/);
+  assert.throws(() => renderFederatedRegistryCockpit(graph, {
+    scope: 'global', id: 'x'.repeat(241), queueAvailable: true
+  }), /FEDERATION_COCKPIT_FILTER_INVALID/);
+});
