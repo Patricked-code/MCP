@@ -1,8 +1,8 @@
 # WT-MCP-REGISTRY-RESOLUTION-20261121-01 — Point de reprise canonique de mission
 
-> Alias verbal : « Rejoins la mission de résolution du problème des registres ».  
-> Projet GitHub : `Patricked-code/MCP` ; UID parent candidat `WT-PROJECT-MCP-001` (PR #389).  
-> Continuité de la mission : **`WT-MCP-REGISTRY-RESOLUTION-20261121-01`**.  
+> Alias verbal : « Rejoins la mission de résolution du problème des registres ».\
+> Projet GitHub : `Patricked-code/MCP` ; UID parent candidat `WT-PROJECT-MCP-001` (PR #389).\
+> Continuité de la mission : **`WT-MCP-REGISTRY-RESOLUTION-20261121-01`**.\
 > Intervention : **P01 — Audit de couverture**, travail sur `mcp/registry-resolution-audit-20261121` ; fichier présent dans une PR draft après publication et non encore en production.
 > Reprise opérateur : ne jamais présumer que le SHA et les comptes observés le 2026-11-21 sont toujours actuels.
 
