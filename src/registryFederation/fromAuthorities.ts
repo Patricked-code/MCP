@@ -128,15 +128,16 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
       };
       entities.push({ identity: tid, evidence: stamp, label: task.title, taskStatus: task.status });
       // A TargetScope is a declaration; verified Project Reality is a separate gate.
-      if (task.targetScope && seenProjects.has(task.targetScope.projectId)) {
+      const scope = task.targetScope;
+      if (scope && seenProjects.has(scope.projectId)) {
         links.push({
           fromKey: federatedIdentityKey(tid),
-          toKey: federatedIdentityKey(projectId(task.targetScope.projectId)),
+          toKey: federatedIdentityKey(projectId(scope.projectId)),
           relation: 'BELONGS_TO',
           authority: TASK_AUTHORITY,
           evidence: { ...stamp, verification:
-            task.targetScope.projectUid && seenProjects.get(task.targetScope.projectId)?.uid
-              && task.targetScope.projectUid !== seenProjects.get(task.targetScope.projectId)?.uid
+            scope.projectUid && seenProjects.get(scope.projectId)?.uid
+              && scope.projectUid !== seenProjects.get(scope.projectId)?.uid
               ? 'CONFLICT' : 'DECLARED' }
         });
       }
@@ -147,8 +148,8 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
           relation: 'DEPENDS_ON',
           authority: TASK_AUTHORITY,
           evidence: { ...stamp, verification:
-            task.targetScope.projectUid && seenProjects.get(task.targetScope.projectId)?.uid
-              && task.targetScope.projectUid !== seenProjects.get(task.targetScope.projectId)?.uid
+            scope.projectUid && seenProjects.get(scope.projectId)?.uid
+              && scope.projectUid !== seenProjects.get(scope.projectId)?.uid
               ? 'CONFLICT' : 'DECLARED' }
         });
       }
