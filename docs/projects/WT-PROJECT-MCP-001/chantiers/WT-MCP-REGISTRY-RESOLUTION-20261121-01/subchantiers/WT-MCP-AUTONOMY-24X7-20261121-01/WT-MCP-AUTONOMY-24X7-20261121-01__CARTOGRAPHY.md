@@ -1,6 +1,6 @@
 # Cartographie initiale observée — sous-chantier d'exécution
 > Workstream `WT-MCP-AUTONOMY-24X7-20261121-01`, parent `WT-MCP-REGISTRY-RESOLUTION-20261121-01`. Les états marqués `DECLARED` ne sont pas des observations actuelles du runtime.
- 
+
 | Composant / portée | Chemin ou autorité vérifiée | Responsabilité et dépendance | État |
 | --- | --- | --- | --- |
 | MCP Entrée gouvernée | `Patricked-code/MCP/AGENTS.md`, `CLAUDE.md` | GitHub→MCP→Live State→G1→sélection | Code/docs présents |
