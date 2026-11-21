@@ -68,7 +68,7 @@ function validScope(scope: GithubVerifiedInsightScope, observedAt: string): void
   const current = Date.parse(observedAt), verified = Date.parse(scope.verifiedAt);
   if (scope.authority !== 'GIT_REGISTRY_VERIFIED_BINDING'
     || typeof scope.repository !== 'string' || !REPO.test(scope.repository)
-    || names.length !== 2 || !names.every(v => VALID.test(v))
+    || names.length !== 2 || !names.every(v => VALID.test(v) && v !== '.' && v !== '..')
     || !Number.isSafeInteger(scope.githubNumericId) || scope.githubNumericId <= 0
     || typeof scope.projectId !== 'string' || !REF.test(scope.projectId)
     || typeof scope.mappingId !== 'string' || !REF.test(scope.mappingId)
