@@ -91,6 +91,7 @@ test('historical V1 migration, no ProjectRecord and unready mapping are never pr
   assert.ok(result.reasonCodes.includes('PROJECT_RECORD_MISSING'));
   assert.ok(result.reasonCodes.includes('GITREGISTRY_V1_CANDIDATE_NOT_ACTIVE'));
   assert.ok(result.reasonCodes.includes('PROJECT_MAPPING_NOT_READY'));
+  assert.equal(result.matchedProjectId, null);
   assert.equal(result.authorizationInferred, false);
 });
 
@@ -102,6 +103,7 @@ test('documentary UID conflicts with a ProjectRecord instead of silently binding
   });
   assert.equal(result.status, 'CONFLICT');
   assert.ok(result.reasonCodes.includes('DOCUMENTARY_PROJECT_UID_CONFLICT'));
+  assert.equal(result.matchedProjectId, null);
 });
 
 test('wrong repository identity refuses the mapping, including plausible aliases', () => {
