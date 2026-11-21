@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "kind": "GLOBAL_WORK_PCM_15_STAGES_CROSSWALK_NON_EXECUTABLE",
+  "ownerPr": 374,
+  "date": "2026-11-05",
+  "sources": [
+    {
+      "path": "docs/governance/mcp-priority-convergence-map-20261015.json",
+      "blobSha": "d58e4d3808adfcac414d030cad7a6ac60dd76f7a",
+      "planDate": "2026-10-15"
+    },
+    {
+      "path": "docs/governance/global-work-reconciliation-matrix-v1.json",
+      "blobSha": "82b0816808604f4cf1201d081b4eee3ea48f7b10",
+      "workstreams": 20
+    }
+  ],
+  "coverage": {
+    "pcmStageCount": 15,
+    "sourceStageIds": [
+      "PCM-00",
+      "PCM-01",
+      "PCM-02",
+      "PCM-03",
+      "PCM-04",
+      "PCM-05",
+      "PCM-06",
+      "PCM-07",
+      "PCM-08",
+      "PCM-09",
+      "PCM-10",
+      "PCM-11",
+      "PCM-12",
+      "PCM-13",
+      "PCM-14"
+    ],
+    "stageWithoutCandidateWorkstream": 0,
+    "verifiedOperationalCompletionCount": 0
+  },
+  "rows": [
+    {
+      "existingStageId": "PCM-00",
+      "existingStageTitle": "Admission et reprise sûre de chaque agent",
+      "sourceArea": "agent-onboarding/read-only",
+      "candidateGlobalWorkKeys": [
+        "GLOBAL_MCP",
+        "E1_E2",
+        "UAC"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-01",
+      "existingStageTitle": "Réconciliation du périmètre historique et des traces de l'audit",
+      "sourceArea": "audit:archive:history",
+      "candidateGlobalWorkKeys": [
+        "GWB_PCM",
+        "UTL_EVIDENCE"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-02",
+      "existingStageTitle": "Classer les constats historiques contre le code actuel",
+      "sourceArea": "audit:review:findings",
+      "candidateGlobalWorkKeys": [
+        "GWB_PCM",
+        "UTL_EVIDENCE"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-03",
+      "existingStageTitle": "Certifier les 94 blueprints et leurs véritables preuves",
+      "sourceArea": "audit:blueprints:code-test",
+      "candidateGlobalWorkKeys": [
+        "PROGRAM_BACKLOG_V2",
+        "GWB_PCM"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-04",
+      "existingStageTitle": "Synthèse unique des écarts et de la cible sans régression",
+      "sourceArea": "governance:gap-reconciliation",
+      "candidateGlobalWorkKeys": [
+        "GLOBAL_MCP",
+        "GWB_PCM"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-05",
+      "existingStageTitle": "Sortie contrôlée de l'audit et programme de réalisation",
+      "sourceArea": "governance:audit-exit",
+      "candidateGlobalWorkKeys": [
+        "GLOBAL_MCP",
+        "GWB_PCM"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-06",
+      "existingStageTitle": "Diagnostic ciblé du consentement OAuth Claude/ChatGPT",
+      "sourceArea": "connection:oauth-attempt-correlation",
+      "candidateGlobalWorkKeys": [
+        "OAUTH_OIDC"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-07",
+      "existingStageTitle": "Intégrer la continuité des refresh tokens déjà développée",
+      "sourceArea": "connection:oauth-token-continuity",
+      "candidateGlobalWorkKeys": [
+        "OAUTH_OIDC"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-08",
+      "existingStageTitle": "Certifier connexion et renouvellement dans Claude et ChatGPT",
+      "sourceArea": "clients:oauth-e2e",
+      "candidateGlobalWorkKeys": [
+        "OAUTH_OIDC",
+        "UAC"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-09",
+      "existingStageTitle": "Recalculer readiness et observer l'autorité des agents/tâches",
+      "sourceArea": "coordination:program-next",
+      "candidateGlobalWorkKeys": [
+        "PROGRAM_BACKLOG_V2",
+        "DISPATCH",
+        "UAC"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-10",
+      "existingStageTitle": "Exécuter les lots W3 admissibles par ordre de programme",
+      "sourceArea": "program:w3",
+      "candidateGlobalWorkKeys": [
+        "PROGRAM_BACKLOG_V2",
+        "PROVISIONING",
+        "GITHUB_CONTROL"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-11",
+      "existingStageTitle": "Observabilité et preuves opérationnelles W4",
+      "sourceArea": "observability:tracing:inventory",
+      "candidateGlobalWorkKeys": [
+        "AGENT_BUS",
+        "UAC"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-12",
+      "existingStageTitle": "Construire et certifier Super Admin Cockpit gouverné",
+      "sourceArea": "cockpit:shell",
+      "candidateGlobalWorkKeys": [
+        "SUPER_ADMIN"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-13",
+      "existingStageTitle": "Certifier l'enchaînement autonome multi-agents",
+      "sourceArea": "coordination:e2e",
+      "candidateGlobalWorkKeys": [
+        "DISPATCH",
+        "UAC",
+        "GLOBAL_MCP"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    },
+    {
+      "existingStageId": "PCM-14",
+      "existingStageTitle": "Convergence globale et déclaration conditionnelle de complétude",
+      "sourceArea": "program:terminal",
+      "candidateGlobalWorkKeys": [
+        "GLOBAL_MCP",
+        "PROGRAM_BACKLOG_V2"
+      ],
+      "sourceUrl": "https://github.com/Patricked-code/MCP/blob/main/docs/governance/mcp-priority-convergence-map-20261015.json",
+      "sourceVerification": "HISTORICAL_DOCUMENTARY_PRIORITY_MAP_20261015",
+      "runtimeCompletion": "NOT_VERIFIED_BY_THIS_MATRIX",
+      "currentOwnerTask": null,
+      "nextGovernedCheck": "RECONCILE_CURRENT_GITHUB_CI_RUNS_AND_REAL_TASK_QUEUE_SESSION_BEFORE_MARKING_COMPLETE",
+      "notNewProgram": true,
+      "notNewTaskOrClaim": true
+    }
+  ],
+  "policy": [
+    "PCM-00..14 are existing program planning/audit phases, not 15 new workstreams",
+    "Candidate mapping is documentary cross-reference; no ownership claim or automatic task admission",
+    "Current S1 alignment and TASK queue snapshot do not prove terminal PCM-14",
+    "No main merge for PR372 PR373 PR374 without new explicit owner consent"
+  ],
+  "nextAction": "VERIFY_PCM_PHASE_EVIDENCE_AND_RL_DEPENDENCIES_AFTER_FRESH_AUTHORITY_OBSERVATION"
+}
