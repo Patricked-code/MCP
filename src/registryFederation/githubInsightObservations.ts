@@ -8,7 +8,7 @@
  * creates a project/task, or treats a security 403/404 as a disabled feature.
  */
 import { createHash } from 'node:crypto';
-import { githubJsonRequestWithServerCredential, type GitHubJsonRequestOptions, type GitHubJsonResponse } from '../github/connection.js';
+import type { GitHubJsonRequestOptions, GitHubJsonResponse } from '../github/connection.js';
 
 export const GITHUB_INSIGHT_SOURCES = [
   'REPOSITORY', 'SBOM', 'DEPENDABOT_ALERTS', 'CODE_SCANNING_ALERTS',
@@ -225,7 +225,13 @@ export async function observeAuthorizedGithubInsightsWithServerCredential(input:
 }>): Promise<GithubInsightsSnapshot> {
   validScope(input.scope, input.observedAt);
   const allow = new Set(Object.values(paths(input.scope.repository)));
-  const request = input.request ?? githubJsonRequestWithServerCredential;
+  // Defer the server module import until after the verified-scope gate.
+  // Importing env.ts at module evaluation would require production S1/S2
+  // secrets and hosts even for evidence-only unit tests.
+  const request: GithubInsightsCredentialRequest = input.request ?? (async (endpoint, options) => {
+    const { githubJsonRequestWithServerCredential } = await import('../github/connection.js');
+    return githubJsonRequestWithServerCredential(endpoint, options);
+  });
   return observeAuthorizedGithubInsights({
     scope: input.scope, observedAt: input.observedAt,
     read: async (path) => {
