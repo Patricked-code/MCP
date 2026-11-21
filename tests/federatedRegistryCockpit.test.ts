@@ -89,3 +89,27 @@ test('missing workstream and unexpected filter values are fail-closed', () => {
     scope: 'global', id: 'x'.repeat(241), queueAvailable: true
   }), /FEDERATION_COCKPIT_FILTER_INVALID/);
 });
+
+test('repository filter does not expand into another repository via shared project', () => {
+  const other = graph.entities.find(x => x.identity.kind === 'TASK'
+    && x.identity.authorityScope === 'AnotherOrg/Other')!;
+  const expanded = buildFederatedRegistryProjection({
+    observedAt: now,
+    entities: graph.entities,
+    links: [...graph.links, {
+      fromKey: other.key, toKey: federatedIdentityKey(project),
+      relation: 'BELONGS_TO', authority: 'GOVERNED_TASK_QUEUE',
+      evidence: { ...proof('queue:shared-project'), verification: 'DECLARED' }
+    }]
+  });
+  const repositoryPage = renderFederatedRegistryCockpit(expanded, {
+    scope: 'repository', id: 'Patricked-code/MCP', queueAvailable: true
+  });
+  assert.match(repositoryPage, /TASK-20260913-001/);
+  assert.doesNotMatch(repositoryPage, /TASK-20260913-002/);
+  const projectPage = renderFederatedRegistryCockpit(expanded, {
+    scope: 'project', id: 'P-1', queueAvailable: true
+  });
+  assert.match(projectPage, /TASK-20260913-001/);
+  assert.match(projectPage, /TASK-20260913-002/);
+});
