@@ -230,19 +230,25 @@ export async function readFederatedGitRegistrySource(): Promise<{
   }
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)
     || (raw as { version?: unknown }).version !== 1) throw Error('FEDERATION_REGISTRY_SCHEMA_UNSUPPORTED');
-  const legacy = norm(raw);
-  const mappings = legacy.repoMappings.filter(mapping =>
+  // Filter untrusted raw arrays BEFORE norm()/attach() dereferences a mapping.
+  // One null or malformed entry must not hide unrelated valid declarations.
+  const source = raw as Record<string, unknown>;
+  if (!Array.isArray(source.repoMappings)
+    || (source.projects !== undefined && !Array.isArray(source.projects))
+    || typeof source.updatedAt !== 'string') throw Error('FEDERATION_LEGACY_REGISTRY_INVALID');
+  const mappings = source.repoMappings.filter(mapping =>
     GitRegistryV1Schema.shape.repoMappings.element.safeParse(mapping).success);
-  const projects = (legacy.projects ?? []).filter(project =>
+  const rawProjects = Array.isArray(source.projects) ? source.projects : [];
+  const projects = rawProjects.filter(project =>
     RegistryProjectSchema.safeParse(project).success);
   const registry = GitRegistryV1Schema.parse({
-    version: 1, updatedAt: legacy.updatedAt, accounts: [], repoMappings: mappings,
+    version: 1, updatedAt: source.updatedAt, accounts: [], repoMappings: mappings,
     auditEvents: [], projects
   });
   return {
     registry,
-    omittedMappings: legacy.repoMappings.length - mappings.length,
-    omittedProjects: (legacy.projects?.length ?? 0) - projects.length
+    omittedMappings: source.repoMappings.length - mappings.length,
+    omittedProjects: rawProjects.length - projects.length
   };
 }
 
