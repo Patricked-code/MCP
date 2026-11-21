@@ -31,10 +31,19 @@ function relate(entities: readonly FederatedProjectedEntity[],
       if (task.identity.kind === 'TASK' && task.identity.authorityScope === id) keys.add(task.key);
     }
   }
-  // Only traverse an explicit already-projected link; no inference from names.
+  // Restrict relation traversal to this filter's declared semantics.
+  // Repository selection must never expand through its parent project into
+  // another repository's tasks or checkpoints.
   for (const link of links) {
-    if (keys.has(link.fromKey)) keys.add(link.toKey);
-    if (keys.has(link.toKey)) keys.add(link.fromKey);
+    if (filter.scope === 'repository') {
+      if (link.relation === 'MAPS_TO' && keys.has(link.toKey)) keys.add(link.fromKey);
+    } else if (filter.scope === 'project') {
+      if (link.relation === 'MAPS_TO' && keys.has(link.fromKey)) keys.add(link.toKey);
+      if (link.relation === 'BELONGS_TO' && keys.has(link.toKey)) keys.add(link.fromKey);
+    } else if (filter.scope === 'workstream') {
+      if (link.relation === 'BELONGS_TO' && keys.has(link.toKey)) keys.add(link.fromKey);
+      if (link.relation === 'CONTAINS' && keys.has(link.fromKey)) keys.add(link.toKey);
+    }
   }
   return entities.filter(x => keys.has(x.key));
 }
