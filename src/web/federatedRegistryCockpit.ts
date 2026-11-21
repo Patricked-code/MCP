@@ -19,16 +19,17 @@ function relate(entities: readonly FederatedProjectedEntity[],
   links: readonly FederatedProjectedLink[], filter: FederatedCockpitFilter): FederatedProjectedEntity[] {
   if (filter.scope === 'global') return [...entities];
   const id = filter.id.trim();
+  const repositoryId = id.replace(/^github:/i, '').toLowerCase();
   if (!id) return [];
   const keys = new Set(entities.filter(e => {
     if (filter.scope === 'project') return e.identity.kind === 'PROJECT' && e.identity.sourceId === id;
     if (filter.scope === 'workstream') return e.identity.kind === 'WORKSTREAM' && e.identity.sourceId === id;
     return e.identity.kind === 'REPOSITORY' &&
-      (e.identity.sourceId.replace(/^github:/i, '') === id || e.identity.sourceId === id);
+      e.identity.sourceId.replace(/^github:/i, '').toLowerCase() === repositoryId;
   }).map(x => x.key));
   if (filter.scope === 'repository') {
     for (const task of entities) {
-      if (task.identity.kind === 'TASK' && task.identity.authorityScope === id) keys.add(task.key);
+      if (task.identity.kind === 'TASK' && task.identity.authorityScope.replace(/^github:/i, '').toLowerCase() === repositoryId) keys.add(task.key);
     }
   }
   // Restrict relation traversal to this filter's declared semantics.
@@ -72,7 +73,8 @@ function renderProject(entity: FederatedProjectedEntity,
     <p>Statut du rattachement : <strong>${escape(verifiedState(entity))}</strong></p>
     <p>Composants / dépôts : ${mappings.length}</p>
     <ul>${references || '<li>Aucun dépôt vérifié par cette projection</li>'}</ul>
-    <p>Tâches liées par déclaration : ${tasks.length}</p>
+    <p>Tâches liées : ${tasks.length}, dont ${tasks.filter(x => x.verification === 'CONFLICT').length} rattachements conflictuels.</p>
+    <ul>${tasks.map(x => '<li><code>' + escape(index.get(x.fromKey)?.identity.sourceId ?? 'NON RÉSOLU') + '</code> — ' + escape(x.verification) + ' ; autorité ' + escape(x.authority) + '</li>').join('') || '<li>Aucune tâche rattachée</li>'}</ul>
     <p>Documentation, chantiers, mémoire, checkpoints et dépendances non encore indexés :
       <strong>couverture partielle</strong>.</p>
     <p class="wt-meta">Autorité : ${escape(entity.identity.authority)} ;
@@ -91,7 +93,10 @@ export function renderFederatedRegistryCockpit(
   const projects = chosen.filter(x => x.identity.kind === 'PROJECT');
   const repositories = chosen.filter(x => x.identity.kind === 'REPOSITORY');
   const tasks = chosen.filter(x => x.identity.kind === 'TASK');
+  const chosenKeys = new Set(chosen.map(x => x.key));
+  const relevantLinks = projection.links.filter(x => chosenKeys.has(x.fromKey) && chosenKeys.has(x.toKey));
   const conflicting = chosen.filter(x => x.evidence.verification === 'CONFLICT');
+  const conflictingLinks = relevantLinks.filter(x => x.verification === 'CONFLICT');
   const options = allowed.map(s => `<option value="${escape(s)}"${s === filter.scope ? ' selected' : ''}>${
     escape({global:'Tous les registres',repository:'Dépôt',project:'Projet',workstream:'Chantier'}[s])
   }</option>`).join('');
@@ -125,11 +130,14 @@ export function renderFederatedRegistryCockpit(
       <section class="wt-card"><h2>Projets</h2><p>${projects.length} dans la vue</p></section>
       <section class="wt-card"><h2>Dépôts</h2><p>${repositories.length} dans la vue</p></section>
       <section class="wt-card"><h2>Tâches</h2><p>${tasks.length} (tous statuts historiques)</p></section>
-      <section class="wt-card"><h2>Conflits</h2><p>${conflicting.length}</p></section>
+      <section class="wt-card"><h2>Conflits</h2><p>${conflicting.length + conflictingLinks.length} (entités : ${conflicting.length}, liens : ${conflictingLinks.length})</p></section>
     </div>
     <h2>Fiches projets (données actuellement disponibles)</h2>
     <div class="wt-grid">${projects.slice(0, 30).map(p => renderProject(p, projection.links, index)).join('')
       || '<p>Aucun projet relié pour ce filtre : ne pas inférer une absence globale.</p>'}</div>
+    <h2>Relations dans le périmètre (statuts de vérification)</h2>
+    <div class="wt-table"><table><thead><tr><th>Depuis</th><th>Lien</th><th>Vers</th><th>Vérification</th></tr></thead>
+    <tbody>${relevantLinks.slice(0, 200).map(x => '<tr><td>' + escape(index.get(x.fromKey)?.identity.sourceId ?? 'NON RÉSOLU') + '</td><td>' + escape(x.relation) + '</td><td>' + escape(index.get(x.toKey)?.identity.sourceId ?? 'NON RÉSOLU') + '</td><td>' + escape(x.verification) + '</td></tr>').join('') || '<tr><td colspan="4">Aucune relation</td></tr>'}</tbody></table></div>
     <h2>Entités et tâches, y compris états terminaux</h2>
     <div class="wt-table"><table><caption>Observation : ${escape(projection.observedAt)}.
       Maximum 200 lignes affichées sur ${chosen.length}; pagination étendue non encore raccordée.</caption>
