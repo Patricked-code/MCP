@@ -119,6 +119,15 @@ function bounded(value: string, field: string): string {
   return value;
 }
 
+function safeDisplayLabel(input: string): string {
+  if (typeof input !== 'string') throw new Error('FEDERATION_INVALID_LABEL');
+  // Task titles legitimately contain tabs/newlines. Sanitize for display
+  // without changing the owning Task Queue's historical title.
+  const result = input.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!result || result.length > 240) throw new Error('FEDERATION_INVALID_LABEL');
+  return result;
+}
+
 function time(value: string, asOf?: number): number {
   const millis = typeof value === 'string' ? Date.parse(value) : NaN;
   if (!Number.isFinite(millis) || !value.endsWith('Z') || (asOf !== undefined && millis > asOf)) {
@@ -177,7 +186,7 @@ export function buildFederatedRegistryProjection(input: Readonly<{
     if (taskStatus !== null && (source.identity.kind !== 'TASK' || !VALID_TASK_STATES.has(taskStatus))) {
       throw new Error('FEDERATION_INVALID_TASK_STATUS');
     }
-    const label = source.label == null ? null : bounded(source.label, 'LABEL');
+    const label = source.label == null ? null : safeDisplayLabel(source.label);
     if ((source.identifiers?.length ?? 0) > 20) throw Error('FEDERATION_IDENTIFIER_LIMIT');
     const identifiers = (source.identifiers ?? []).map((value) => Object.freeze({
       namespace: bounded(value.namespace, 'IDENTIFIER_NAMESPACE'),
@@ -267,8 +276,11 @@ export function buildFederatedRegistryProjection(input: Readonly<{
       verification,
       reasons: Object.freeze(reasons)
     });
-    // An identical event is idempotent; conflicting versions are not silently overwritten.
-    const key = JSON.stringify([fromKey, toKey, source.relation, authority]);
+    // Different mapping IDs for compatible components in one monorepo
+    // are separate evidence, not conflicting declarations. Preserve each
+    // authority record and its observed version as a distinct edge.
+    const key = JSON.stringify([fromKey, toKey, source.relation, authority,
+      stamp.evidenceRef, stamp.sourceVersion, stamp.observedAt]);
     const prior = links.get(key);
     if (!prior) links.set(key, entry);
     else if (JSON.stringify(prior) !== JSON.stringify(entry)) {
@@ -285,7 +297,8 @@ export function buildFederatedRegistryProjection(input: Readonly<{
     observedAt: input.observedAt,
     entities: Object.freeze(sorted(entities.values(), (x) => x.key)),
     links: Object.freeze(sorted(links.values(),
-      (x) => JSON.stringify([x.fromKey, x.relation, x.toKey]))),
+      (x) => JSON.stringify([x.fromKey, x.relation, x.toKey, x.authority,
+        x.evidence.evidenceRef, x.evidence.sourceVersion, x.evidence.observedAt]))),
     completeness: 'PARTIAL',
     authorizationInferred: false,
     mutationPerformed: false
