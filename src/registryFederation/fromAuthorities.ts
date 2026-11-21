@@ -43,7 +43,7 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
     || (input.queue?.storeRevision ?? 0) < 0) throw Error('FEDERATION_QUEUE_REVISION_INVALID');
   const entities: FederatedEntityInput[] = [];
   const links: FederatedLinkInput[] = [];
-  const seenProjects = new Map<string, string | null>();
+  const seenProjects = new Map<string, { label: string | null; uid: string | null }>();
   const seenRepos = new Set<string>();
   const schema = 'schemaVersion' in input.registry && input.registry.schemaVersion === 2 ? 2 : 1;
   const registryVersion = 'gitregistry-v' + schema + ':' + input.registry.updatedAt;
@@ -52,12 +52,26 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
     sourceVersion: registryVersion,
     evidenceRef: 'gitregistry:' + scope + ':' + id
   });
-  const addProject = (id: string, label: string | null) => {
-    if (seenProjects.has(id)) return;
-    seenProjects.set(id, label);
+  const addProject = (id: string, label: string | null, uid: string | null = null) => {
+    const previous = seenProjects.get(id);
+    const claims = (value: string | null) => value ? [{
+      namespace: 'PROJECT_UID', value,
+      evidence: evidence('project_uid', value)
+    }] : [];
+    if (previous) {
+      if (uid && previous.uid && uid !== previous.uid) {
+        // Conflicting project UIDs are projected as conflicts, never silently replaced.
+        entities.push({
+          identity: projectId(id), label: previous.label,
+          evidence: evidence('project', id), identifiers: claims(uid)
+        });
+      }
+      return;
+    }
+    seenProjects.set(id, { label, uid });
     entities.push({
       identity: projectId(id), label,
-      evidence: evidence('project', id)
+      evidence: evidence('project', id), identifiers: claims(uid)
     });
   };
   const addRepository = (id: string) => {
@@ -80,22 +94,22 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
 
   if (schema === 2) {
     const registry = input.registry as GitRegistryV2;
-    for (const project of registry.projects ?? []) addProject(project.projectId, project.name);
+    for (const project of registry.projects ?? []) addProject(project.projectId, project.name, project.projectUid);
     for (const repository of registry.repositories) addRepository(repository.repositoryId);
     for (const mapping of registry.mappings) {
       // A projectId in a mapping is a declaration, not proof that the project exists.
-      if (!seenProjects.has(mapping.projectId)) addProject(mapping.projectId, null);
+      addProject(mapping.projectId, null, mapping.projectUid ?? null);
       addMapping(mapping.projectId, mapping.repositoryId, mapping.mappingId);
     }
   } else {
     const registry = input.registry as GitRegistryV1;
-    for (const project of registry.projects ?? []) addProject(project.projectId, project.name);
+    for (const project of registry.projects ?? []) addProject(project.projectId, project.name, project.projectUid);
     for (const mapping of registry.repoMappings) {
       const rid = 'github:' + mapping.githubOwner + '/' + mapping.githubRepo;
       addRepository(rid);
       // projectKey alone is NEVER promoted into a project ID.
       if (mapping.projectId) {
-        if (!seenProjects.has(mapping.projectId)) addProject(mapping.projectId, null);
+        addProject(mapping.projectId, null, mapping.projectUid ?? null);
         addMapping(mapping.projectId, rid, mapping.id);
       }
     }
@@ -119,7 +133,10 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
           toKey: federatedIdentityKey(projectId(task.targetScope.projectId)),
           relation: 'BELONGS_TO',
           authority: TASK_AUTHORITY,
-          evidence: { ...stamp, verification: 'DECLARED' }
+          evidence: { ...stamp, verification:
+            task.targetScope.projectUid && seenProjects.get(task.targetScope.projectId)?.uid
+              && task.targetScope.projectUid !== seenProjects.get(task.targetScope.projectId)?.uid
+              ? 'CONFLICT' : 'DECLARED' }
         });
       }
       for (const dep of task.dependencies) {
@@ -128,7 +145,10 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
           toKey: federatedIdentityKey(taskId(task.repository, dep)),
           relation: 'DEPENDS_ON',
           authority: TASK_AUTHORITY,
-          evidence: { ...stamp, verification: 'DECLARED' }
+          evidence: { ...stamp, verification:
+            task.targetScope.projectUid && seenProjects.get(task.targetScope.projectId)?.uid
+              && task.targetScope.projectUid !== seenProjects.get(task.targetScope.projectId)?.uid
+              ? 'CONFLICT' : 'DECLARED' }
         });
       }
     }
