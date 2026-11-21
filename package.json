@@ -24,7 +24,7 @@
     "program:next": "node scripts/program-backlog-readiness.mjs --next"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.30.0",
+    "@modelcontextprotocol/sdk": "1.32.0",
     "dotenv": "latest",
     "express": "latest",
     "pino": "latest",
