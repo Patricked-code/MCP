@@ -42,3 +42,14 @@
 - **D17 — S1 isolé d'abord.** Un pilote sur un service hôte séparé, secrets non exposés, ressources bornées et tests de reprise précède toute généralisation CUG multi-dépôts. UAES et GRT restent leurs projets propriétaires.
 
 **Décisions à revalider par preuve live :** droits GitHub Issues:write pour le journal E2 ; état GitHub Insights repository par repository ; identité/installation CUG réelle et scopes ; disponibilité et sécurité de l'hôte agent ; resource capacity et backup de S1 ; exigences d'approbation et auto-merge du ruleset.
+
+## Décisions additionnelles liées au document utilisateur intégral (21 novembre 2026)
+
+- D18 — Adopter le sous-chantier `WT-MCP-AUTONOMY-24X7-20261121-01` **comme enfant de la mission actuelle**, jamais une mission concurrente ni une autre queue. L'identifiant était **proposé non créé** dans la source.
+- D19 — Méthode de l'usine : 10 phases Loop historiques + 15 opérations du parcours cible, rapprochées des **RG déjà planifiées**, sans nouveau backlog.
+- D20 — La connaissance de code (graphe architecture) et l'ordonnancement de travail (graphe programme) sont deux graphes distincts ; la jointure exige source, SHA, statut de vérification et identité.
+- D21 — Toute nouvelle intention doit chercher d'abord un complément à un lot ancien. Une nouvelle « tâche » issue de texte non autorisé reste candidate, non mutation P2.
+- D22 — Les onze familles documentaires locales sont indexées, sans répéter intégralement les états parent ou la mémoire vivante MCP. L'historique append-only et la preuve original-DOCX-SHA restent liés.
+- D23 — Pas de worker dans le conteneur MCP, pas de Docker socket production accessible au codeur ; UAES isolé après audit U02, C26 ports, C27 réel.
+- D24 — Disponibilité permanente ≠ code permanent ; IDLE valide ; automate horaire ChatGPT ≠ host 24/7 ; supervision externe et reprise après crash indispensables.
+- D25 — Rapport systématique de dette : branch-only / merged / deploy-run / runtime-readback / G1 / C27, statuts indépendants.
