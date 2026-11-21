@@ -44,7 +44,7 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
     || (input.queue?.storeRevision ?? 0) < 0) throw Error('FEDERATION_QUEUE_REVISION_INVALID');
   const entities: FederatedEntityInput[] = [];
   const links: FederatedLinkInput[] = [];
-  const seenProjects = new Map<string, { label: string | null; uid: string | null }>();
+  const seenProjects = new Map<string, { label: string | null; uid: string | null; index: number }>();
   const seenRepos = new Set<string>();
   const schema = 'schemaVersion' in input.registry && input.registry.schemaVersion === 2 ? 2 : 1;
   const registryVersion = 'gitregistry-v' + schema + ':' + input.registry.updatedAt;
@@ -61,15 +61,27 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
     }] : [];
     if (previous) {
       if (uid && previous.uid && uid !== previous.uid) {
-        // Conflicting project UIDs are projected as conflicts, never silently replaced.
+        // Conflicting claims retain both identifiers, independently of the
+        // order of legacy mappings. The projection will mark this as CONFLICT.
         entities.push({
           identity: projectId(id), label: previous.label,
           evidence: evidence('project', id), identifiers: claims(uid)
         });
+      } else if ((uid && !previous.uid) || (label && !previous.label)) {
+        // A later verified identity declaration may fill an absent UID/label;
+        // absence is not a conflicting identity claim.
+        const existing = entities[previous.index]!;
+        if (uid && !previous.uid) previous.uid = uid;
+        if (label && !previous.label) previous.label = label;
+        entities[previous.index] = {
+          ...existing,
+          label: previous.label,
+          identifiers: claims(previous.uid)
+        };
       }
       return;
     }
-    seenProjects.set(id, { label, uid });
+    seenProjects.set(id, { label, uid, index: entities.length });
     entities.push({
       identity: projectId(id), label,
       evidence: evidence('project', id), identifiers: claims(uid)
@@ -118,6 +130,15 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
 
   if (input.queue) {
     const revision = 'queue-rev:' + input.queue.storeRevision;
+    // Runtime admission resolves dependencies by Task ID across the full
+    // queue, not just the dependent task's repository. Missing or ambiguous
+    // IDs must remain unresolved, never mapped to an arbitrary repository.
+    const byTaskId = new Map<string, QueuedTask[]>();
+    for (const candidate of input.queue.tasks) {
+      const existing = byTaskId.get(candidate.taskId) ?? [];
+      existing.push(candidate);
+      byTaskId.set(candidate.taskId, existing);
+    }
     for (const task of input.queue.tasks) {
       const tid = taskId(task.repository, task.taskId);
       const stamp = {
@@ -142,12 +163,15 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
         });
       }
       for (const dep of task.dependencies) {
+        const matches = byTaskId.get(dep) ?? [];
+        const referencedRepository = matches.length === 1 ? matches[0]!.repository
+          : matches.length === 0 ? task.repository : 'UNRESOLVED_TASK_SCOPE';
         links.push({
           fromKey: federatedIdentityKey(tid),
-          toKey: federatedIdentityKey(taskId(task.repository, dep)),
+          toKey: federatedIdentityKey(taskId(referencedRepository, dep)),
           relation: 'DEPENDS_ON',
           authority: TASK_AUTHORITY,
-          evidence: { ...stamp, verification: 'DECLARED' }
+          evidence: { ...stamp, verification: matches.length > 1 ? 'AMBIGUOUS' : 'DECLARED' }
         });
       }
     }
