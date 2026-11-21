@@ -44,7 +44,9 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
     || (input.queue?.storeRevision ?? 0) < 0) throw Error('FEDERATION_QUEUE_REVISION_INVALID');
   const entities: FederatedEntityInput[] = [];
   const links: FederatedLinkInput[] = [];
-  const seenProjects = new Map<string, { label: string | null; uid: string | null; index: number }>();
+  const seenProjects = new Map<string, {
+    label: string | null; uid: string | null; uids: Set<string>; index: number
+  }>();
   const seenRepos = new Set<string>();
   const schema = 'schemaVersion' in input.registry && input.registry.schemaVersion === 2 ? 2 : 1;
   const registryVersion = 'gitregistry-v' + schema + ':' + input.registry.updatedAt;
@@ -63,6 +65,7 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
       if (uid && previous.uid && uid !== previous.uid) {
         // Conflicting claims retain both identifiers, independently of the
         // order of legacy mappings. The projection will mark this as CONFLICT.
+        previous.uids.add(uid);
         entities.push({
           identity: projectId(id), label: previous.label,
           evidence: evidence('project', id), identifiers: claims(uid)
@@ -71,7 +74,10 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
         // A later verified identity declaration may fill an absent UID/label;
         // absence is not a conflicting identity claim.
         const existing = entities[previous.index]!;
-        if (uid && !previous.uid) previous.uid = uid;
+        if (uid && !previous.uid) {
+          previous.uid = uid;
+          previous.uids.add(uid);
+        }
         if (label && !previous.label) previous.label = label;
         entities[previous.index] = {
           ...existing,
@@ -81,7 +87,7 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
       }
       return;
     }
-    seenProjects.set(id, { label, uid, index: entities.length });
+    seenProjects.set(id, { label, uid, uids: new Set(uid ? [uid] : []), index: entities.length });
     entities.push({
       identity: projectId(id), label,
       evidence: evidence('project', id), identifiers: claims(uid)
@@ -151,15 +157,15 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
       // A TargetScope is a declaration; verified Project Reality is a separate gate.
       const scope = task.targetScope;
       if (scope && seenProjects.has(scope.projectId)) {
+        const claimedUids = seenProjects.get(scope.projectId)!.uids;
+        const uidMismatch = claimedUids.size > 1
+          || (scope.projectUid !== null && claimedUids.size > 0 && !claimedUids.has(scope.projectUid));
         links.push({
           fromKey: federatedIdentityKey(tid),
           toKey: federatedIdentityKey(projectId(scope.projectId)),
           relation: 'BELONGS_TO',
           authority: TASK_AUTHORITY,
-          evidence: { ...stamp, verification:
-            scope.projectUid && seenProjects.get(scope.projectId)?.uid
-              && scope.projectUid !== seenProjects.get(scope.projectId)?.uid
-              ? 'CONFLICT' : 'DECLARED' }
+          evidence: { ...stamp, verification: uidMismatch ? 'CONFLICT' : 'DECLARED' }
         });
       }
       for (const dep of task.dependencies) {
