@@ -111,3 +111,22 @@ Les permissions GitHub `admin/pull/push=true` indiquent le droit exposé au comp
 - La politique `.mcp/branch-governance.json` exige la PR, interdit le push direct `main`, conserve les états runtime à leurs autorités. Aucun contrôle de revue, CI, fusion ou déploiement n'a été neutralisé.
 
 **Sous-verdict P01 :** découverte des dépôts et premiers IDs améliorée, couverture toujours partielle en termes de Project IDs et Task IDs locaux ; aucune activation automatique multi-dépôts autorisée par cet audit.
+
+## H. Autorités documentaires distinctes : lecture de dépôts cibles (2026-11-21)
+
+**Lecture GitHub uniquement** : aucun fichier hors `Patricked-code/MCP` n'a été écrit ou ouvert pour mutation. Les SHAs ci-dessous sont des blobs de fichiers, non la preuve que tout le repo ou runtime soit aligné.
+
+| Projet consulté | Fichier / Blob SHA (court) | Observation de couverture | Conséquence de fédération |
+| --- | --- | --- | --- |
+| GRT | `README.md` / `9781b033...` | Deux portes d'entrée `00_GSCC_ENTRY.md` par défaut et `00_DIRECT_OWNER_ENTRY.md` sur demande explicite ; accès physique GitHub ≠ admission | Une ingestion globale ne doit pas choisir ni contourner la porte d'admission |
+| GRT | `TODO.md` / `a5f007de...` | TODO de projet structuré par initialisation / workflow d'entrée / control plane | Lire dans son autorité, ne pas convertir une case cochée en tâche runtime |
+| UAES | `README.md` / `a5060cdb...` | Projet explicitement distinct de MCP et GRT, avec gouvernance propre | Préserver séparation et scopes de propriétaire |
+| UAES | `docs/UNIFIED_DELIVERY_SEQUENCE.md` / `794196fd...` | Plan U00…U11 avec preuves historiques et autorité `state/CURRENT_STATE.json` | Statut dynamique doit être réobservé, jamais dérivé du seul plan |
+| Loop | `README.md` / `3cc92e2e...` | Dépôt source en initialisation documentaire ; aucun moteur déclaré canonique dans ce README | Afficher `DECLARED` et ne pas présumer un agent ou une queue Loop |
+| Loop | `TODO.md` / 404 | Le fichier n'existait pas à ce chemin lors de la consultation sur `main` | Ce 404 n'autorise pas à créer un TODO sans découvrir ses autres autorités |
+| Looping- | `README.md` / `7a868a4d...` | README utilisant les conventions du Governed Repository Template | Similarité de contenu ≠ identité de projet ni mapping confirmé |
+| FinancialData | `TODO.md` / `48b3e9ee...` | Backlog spécifique au projet, avec identités et historiques propres | Les tâches documentaires ne sont pas des `TASK-*` de la queue MCP |
+
+La mission fédère **des lectures de sources** : GRT/UAES/Loop/FinancialData restent responsables de leurs suivis, décisions, claims et droits. Les references externes ne créent aucune session gouvernée, aucune tâche ni permission dans MCP. Toute promotion future d'une relation exige la preuve du `repositoryId`, du Project Binding et de l'admission correspondante.
+
+**Prochains contrôles d'audit** : comparer les manifests project/continuity par dépôt, déterminer pour chaque projet si `TODO.md` est autoritaire, dérivé ou absent, et vérifier la couverture de la GitHub App CUG sous installation exacte avant de proposer un mapping.
