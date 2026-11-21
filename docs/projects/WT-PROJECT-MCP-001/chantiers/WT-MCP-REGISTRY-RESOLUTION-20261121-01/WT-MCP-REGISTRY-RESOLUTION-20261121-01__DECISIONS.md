@@ -28,3 +28,17 @@
 - Global Work / #372–#374 — ne pas dupliquer les matrices/autorités.
 
 **Risque dominant :** transformer un signal d'événement en décision gouvernée sans autorisation, ou afficher une vue fédérée incomplète comme exhaustive. Dans tous les cas, afficher couverture, provenance et limitations.
+
+## Décisions additionnelles — usine logicielle gouvernée 24/7 (21 novembre 2026)
+
+- **D09 — Une seule mission.** Les travaux RG-036…RG-056 étendent la résolution des registres ; même Continuity ID, mêmes propriétaires, mêmes autorités et checkpoints, sans nouveau projet MCP « usine » concurrent.
+- **D10 — Runtime autonome distinct de ChatGPT.** ChatGPT est un client, pas la boucle de service ; le worker futur doit être un processus durable sur hôte contrôlé avec observation réelle de santé, reprise, logs, coûts et quotas. Les automatisations horaires ne constituent pas une preuve de 24/7.
+- **D11 — C26/C27 et UAC/P2 sont des composants obligatoires, non des mécanismes à réécrire.** L'hôte agent doit se lier à une session de transport authentifiée, à une tâche réellement admise, au claim et aux locks. L'absence de port/hôte/permission = BLOCKED et non une session inventée.
+- **D12 — Séparer observation/architecture/planification/codage/revue/vérification.** L'analyse d'impact et la carte à SHA exact précèdent chaque correctif ; le codeur n'est autorisé à traiter que les tâches déjà contextualisées et admises.
+- **D13 — Insights sont des signaux.** Dependency graph, SBOM, Dependabot, CodeQL, Insights réseau, forks, PR, CI, rulesets et trafic doivent être lus avec permission réelle par dépôt, provenance, horodatage, status de couverture. Ils ne deviennent ni GitRegistry ni Task Queue ni autorité de projet.
+- **D14 — Activation progressive des outils GitHub.** Ne pas supposer Dependabot/CodeQL/secret scanning ou l'export SBOM déjà activés ; mesurer d'abord les réglages GitHub et les limites de permissions / licence. Aucune désactivation de branch protection ou auto-approval fictive.
+- **D15 — Pas de Kubernetes présumé.** Le déploiement MCP attesté reste GitHub Actions OIDC vers S1 Docker Compose ; une migration Kubernetes est un autre chantier avec gates adaptés.
+- **D16 — Autonomie gouvernée signifie enchaînement sans sollicitation inutile, PAS transgression d'un blocage de sécurité.** Revues obligatoires, conflits et erreurs 403 restent des barrières à réparer via l'autorité adaptée. Chaque action en production doit être attribuable à un agent, un scope, un SHA et une preuve.
+- **D17 — S1 isolé d'abord.** Un pilote sur un service hôte séparé, secrets non exposés, ressources bornées et tests de reprise précède toute généralisation CUG multi-dépôts. UAES et GRT restent leurs projets propriétaires.
+
+**Décisions à revalider par preuve live :** droits GitHub Issues:write pour le journal E2 ; état GitHub Insights repository par repository ; identité/installation CUG réelle et scopes ; disponibilité et sécurité de l'hôte agent ; resource capacity et backup de S1 ; exigences d'approbation et auto-merge du ruleset.
