@@ -125,6 +125,7 @@ test('two incompatible projectUid claims for the same projectId are CONFLICT', (
   const project = graph.entities.find(x => x.identity.kind === 'PROJECT');
   assert.equal(project?.evidence.verification, 'CONFLICT');
   assert.ok(project?.reasons.includes('FEDERATION_SOURCE_CONFLICT'));
+  assert.deepEqual(project?.identifiers.map(claim => claim.value).sort(), ['UID-A', 'UID-B']);
 });
 
 test('UID-less mapping followed by different explicit UIDs is deterministic, not discarded', () => {
@@ -138,6 +139,7 @@ test('UID-less mapping followed by different explicit UIDs is deterministic, not
     const project = graph.entities.find(e => e.identity.kind === 'PROJECT')!;
     assert.equal(project.evidence.verification, 'CONFLICT');
     assert.ok(project.reasons.includes('FEDERATION_SOURCE_CONFLICT'));
+    assert.deepEqual(project.identifiers.map(claim => claim.value).sort(), ['UID-A', 'UID-B']);
   }
   const registry: GitRegistryV1 = { ...legacy('P-1'), repoMappings: [
     { ...first }, { ...first, id: 'm-a', githubRepo: 'OtherA', projectUid: 'UID-A' }
