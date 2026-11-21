@@ -43,3 +43,19 @@ Pour éviter la fausse autorité : le futur index est une **projection recalcula
 ## Coordination
 
 Ne pas modifier les branches actives d'autres agents ; ne pas fusionner #389, #414 ou les chantiers CUG/GRT en cours par opportunisme. Réutiliser leur résultat dans des PR additives bornées. Aucun passage sur main ou déploiement hors admission gouvernée.
+
+## Extension de la même roadmap — usine logicielle, P10 à P17 (2026-11-21)
+
+**Ce bloc complète P01–P09, il ne les remplace pas.** Ne pas marquer les lignes ci-dessous DONE sur la seule existence de code/plan. Référence détaillée : `__IMPLEMENTATION_PLAN.md` de ce chantier.
+
+| Phase | IDs | Dépendance initiale | Critère de livraison | État au 2026-11-21 |
+| --- | --- | --- | --- | --- |
+| P10 | RG-036…039 | Audit P01, permissions GitHub/CUG vérifiées | Signalement par dépôt des services GitHub Insights, SBOM, sécurité, permissions et couverture | PLANIFIED / NON DEPLOYED |
+| P11 | RG-040…042 | P10, architecture/ProjectReality | Carte de code et graphe d'impact sourcés au SHA, pas d'invention | PLANIFIED / NON DEPLOYED |
+| P12 | RG-043…045 | P03–P07, C26/P2/UAC | Admission contrôlée, scheduler P2, idempotence, locks et droits réels | PLANIFIED / NON DEPLOYED |
+| P13 | RG-046…048 | P12, attestation ressources S1 | Agent host isolé durable, restart et recovery testés | PLANIFIED / NON DEPLOYED |
+| P14 | RG-049…051 | P13, règles GitHub réelles | PR/tests/review indépendantes/merge admissible/Deploy OIDC/G1/C27 | PLANIFIED / NON DEPLOYED |
+| P15/P16 | RG-052…054 | P08/P10–P14 | Cockpit agents/runs/Insights/risques/continuity, droits et provenance | PLANIFIED / NON DEPLOYED |
+| P17 | RG-055…056 | P13–P16 | Exécution réelle E2E attestée, crash/replay, observabilité, endurance et pilote cible | PLANIFIED / NON DEPLOYED |
+
+**Priorités effectives** : clôturer les revues et CI sur #432/#434/#435 avec leurs propriétaires ; réduire le drift G1 et le 403 E2 par procédures existantes ; lancer l'inventaire GitHub Insights en lecture seule ; développer l'adaptateur de contexte et le worker C26/P2 uniquement après autorisation et dimensionnement. L'automatisation horaire conserve un filet de reprise, non une preuve de codeur 24 h/24.
