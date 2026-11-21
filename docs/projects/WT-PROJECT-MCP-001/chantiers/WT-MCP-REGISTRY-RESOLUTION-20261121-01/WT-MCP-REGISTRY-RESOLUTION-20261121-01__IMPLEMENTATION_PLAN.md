@@ -179,3 +179,23 @@ Références de vérification : GitHub Docs « dependency graph », « export SB
 4. La fréquence horaire de ChatGPT est seulement une **reprise de supervision**. Le véritable travail permanent est la boucle d'un service durable, event-driven et supervisé ; une veille sans tâche READY est un comportement correct.
 5. Le « traitement non-stop » signifie **enchaîner automatiquement toute tâche admissible et sûre** après l'attestation précédente. Une revue obligatoire, un credential refusé ou un conflit réel restent des barrières techniques à réparer, non des invitations à contourner la gouvernance.
 6. **NEXT_ACTION du volet usine** : tester l'état réel des fonctionnalités Insights par dépôt, classifier la couverture CUG, vérifier l'hôte existant de C26 (aucun runtime opérationnel ne doit être présumé), puis produire les composants de lecture et le pilote de worker isolé avec tests négatifs. Garder l'autorité de tâche dans P2 et la source de vérité documentaire dans chaque projet.
+
+## 10. Raffinement après lecture complète du document « Loop Engineering.docx » (2026-11-21)
+
+Ce document source rassemble deux développements et un mandat candidat. L'exigence d'**ingestion sans dispersion** est conservée au niveau du plan RG. La lecture détaillée, les correspondances de dix phases et quinze opérations, les onze familles de documents, les deux graphes, les ports C26, les critères de certification et les preuves réelles sont inscrits dans [`WT-MCP-REGISTRY-RESOLUTION-20261121-01__SOURCE_READING_LOOP_ENGINEERING_20261121.md`](./WT-MCP-REGISTRY-RESOLUTION-20261121-01__SOURCE_READING_LOOP_ENGINEERING_20261121.md). **Ce n'est pas une nouvelle série RG-057+** : les exigences augmentent les critères RG-036…056 déjà ouverts.
+
+- **RG-036…039** : deux familles d'Insights ; huit observations techniques + schéma provenance ; 403/404 ne signifie pas DISABLED, SHA/id de dépôt obligatoires. PR #436 = **contrat pur non encore déployé**.
+- **RG-040…042** : les *deux graphes* architecture↔programme restent distincts ; classification DUPLICATE/COMPLEMENT/DECISION/FINDING/TASK/CONTRADICTION/MEMORY/OUT_OF_SCOPE et positionnement de la demande dans un lot historique **avant** le code. Dossier `current state → impact → placement → proposed delta → tests/rollback`.
+- **RG-043…045** : `program:readiness/next` et FIRST_COLLISION_FREE_IN_PROGRAM_ORDER ne sont pas une Task Queue ni un claim. C26 requiert `readOwnP2State`, `lookupExistingAgentRun`, `startOrResumeExistingAgent`, `readBoundAgentSession`, `admitExistingP2`, `atomicIdempotentHost` : tous les ports doivent être réels, transport/session propre.
+- **RG-046…048** : cible UAES U02; avant tout Docker worker, ressources/backup/restauration/permissions/secrets/isolation attestées ; un process Docker actif ne prouve ni un agent codant ni une plateforme sans panne.
+- **RG-049…051** : quatre preuves distinctes commit PR, merge main, run Deploy, observation live, puis G1. Une review automatisée n'autorise jamais à contourner les rulesets.
+- **RG-052…054** : 11 familles documentaires hiérarchiques, index de preuves, états cockpit IDLE/RUNNING/WAITING_CI/WAITING_REVIEW/BLOCKED/RECOVERING/FAILED/COMPLETED, supervision **externe** au worker.
+- **RG-055…056** : certification C27 sur sources réelles après panne/reprise, négatifs d'ownership, exact SHA, endurance et extension par installation CUG attestée.
+
+### Sous-chantier exécuteur, sans concurrence
+
+L'identifiant `WT-MCP-AUTONOMY-24X7-20261121-01`, proposé et non créé dans le DOCX, est **créé ici exclusivement comme dossier documentaire enfant** sous `subchantiers/`. Son [mandat](./subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__MANDATE.md) et ses [TASKS](./subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__TASKS.md) sont des vues de RG-043…056. **La Governed Task Queue reste l'unique autorité de tâche.** Le dépôt UAES conserve la propriété de son exécuteur et ne sera pas écrit par cette PR MCP.
+
+### Critère transversal de dette zéro
+
+Ne jamais marquer `DONE` tant qu'une intention n'a pas son résultat, sa preuve et son statut exact ; garder `BRANCH_ONLY` pour les commits non mergés, `MERGED_MAIN` pour le code non attesté sur runtime, `DEPLOYED_WITH_DRIFT` pour un runtime healthy avec G1 documentaire décalé, et `CERTIFIED` uniquement après C27 et reprise réelle. Une tâche ChatGPT horaire est un filet de suivi et ne constitue pas une attestation 24/7.
