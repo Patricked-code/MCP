@@ -147,10 +147,7 @@ export function projectExistingMcpAuthorities(input: FederatedAuthoritySnapshots
           toKey: federatedIdentityKey(taskId(task.repository, dep)),
           relation: 'DEPENDS_ON',
           authority: TASK_AUTHORITY,
-          evidence: { ...stamp, verification:
-            scope.projectUid && seenProjects.get(scope.projectId)?.uid
-              && scope.projectUid !== seenProjects.get(scope.projectId)?.uid
-              ? 'CONFLICT' : 'DECLARED' }
+          evidence: { ...stamp, verification: 'DECLARED' }
         });
       }
     }
