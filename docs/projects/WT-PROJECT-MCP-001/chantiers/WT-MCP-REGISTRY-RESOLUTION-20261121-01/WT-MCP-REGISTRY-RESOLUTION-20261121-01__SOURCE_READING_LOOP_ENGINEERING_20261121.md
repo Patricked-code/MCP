@@ -1,5 +1,5 @@
 # Lecture intégrale et traçabilité — source « Loop Engineering.docx »
- 
+
 > **Entité racine** : mission `WT-MCP-REGISTRY-RESOLUTION-20261121-01` ; dépôt `Patricked-code/MCP`.
 > **Source de l'utilisateur** : `Loop Engineering.docx` (document importé dans la conversation le 21/11/2026).
 > **SHA-256 exact du fichier source binaire** : `91eb8a4f733c417d394c2ed6680a5ac395d309f95910476edf4eb136d84c0548`.
