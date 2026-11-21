@@ -1,6 +1,7 @@
 import { createAdmissionsRouter } from './web/admissions.js';
 import { consoleNav, consoleStyleTag, viewportTag } from './web/consoleUi.js';
 import { projectExistingMcpAuthorities } from './registryFederation/fromAuthorities.js';
+import { GitRegistryV1Schema, RegistryProjectSchema } from './github/registryV2.js';
 import { renderFederatedRegistryCockpit, type FederatedCockpitScope } from './web/federatedRegistryCockpit.js';
 import express from 'express';
 import { readFile, stat } from 'node:fs/promises';
@@ -889,9 +890,34 @@ export async function startHttpServer(): Promise<void> {
           ? getGovernedTaskToolDependencies().queue.listVisibleTasks()
           : Promise.resolve(null)
       ]);
+      // The historical registry reader is permissive. Validate only the scoped
+      // fields needed by the federated read model, never cast them as V2 or
+      // infer a project/mapping from an unvalidated legacy declaration.
+      const safeMappings = registry.repoMappings.filter((mapping) =>
+        GitRegistryV1Schema.shape.repoMappings.element.safeParse(mapping).success);
+      const safeProjects = (registry.projects ?? []).filter((project) =>
+        RegistryProjectSchema.safeParse(project).success);
+      const parsedRegistry = GitRegistryV1Schema.safeParse({
+        version: 1,
+        updatedAt: registry.updatedAt,
+        accounts: [],
+        repoMappings: safeMappings,
+        auditEvents: [],
+        projects: safeProjects
+      });
+      if (!parsedRegistry.success) throw new Error('FEDERATION_LEGACY_REGISTRY_INVALID');
+      // Partial coverage must remain visible when an older mapping lacks a
+      // complete provider-scoped identifier; never repair it by guessing.
+      if (safeMappings.length !== registry.repoMappings.length
+        || safeProjects.length !== (registry.projects?.length ?? 0)) {
+        logger.warn({ reasonCode: 'FEDERATION_UNVERIFIED_LEGACY_RECORDS',
+          omittedMappings: registry.repoMappings.length - safeMappings.length,
+          omittedProjects: (registry.projects?.length ?? 0) - safeProjects.length },
+        'Registre fédéré : déclarations historiques non validables');
+      }
       const projection = projectExistingMcpAuthorities({
         observedAt: new Date().toISOString(),
-        registry,
+        registry: parsedRegistry.data,
         queue: queue === null ? null : {
           storeRevision: queue.storeRevision,
           tasks: queue.tasks
