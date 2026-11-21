@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 250,
+  "trackedCount": 251,
   "categories": {
     "canonical": 7,
-    "documentation": 99,
+    "documentation": 100,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -568,6 +568,10 @@
     },
     {
       "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__CONTINUITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__CONVERGENCE_MATRICES_LOOP_24X7.md",
       "category": "documentation"
     },
     {
