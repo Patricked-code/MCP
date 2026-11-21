@@ -18,3 +18,9 @@ Le contenu ajouté reprend les éléments accessibles dans l'environnement actue
 - Dépôt : `Patricked-code/MCP`
 - Dossier : `Migration/`
 - Date de création : 2026-07-04
+
+## Audit de reprise live du 10 novembre 2026 — lecture seule
+
+- [05_AUDIT_READONLY_S1_S2_20261110.md](05_AUDIT_READONLY_S1_S2_20261110.md) : observations directes S1/S2, droits et saturation S2.
+- [06_MATRICE_ACTIONS_ET_PERMISSIONS_20261110.md](06_MATRICE_ACTIONS_ET_PERMISSIONS_20261110.md) : six cibles historiques, protections, dépendances et gates d'admission.
+- [07_POINT_DE_REPRISE_ET_PROCHAINES_ACTIONS_20261110.md](07_POINT_DE_REPRISE_ET_PROCHAINES_ACTIONS_20261110.md) : checkpoint, preuves, limites et NEXT_ACTION. **Aucune suppression ni écriture serveur.**
