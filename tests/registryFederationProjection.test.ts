@@ -117,3 +117,16 @@ test('reject timestamps later than the projection or invalid task statuses and m
     observedAt, entities: Array(5001).fill(entity(repo, 'github:repository-1285534440')), links: []
   }), /FEDERATION_LIMIT_EXCEEDED/);
 });
+
+test('conflicting READY and SUPERSEDED always expose terminal history in either order', () => {
+  const ready: FederatedEntityInput = { ...entity(task, 'queue:revision-244'), taskStatus: 'READY' };
+  const superseded: FederatedEntityInput = { ...entity(task, 'queue:revision-244'), taskStatus: 'SUPERSEDED' };
+  for (const sources of [[ready, superseded], [superseded, ready]]) {
+    const r = buildFederatedRegistryProjection({ observedAt, entities: sources, links: [] });
+    assert.equal(r.entities.length, 1);
+    const item = r.entities[0]!;
+    assert.equal(item.taskStatus, 'SUPERSEDED');
+    assert.deepEqual(item.taskStatusClaims, ['READY', 'SUPERSEDED']);
+    assert.equal(item.evidence.verification, 'CONFLICT');
+  }
+});
