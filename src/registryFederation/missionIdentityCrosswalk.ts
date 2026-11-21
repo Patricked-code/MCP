@@ -139,17 +139,18 @@ export function assessMissionIdentityCrosswalk(
     }
   }
 
-  const evidenceRefs = [document.evidenceRef.trim(), registry.digest
+  const status = conflict.size ? 'CONFLICT' : reasons.length ? 'UNVERIFIED' : 'CONSISTENT';
+  const evidenceRefs = [documentShaValid ? document.evidenceRef.trim() : '', registry.digest
     ? 'gitregistry:sha256:' + registry.digest : '',
     mapping ? 'gitregistry:mapping:' + mapping.mappingId : '']
     .filter((value) => value.length > 0);
   return Object.freeze({
-    status: conflict.size ? 'CONFLICT' : reasons.length ? 'UNVERIFIED' : 'CONSISTENT',
+    status,
     observedAt: input.observedAt,
     continuityId: document.continuityId,
     documentaryProjectUid: document.projectUid,
     repositoryId: document.repositoryId,
-    matchedProjectId: record?.projectId ?? null,
+    matchedProjectId: status === 'CONSISTENT' ? (record?.projectId ?? null) : null,
     sourceCommitSha: documentShaValid ? document.sourceCommitSha : null,
     evidenceRefs: Object.freeze(evidenceRefs),
     reasonCodes: Object.freeze(reasons),
