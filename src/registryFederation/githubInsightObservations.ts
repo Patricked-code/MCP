@@ -274,6 +274,7 @@ export function deriveVerifiedGithubInsightScope(input: Readonly<{
     || !project.registryDigest || !project.candidateDigest
     || !Number.isSafeInteger(selected.githubRepositoryId) || selected.githubRepositoryId <= 0
     || !selected.fullName || !REPO.test(selected.fullName)
+    || selected.repositoryId.replace(/^github:/i, '').toLowerCase() !== selected.fullName.toLowerCase()
     || selected.fullName.split('/').some(part => part === '.' || part === '..')
     || project.repositoryId?.toLowerCase() !== selected.repositoryId.toLowerCase()
     || mapping.repositoryId.toLowerCase() !== selected.repositoryId.toLowerCase()
