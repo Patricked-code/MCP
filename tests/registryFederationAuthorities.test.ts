@@ -126,3 +126,57 @@ test('two incompatible projectUid claims for the same projectId are CONFLICT', (
   assert.equal(project?.evidence.verification, 'CONFLICT');
   assert.ok(project?.reasons.includes('FEDERATION_SOURCE_CONFLICT'));
 });
+
+test('UID-less mapping followed by different explicit UIDs is deterministic, not discarded', () => {
+  const first = legacy('P-1').repoMappings[0]!;
+  for (const order of [
+    [{ ...first }, { ...first, id: 'm-a', githubRepo: 'OtherA', projectUid: 'UID-A' }, { ...first, id: 'm-b', githubRepo: 'OtherB', projectUid: 'UID-B' }],
+    [{ ...first, id: 'm-b', githubRepo: 'OtherB', projectUid: 'UID-B' }, { ...first }, { ...first, id: 'm-a', githubRepo: 'OtherA', projectUid: 'UID-A' }]
+  ]) {
+    const registry: GitRegistryV1 = { ...legacy('P-1'), repoMappings: order };
+    const graph = projectExistingMcpAuthorities({ observedAt, registry, queue: null });
+    const project = graph.entities.find(e => e.identity.kind === 'PROJECT')!;
+    assert.equal(project.evidence.verification, 'CONFLICT');
+    assert.ok(project.reasons.includes('FEDERATION_SOURCE_CONFLICT'));
+  }
+  const registry: GitRegistryV1 = { ...legacy('P-1'), repoMappings: [
+    { ...first }, { ...first, id: 'm-a', githubRepo: 'OtherA', projectUid: 'UID-A' }
+  ] };
+  const graph = projectExistingMcpAuthorities({ observedAt, registry, queue: null });
+  const project = graph.entities.find(e => e.identity.kind === 'PROJECT')!;
+  assert.equal(project.evidence.verification, 'DECLARED');
+  assert.deepEqual(project.identifiers.map(x => x.value), ['UID-A']);
+});
+
+test('cross-repository dependency resolves the referenced task owner, never dependent owner', () => {
+  const graph = projectExistingMcpAuthorities({
+    observedAt, registry: legacy(), queue: { storeRevision: 244, tasks: [
+      { taskId: 'TASK-20261119-001', repository: 'OtherOrg/Repo',
+        title: 'Prerequisite', status: 'DONE', updatedAt: observedAt, dependencies: [] },
+      { taskId: 'TASK-20261120-001', repository: 'Patricked-code/MCP',
+        title: 'Dependent', status: 'READY', updatedAt: observedAt, dependencies: ['TASK-20261119-001'] }
+    ] }
+  });
+  const dependency = graph.links.find(x => x.relation === 'DEPENDS_ON')!;
+  assert.equal(dependency.verification, 'DECLARED');
+  assert.deepEqual(dependency.reasons, ['FEDERATION_ENDPOINT_UNVERIFIED']);
+  const owned = graph.entities.find(x => x.identity.kind === 'TASK'
+    && x.identity.sourceId === 'TASK-20261119-001')!;
+  assert.equal(dependency.toKey, owned.key);
+});
+
+test('ambiguous duplicate task IDs cannot create arbitrary cross-repository dependency', () => {
+  const graph = projectExistingMcpAuthorities({
+    observedAt, registry: legacy(), queue: { storeRevision: 244, tasks: [
+      { taskId: 'TASK-20261119-001', repository: 'OtherOrg/Repo',
+        title: 'One candidate', status: 'DONE', updatedAt: observedAt, dependencies: [] },
+      { taskId: 'TASK-20261119-001', repository: 'SecondOrg/Repo',
+        title: 'Second candidate', status: 'DONE', updatedAt: observedAt, dependencies: [] },
+      { taskId: 'TASK-20261120-001', repository: 'Patricked-code/MCP',
+        title: 'Dependent', status: 'READY', updatedAt: observedAt, dependencies: ['TASK-20261119-001'] }
+    ] }
+  });
+  const dependency = graph.links.find(x => x.relation === 'DEPENDS_ON')!;
+  assert.equal(dependency.verification, 'AMBIGUOUS');
+  assert.deepEqual(dependency.reasons, ['FEDERATION_ENDPOINT_UNRESOLVED']);
+});
