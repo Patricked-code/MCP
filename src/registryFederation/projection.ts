@@ -71,6 +71,8 @@ export type FederatedProjectedEntity = Readonly<{
   evidence: FederatedEvidence;
   label: string | null;
   taskStatus: FederatedTaskState | null;
+  /** All conflicting task-state claims are retained for historical inspection. */
+  taskStatusClaims: readonly FederatedTaskState[];
   identifiers: readonly FederatedIdentifierClaim[];
   reasons: readonly string[];
 }>;
@@ -188,6 +190,7 @@ export function buildFederatedRegistryProjection(input: Readonly<{
       evidence: stamp,
       label,
       taskStatus,
+      taskStatusClaims: Object.freeze(taskStatus === null ? [] : [taskStatus]),
       identifiers: Object.freeze(identifiers),
       reasons: Object.freeze(withoutProof(source.evidence) ? ['FEDERATION_PROOF_MISSING'] : [])
     });
@@ -202,9 +205,19 @@ export function buildFederatedRegistryProjection(input: Readonly<{
       && prior.evidence.sourceVersion === stamp.sourceVersion
       && prior.label === label && prior.taskStatus === taskStatus
       && JSON.stringify(prior.identifiers) === JSON.stringify(identifiers)) continue;
-    // Never pick one conflicting historical status/ID as the winner.
+    // A conflict never silently hides a historical terminal status, even
+    // when a stale READY observation happened to be processed first.
+    const taskStatusClaims = Object.freeze(
+      [...new Set([...prior.taskStatusClaims, ...candidate.taskStatusClaims])]
+        .sort() as FederatedTaskState[]);
+    const terminal: FederatedTaskState | null =
+      taskStatusClaims.includes('SUPERSEDED') ? 'SUPERSEDED'
+      : taskStatusClaims.includes('CANCELLED') ? 'CANCELLED'
+      : taskStatusClaims.includes('DONE') ? 'DONE' : null;
     entities.set(key, Object.freeze({
       ...prior,
+      taskStatus: terminal ?? (taskStatusClaims.length === 1 ? taskStatusClaims[0]! : null),
+      taskStatusClaims,
       evidence: Object.freeze({ ...prior.evidence, verification: 'CONFLICT' as const }),
       reasons: Object.freeze(['FEDERATION_SOURCE_CONFLICT'])
     }));
