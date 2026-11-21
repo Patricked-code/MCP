@@ -199,3 +199,44 @@ L'identifiant `WT-MCP-AUTONOMY-24X7-20261121-01`, proposé et non créé dans le
 ### Critère transversal de dette zéro
 
 Ne jamais marquer `DONE` tant qu'une intention n'a pas son résultat, sa preuve et son statut exact ; garder `BRANCH_ONLY` pour les commits non mergés, `MERGED_MAIN` pour le code non attesté sur runtime, `DEPLOYED_WITH_DRIFT` pour un runtime healthy avec G1 documentaire décalé, et `CERTIFIED` uniquement après C27 et reprise réelle. Une tâche ChatGPT horaire est un filet de suivi et ne constitue pas une attestation 24/7.
+
+## 11. Mandat transversal ponctuel — fiabiliser G1/E2 sans réordonner RG-001…RG-056 (21 novembre 2026)
+
+**Portée autorisée** : compléter la mission `WT-MCP-REGISTRY-RESOLUTION-20261121-01`, sans nouveau projet ni seconde queue. Conserver chaque PR de son propriétaire : **#434 reste la seule correction documentaire existante** ; la présente exigence ne doit ni modifier sa branche ni en créer un doublon. Le correctif structurel de diagnostic est isolé dans la PR #439 et ne modifie pas `PRODUCTION_STATE.json`.
+
+### Contrats réels déjà observés
+
+1. `src/liveState/collect.ts` contient `buildDocumentationLiveStateCommand()` et une exemption vérifiée des **descendants documentaires purs** (`documentation_descendant_scope=docs_only`). Elle ne dispense pas de contrôler l'ascendance Git ni les chemins modifiés. Ne pas la supprimer sans preuve de remplacement sûr.
+2. `src/liveState/reconcile.ts` classe `DOCUMENTATION_DRIFT` comme `RECONCILIATION_REQUIRED` et `nextAction=reconcile_canonical_documentation` ; le préflight E2 bloque si le Live State ne satisfait pas sa gate.
+3. `src/deploy/g1Documentation.ts` renvoie `ALIGNED / DRIFT / UNVERIFIED` suivant freshness ≤ 60 s, GitHub/S1/runtime exact SHA, health, worktree, contradictions, état et SHA de documentation. `UNVERIFIED` **n'est pas** un état à auto-promouvoir.
+4. `.github/workflows/mcp-deploy.yml` possède déjà un job `reconcile-documentation` après attestation OIDC et un mécanisme GW-60/61/62/63. Après déploiement, la fenêtre de relecture G1 historique était 60 s / 3 essais ; la PR #439 propose 180 s / 6 essais et des motifs `UNVERIFIED` bornés, sans changement d'autorité.
+5. `src/governance/e2EntryJournal.ts` utilise le **credential serveur** `src/github/connection.ts` et `POST /repos/Patricked-code/MCP/issues/359/comments`, suivi de `GET /repos/Patricked-code/MCP/issues/comments/{id}` comme attestation read-after-write. Le probe GET GitHub serveur = 200 ne démontre pas Issues:write ; un HTTP 403 reste bloquant.
+
+### Correspondance aux opérations sans nouveau backlog
+
+| Autorité / travaux | Opérations existantes | Enrichissement et critères |
+| --- | --- | --- |
+| Audit Live State / GitRegistry | RG-001…RG-007 | Sur événement et reprise : observer, enregistrer version, fraîcheur, exact SHA, scope et provenance ; distinguer stale, unavailable, 403, drift |
+| Relations / fédération | RG-008…RG-012, RG-021…RG-024 | Établir autorité/projet/chantier/source/version, conflits d'IDs, suivi des documents et correspondances, sans seconde base |
+| CUG/GRT intake | RG-013…RG-020, RG-043…RG-045 | Corrélation des événements, idempotency key, locks P2, contrôle droits/ownership, classification avant toute correction |
+| Tests / livraison / docs | RG-030…RG-035, RG-049…RG-051 | G1 preuve tardive, root-cause des UNVERIFIED, CI & review exact HEAD, Deploy OIDC, réattestation et suivi des bloqueurs |
+| Insight / architecture | RG-036…RG-042 | Diff baselines / analyse de dépendances et risques avant plan de réparation |
+| Supervision & continuité | RG-046…RG-048, RG-052…RG-056 | Déclencheurs bornés et surveillés, mémoire/cockpit/alertes, reprises, pilote C27, tests de récupération et certification du worker seulement après attestation réelle |
+
+### Parcours générique cible, sans deuxième moteur
+
+`TRIGGER reçu → observation des autorités réelles → preuve horodatée, SHA et état → comparaison des versions et relations → classification {ALIGNED, DRIFT, UNVERIFIED, CONFLICT, INACCESSIBLE} → analyse impact/dépendances → plan borné/compensation et rollback → admission P2 et lock si WRITE nécessaire → correction selon autorité existante → tests + PR + revue → Governed Deploy si besoin → Live State / G1 / E2 readback → documents et checkpoints propriétaires → reprise`.
+
+Déclencheurs : `AGENT_ARRIVAL`, `WORKSTREAM_RESUME`, `PR_MERGED`, `GOVERNED_DEPLOY_ATTESTED`, `CUG_GITHUB_EVENT`, `SCHEDULED_READONLY_CHECK`. Leur réception doit produire **une observation**, jamais un ordre de WRITE implicite. Idempotence sur `(authority, eventId, targetScope, observedSha)` par les mécanismes déjà présents ; collision = `CONFLICT/BLOCKED`, pas suppression de données ni deuxième agent propriétaire.
+
+**GW-60/GW-61/GW-62 et G1 ne sont pas déclarés éternels.** Faire un inventaire contractuel, puis choisir conservation, amélioration ou remplacement progressif après tests d'équivalence et bascule gouvernée. Aucun retrait tant que le chemin successeur n'est pas certifié.
+
+### Critères de clôture vérifiables
+
+1. #434 intégrée après CI/revue exacte et déploiement gouverné, E2 préflight admissible sur Live State recontrôlé.
+2. Les causes `UNVERIFIED` restent traçables et **refusent** la promotion sans preuve ; le prochain déploiement détecte et traite sa documentation sans dérive prolongée.
+3. Le credential exact du serveur est autorisé effectivement sur **Issues:write** du dépôt cible, sans contournement ni secret exposé ; `ACTIVATED` → `READY_FOR_OWNER` écrits, relus et intègres ; reprise `RESUME` de `MCP-PILOT-E2-01-CONT-20261030-ROOT-01` explicitement attestée.
+4. Replays d'événements, conflicts, permissions 403, PR concurrentes, tests de non-régression et reprise E2 sous SHA précis réussissent ; aucune Task ou PR dupliquée.
+5. Registres et mémoire canonique conservent cause, correctif, auteur, SHA, CI, review, deploy, Live State, statut de preuve et checkpoint ; autre agent peut reprendre sans reconstituer les échanges.
+
+**Statut actuel** : conception et PR #439 en cours, **PAS clôturé ni déployé**. La correction de credential E2 reste une intervention distincte soumis au droit administrateur effectif.
