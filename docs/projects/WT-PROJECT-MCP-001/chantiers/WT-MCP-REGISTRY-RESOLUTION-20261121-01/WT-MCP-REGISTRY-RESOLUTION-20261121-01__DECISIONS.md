@@ -53,3 +53,12 @@
 - D23 — Pas de worker dans le conteneur MCP, pas de Docker socket production accessible au codeur ; UAES isolé après audit U02, C26 ports, C27 réel.
 - D24 — Disponibilité permanente ≠ code permanent ; IDLE valide ; automate horaire ChatGPT ≠ host 24/7 ; supervision externe et reprise après crash indispensables.
 - D25 — Rapport systématique de dette : branch-only / merged / deploy-run / runtime-readback / G1 / C27, statuts indépendants.
+
+## Décisions transversales ponctuelles G1/E2 — 21 novembre 2026
+
+- **D26 — Anti-collision #434 :** la PR #434 garde seule la correction de `PRODUCTION_STATE.json` ; aucun nouveau correctif documentaire concurrent ni écriture sur sa branche par le chantier structurel.
+- **D27 — Réutiliser les mécanismes :** G1, GW-60/61/62, Live State, Governed Deploy et E2 sont des contrats existants à inventorier, améliorer ou remplacer **après démonstration d'équivalence**, jamais des acquis immuables ni une raison de créer un second moteur.
+- **D28 — UNVERIFIED n'est jamais un succès :** enrichir les motifs de fraîcheur, sources, SHA, image, santé et conflits. Les preuves doivent rester effectives et échouer fermement en absence d'autorité.
+- **D29 — Credential E2 indépendant :** diagnostiquer les droits du credential serveur exact `Issues:write` sur `Patricked-code/MCP`, puis attester le POST/GET journal issue #359, le parcours ACTIVATED→READY_FOR_OWNER et RESUME canonique. Le connecteur GitHub ChatGPT ne se substitue pas au credential du service.
+- **D30 — Contrôles documentaires génériques :** toute observation, divergence et correction conserve provenance, date, degré de vérification, scope, SHA, dépendances, tests et checkpoint ; les événements d'agents, PR, deploy, CUG et la supervision ne donnent aucun droit d'écriture.
+- **D31 — Priorités constantes :** ce mandat transversal enrichit RG-001…RG-056 sans renommer, interrompre ou réordonner le programme ; le sous-chantier 24X7 reste enfant. Toute livraison est vérifiée séparément au niveau branche, merge, deploy, runtime, documentation, E2.
