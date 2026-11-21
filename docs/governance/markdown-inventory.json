@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 251,
+  "trackedCount": 255,
   "categories": {
     "canonical": 7,
-    "documentation": 100,
+    "documentation": 104,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -599,7 +599,15 @@
       "category": "documentation"
     },
     {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__AGENTS.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__ARCHITECTURE.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__CARTOGRAPHY.md",
       "category": "documentation"
     },
     {
@@ -619,7 +627,15 @@
       "category": "documentation"
     },
     {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__MEMORY.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__ROADMAP.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__SOURCE_OF_TRUTH.md",
       "category": "documentation"
     },
     {
