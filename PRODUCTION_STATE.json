@@ -6,11 +6,11 @@
   "domain": "https://mcp.wealthtechinnovations.com",
   "container": "wealthtech_mcp_ssh_bridge",
   "localPort": "127.0.0.1:8787",
-  "githubObservedAt": "2026-11-20T12:57:58.715Z",
-  "githubObservationBasis": "G1_GOVERNED_DEPLOY_EXACT_SHA_LIVESTATE_V1398_20261120T125758Z",
-  "serverStateFreshness": "current_exact_sha_readonly_attested_20261120T125758Z",
-  "runtimeStateFreshness": "current_exact_sha_runtime_observed_20261120T125758Z",
-  "githubCommitFull": "fb0cb47417ace348176ff3218484783cc6978a8d",
+  "githubObservedAt": "2026-11-20T13:12:41.490Z",
+  "githubObservationBasis": "G1_GOVERNED_DEPLOY_EXACT_SHA_LIVESTATE_V1408_20261120T131241Z",
+  "serverStateFreshness": "current_exact_sha_readonly_attested_20261120T131241Z",
+  "runtimeStateFreshness": "current_exact_sha_runtime_observed_20261120T131241Z",
+  "githubCommitFull": "5bc5e2b4c0b2aa176c1f6131826afbea7af2f164",
   "requiredRules": [
     "GitHub est la source versionnée.",
     "Le serveur MCP est la source exécutée.",
@@ -28,7 +28,7 @@
   },
   "githubState": {
     "currentMainVerified": true,
-    "currentMainCommit": "fb0cb47417ace348176ff3218484783cc6978a8d",
+    "currentMainCommit": "5bc5e2b4c0b2aa176c1f6131826afbea7af2f164",
     "pullRequest37Merged": true,
     "pullRequest38Merged": true,
     "pullRequest39Merged": true,
@@ -188,10 +188,10 @@
   },
   "serverGitState": {
     "branch": "main",
-    "lastDirectlyVerifiedCommitAbbrev": "fb0cb47",
-    "lastDirectlyVerifiedCommitFull": "fb0cb47417ace348176ff3218484783cc6978a8d",
-    "originMain": "fb0cb47417ace348176ff3218484783cc6978a8d",
-    "lastDirectlyVerifiedAt": "2026-11-20T12:57:58.715Z",
+    "lastDirectlyVerifiedCommitAbbrev": "5bc5e2b",
+    "lastDirectlyVerifiedCommitFull": "5bc5e2b4c0b2aa176c1f6131826afbea7af2f164",
+    "originMain": "5bc5e2b4c0b2aa176c1f6131826afbea7af2f164",
+    "lastDirectlyVerifiedAt": "2026-11-20T13:12:41.490Z",
     "lastKnownWorkingTreeClean": true,
     "diffEmpty": true,
     "currentAlignmentAttested": true,
@@ -201,19 +201,19 @@
     "fetchRemote": "git@github.com-mcp-patricked-ro:Patricked-code/MCP.git",
     "pushRemote": "disabled://mcp-s1-read-only",
     "originMainFreshness": "current_live_state_attested",
-    "originMainObservationBasis": "G1_GOVERNED_DEPLOY_EXACT_SHA_LIVESTATE_V1398_20261120T125758Z"
+    "originMainObservationBasis": "G1_GOVERNED_DEPLOY_EXACT_SHA_LIVESTATE_V1408_20261120T131241Z"
   },
   "runtimeState": {
     "containerStatus": "running",
     "health": "healthy",
-    "imageId": "sha256:0de092aa578ad74442151ca170ce03050532b6248db6b25f725cd777201ad4b9",
-    "currentRuntimeRevision": "fb0cb47417ace348176ff3218484783cc6978a8d",
+    "imageId": "sha256:3eb84ed1a826e771a5dd6e580790749aff0bd3efd6e1bd748875b2d7a50feb2c",
+    "currentRuntimeRevision": "5bc5e2b4c0b2aa176c1f6131826afbea7af2f164",
     "status": "FULLY_ALIGNED",
     "healthOk": true,
     "oauthOk": true,
     "mcpAuthOk": true,
     "rollbackStatus": "not_needed",
-    "imageIdFreshness": "current_live_state_observed_20261120T125758Z"
+    "imageIdFreshness": "current_live_state_observed_20261120T131241Z"
   },
   "liveState": {
     "stateVersion": 1188,
@@ -509,7 +509,7 @@
     "correctionReview": "zero_critical_important_minor",
     "pr49LateThreadsResolved": true
   },
-  "serverCommitFull": "fb0cb47417ace348176ff3218484783cc6978a8d",
+  "serverCommitFull": "5bc5e2b4c0b2aa176c1f6131826afbea7af2f164",
   "governedWorkflowPr95": {
     "pullRequest": 95,
     "candidateHead": "015dc3ebde69aa52aaa55514ef9494b83a76713a",
