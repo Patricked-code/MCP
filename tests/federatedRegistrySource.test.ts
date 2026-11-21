@@ -67,3 +67,20 @@ test('malformed V2 fails closed instead of displaying a misleading empty registr
     await assert.rejects(() => readFederatedGitRegistrySource());
   });
 });
+
+test('V1 null/malformed mappings are omitted before legacy normalization while valid mappings survive', async () => {
+  const malformed = {
+    ...legacy,
+    repoMappings: [null, legacy.repoMappings[0], { owner: 'broken' }]
+  };
+  await withRegistry(malformed, async () => {
+    const source = await readFederatedGitRegistrySource();
+    assert.equal(source.registry.version, 1);
+    assert.equal(source.omittedMappings, 2);
+    const graph = projectExistingMcpAuthorities({
+      observedAt, registry: source.registry, queue: null
+    });
+    assert.equal(graph.links.length, 1);
+    assert.equal(graph.links[0]?.verification, 'DECLARED');
+  });
+});
