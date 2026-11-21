@@ -100,3 +100,82 @@
 5. Mettre à jour continuité à chaque jalon, append-only dans les autorités en place.
 
 **NEXT_ACTION CURRENT** : obtenir la revue indépendante sur la PR #429, appliquer seulement ensuite la fusion/deploy existants si gates et propriétaire permettent, réattester G1, puis reprendre le plan à RG-003 et RG-005. Les auditeurs peuvent continuer des lectures sans mutation en attendant.
+
+---
+
+## 9. Extension approuvée : usine logicielle gouvernée 24/7 — 2026-11-21 (P10–P17)
+
+**Mandat additionnel du propriétaire :** élargir cette MÊME mission à une usine de développement durable sur serveur. ChatGPT devient un client facultatif, jamais le heartbeat ni le runtime de l'usine. Ce chantier reste rattaché à `WT-MCP-REGISTRY-RESOLUTION-20261121-01`, à la fédération des registres et aux PR existantes. Le présent addendum est **PLANIFIÉ, NON ENCORE DÉPLOYÉ** ; il n'attribue aucun mandat d'agent ni autorité d'exécution.
+
+### Chaîne cible et séparation des rôles
+
+`GitHub/CUG/Insights/Codebase/Runtime observations → attestations de couverture → GitRegistry/ProjectReality + cartographie+architecture existantes → analyse d'écart → propositions et plans → TODO/TASKS du chantier (documents) → admission gouvernée P2/Task Queue (autorité) → sélection dépendances+locks+session → worker codeur isolé → tests+revue indépendante → PR+GitHub ruleset → merge autorisé → Governed Deploy OIDC → Live State/G1 → checkpoints → prochaine tâche admissible`.
+
+**L'« analyste / architecte » ne code pas à l'aveugle :** il produit d'abord une fiche d'existant sourcée (repo + commit + composants + API + dépendances + contraintes + collisions), une analyse d'impact, les alternatives et les tests nécessaires. Le « planificateur » place les unités de travail dans le graphe des dépendances et publie les changements de TODO/ROADMAP après validation documentaire. Le « codeur » n'agit que sur un périmètre déjà admis, avec une session/lock réelle, et le « réviseur » indépendant vérifie le diff/test exact. Le « vérificateur » atteste CI, déploiement, runtime et doc. Les rôles peuvent utiliser différents LLM/agents, mais **ne partagent pas implicitement identité ou permissions**.
+
+### P10 — GitHub Insights et sécurité supply chain comme CAPTEURS, pas autorités
+
+| ID | Ordre et travail | Preuve et non-régression |
+| --- | --- | --- |
+| RG-036 | Inventaire lecture seule des réglages **réels** par dépôt : Dependency graph, Dependabot alerts/security updates, code scanning/CodeQL, secret scanning/push protection, rulesets, vérifications requises, actions/workflows, App CUG installation ; état `ENABLED/DISABLED/INACCESSIBLE/UNKNOWN/NOT_APPLICABLE` avec observation et source | Aucun « activé » déduit d'un onglet GitHub ou d'un simple fichier ; HTTP 403/404 = échec de visibilité distinct de fonction désactivée |
+| RG-037 | Exporter à la demande le SBOM SPDX via l'API GitHub `GET /repos/{owner}/{repo}/dependency-graph/sbom`, collecter les manifestes/lockfiles et leurs SHA ; observer les alertes et versions vulnérables si les droits existent | Bornes, pagination, horodatage, hash, provenance ; ni dépendance cachée inventée ni exposition de secret |
+| RG-038 | Relever PR/reviews/checks, workflows, runs, Actions, règles de branche, releases, forks/parent, activité/réseau et graphes de contributeurs si autorisés ; distinguer métriques de développement et dépendances de code | `fork` n'est pas un projet CUG admis ; l'absence de permission `Administration:read` pour le trafic est signalée sans escalade |
+| RG-039 | Construire une projection `GithubInsightEvidence` par dépôt sous les mêmes règles d'accès de GitRegistry/CUG, sans second store d'autorité ; réindexation incrémentale par événements CUG + contrôles programmés | Traçabilité exacte source→projet→composant→risque, idempotence des événements, vue par dépôt/projet, cache recalculable, aucun nouveau Task runtime sans admission |
+
+Références de vérification : GitHub Docs « dependency graph », « export SBOM », « dependency submission API », « Dependabot », « code scanning », « REST metrics / traffic », « protected branches / rulesets ». **Activation des fonctions GitHub uniquement dépôt par dépôt, après mesure des permissions et conservation des protections existantes** ; pas de script global « enable all » aveugle.
+
+### P11 — compréhension structurée du code et des dépendances
+
+| ID | Travail | Critère |
+| --- | --- | --- |
+| RG-040 | Générer une **carte du dépôt à SHA exact** : manifeste, exports publics, imports, modules, migrations, API routes, files de données, workers/cron, tests, pipelines, infra, Docker/Compose, secrets *référencés sans les lire* ; importer l'architecture documentaire existante | Carte des composants sourcée avec statut `OBSERVED/DECLARED/UNVERIFIED/CONFLICT`; pas d'exécution de code non fiable pendant l'inventaire |
+| RG-041 | Rapprocher trois graphes **distincts** : dépendances logicielles (packages/API), dépendances fonctionnelles (services et flux), dépendances de tâches (P2/Loop/UAES), avec distance/impact, risques de rupture et ownership | Pas de confusion `package dépend de package` et `Task A dépend de Task B` ; impact et priorité explicables |
+| RG-042 | Obliger une fiche de changement `current-state / delta / placement / tests RED / rollback / preuve` avant lot de code ; route vers validation d'architecture lorsqu'une dépendance inconnue ou externe est touchée | Le codeur ne réécrit pas la cartographie en source de vérité sans revue ; pas de suppression de comportement historique |
+
+### P12 — planification gouvernée et exécution continue
+
+| ID | Travail | Critère |
+| --- | --- | --- |
+| RG-043 | Réutiliser `src/operationalMemory/taskQueue.ts`, sessions, locks, event journal, `scripts/mcp-autonomous-agent-continuation.mjs` (C26) et `scripts/mcp-autonomy-e2e-certification.mjs` (C27) comme contrats d'admission, de continuation et de certification ; ne pas inventer une autorité parallèle | Session transport réellement liée, bootstrap et exact-SHA, P2 task, lock, preuve d'ownership ; un prochain travail READY n'accorde pas un claim |
+| RG-044 | Réaliser une passerelle CUG `observation vérifiée → candidat de plan → scope GitRegistry → admission via outil P2 autorisé → tâche durable` ; corréler deliveryId/intentKey/taskId dans la projection fédérée, jamais par une écriture directe de Task Queue | Rejeu identique = pas de doublon ; conflit de scope/identité = aucune tâche ; travaux d'autres dépôts jamais admis sans droits |
+| RG-045 | Ordonnanceur déterministe `READY / dépendances DONE / priorité / collision / quota` basé sur l'autorité P2 ; aucun intervalle d'agent ne remplace l'ownership ; si aucune tâche admissible, attendre un événement sans occuper le CPU | Pas de double claim, de starvation silencieuse, de boucle infinie sur BLOCKED, de transfert sur simple heartbeat expiré |
+
+### P13 — worker durable sur S1 (indépendant de ChatGPT)
+
+| ID | Travail | Critère |
+| --- | --- | --- |
+| RG-046 | Inventorier la capacité S1 (CPU/RAM/disque/quotas/réseau, backup, secret store, isolation des conteneurs), l'architecture Docker Compose actuelle et les mécanismes de redémarrage/supervision déjà présents ; prévoir un **service distinct isolé** sans toucher au runtime MCP existant | Dimensionnement, rollback, secrets séparés et impact zéro sur les applications S1 ; aucun déploiement Kubernetes présumé |
+| RG-047 | Développer un **adaptateur d'hôte d'agent** (pas de moteur concurrent) pour C26 : provider LLM configuré en secret, identité authentifiée, workspace éphémère, branche dédiée, I/O bornées, budgets temps/coût, journaux redigés, annulation contrôlée, séparation architecture/code/review | Aucun token ChatGPT nécessaire ; host n'usurpe pas session MCP, aucun accès SSH root ou clone large non autorisé, réponse C26 refusée si ports absents |
+| RG-048 | Runner durable supervisé via Compose/systemd existant : restart, health/readiness, signaux, ordonnanceur événementiel, reprise après crash, état persistant minimal lié aux autorités (exécution/idempotence, pas de seconde queue), contention/fencing, DLQ de diagnostics, metrics et alertes | Tests panne/restart/replay/lock + validation d'un redémarrage réel du service ; `24/7 ACTIVE` seulement après une attestation de runtime réel et une endurance observée |
+
+### P14 — usine de livraison, contrôle qualité et sécurité
+
+| ID | Travail | Critère |
+| --- | --- | --- |
+| RG-049 | Générer des PR additives par tâche avec tests RED/GREEN, impact explicite, code review bot indépendant sur SHA exact ; compléter CodeQL, Dependency Review, Dependabot, secret scanning si disponibles sans casser les contrôles existants | Aucune auto-approbation fictive, aucune PR non revue fusionnée, tout changement lié à Task et Evidence |
+| RG-050 | Activer **auto-merge conditionnel** seulement si rulesets réels le permettent : approvals exigés, CI success, fils résolus, source HEAD à jour, droits de l'App explicitement attestés | Aucune modification des protections de branche pour accélérer la chaîne ; refus = bloqueur observable, pas bypass |
+| RG-051 | Après fusion, réutiliser `.github/workflows/mcp-deploy.yml` (OIDC→S1 Docker Compose), vérifier exact SHA GitHub/S1/runtime/health, faire G1 documentaire, produire rollback et C27 puis reprendre la tâche suivante | `FULLY_ALIGNED` prouvé, non inféré ; Kubernetes seulement après mission de migration dédiée |
+
+### P15/P16 — cockpit de la fabrique et supervision fédérée
+
+| ID | Travail | Critère |
+| --- | --- | --- |
+| RG-052 | Étendre le cockpit fédéré existant : **Factory / Projects / Workstreams / Tasks / Insights / Security / Dependencies / Agents / Runs / Deploy / Continuity**, vues globales et par scope | Chaque objet avec source, horodatage, degré de preuve, liens vers registre détenteur ; historiques DONE/CANCELLED/SUPERSEDED consultables |
+| RG-053 | Panneaux de contrôle : worker health, dernier heartbeat, backlog bloqué, latence d'événement, tentatives/reprises, CI, revues, vulnérabilités, couverture CUG et permissions GitHub ; alertes et journal d'incident | Un worker absent ou sans attestation apparaît `UNKNOWN/STOPPED`, jamais « en cours » par supposition |
+| RG-054 | Rattacher checkpoints à TODO/TASKS/SUIVI/MÉMOIRE **dans chaque dépôt propriétaire**, par PR documentaire gouvernée ; le cockpit n'est qu'une projection | Pas de gros registre manuel ni de modification de dépôts sans admission/installation réelle |
+
+### P17 — pilote, endurance et décision de généralisation
+
+| ID | Travail | Critère |
+| --- | --- | --- |
+| RG-055 | Pilote unique MCP en staging isolé : réception d'un événement, analyse de code et de dépendances, plan/Task P2, code et tests, revue, PR, merge/deploy autorisés, checkpoint C27, redémarrage forcé, rejeu, négatifs de permissions, rollback | Chaîne bout-en-bout **réellement attestée** avec traces exactes ; pas une simulation ni un workflow Actions isolé |
+| RG-056 | Endurance observée (au moins 72 h de redémarrages/supervision et charges contrôlées), audits de coût/latence/récupération et bornes de permissions ; ensuite activation progressive par installation CUG vérifiée | Attestation de haute disponibilité du **service observé**, sans promesse de disponibilité absolue ou programmation sans tâches ; aucun autre dépôt modifié avant admission |
+
+### Conditions transversales de reprise et d'ordre
+
+1. **G1 et E2** : le correctif documentaire #434 a sa propre vie ; le journal E2 sur issue #359 a un 403 serveur distinct. Aucune permission ou déclenchement de tâche ne peut être déduit d'une CI verte ou de l'accès GitHub du connecteur ChatGPT.
+2. Les PR #432 (cockpit), #435 (candidats CUG) et #430 (dossier) sont **concurrentes** : observer leur dernier SHA, propriétaire et fil de revue avant toute mutation. Ne pas les fusionner « en masse ».
+3. Les RG-036…RG-042 d'observation/analyse peuvent être développées en lecture pendant les validations des PR existantes. **RG-043…RG-056 n'activent aucun agent de production** tant que les garanties de session, runtime, ownership, quota et rollback ne sont pas réunies.
+4. La fréquence horaire de ChatGPT est seulement une **reprise de supervision**. Le véritable travail permanent est la boucle d'un service durable, event-driven et supervisé ; une veille sans tâche READY est un comportement correct.
+5. Le « traitement non-stop » signifie **enchaîner automatiquement toute tâche admissible et sûre** après l'attestation précédente. Une revue obligatoire, un credential refusé ou un conflit réel restent des barrières techniques à réparer, non des invitations à contourner la gouvernance.
+6. **NEXT_ACTION du volet usine** : tester l'état réel des fonctionnalités Insights par dépôt, classifier la couverture CUG, vérifier l'hôte existant de C26 (aucun runtime opérationnel ne doit être présumé), puis produire les composants de lecture et le pilote de worker isolé avec tests négatifs. Garder l'autorité de tâche dans P2 et la source de vérité documentaire dans chaque projet.
