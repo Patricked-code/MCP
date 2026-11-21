@@ -53,6 +53,16 @@ export function planRegistryReview({ event, pr, comments, repository = REPOSITOR
   return { status: 'READY', number, headSha: run.head_sha, marker };
 }
 
+/** Reapply every project/branch/admission gate at the final write boundary. */
+export function requireFreshReviewAdmission({ event, current, comments, planned }) {
+  const checked = planRegistryReview({ event, pr: current, comments });
+  if (checked.status !== 'READY' || planned.status !== 'READY'
+    || checked.headSha !== planned.headSha || checked.number !== planned.number) {
+    throw Error('REGISTRY_REVIEW_SCOPE_CHANGED');
+  }
+  return checked;
+}
+
 async function api(token, route, method = 'GET', payload) {
   const resp = await fetch('https://api.github.com/repos/' + REPOSITORY + route, {
     method,
@@ -110,9 +120,9 @@ export async function main() {
   }
   // Reobserve HEAD immediately before writing; never dispatch on a stale SHA.
   const current = await api(token, '/pulls/' + planned.number);
-  if (current.head?.sha !== planned.headSha || current.draft !== false || current.state !== 'open') {
-    throw Error('REGISTRY_REVIEW_HEAD_MOVED');
-  }
+  // HEAD alone is insufficient: base, scope and ownership may change
+  // between the first read and the last permission-sensitive action.
+  requireFreshReviewAdmission({ event, current, comments, planned });
   const posted = await api(token, '/issues/' + planned.number + '/comments', 'POST', {
     body: '@codex review\n\nReview exact MCP CI HEAD ' + planned.headSha
       + '. This is an independent review request, NOT an approval.\n\n' + planned.marker
