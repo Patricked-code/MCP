@@ -58,6 +58,7 @@ test('le shell déployé propage DRIFT et ALIGNED seulement avec une attestation
     const drift = { status: 'DRIFT', sha };
     const aligned = { status: 'ALIGNED' };
     const unverified = { status: 'UNVERIFIED' };
+    const proofPending = { status: 'UNVERIFIED', reasonCodes: ['G1_POST_DEPLOY_PROOF_PENDING'] };
     const mocks = [
       "sleep() { :; }",
       "curl() {",
@@ -71,7 +72,7 @@ test('le shell déployé propage DRIFT et ALIGNED seulement avec une attestation
       '}'
     ].join('\n');
     for (const [g1, revision, expected] of [
-      [drift, sha, drift], [aligned, sha, aligned], [drift, 'b'.repeat(40), unverified],
+      [drift, sha, drift], [aligned, sha, aligned], [drift, 'b'.repeat(40), proofPending],
       [unverified, sha, unverified]
     ] as const) {
       const output = join(dir, g1.status + '-' + revision[0]);

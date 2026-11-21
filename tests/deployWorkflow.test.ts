@@ -135,10 +135,20 @@ test('G1 job inherits only the attested projection and has no OIDC or workflow w
 test('G1 retries only the post-attestation proof and keeps UNVERIFIED on bounded exhaustion', async () => {
   const [deploy] = (await workflowSource()).split('  reconcile-documentation:');
   const followUp = deploy!.slice(deploy!.indexOf('Deployment attested for exact SHA'));
-  assert.match(followUp, /G1_EVIDENCE='\{"status":"UNVERIFIED"\}'/);
-  assert.match(followUp, /G1_DEADLINE=\$\(\(SECONDS \+ 60\)\)/);
-  assert.match(followUp, /for g1_attempt in 1 2 3/);
+  assert.match(followUp, /G1_EVIDENCE='\{"status":"UNVERIFIED","reasonCodes":\["G1_POST_DEPLOY_PROOF_PENDING"\]\}'/);
+  assert.match(followUp, /G1_DEADLINE=\$\(\(SECONDS \+ 180\)\)/);
+  assert.match(followUp, /for g1_attempt in 1 2 3 4 5 6/);
   assert.match(followUp, /status\/\$\{JOB_ID\}\?sha=\$\{GITHUB_SHA\}&g1=1/);
   assert.doesNotMatch(followUp, /\/deploy\/github\/s1\/start/);
   assert.match(followUp, /g1-evidence=%s[\s\S]*exit 0/);
+});
+
+test('G1 renders bounded reason codes for UNVERIFIED without opening an unverified PR', async () => {
+  const [deploy, g1] = (await workflowSource()).split('  reconcile-documentation:');
+  assert.match(deploy!, /G1_CANDIDATE[\s\S]*UNVERIFIED/);
+  assert.match(g1!, /G1 proof blocked/);
+  assert.match(g1!, /No GitHub write performed/);
+  assert.match(g1!, /throw Error\("G1 proof unavailable/);
+  assert.match(g1!, /G1_EVIDENCE/);
+  assert.doesNotMatch(g1!, /id-token: write|actions: write|merge_pull_request/);
 });

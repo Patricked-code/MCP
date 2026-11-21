@@ -207,7 +207,7 @@ export function createGithubDeployRouter(dependencies: GithubDeployRouteDependen
       if (g1 && status.status === 'succeeded' && status.phase === 'attested'
         && status.runtimeRevision === sha && status.rollbackStatus === 'not_needed'
         && status.healthOk === true && status.oauthOk === true && status.mcpAuthOk === true) {
-        const evidence = await g1(sha).catch((): G1Evidence => ({ status: 'UNVERIFIED' }));
+        const evidence = await g1(sha).catch((): G1Evidence => ({ status: 'UNVERIFIED', reasonCodes: ['G1_EVIDENCE_READ_FAILED'] }));
         return response.status(200).json({ ...status, g1: evidence });
       }
       return response.status(200).json(status);

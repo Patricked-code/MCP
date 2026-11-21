@@ -157,11 +157,11 @@ jobs:
                 unset STATUS_RESPONSE
                 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
                   # Preserve successful deployment separately from documentary evidence collection.
-                  G1_EVIDENCE='{"status":"UNVERIFIED"}'
+                  G1_EVIDENCE='{"status":"UNVERIFIED","reasonCodes":["G1_POST_DEPLOY_PROOF_PENDING"]}'
                   # HTTP health can pass before the Docker health status becomes healthy.
                   # Retry only the read-only proof, within a single bounded window.
-                  G1_DEADLINE=$((SECONDS + 60))
-                  for g1_attempt in 1 2 3; do
+                  G1_DEADLINE=$((SECONDS + 180))
+                  for g1_attempt in 1 2 3 4 5 6; do
                     G1_REMAINING=$((G1_DEADLINE - SECONDS))
                     if (( G1_REMAINING <= 10 )); then break; fi
                     if OIDC_TOKEN="$(get_oidc)"; then
@@ -170,13 +170,16 @@ jobs:
                         --header "Authorization: Bearer ${OIDC_TOKEN}" \
                         "${MCP_BASE_URL}/deploy/github/s1/status/${JOB_ID}?sha=${GITHUB_SHA}&g1=1")"; then
                         if [[ "$(printf '%s' "$G1_STATUS" | validate_status)" == 'succeeded' ]] &&
-                          G1_CANDIDATE="$(node -e 'const {g1}=JSON.parse(require("fs").readFileSync(0,"utf8")); if (!["ALIGNED","DRIFT"].includes(g1?.status)) process.exit(1); process.stdout.write(JSON.stringify(g1));' <<<"$G1_STATUS")"; then
+                          G1_CANDIDATE="$(node -e 'const {g1}=JSON.parse(require("fs").readFileSync(0,"utf8")); if (!["ALIGNED","DRIFT","UNVERIFIED"].includes(g1?.status)) process.exit(1); if (g1.status==="UNVERIFIED" && g1.reasonCodes!==undefined && (!Array.isArray(g1.reasonCodes) || g1.reasonCodes.length>20 || !g1.reasonCodes.every(x=>typeof x==="string" && /^G1_[A-Z0-9_]{2,80}$/.test(x)))) process.exit(1); process.stdout.write(JSON.stringify(g1));' <<<"$G1_STATUS")"; then
                           G1_EVIDENCE="$G1_CANDIDATE"
-                          break
+                          # An UNVERIFIED observation is evidence of a BLOCK, not completion.
+                          if [[ "$(node -e 'process.stdout.write(JSON.parse(process.argv[1]).status)' "$G1_CANDIDATE")" != "UNVERIFIED" ]]; then
+                            break
+                          fi
                         fi
                       fi
                     fi
-                    if [[ "$g1_attempt" != 3 ]] && (( SECONDS + 10 < G1_DEADLINE )); then sleep 10; fi
+                    if [[ "$g1_attempt" != 6 ]] && (( SECONDS + 10 < G1_DEADLINE )); then sleep 10; fi
                   done
                   printf 'g1-evidence=%s\n' "$G1_EVIDENCE" >> "$GITHUB_OUTPUT"
                   unset OIDC_TOKEN G1_EVIDENCE G1_STATUS G1_CANDIDATE
@@ -217,7 +220,7 @@ jobs:
         env:
           G1_EVIDENCE: ${{ needs.deploy.outputs.g1-evidence }}
         run: |
-          node -e 'const {status}=JSON.parse(process.env.G1_EVIDENCE); if (!["DRIFT","ALIGNED"].includes(status)) throw Error("G1 proof unavailable; no GitHub write attempted"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT,"drift="+(status==="DRIFT")+"\n");'
+          node -e 'const fs=require("fs"); const {status,reasonCodes}=JSON.parse(process.env.G1_EVIDENCE); if (!["DRIFT","ALIGNED"].includes(status)) {const codes=Array.isArray(reasonCodes)?reasonCodes.filter(x=>typeof x==="string" && /^G1_[A-Z0-9_]{2,80}$/.test(x)).slice(0,20):[]; fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,"### G1 proof blocked — UNVERIFIED\nNo GitHub write performed. Bounded reasons: "+(codes.join(", ")||"G1_CAUSE_UNAVAILABLE")+"\n"); throw Error("G1 proof unavailable; no GitHub write attempted");} fs.appendFileSync(process.env.GITHUB_OUTPUT,"drift="+(status==="DRIFT")+"\n");'
       - uses: actions/checkout@v4
         if: steps.g1.outputs.drift == 'true'
         with:
