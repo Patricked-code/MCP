@@ -1,5 +1,15 @@
 # SUIVI.md
 
+## 2026-11-21 — Mission de résolution des registres : ancrage global et reprise sans perte (#430)
+
+- **Projet** : `WT-PROJECT-MCP-001` ; **mission** : `WT-MCP-REGISTRY-RESOLUTION-20261121-01` ; **enfant** : `WT-MCP-AUTONOMY-24X7-20261121-01`, sans second moteur de mémoire, GitRegistry ou Governed Task Queue.
+- **Chemin de reprise obligatoire** : [continuité canonique](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__CONTINUITY.md) (section **ANCRAGE NON RÉÉCRIVABLE — avant la parenthèse G1/E2**), [plan RG-001…RG-056](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__IMPLEMENTATION_PLAN.md), [audit de couverture](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__COVERAGE_AUDIT.md). Rattacher toute nouvelle intention aux 56 opérations existantes avant de créer une autre tâche.
+- **Périmètre parent conservé** : rapprochement des projets/dépôts, GitRegistry, observations CUG, GRT, P2, dépendances, cockpit multi-projets et GitHub Insights. Le worker UAES est un sous-chantier futur, non attesté opérationnel.
+- **Parenthèse G1/E2 distincte** : #434 et #439 fusionnées (SHA `58e9a897…` puis `41a9239a…`) ; la branche #430 propose la reprise G1 après déploiement sur 16 tentatives dans 180 s, sans promotion de `UNVERIFIED`. CI/révision, revue et déploiement final doivent être réobservés ; ne pas annoncer `FULLY_ALIGNED` sur un état ancien.
+- **E2 issue #359** : journal historique append-only d'admissions/reprises, POST serveur refusé HTTP 403. La récupération canonique `MCP-PILOT-E2-01-CONT-20261030-ROOT-01` est possible en lecture seule mais `PARTIAL` (`LEGACY_CHECKPOINT_REQUIRES_MANIFEST`). Aucun reçu d'admission nouveau n'est attesté. Une éventuelle migration vers le journal opérationnel existant exige équivalence et readback vérifiés.
+- **NEXT_ACTION** : fermer la correction G1 via CI/revue/merge/Deploy/Live State réels, traiter le journal E2 selon son autorité puis **reprendre la mission à l'ancrage pré-parenthèse**, sans mélanger les autres PR. [décisions locales](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__DECISIONS.md)
+
+
 ## 2026-11-20 — CUG, B1 attesté et vérification opérateur B2
 
 - **B1 en service sur S1** : [déploiement MCP #206](https://github.com/Patricked-code/MCP/actions/runs/44663633992) sur `ea4d043592df22b9530d0850535815d6091b8dec`. La [preuve opérateur dans #407](https://github.com/Patricked-code/MCP/pull/407) confirme la projection privée du reçu UAES réel et l'arbre Git propre.
