@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  observeAuthorizedGithubInsights, observeAuthorizedGithubInsightsWithServerCredential, GITHUB_INSIGHT_SOURCES,
+  observeAuthorizedGithubInsights, observeAuthorizedGithubInsightsWithServerCredential,
+  deriveVerifiedGithubInsightScope, GITHUB_INSIGHT_SOURCES,
   type GithubVerifiedInsightScope, type GithubInsightsReadPort
 } from '../src/registryFederation/githubInsightObservations.js';
 
@@ -156,4 +157,57 @@ test('server credential adapter treats denied GitHub endpoint as unknown, never 
   assert.equal(observation.status,'PARTIAL');
   assert.equal(observation.observations.find(x=>x.source==='DEPENDABOT_ALERTS')?.status,'ACCESS_DENIED');
   assert.equal(observation.mutationPerformed,false);
+});
+
+test('verified project resolution derives an Insights scope without inventing grants',()=>{
+  const repository = {
+    status:'RESOLVED',freshness:'CURRENT',observedAt:now,
+    selectedRepository:{
+      repositoryId:'github:ExampleOrg/ExampleRepo',
+      githubRepositoryId:12345, fullName:'ExampleOrg/ExampleRepo'
+    }
+  };
+  const project = {
+    status:'RESOLVED',freshness:'CURRENT',observedAt:now,
+    repositoryId:'github:ExampleOrg/ExampleRepo',registryDigest:'registry:sha',
+    candidateDigest:'candidate:sha',
+    selectedMapping:{
+      mappingId:'MAP-001',projectId:'PROJECT-001',
+      repositoryId:'github:ExampleOrg/ExampleRepo',
+      activationReadiness:'READY',
+      governance:{candidateFromV1:false}
+    },
+    selectedProject:{projectId:'PROJECT-001'}
+  };
+  const valid = deriveVerifiedGithubInsightScope({
+    repository:repository as unknown as import('../src/github/repositoryResolution.js').GithubRepositoryResolution,
+    project:project as unknown as import('../src/github/projectResolution.js').GithubProjectResolution,
+    observedAt:now
+  });
+  assert.equal(valid?.repository,'ExampleOrg/ExampleRepo');
+  assert.equal(valid?.githubNumericId,12345);
+  assert.equal(valid?.mappingId,'MAP-001');
+  const run=(repo:unknown,prj:unknown,clock=now)=>
+    deriveVerifiedGithubInsightScope({
+      repository:repo as import('../src/github/repositoryResolution.js').GithubRepositoryResolution,
+      project:prj as import('../src/github/projectResolution.js').GithubProjectResolution,
+      observedAt:clock
+    });
+  assert.equal(run(repository,{...project,selectedMapping:{
+    ...project.selectedMapping,governance:{candidateFromV1:true}
+  }}),null);
+  assert.equal(run(repository,{...project,selectedMapping:{
+    ...project.selectedMapping,activationReadiness:'BLOCKED'
+  }}),null);
+  assert.equal(run(repository,{...project,selectedMapping:{
+    ...project.selectedMapping,repositoryId:'github:Other/Repo'
+  }}),null);
+  assert.equal(run({...repository,observedAt:'2026-11-21T19:00:00Z'},project),null);
+  assert.equal(run({...repository,selectedRepository:{
+    ...repository.selectedRepository,githubRepositoryId:0
+  }},project),null);
+  assert.equal(run({...repository,selectedRepository:{
+    ...repository.selectedRepository,fullName:'ExampleOrg/Other'
+  }},project),null);
+  assert.equal(run(repository,{...project,selectedProject:null}),null);
 });
