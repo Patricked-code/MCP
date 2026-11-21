@@ -150,3 +150,29 @@ test('HTML does not leak raw evidence references into markup or attribute contex
   assert.doesNotMatch(html, /<img src=x onerror/);
   assert.match(html, /&lt;img src=x onerror/);
 });
+
+test('repository filter accepts canonical github prefix and shows same tasks', () => {
+  for (const filter of ['github:Patricked-code/MCP', 'Patricked-code/MCP']) {
+    const html = renderFederatedRegistryCockpit(graph, {
+      scope: 'repository', id: filter, queueAvailable: true
+    });
+    assert.match(html, /TASK-20260913-001/);
+    assert.doesNotMatch(html, /TASK-20260913-002/);
+  }
+});
+
+test('project cockpit exposes incompatible task relationship and counts link conflict', () => {
+  const conflicting = buildFederatedRegistryProjection({
+    observedAt: now,
+    entities: graph.entities,
+    links: graph.links.map(x => x.relation === 'BELONGS_TO'
+      ? { ...x, evidence: { ...x.evidence, verification: 'CONFLICT' as const } } : x)
+  });
+  const html = renderFederatedRegistryCockpit(conflicting, {
+    scope: 'project', id: 'P-1', queueAvailable: true
+  });
+  assert.match(html, /rattachements conflictuels/);
+  assert.match(html, /liens : 1/);
+  assert.match(html, /BELONGS_TO/);
+  assert.match(html, /CONFLICT/);
+});
