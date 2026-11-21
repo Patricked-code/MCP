@@ -51,6 +51,9 @@ jobs:
       - name: Auto-intake discovery safety tests
         run: node --test tests/mcpAutoIntakeDiscovery.test.mjs
 
+      - name: Registry review automation admission tests
+        run: node --test tests/registryAutoReview.test.mjs
+
       - name: Governed task queue targeted claim tests
         run: npx tsx --test tests/governedTaskQueue.test.ts
 
