@@ -40,6 +40,12 @@ export type FederatedEvidence = Readonly<{
   sourceVersion: string | null;
 }>;
 
+export type FederatedIdentifierClaim = Readonly<{
+  namespace: string;
+  value: string;
+  evidence: FederatedEvidence;
+}>;
+
 export type FederatedEntityInput = Readonly<{
   identity: FederatedIdentity;
   evidence: FederatedEvidence;
@@ -47,6 +53,8 @@ export type FederatedEntityInput = Readonly<{
   label?: string | null;
   /** Only valid for TASK. An historical SUPERSEDED remains terminal. */
   taskStatus?: FederatedTaskState | null;
+  /** Source-declared alternate IDs (e.g. projectUid), never automatic aliases. */
+  identifiers?: readonly FederatedIdentifierClaim[];
 }>;
 
 export type FederatedLinkInput = Readonly<{
@@ -63,6 +71,7 @@ export type FederatedProjectedEntity = Readonly<{
   evidence: FederatedEvidence;
   label: string | null;
   taskStatus: FederatedTaskState | null;
+  identifiers: readonly FederatedIdentifierClaim[];
   reasons: readonly string[];
 }>;
 
@@ -167,12 +176,19 @@ export function buildFederatedRegistryProjection(input: Readonly<{
       throw new Error('FEDERATION_INVALID_TASK_STATUS');
     }
     const label = source.label == null ? null : bounded(source.label, 'LABEL');
+    if ((source.identifiers?.length ?? 0) > 20) throw Error('FEDERATION_IDENTIFIER_LIMIT');
+    const identifiers = (source.identifiers ?? []).map((value) => Object.freeze({
+      namespace: bounded(value.namespace, 'IDENTIFIER_NAMESPACE'),
+      value: bounded(value.value, 'IDENTIFIER_VALUE'),
+      evidence: declassify(evidence(value.evidence, asOf))
+    }));
     const candidate: FederatedProjectedEntity = Object.freeze({
       key,
       identity: Object.freeze({ ...source.identity }),
       evidence: stamp,
       label,
       taskStatus,
+      identifiers: Object.freeze(identifiers),
       reasons: Object.freeze(withoutProof(source.evidence) ? ['FEDERATION_PROOF_MISSING'] : [])
     });
     const prior = entities.get(key);
@@ -184,7 +200,8 @@ export function buildFederatedRegistryProjection(input: Readonly<{
       && prior.evidence.verification === stamp.verification
       && prior.evidence.evidenceRef === stamp.evidenceRef
       && prior.evidence.sourceVersion === stamp.sourceVersion
-      && prior.label === label && prior.taskStatus === taskStatus) continue;
+      && prior.label === label && prior.taskStatus === taskStatus
+      && JSON.stringify(prior.identifiers) === JSON.stringify(identifiers)) continue;
     // Never pick one conflicting historical status/ID as the winner.
     entities.set(key, Object.freeze({
       ...prior,
@@ -197,8 +214,14 @@ export function buildFederatedRegistryProjection(input: Readonly<{
   for (const source of input.links) {
     if (!VALID_LINKS.has(source.relation)) throw new Error('FEDERATION_INVALID_RELATION');
     const authority = bounded(source.authority, 'LINK_AUTHORITY');
-    const fromKey = bounded(source.fromKey, 'FROM_KEY');
-    const toKey = bounded(source.toKey, 'TO_KEY');
+    // An identity key contains four bounded components and can exceed 240 chars.
+    const linkKey = (key: string) => {
+      if (typeof key !== 'string' || !key.length || key.length > 1400
+        || /[\\u0000-\\u001f\\u007f]/.test(key)) throw Error('FEDERATION_INVALID_LINK_KEY');
+      return key;
+    };
+    const fromKey = linkKey(source.fromKey);
+    const toKey = linkKey(source.toKey);
     const stamp = declassify(evidence(source.evidence, asOf));
     const from = entities.get(fromKey);
     const to = entities.get(toKey);
