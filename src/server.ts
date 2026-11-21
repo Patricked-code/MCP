@@ -1,5 +1,7 @@
 import { createAdmissionsRouter } from './web/admissions.js';
 import { consoleNav, consoleStyleTag, viewportTag } from './web/consoleUi.js';
+import { projectExistingMcpAuthorities } from './registryFederation/fromAuthorities.js';
+import { renderFederatedRegistryCockpit, type FederatedCockpitScope } from './web/federatedRegistryCockpit.js';
 import express from 'express';
 import { readFile, stat } from 'node:fs/promises';
 import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
@@ -862,6 +864,46 @@ export async function startHttpServer(): Promise<void> {
     } catch (error) {
       logger.error({ error }, 'Erreur dashboard');
       res.status(500).type('text').send('Erreur dashboard MCP.');
+    }
+  });
+
+  // Operator-only projection: existing GitRegistry and Governed Task Queue stay authoritative.
+  // This endpoint cannot admit a project, claim a task or grant cross-project rights.
+  app.get('/registry-cockpit', requireWebLogin, async (req, res) => {
+    const rawScope = req.query.scope;
+    const permitted: readonly string[] = ['global', 'repository', 'project', 'workstream'];
+    if (rawScope !== undefined && (typeof rawScope !== 'string' || !permitted.includes(rawScope))) {
+      res.status(400).type('text').send('Périmètre invalide.');
+      return;
+    }
+    const scope = (rawScope ?? 'global') as FederatedCockpitScope;
+    const selected = req.query.id === undefined ? '' : req.query.id;
+    if (typeof selected !== 'string' || selected.length > 240) {
+      res.status(400).type('text').send('Identifiant invalide.');
+      return;
+    }
+    try {
+      const [registry, queue] = await Promise.all([
+        readGitRegistry(),
+        operationalMemoryConfig.enabled
+          ? getGovernedTaskToolDependencies().queue.listVisibleTasks()
+          : Promise.resolve(null)
+      ]);
+      const projection = projectExistingMcpAuthorities({
+        observedAt: new Date().toISOString(),
+        registry,
+        queue: queue === null ? null : {
+          storeRevision: queue.storeRevision,
+          tasks: queue.tasks
+        }
+      });
+      res.setHeader('Cache-Control', 'private, no-store');
+      res.type('html').send(renderFederatedRegistryCockpit(projection, {
+        scope, id: selected, queueAvailable: queue !== null
+      }));
+    } catch (error) {
+      logger.error({ error }, 'Cockpit fédéré indisponible');
+      res.status(503).type('text').send('Registres fédérés indisponibles.');
     }
   });
 
