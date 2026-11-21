@@ -217,7 +217,7 @@ export function buildFederatedRegistryProjection(input: Readonly<{
     // An identity key contains four bounded components and can exceed 240 chars.
     const linkKey = (key: string) => {
       if (typeof key !== 'string' || !key.length || key.length > 1400
-        || /[\\u0000-\\u001f\\u007f]/.test(key)) throw Error('FEDERATION_INVALID_LINK_KEY');
+        || /[\u0000-\u001f\u007f]/.test(key)) throw Error('FEDERATION_INVALID_LINK_KEY');
       return key;
     };
     const fromKey = linkKey(source.fromKey);
