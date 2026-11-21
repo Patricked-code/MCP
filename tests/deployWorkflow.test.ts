@@ -145,10 +145,10 @@ test('G1 retries only the post-attestation proof and keeps UNVERIFIED on bounded
 
 test('G1 renders bounded reason codes for UNVERIFIED without opening an unverified PR', async () => {
   const [deploy, g1] = (await workflowSource()).split('  reconcile-documentation:');
-  assert.match(deploy!, /G1_CANDIDATE[\\s\\S]*UNVERIFIED/);
+  assert.match(deploy!, /G1_CANDIDATE[\s\S]*UNVERIFIED/);
   assert.match(g1!, /G1 proof blocked/);
   assert.match(g1!, /No GitHub write performed/);
-  assert.match(g1!, /throw Error\\("G1 proof unavailable/);
+  assert.match(g1!, /throw Error\("G1 proof unavailable/);
   assert.match(g1!, /G1_EVIDENCE/);
   assert.doesNotMatch(g1!, /id-token: write|actions: write|merge_pull_request/);
 });
