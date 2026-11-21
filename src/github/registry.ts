@@ -9,6 +9,10 @@ import type { RepositoryMappingCompletion } from '../governedContext/contextComp
 import {
   assessGitRegistryV2ActivationReadiness,
   dryRunGitRegistryV2,
+  GitRegistryV1Schema,
+  RegistryProjectSchema,
+  validateGitRegistryV2,
+  type GitRegistryV1,
   type GitRegistryV2,
   type GitRegistryV2ActivationReasonCode,
   type RegistryCapabilities
@@ -206,6 +210,40 @@ async function readBoundedGitRegistryEvidenceFile(path: string): Promise<string>
   } finally {
     await file.close();
   }
+}
+
+/**
+ * Federated cockpit reads the original schema, not the legacy V1-shaped UI
+ * projection. V2 retains its repository and mapping arrays; V1 keeps its
+ * historical partial-coverage handling. A malformed V2 fails closed.
+ * This is a reader over the existing single registry file, not another store.
+ */
+export async function readFederatedGitRegistrySource(): Promise<{
+  registry: GitRegistryV1 | GitRegistryV2;
+  omittedMappings: number;
+  omittedProjects: number;
+}> {
+  const raw = JSON.parse(await readBoundedGitRegistryEvidenceFile(rf())) as unknown;
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)
+    && (raw as { schemaVersion?: unknown }).schemaVersion === 2) {
+    return { registry: validateGitRegistryV2(raw), omittedMappings: 0, omittedProjects: 0 };
+  }
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)
+    || (raw as { version?: unknown }).version !== 1) throw Error('FEDERATION_REGISTRY_SCHEMA_UNSUPPORTED');
+  const legacy = norm(raw);
+  const mappings = legacy.repoMappings.filter(mapping =>
+    GitRegistryV1Schema.shape.repoMappings.element.safeParse(mapping).success);
+  const projects = (legacy.projects ?? []).filter(project =>
+    RegistryProjectSchema.safeParse(project).success);
+  const registry = GitRegistryV1Schema.parse({
+    version: 1, updatedAt: legacy.updatedAt, accounts: [], repoMappings: mappings,
+    auditEvents: [], projects
+  });
+  return {
+    registry,
+    omittedMappings: legacy.repoMappings.length - mappings.length,
+    omittedProjects: (legacy.projects?.length ?? 0) - projects.length
+  };
 }
 
 export async function readGitRegistryEvidence(): Promise<GitRegistryEvidence> {
