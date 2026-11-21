@@ -62,6 +62,7 @@ import { deriveRepositoryMappingCompletion, safeWebReturnPath } from './governed
 import { decideConnectConsent } from './github/connectConsent.js';
 import { createGithubDeployRouter } from './deploy/routes.js';
 import { projectG1Evidence } from './deploy/g1Documentation.js';
+import { diagnoseG1Unverified } from './deploy/g1ProofDiagnostics.js';
 import { liveStateEngine } from './liveState/engine.js';
 import {
   verifyGithubOidcToken,
@@ -439,7 +440,13 @@ export async function startHttpServer(): Promise<void> {
   const app = express();
   app.use(createGithubDeployRouter({
     verifyOidc: verifyGithubOidcToken,
-    readG1Evidence: async (sha) => projectG1Evidence(await liveStateEngine.reconcileNow(), sha),
+    readG1Evidence: async (sha) => {
+      const state = await liveStateEngine.reconcileNow();
+      const evidence = projectG1Evidence(state, sha);
+      return evidence.status === 'UNVERIFIED'
+        ? { status: 'UNVERIFIED' as const, reasonCodes: diagnoseG1Unverified(state, sha) }
+        : evidence;
+    },
     writeEnabled: () => env.ENABLE_WRITE_TOOLS,
     runWrite: async (command) => runGuardedCommand('s1', command, {
       intent: 'github_oidc_s1_deploy_start',

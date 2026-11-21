@@ -9,7 +9,7 @@ export type G1Drift = {
   status: 'DRIFT'; sha: string; observedAt: string; stateVersion: number; imageId: string;
   declaredGithubSha: string; declaredS1Sha: string;
 };
-export type G1Evidence = G1Drift | { status: 'ALIGNED' | 'UNVERIFIED' };
+export type G1Evidence = G1Drift | { status: 'ALIGNED' } | { status: 'UNVERIFIED'; reasonCodes?: readonly string[] };
 
 // Use the base repository's file list so manually named and fork PRs are visible.
 // Never interpret unavailable or truncated file data as absence of a collision.
