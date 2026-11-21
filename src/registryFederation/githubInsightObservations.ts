@@ -9,6 +9,8 @@
  */
 import { createHash } from 'node:crypto';
 import type { GitHubJsonRequestOptions, GitHubJsonResponse } from '../github/connection.js';
+import type { GithubRepositoryResolution } from '../github/repositoryResolution.js';
+import type { GithubProjectResolution } from '../github/projectResolution.js';
 
 export const GITHUB_INSIGHT_SOURCES = [
   'REPOSITORY', 'SBOM', 'DEPENDABOT_ALERTS', 'CODE_SCANNING_ALERTS',
@@ -240,4 +242,51 @@ export async function observeAuthorizedGithubInsightsWithServerCredential(input:
       return { status: response.status, data: response.json };
     }
   });
+}
+
+/**
+ * Reuse existing GW-05/GW-06 verified read-only resolutions for the Insight
+ * observation scope. Never promote an in-memory V1 migration or a mapping with
+ * blocked activation readiness to a verified canonical binding.
+ *
+ * No GitHub or MCP mutation occurs here. The server's actual GitHub GET is
+ * still needed to verify the immutable numeric repository ID at observation.
+ */
+export function deriveVerifiedGithubInsightScope(input: Readonly<{
+  repository: GithubRepositoryResolution;
+  project: GithubProjectResolution;
+  observedAt: string;
+}>): GithubVerifiedInsightScope | null {
+  const { repository, project, observedAt } = input;
+  const selected = repository.selectedRepository;
+  const mapping = project.selectedMapping;
+  const at = Date.parse(observedAt), repoAt = Date.parse(repository.observedAt);
+  const projectAt = Date.parse(project.observedAt);
+  const fresh = (stamp: number) => Number.isFinite(stamp)
+    && stamp <= at && at - stamp <= MAX_AGE_MS;
+  if (!Number.isFinite(at) || !observedAt.endsWith('Z')
+    || repository.status !== 'RESOLVED' || repository.freshness !== 'CURRENT'
+    || project.status !== 'RESOLVED' || project.freshness !== 'CURRENT'
+    || !fresh(repoAt) || !fresh(projectAt)
+    || !selected || !mapping || !project.selectedProject
+    || mapping.activationReadiness !== 'READY'
+    || mapping.governance?.candidateFromV1 !== false
+    || !project.registryDigest || !project.candidateDigest
+    || !Number.isSafeInteger(selected.githubRepositoryId) || selected.githubRepositoryId <= 0
+    || !selected.fullName || !REPO.test(selected.fullName)
+    || selected.fullName.split('/').some(part => part === '.' || part === '..')
+    || project.repositoryId?.toLowerCase() !== selected.repositoryId.toLowerCase()
+    || mapping.repositoryId.toLowerCase() !== selected.repositoryId.toLowerCase()
+    || mapping.projectId !== project.selectedProject.projectId) return null;
+  const scope: GithubVerifiedInsightScope = Object.freeze({
+    authority: 'GIT_REGISTRY_VERIFIED_BINDING',
+    repository: selected.fullName,
+    githubNumericId: selected.githubRepositoryId,
+    projectId: mapping.projectId,
+    mappingId: mapping.mappingId,
+    verifiedAt: observedAt,
+    evidenceRef: 'gitregistry:' + mapping.mappingId
+  });
+  try { validScope(scope, observedAt); } catch { return null; }
+  return scope;
 }
