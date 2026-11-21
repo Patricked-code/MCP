@@ -76,3 +76,38 @@ Cette séquence respecte la demande d'inscription automatique d'événements **a
 - G1 documentaire : écart `fb0cb474...` vs `5bc5e2b4...`, qui bloque toute attestation globale `FULLY_ALIGNED`.
 
 **Verdict Intervention 01 :** suffisamment de faits pour cadrer la fédération, **pas** suffisamment pour activer une synchronisation automatique multi-dépôts ni pour attester un cockpit global en production.
+
+## G. Second passage de l'audit — couverture GitHub dédupliquée et IDs stables (2026-11-21)
+
+**Source** : `github_durable_accounts_inventory` du MCP en lecture seule, puis `get_repo` direct authentifié sur des dépôts publics pertinents. **Aucun dépôt tiers modifié.**
+
+La concaténation des résultats des trois comptes a été dédupliquée par chaîne exacte `owner/repository` :
+- résultats bruts : `17 + 31 + 25 = 73` ;
+- **44 clés `owner/repo` uniques** ;
+- 19 clés visibles sur au moins deux comptes, dont 10 sur les trois ;
+- 25 clés visibles sur un seul des trois comptes.
+
+**Limite** : une déduplication par nom ne suffit pas à garantir 44 objets GitHub distincts dans le temps. La fédération devra utiliser `repository.id` ou le node ID confirmé, gérer renames/transferts, et revalider la visibilité et l'installation autorisée. Certaines listes contiennent des dépôts privés : ne pas exporter leurs noms ou métadonnées dans une projection publique non autorisée.
+
+IDs stables obtenus auprès de GitHub pendant cet audit (dépôts publics uniquement) :
+
+| Dépôt | GitHub repository ID | Branche par défaut | Portée |
+| --- | ---: | --- | --- |
+| `Patricked-code/MCP` | `1285534440` | `main` | MCP logiciel, dépôt de travail de cette mission |
+| `chainsolutions-wealthtech/Governed-Repository-Template` | `1386478935` | `main` | GRT, autorité de création/adoption |
+| `chainsolutions-wealthtech/universal-agent-engineering-system` | `1429189311` | `main` | UAES pilote |
+| `chainsolutions-wealthtech/Loop` | `1456075212` | `main` | Loop, contexte externe |
+| `chainsolutions-wealthtech/Looping-` | `1456213061` | `main` | Looping, contexte externe |
+| `Patricked-code/financialdata` | `1328416064` | `main` | Projet indépendant, lecture seule |
+| `chainsolutions-wealthtech/Regulatory` | `1323383289` | `main` | Chantier indépendant, lecture seule |
+
+Les permissions GitHub `admin/pull/push=true` indiquent le droit exposé au compte **GitHub direct** pour ces dépôts, **pas** un mandat MCP pour intervenir dessus. La mission reste strictement limitée à `Patricked-code/MCP` pour toute écriture.
+
+### G1/G2 — Éléments vérifiés en complément
+
+- Le contrôle `GITHUB_CONTROL_ORG_NOT_ALLOWED` est lancé par `assertOrg(..., configuredOrg)` dans `src/tools/githubControlPlaneRead.ts` et `src/tools/githubLifecycle.ts`, avec `configuredOrg=env.GITHUB_ORG` par défaut ; la configuration effective et son historique doivent être prouvés avant toute évolution des cibles.
+- Une PR de rapprochement documentaire G1 **existe déjà (#429)** et touche uniquement `PRODUCTION_STATE.json`. Son HEAD `b42aad9d145b4864c882683d4f869fea164cb5ba` a une CI `MCP CI` réussie (`44742423754`) ; aucune revue indépendante observée. Le préflight E2 reste `BLOCKED` à cause de `E2_DOCUMENTATION_DRIFT`.
+- PR #430 : la CI `44933413383` a identifié `markdown_inventory_drift` avec six documents de mission non indexés (`234` attendus contre `240` réellement suivis). L'index canonique `docs/governance/markdown-inventory.json` a ensuite été **enrichi additivement** pour suivre les six documents ; nouveau total déclaré `240`. La CI après cette correction doit être vérifiée sur son SHA exact avant validation.
+- La politique `.mcp/branch-governance.json` exige la PR, interdit le push direct `main`, conserve les états runtime à leurs autorités. Aucun contrôle de revue, CI, fusion ou déploiement n'a été neutralisé.
+
+**Sous-verdict P01 :** découverte des dépôts et premiers IDs améliorée, couverture toujours partielle en termes de Project IDs et Task IDs locaux ; aucune activation automatique multi-dépôts autorisée par cet audit.
