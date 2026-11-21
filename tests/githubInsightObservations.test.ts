@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  observeAuthorizedGithubInsights, GITHUB_INSIGHT_SOURCES,
+  observeAuthorizedGithubInsights, observeAuthorizedGithubInsightsWithServerCredential, GITHUB_INSIGHT_SOURCES,
   type GithubVerifiedInsightScope, type GithubInsightsReadPort
 } from '../src/registryFederation/githubInsightObservations.js';
 
@@ -113,4 +113,47 @@ test('100-row API first page is PARTIAL and cannot assert complete coverage',asy
   assert.equal(forks?.complete,false);
   assert.equal(forks?.observedItems,100);
   assert.equal(a.status,'PARTIAL');
+});
+
+test('server credential adapter invokes only exact scoped GET endpoints and stores no credentials', async () => {
+  const called: Array<{path:string;method:string|undefined;timeout:number|undefined}> = [];
+  const observation = await observeAuthorizedGithubInsightsWithServerCredential({
+    scope, observedAt:now,
+    request: async (path,options) => {
+      called.push({path,method:options.method,timeout:options.timeoutMs});
+      return {status:200,json:responses[source(path)]};
+    }
+  });
+  assert.equal(observation.status,'SOURCE_VERIFIED');
+  assert.equal(called.length,GITHUB_INSIGHT_SOURCES.length);
+  assert.ok(called.every(x=>x.method==='GET' && x.timeout===8_000));
+  assert.ok(called.every(x=>x.path.startsWith('/repos/ExampleOrg/ExampleRepo')));
+  assert.doesNotMatch(JSON.stringify(observation),/Bearer|token|password|secret_value/i);
+  assert.equal(observation.mutationPerformed,false);
+  assert.equal(observation.executionAuthorized,false);
+});
+
+test('server credential adapter refuses an unverified target without making API requests',async()=>{
+  let calls=0;
+  await assert.rejects(
+    observeAuthorizedGithubInsightsWithServerCredential({
+      scope:{...scope,authority:'NOT_VERIFIED' as typeof scope.authority},
+      observedAt:now,
+      request:async()=>{calls++;return {status:200,json:{}};}
+    }),
+    /GITHUB_INSIGHTS_VERIFIED_SCOPE_REQUIRED/
+  );
+  assert.equal(calls,0);
+});
+
+test('server credential adapter treats denied GitHub endpoint as unknown, never disabled',async()=>{
+  const observation=await observeAuthorizedGithubInsightsWithServerCredential({
+    scope,observedAt:now,
+    request:async(path)=> path.includes('/dependabot/alerts')
+      ? {status:403,json:{message:'permission denied'}}
+      : {status:200,json:responses[source(path)]}
+  });
+  assert.equal(observation.status,'PARTIAL');
+  assert.equal(observation.observations.find(x=>x.source==='DEPENDABOT_ALERTS')?.status,'ACCESS_DENIED');
+  assert.equal(observation.mutationPerformed,false);
 });
