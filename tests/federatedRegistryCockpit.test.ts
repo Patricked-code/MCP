@@ -113,3 +113,40 @@ test('repository filter does not expand into another repository via shared proje
   assert.match(projectPage, /TASK-20260913-001/);
   assert.match(projectPage, /TASK-20260913-002/);
 });
+
+test('cockpit exposes both conflicting historical task states and their authority evidence', () => {
+  const taskEntity = graph.entities.find(x => x.identity.kind === 'TASK'
+    && x.identity.authorityScope === 'Patricked-code/MCP')!;
+  const conflict = buildFederatedRegistryProjection({
+    observedAt: now,
+    entities: [
+      { identity: taskEntity.identity, evidence: proof('queue:revision-244'),
+        taskStatus: 'READY' },
+      { identity: taskEntity.identity, evidence: proof('queue:revision-244'),
+        taskStatus: 'SUPERSEDED' }
+    ], links: []
+  });
+  const html = renderFederatedRegistryCockpit(conflict, {
+    scope: 'global', id: '', queueAvailable: true
+  });
+  assert.match(html, /SUPERSEDED/);
+  assert.match(html, /READY, SUPERSEDED/);
+  assert.match(html, /queue:revision-244/);
+  assert.match(html, /CONFLICT/);
+});
+
+test('HTML does not leak raw evidence references into markup or attribute context', () => {
+  const safe = buildFederatedRegistryProjection({
+    observedAt: now,
+    entities: [{ identity: project, evidence: {
+      ...proof('proof:<img src=x onerror=alert(1)>'),
+      verification: 'DECLARED'
+    }}],
+    links: []
+  });
+  const html = renderFederatedRegistryCockpit(safe, {
+    scope: 'global', id: '', queueAvailable: true
+  });
+  assert.doesNotMatch(html, /<img src=x onerror/);
+  assert.match(html, /&lt;img src=x onerror/);
+});
