@@ -1,9 +1,9 @@
 # WT-MCP-REGISTRY-RESOLUTION-20261121-01 — Mission de résolution du problème des registres
 
-> Identifiant de continuité : `WT-MCP-REGISTRY-RESOLUTION-20261121-01`  
-> Projet logiciel parent : `Patricked-code/MCP` ; Project UID candidat `WT-PROJECT-MCP-001` (voir PR #389, **non promu** en ProjectRecord runtime).  
-> Branche de préparation : `mcp/registry-resolution-audit-20261121` ; base GitHub `5bc5e2b4c0b2aa176c1f6131826afbea7af2f164`.  
-> Statut : **AUDIT / CANDIDATE DOCS-ONLY / NON DÉPLOYÉ**.  
+> Identifiant de continuité : `WT-MCP-REGISTRY-RESOLUTION-20261121-01`\
+> Projet logiciel parent : `Patricked-code/MCP` ; Project UID candidat `WT-PROJECT-MCP-001` (voir PR #389, **non promu** en ProjectRecord runtime).\
+> Branche de préparation : `mcp/registry-resolution-audit-20261121` ; base GitHub `5bc5e2b4c0b2aa176c1f6131826afbea7af2f164`.\
+> Statut : **AUDIT / CANDIDATE DOCS-ONLY / NON DÉPLOYÉ**.\
 > Autorité : les registres opérationnels existants ; ce dossier documente leur fédération, **il n'est pas un registre concurrent**.
 
 ## Mandat du propriétaire — exigences R01 à R07
@@ -40,7 +40,7 @@ Documents connexes : [PR #389](https://github.com/Patricked-code/MCP/pull/389) (
 
 ## Portée du présent lot
 
-**Autorisé ici :** observation read-only, qualification, dossier versionné sur branche, PR draft.  
+**Autorisé ici :** observation read-only, qualification, dossier versionné sur branche, PR draft.\
 **Non réalisé :** fonctionnalité de corrélation, activation de cibles, nouvelles tâches runtime, modification GitRegistry, changement d'accès, merge, déploiement, modifications des autres dépôts.
 
 La mission doit être reprise sous l'intitulé exact **« mission de résolution du problème des registres »** ou par son ID `WT-MCP-REGISTRY-RESOLUTION-20261121-01` : lire ce dossier, vérifier GitHub HEAD et Live State avant toute opération, classer les évolutions depuis la dernière preuve et conserver la même continuité.
