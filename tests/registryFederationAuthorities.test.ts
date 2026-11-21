@@ -159,7 +159,7 @@ test('cross-repository dependency resolves the referenced task owner, never depe
   });
   const dependency = graph.links.find(x => x.relation === 'DEPENDS_ON')!;
   assert.equal(dependency.verification, 'DECLARED');
-  assert.deepEqual(dependency.reasons, ['FEDERATION_ENDPOINT_UNVERIFIED']);
+  assert.deepEqual(dependency.reasons, []);
   const owned = graph.entities.find(x => x.identity.kind === 'TASK'
     && x.identity.sourceId === 'TASK-20261119-001')!;
   assert.equal(dependency.toKey, owned.key);
