@@ -99,9 +99,11 @@ export function renderFederatedRegistryCockpit(
     <td>${escape(e.identity.kind)}</td>
     <td><code>${escape(e.identity.sourceId)}</code></td>
     <td>${escape(e.taskStatus ?? '—')}</td>
+    <td>${escape(e.taskStatusClaims.join(', ') || '—')}</td>
     <td>${escape(e.evidence.verification)}</td>
     <td>${escape(e.identity.authority)}</td>
     <td>${escape(e.evidence.observedAt)}</td>
+    <td>${escape(e.evidence.evidenceRef ?? 'Preuve non renseignée')}</td>
   </tr>`).join('');
   const body = `
     <h1>Registres fédérés — Cockpit</h1>
@@ -132,8 +134,8 @@ export function renderFederatedRegistryCockpit(
     <div class="wt-table"><table><caption>Observation : ${escape(projection.observedAt)}.
       Maximum 200 lignes affichées sur ${chosen.length}; pagination étendue non encore raccordée.</caption>
       <thead><tr><th>Type</th><th>Identifiant historique</th><th>Statut tâche</th>
-      <th>Vérification</th><th>Autorité</th><th>Observation</th></tr></thead>
-      <tbody>${rows || '<tr><td colspan="6">Aucune entité dans ce périmètre vérifié</td></tr>'}</tbody>
+      <th>États observés</th><th>Vérification</th><th>Autorité</th><th>Observation</th><th>Référence de preuve</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="8">Aucune entité dans ce périmètre vérifié</td></tr>'}</tbody>
     </table></div>`;
   return consoleDocument('Cockpit des registres — WealthTech MCP', body);
 }
