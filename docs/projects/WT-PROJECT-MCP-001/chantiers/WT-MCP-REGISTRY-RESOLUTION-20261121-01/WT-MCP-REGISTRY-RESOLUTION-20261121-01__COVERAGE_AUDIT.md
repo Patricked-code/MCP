@@ -1,7 +1,7 @@
 # WT-MCP-REGISTRY-RESOLUTION-20261121-01 — Audit de couverture initial (Intervention 01)
 
-> 2026-11-21 (observations UTC de la session). **PARTIEL / READ-ONLY**.  
-> Référentiel GitHub `Patricked-code/MCP@5bc5e2b4c0b2aa176c1f6131826afbea7af2f164`.  
+> 2026-11-21 (observations UTC de la session). **PARTIEL / READ-ONLY**.\
+> Référentiel GitHub `Patricked-code/MCP@5bc5e2b4c0b2aa176c1f6131826afbea7af2f164`.\
 > Ne pas confondre les comptages de dépôts visibles, les mappings enregistrés, les projets reconnus et les tâches exécutables.
 
 ## A. Inventaire attesté
