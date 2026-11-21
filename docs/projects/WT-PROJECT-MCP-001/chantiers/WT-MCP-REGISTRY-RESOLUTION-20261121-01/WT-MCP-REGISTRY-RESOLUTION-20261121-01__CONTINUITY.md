@@ -33,3 +33,12 @@ L'identifiant de mission ramène aux mêmes documents, responsabilités, dépend
 ## STOP CONDITIONS
 
 Divergence d'HEAD, source/ownership absent, chemin GitHub interdit, identité de dépôt ambiguë, conflit entre registre et mémoire, absence de validation ou CI/revue pour mutation. En cas de STOP : documenter le motif et garder une action de reprise, sans supprimer ni remplacer l'historique.
+
+## 2026-11-21 — Checkpoint audit P02 / gate E2
+
+- Le parcours E2 demandé par le propriétaire a été exécuté : `mcp_e2_reconcile_preflight` → `BLOCKED/E2_DOCUMENTATION_DRIFT` ; `canStartOrdinaryWork=false`. Main/S1/runtime restent alignés à `5bc5e2b4c0b2aa176c1f6131826afbea7af2f164`, mais `PRODUCTION_STATE.json` déclare `fb0cb47417ace348176ff3218484783cc6978a8d`.
+- La **PR #429** existante est le correctif documentaire G1 exact SHA ; seul `PRODUCTION_STATE.json` change. Son commit `b42aad9d145b4864c882683d4f869fea164cb5ba` possède une CI `MCP CI` #44742423754 terminée SUCCESS ; aucune revue GitHub n'a été renvoyée lors du contrôle. **Ne pas fusionner sans revue indépendante et autres gates**, ne pas créer un G1 concurrent.
+- Diagnostic du refus Bridge : `src/tools/githubControlPlaneRead.ts` et `src/tools/githubLifecycle.ts` appliquent `assertOrg(organization, env.GITHUB_ORG)` ; `defaultTargetOwner=chainsolutions-wealthtech`, alors que l'appel cible `Patricked-code`. Les droits GitHub directs séparés sont attestés ; aucune politique élargie ou contournement n'a été appliqué.
+- Le plan détaillé **35 opérations RG-001…RG-035** a été créé dans `WT-MCP-REGISTRY-RESOLUTION-20261121-01__IMPLEMENTATION_PLAN.md`. Il inclut l'intégration des modules existants, la fédération read-only, les admissions CUG/Queue, la UI cockpit, les tests historiques et la chaîne Governed Deploy.
+- **Réalité déploiement :** `.github/workflows/mcp-deploy.yml` décrit OIDC → S1 Docker Compose. Aucun déploiement Kubernetes MCP actuel n'est attesté ; une migration Kubernetes ne saurait être annoncée ni intercalée sans mission/gates distincts.
+- **NEXT_ACTION** : clore G1 en procédure documentée (PR #429 revue, merge admissible, Governed Deploy, attestation), revalider E2 ; compléter P01 en lecture, puis commencer P03 après gates. Aucun code runtime ni autre dépôt modifié dans cette session.
