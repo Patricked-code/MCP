@@ -59,3 +59,11 @@ Ne pas modifier les branches actives d'autres agents ; ne pas fusionner #389, #4
 | P17 | RG-055…056 | P13–P16 | Exécution réelle E2E attestée, crash/replay, observabilité, endurance et pilote cible | PLANIFIED / NON DEPLOYED |
 
 **Priorités effectives** : clôturer les revues et CI sur #432/#434/#435 avec leurs propriétaires ; réduire le drift G1 et le 403 E2 par procédures existantes ; lancer l'inventaire GitHub Insights en lecture seule ; développer l'adaptateur de contexte et le worker C26/P2 uniquement après autorisation et dimensionnement. L'automatisation horaire conserve un filet de reprise, non une preuve de codeur 24 h/24.
+
+## Alignement du sous-chantier autonome et de la source DOCX (2026-11-21)
+
+Les **56 opérations RG-001…056** restent dans cette unique roadmap ; la source `Loop Engineering.docx` n'en crée pas de doublons. [Analyse intégrale](./WT-MCP-REGISTRY-RESOLUTION-20261121-01__SOURCE_READING_LOOP_ENGINEERING_20261121.md) ; [roadmap du sous-chantier](./subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__ROADMAP.md).
+
+Nouveau critère obligatoire dans P11 : graphe d'architecture `composants/imports/API/infra` **distinct** du graphe du programme `intentions/lots/TASKS/prérequis/owners`, avec jointures attestées. Nouveau critère P12 : un codeur ne peut intervenir avant dossier d'impact/architecture/plan et une Task P2 admise. Nouveau critère P13 : machine indépendante de ChatGPT avec services UAES isolés et perte/restauration vérifiées. P14/P17 : différencier code GitHub, merge main, Deploy OIDC, runtime exact SHA, réconciliation G1 et certification C27.
+
+**Dépendances communes non effacées** : PR #434 correction documentaire G1 non mergée ; E2 #359 POST HTTP 403 credential serveur ; PR #432 cockpit, #435 candidats CUG et #436 contrat Insights ouvertes sur branches. En attendant ces gates, l'audit de cartographie et les tests indépendants peuvent avancer sur des lots sans collision.
