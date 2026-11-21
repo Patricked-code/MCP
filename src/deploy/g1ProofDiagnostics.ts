@@ -7,6 +7,7 @@
  * why it could not be established from a fresh Live State observation.
  */
 import type { LiveStateSnapshot } from '../liveState/types.js';
+import { G1_REPOSITORY } from './g1Documentation.js';
 
 const SHA = /^[0-9a-f]{40}$/;
 const IMAGE = /^sha256:[0-9a-f]{64}$/;
@@ -36,7 +37,7 @@ export function diagnoseG1Unverified(
     if (!reasons.includes(reason)) reasons.push(reason);
   };
   if (!SHA.test(expectedSha)) note('G1_INVALID_EXPECTED_SHA');
-  if (state.repository !== 'Patricked-code/MCP' || state.schemaVersion !== 1) {
+  if (state.repository !== G1_REPOSITORY || state.schemaVersion !== 1) {
     note('G1_REPOSITORY_UNVERIFIED');
   }
   const age = now - Date.parse(state.generatedAt);
