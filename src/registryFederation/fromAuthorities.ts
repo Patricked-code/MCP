@@ -20,7 +20,8 @@ export type FederatedAuthoritySnapshots = Readonly<{
   queue: Readonly<{ storeRevision: number; tasks: readonly QueuedTask[] }> | null;
 }>;
 
-const SCOPE = 'Patricked-code/MCP';
+// Namespace of the existing registry authority, not a hard-coded repository target.
+const SCOPE = 'MCP_GIT_REGISTRY';
 const PROJECT_AUTHORITY = 'GIT_REGISTRY';
 const TASK_AUTHORITY = 'GOVERNED_TASK_QUEUE';
 
