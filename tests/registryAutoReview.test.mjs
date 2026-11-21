@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { planRegistryReview, reviewMarker } from '../scripts/registry-auto-review.mjs';
+import { planRegistryReview, requireFreshReviewAdmission, reviewMarker } from '../scripts/registry-auto-review.mjs';
 
 const sha = 'a'.repeat(40);
 const repository = 'Patricked-code/MCP';
@@ -82,4 +82,31 @@ test('invalid SHA never becomes a marker', () => {
   assert.throws(() => reviewMarker('not-a-commit'), /REGISTRY_REVIEW_SHA_INVALID/);
   const a = fixture(); a.event.workflow_run.head_sha = 'not-a-commit';
   assert.equal(planRegistryReview(a).status, 'SKIP');
+});
+
+test('read-before-write gate rejects a retargeted base with unchanged HEAD', () => {
+  const f = fixture();
+  const planned = planRegistryReview(f);
+  assert.equal(planned.status, 'READY');
+  const moved = { ...f.pr, base: { ref: 'feature/not-admitted' } };
+  assert.throws(() => requireFreshReviewAdmission({
+    event: f.event, current: moved, comments: f.comments, planned
+  }), /REGISTRY_REVIEW_SCOPE_CHANGED/);
+});
+
+test('read-before-write revalidation refuses renamed branch, new draft or new SHA', () => {
+  const f = fixture();
+  const planned = planRegistryReview(f);
+  for (const current of [
+    { ...f.pr, head: { ...f.pr.head, ref: 'feature/unrelated' } },
+    { ...f.pr, draft: true },
+    { ...f.pr, head: { ...f.pr.head, sha: 'b'.repeat(40) } }
+  ]) {
+    assert.throws(() => requireFreshReviewAdmission({
+      event: f.event, current, comments: f.comments, planned
+    }), /REGISTRY_REVIEW_SCOPE_CHANGED/);
+  }
+  assert.equal(requireFreshReviewAdmission({
+    event: f.event, current: f.pr, comments: f.comments, planned
+  }).status, 'READY');
 });
