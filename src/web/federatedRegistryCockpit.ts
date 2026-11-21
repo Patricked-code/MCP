@@ -133,7 +133,7 @@ export function renderFederatedRegistryCockpit(
       <section class="wt-card"><h2>Conflits</h2><p>${conflicting.length + conflictingLinks.length} (entités : ${conflicting.length}, liens : ${conflictingLinks.length})</p></section>
     </div>
     <h2>Fiches projets (données actuellement disponibles)</h2>
-    <div class="wt-grid">${projects.slice(0, 30).map(p => renderProject(p, projection.links, index)).join('')
+    <div class="wt-grid">${projects.slice(0, 30).map(p => renderProject(p, relevantLinks, index)).join('')
       || '<p>Aucun projet relié pour ce filtre : ne pas inférer une absence globale.</p>'}</div>
     <h2>Relations dans le périmètre (statuts de vérification)</h2>
     <div class="wt-table"><table><thead><tr><th>Depuis</th><th>Lien</th><th>Vers</th><th>Vérification</th></tr></thead>
