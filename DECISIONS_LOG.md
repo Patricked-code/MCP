@@ -1,5 +1,9 @@
 # DECISIONS_LOG.md
 
+## 2026-11-20 — Rattacher les décisions propres au chantier CUG
+
+Les décisions CUG sont maintenues dans le [registre du chantier `WT-MCP-CUG-GRT-20261114-01`](docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/DECISIONS_LOG.md), distinct du journal général MCP. Ce rattachement n'ajoute ni autorité runtime ni droit d'écriture ou de déploiement.
+
 ## 2026-11-16 — Réutiliser l'attestation Governed Deploy pour G1 (#406)
 
 **Décision** : le job documentaire consomme une projection du Live State reliée au run OIDC et au SHA réellement déployé. Seul un écart documentaire isolé autorise la préparation du snapshot, sans droit implicite de fusion ni remplacement du suivi GitHub. L'identité du dépôt est celle de la politique OIDC existante. Les écritures GitHub nécessitent une installation d'application limitée à ce dépôt et des permissions dédiées à la préparation de la PR. [Preuves et activation](https://github.com/Patricked-code/MCP/pull/406)

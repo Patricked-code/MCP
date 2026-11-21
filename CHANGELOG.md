@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 2026-11-20 — Dossier documentaire de continuité CUG
+
+- Ajoute le [dossier `WT-MCP-CUG-GRT-20261114-01`](docs/governance/continuities/WT-MCP-CUG-GRT-20261114-01/README.md) avec suivi et preuves, décisions, exigences, architecture, cartographie, feuille de route et travaux restant à réaliser. Ajout documentaire, sans changement d'outil, de route, de configuration ni de déploiement.
+
 ## 2026-11-20 — Vérification CUG opérateur d'un dépôt borné (B2)
 
 - Réutilise la vérification de l'installation et le stockage privé du collecteur UAES pour une cible d'opérateur explicitement désignée. Le webhook et le consommateur restent sur UAES. Aucun changement des permissions ni écriture dans GitRegistry.
