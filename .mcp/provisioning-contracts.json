@@ -247,6 +247,12 @@
       "note": "GitHub-only owner-verified mission discovery and idempotent issue receipt; no Task Queue, session, claim, provisioning, or deployment mutation."
     },
     {
+      "name": "mcp-registry-independent-review.yml",
+      "kind": "WORKFLOW",
+      "class": "NOT_PROVISIONING",
+      "note": "After a successful exact-SHA MCP CI, requests review from the already-installed reviewer via a scope-bounded, idempotent GitHub issue comment; never approves, merges, provisions, deploys, or changes branch protections."
+    },
+    {
       "name": "amf_registry_native_export",
       "kind": "MCP_TOOL",
       "class": "PROJECT_BOUND"
@@ -720,7 +726,9 @@
       "name": "POST /repo-template/auth/submit",
       "kind": "HTTP_ROUTE",
       "class": "COMPOSABLE",
-      "resourceTypes": ["REPOSITORY"],
+      "resourceTypes": [
+        "REPOSITORY"
+      ],
       "guards": [
         "Same-origin JSON and server-held account binding from the short-lived OAuth admission; mcp:write and CUG installation reverified",
         "Explicit exact-target repository creation and public GRT publication consent",
