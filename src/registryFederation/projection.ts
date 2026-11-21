@@ -214,10 +214,25 @@ export function buildFederatedRegistryProjection(input: Readonly<{
       taskStatusClaims.includes('SUPERSEDED') ? 'SUPERSEDED'
       : taskStatusClaims.includes('CANCELLED') ? 'CANCELLED'
       : taskStatusClaims.includes('DONE') ? 'DONE' : null;
+    // Preserve ALL identity evidence in a conflict, including incompatible
+    // PROJECT_UID values. Stable sorting prevents a registry mapping order
+    // from controlling which contradictory claim a consumer can inspect.
+    const claims = new Map<string, FederatedIdentifierClaim>();
+    for (const claim of [...prior.identifiers, ...candidate.identifiers]) {
+      const claimKey = JSON.stringify([claim.namespace, claim.value,
+        claim.evidence.observedAt, claim.evidence.verification,
+        claim.evidence.evidenceRef, claim.evidence.sourceVersion]);
+      claims.set(claimKey, claim);
+    }
+    if (claims.size > 20) throw new Error('FEDERATION_IDENTIFIER_LIMIT');
+    const conflictingIdentifiers = Object.freeze(
+      [...claims.entries()].sort(([left], [right]) => left.localeCompare(right, 'en'))
+        .map(([, claim]) => claim));
     entities.set(key, Object.freeze({
       ...prior,
       taskStatus: terminal ?? (taskStatusClaims.length === 1 ? taskStatusClaims[0]! : null),
       taskStatusClaims,
+      identifiers: conflictingIdentifiers,
       evidence: Object.freeze({ ...prior.evidence, verification: 'CONFLICT' as const }),
       reasons: Object.freeze(['FEDERATION_SOURCE_CONFLICT'])
     }));
