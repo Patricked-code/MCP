@@ -447,7 +447,7 @@ export async function recoverMissionFromGithub(
 
 export type ObservedMissionLiveState=Readonly<{
   stateVersion:number;observedAt:string;freshness:string;alignment:string;
-  githubHead:string;s1Head:string;runtimeRevision:string;runtimeHealth:string;
+  githubHead:string|null;s1Head:string|null;runtimeRevision:string|null;runtimeHealth:string|null;
 }>;
 
 /** Live readback is evidence, never a grant to execute documentary tasks. */
@@ -459,7 +459,7 @@ export function applyObservedMissionLiveState(
     :[...result.missingAuthorities];
   const blockers=liveState
     ?[...new Set([...result.blockers.filter(x=>x!=='LIVE_STATE_NOT_OBSERVED'),
-       ...(liveState.githubHead===result.sourceCommitSha?[]:['GITHUB_LIVE_SHA_MISMATCH']),
+       ...(liveState.githubHead&&liveState.githubHead===result.sourceCommitSha?[]:['GITHUB_LIVE_SHA_MISMATCH']),
        ...(liveState.freshness==='CURRENT'?[]:['LIVE_STATE_STALE'])])].sort()
     :[...result.blockers];
   return {...result,liveState,missingAuthorities,blockers,
