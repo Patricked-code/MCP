@@ -1,7 +1,7 @@
 # WORKERS / GitHub Project n°4 — Diagnostic MCP en lecture seule
 
 ## Finalité et autorité
-- Cible unique : GitHub Projects moderne, propriétaire **personnel** `Patricked-code`, n° **4**.
+- Cible unique : GitHub Projects moderne, propriétaire **personnel** `Patricked-code`, n° **4** ; visibilité observée mais jamais modifiée.
 - Contrainte : ne pas confondre GitHub Project V2 avec le `GithubProjectResolution` applicatif de GitRegistry.
 - Priorité projet WORKERS : **mémoire canonique** (sources originales privées et index public contrôlé), pas création automatique de code/agents.
 - Cette tranche ajoute seulement un outil de lecture, sans modifier les permissions, sans créer de token, sans accès aux contenus privés.
@@ -12,7 +12,7 @@
 La requête GraphQL fixe l'owner, le numéro et vérifie :
 - `viewer.login` = `Patricked-code` ;
 - `user.projectV2(number:4)` est effectivement résolu ;
-- `public = true`, numéro 4, URL correspondante ;
+- `public` est un booléen attesté (`true` ou `false`), numéro 4 et URL correspondante ;
 - `viewerCanUpdate` (indicateur seulement, **pas une autorisation d'écriture**).
 
 Sortie : code de résultat borné, URL, titre, ID GraphQL et indicateur de mise à jour. Jamais de jeton, de réponse brute ni de message d'erreur GraphQL.
