@@ -457,6 +457,40 @@ export function applyObservedMissionLiveState(
   const missingAuthorities=liveState
     ?result.missingAuthorities.filter(x=>x!=='LIVE_STATE_NOT_OBSERVED')
     :[...result.missingAuthorities];
+  const blockers=liveState
+    ?[...new Set([...result.blockers.filter(x=>x!=='LIVE_STATE_NOT_OBSERVED'),
+       ...(liveState.githubHead===result.sourceCommitSha?[]:['GITHUB_LIVE_SHA_MISMATCH']),
+       ...(liveState.freshness==='CURRENT'?[]:['LIVE_STATE_STALE'])])].sort()
+    :[...result.blockers];
+  return {...result,liveState,missingAuthorities,blockers,
+    automaticExecutionAuthorized:false as const};
+}
+
+export function registerMissionContinuityReadTools(
+  server: McpServer, read: GithubContinuityReader = githubJsonRequestWithServerCredential
+): void {
+  server.registerTool('mcp_rejoin_continuity', {
+    title:'Rejoin Mission by Continuity ID (Read Only)',
+    description:'From a Continuity ID only, recover the mission documents and evidenced history from the canonical public MCP GitHub repository. Reports missing Project Binding, CUG, Task Queue and runtime authorities without guessing them; NEVER claims a task or writes. Requires an authenticated MCP connection.',
+    inputSchema: {
+      continuityId: z.string().regex(ID).min(6).max(121),
+      historyOffset: z.number().int().nonnegative().optional(),
+      historyLimit: z.number().int().min(1).max(100).optional()
+    },
+    annotations:{readOnlyHint:true,destructiveHint:false}
+  }, async ({continuityId,historyOffset,historyLimit}) => {
+    try {
+      const result=await recoverMissionFromGithub(continuityId,read,{historyOffset,historyLimit});
+      // Existing S1/G1 runtime authority: read its safe summary only.
+      // A stale cached state is not a new deployment attestation.
+      const current=await liveStateEngine.getCurrent().catch(()=>null);
+      const liveState=current ? {
+        stateVersion:current.stateVersion, observedAt:current.generatedAt,
+        freshness:current.freshness, alignment:current.alignment.global,
+        githubHead:current.github.head, s1Head:current.s1.head,
+        runtimeRevision:current.runtime.revision,
+        runtimeHealth:current.runtime.health
+      } : null;
       const merged=applyObservedMissionLiveState(result,liveState);
       return {content:[{type:'text' as const,text:JSON.stringify(merged)}]};
     } catch(error) {
