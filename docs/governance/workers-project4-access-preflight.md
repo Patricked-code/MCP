@@ -80,6 +80,40 @@ et https://docs.github.com/en/issues/planning-and-tracking-with-projects/automat
 5. En cas d'échec : conserver le résultat en preuve, ne pas promouvoir les
    fonctions d'écriture, ne pas élargir les permissions à l'aveugle.
 
+
+## Découverte universelle des Projects du propriétaire (extension candidate PR #450)
+
+Nouvelle famille de **quatre outils MCP read-only**, sans nouveau serveur,
+sans répertoire canonique concurrent ni registre des tâches supplémentaire :
+
+| Outil | Entrée | Sortie | Limite |
+|---|---|---|---|
+| `github_projects_discover` | compte connu, pageSize, after | une page des Projects et cursor | max 100 éléments/page |
+| `github_projects_inventory` | compte connu, maxPages | liste paginée + preuve complete/partial | max 20 pages |
+| `github_project_inspect` | compte connu, numéro | identité, champs, vues, compteurs | 50 champs/vues; statut partiel possible |
+| `github_projects_reconcile` | compte connu, maxPages | candidats de jointure avec GitRegistry | preview uniquement |
+
+**Owners autorisés lors de cette tranche :** deux comptes personnels
+`Patricked-code`, `Wealthtechinnovations` et l'organisation
+`chainsolutions-wealthtech`, conformément aux identités déclarées dans MCP.
+La découverte respecte les projets accessibles au credential authentifié ;
+la complétude prouve seulement l'exhaustivité *de la visibilité de ce credential*,
+pas l'existence ou l'absence de projets privés hors de son périmètre.
+
+**API officielles :**
+- User : `user(login) { projectsV2(first, after) }`.
+- Organisation : `organization(login) { projectsV2(first, after) }`.
+- Inspection : `projectV2(number)` avec variables validées, sans interpolation.
+- Pagination par `pageInfo.hasNextPage/endCursor`, contrôle des doublons,
+  du compte, de l'URL et du total ; arrêt borné explicite si le résultat est partiel.
+
+**Gouvernance :** la réconciliation retourne uniquement des candidats et
+`requiresExistingGitRegistryJoin=true`. Aucun enregistrement
+GitRegistry, chantier, Issue ou GitHub Project n'est créé. Les originaux des
+conversations WORKERS restent privés ; visibilité GitHub Project préservée.
+Le mécanisme de credential distinct dans cette même PR reste la condition
+d'accès API et nécessite une activation sécurisée et une autorisation de fusion/déploiement.
+
 ## API officielle
 https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project/using-the-api-to-manage-projects
 
