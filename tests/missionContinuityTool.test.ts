@@ -58,7 +58,7 @@ test('only canonical ID retrieves parent docs and dated decisions from an exact 
   assert.equal(result.sourceCommitSha,SHA);
   assert.equal(result.documentationIndex.length,5);
   assert.deepEqual(result.historicalDecisions.map(x=>x.id),['D32','D35']);
-  assert.match(result.documentaryNextAction?.text??'','NEXT_ACTION_CURRENT');
+  assert.match(result.documentaryNextAction?.text??'',/NEXT_ACTION_CURRENT/);
   assert.equal(result.projectId,null);
   assert.deepEqual(result.realTaskIds,[]);
   assert.equal(result.automaticExecutionAuthorized,false);
@@ -70,7 +70,7 @@ test('child lookup does not absorb parent decisions and has parent reference',as
   assert.equal(result.documentationIndex.length,3);
   assert.deepEqual(result.historicalDecisions,[]);
   assert.ok(!result.documentationIndex.some(x=>x.path.includes(P+'__DECISIONS')));
-  assert.match(result.documentaryNextAction?.text??'','child independent action');
+  assert.match(result.documentaryNextAction?.text??'',/child independent action/);
 });
 test('pagination replays same decision references without changing records',async()=>{
   const a=await recoverMissionFromGithub(P,reader(),{historyLimit:1,observedAt:'2026-11-22T03:00:00.000Z'});
