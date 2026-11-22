@@ -35,3 +35,43 @@ Sortie : code de résultat borné, URL, titre, ID GraphQL et indicateur de mise 
 
 ## API officielle
 https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project/using-the-api-to-manage-projects
+
+## Composition des capacités GitHub Projects (extension du même périmètre)
+
+Les quatre outils additionnels sont exposés depuis le catalogue de lecture MCP existant,
+sans créer de second serveur, de Task Queue, de registre d'autorité ou de pipeline de déploiement :
+
+| Outil | Contrat | Autorité |
+| --- | --- | --- |
+| `github_project_v2_workflow_catalogue` | Liste statutaire des workflows implémentés et des gaps | Gouvernance MCP existante |
+| `github_project_v2_inventory` | Lecture GraphQL bornée (50 champs, 50 vues, compteur d'items) | GitHub Project personnel n°4 |
+| `github_project_v2_workflow_preflight` | Vérifie un workflow (accès, identité, pagination, conditions) sans mutation | Identité et client GitHub MCP existants |
+| `github_project_v2_workflow_run_readonly` | Composition séquentielle de contrôles de lecture | Contrats MCP, GitHub GraphQL |
+
+Workflows **exécutables en lecture seule** :
+`ACCESS_PREFLIGHT`, `PROJECT_INVENTORY`, `CANONICAL_MEMORY_PREVIEW`,
+`PROJECT_RECONCILE_PREVIEW`.
+
+Workflows **déclarés mais bloqués** :
+`CANONICAL_MEMORY_INGEST` (sources conversationnelles originales non collectées),
+`PROJECT_BOOTSTRAP_APPLY` et `PROJECT_SYNC_APPLY` (absence d'adaptateur d'écriture gouverné),
+`PROJECT_GOVERNED_DEPLOY` (réutiliser le pipeline existant, aucun second déploiement).
+
+La liste candidate des champs/vues est **une projection publique minimale de comparaison**.
+Aucun champ, vue, draft issue, texte de conversation ou enregistrement privé n'est créé
+par ces outils. Les sorties sont des preuves de lecture courantes : non persistées,
+elles ne constituent pas un registre canonique de mémoire et ne certifient pas les permissions de mutation.
+
+Si l'identité GitHub ne correspond pas exactement à `Patricked-code`, si l'ID/URL/visibilité
+ne concordent pas, si la pagination indique une lecture partielle ou si GitHub GraphQL
+répond avec une erreur, l'orchestration échoue **fermée**, sans tentative d'écriture.
+Les messages d'erreur GraphQL bruts et les jetons ne sont jamais restitués.
+
+## Contrôle de non-régression et déploiement
+
+- Les nouvelles fonctions sont enregistrées sous surface `read`, via `registerReadOnlyTools`.
+- Le contrat de catalogue `.mcp/function-cartography.json` est mis à jour avec les outils et digests.
+- Les tests simulent les réponses GitHub, dont erreurs GraphQL, identité étrangère, pagination et absence de mutation.
+- La CI doit passer intégralement, sur le SHA exact de PR.
+- Le déploiement utilise exclusivement `.github/workflows/mcp-deploy.yml`, avec attestation S1 et runtime.
+- La mémoire canonique WORKERS (sources privées) reste la première priorité métier.
