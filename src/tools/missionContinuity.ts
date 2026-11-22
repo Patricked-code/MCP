@@ -139,6 +139,54 @@ function decisionReferences(
   return events;
 }
 
+
+/** All D-numbered headings remain discoverable even without a dated event. */
+function decisionIndex(
+  sha: string, observations: readonly MissionDocumentObservation[]
+): Array<{id:string;heading:string;source:string}> {
+  const results: Array<{id:string;heading:string;source:string}> = [];
+  const seen = new Map<string,string>();
+  for (const observation of observations) {
+    if (observation.type !== 'DECISIONS') continue;
+    const lines = observation.text.split(/\r?\n/);
+    for (let i = 0; i < lines.length; i++) {
+      const m = /^#{2,4}\s+(D\d{1,4})\b[^\n]*/i.exec(lines[i]!.trim());
+      if (!m) continue;
+      const id = m[1]!.toUpperCase();
+      const heading = lines[i]!.trim().slice(0,500);
+      const source = sourceUrl(sha, observation.path) + '#L' + (i + 1);
+      if (seen.has(id) && seen.get(id) !== heading) {
+        throw new Error('CONTINUITY_DECISION_ID_CONFLICT');
+      }
+      if (!seen.has(id)) {
+        seen.set(id, heading);
+        results.push({id,heading,source});
+      }
+    }
+  }
+  return results.sort((a,b)=>Number(a.id.slice(1))-Number(b.id.slice(1)));
+}
+function documentedWork(
+  sha: string, observations: readonly MissionDocumentObservation[]
+): Array<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}> {
+  const result: Array<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}> = [];
+  const seen = new Set<string>();
+  for (const observation of observations) {
+    if (observation.type !== 'TASKS') continue;
+    const lines = observation.text.split(/\r?\n/);
+    for(let i=0;i<lines.length;i++){
+      const match = /^\|\s*\x60?(REG-WP-\d{2})\x60?\s*\|/.exec(lines[i]!);
+      if (!match || seen.has(match[1]!)) continue;
+      seen.add(match[1]!);
+      result.push({
+        id:match[1]!,source:sourceUrl(sha,observation.path)+'#L'+(i+1),
+        classification:'DOCUMENTARY_ONLY'
+      });
+    }
+  }
+  return result;
+}
+
 export type MissionColdReadResult = Readonly<{
   schemaVersion: 1;
   status: 'PARTIAL' | 'UNVERIFIED' | 'NOT_FOUND' | 'BLOCKED';
@@ -156,6 +204,7 @@ export type MissionColdReadResult = Readonly<{
     id: string; heading: string; source: string;
   }>[];
   historyNextOffset: number | null;
+  workPackages: readonly Readonly<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}>[];
   documentaryNextAction: Readonly<{text: string; source: string; verification: 'DECLARED'}> | null;
   liveState: null;
   projectId: null;
@@ -208,7 +257,7 @@ export async function recoverMissionFromGithub(
     schemaVersion: 1, status: 'NOT_FOUND', continuityId,
     sourceRepository: REPOSITORY, sourceCommitSha: sha,
     observedAt, projectUid: null, parentContinuityId: null,
-    documentationIndex: [], historicalDecisions: [],
+    documentationIndex: [], historicalDecisions: [], workPackages: [],
     historyNextOffset: null, documentaryNextAction: null, liveState: null,
     projectId: null, realTaskIds: [],
     missingAuthorities: ['CONTINUITY_ID_NOT_INDEXED_IN_CANONICAL_REPOSITORY'],
@@ -247,7 +296,8 @@ export async function recoverMissionFromGithub(
     historyOffset: offset, historyPageSize: limit
   });
 
-  const sortedDecisions = projection.historicalDecisions;
+  const sortedDecisions = decisionIndex(sha, observations);
+  const workPackages = documentedWork(sha, observations);
   const selected = sortedDecisions.slice(offset,offset+limit);
   const continuity = observations.find(x=>x.type==='SUIVI')
     ?? observations.find(x=>x.type==='CONTINUITY');
@@ -266,7 +316,9 @@ export async function recoverMissionFromGithub(
       };
     }
   }
-  const required = ['MISSION','DECISIONS','CONTINUITY','ROADMAP','IMPLEMENTATION_PLAN'];
+  const required = ['MISSION','DECISIONS','CONTINUITY','ROADMAP','IMPLEMENTATION_PLAN',
+    'SOURCE_OF_TRUTH','DOCUMENT_AUTHORITIES','AGENTS','MEMORY','INTENTIONS',
+    'SUIVI','TASKS','TODO','EVIDENCE_INDEX'];
   for (const item of required) {
     if (!observations.some(x=>x.type===item)) missing.push('DOCUMENT_MISSING:'+item);
   }
@@ -281,7 +333,8 @@ export async function recoverMissionFromGithub(
       type:x.type,path:x.path,url:sourceUrl(sha,x.path),
       blobSha:x.blobSha,verification:'VERIFIED' as const
     })),
-    historicalDecisions:selected.map(x=>({id:x.eventId,heading:x.description,source:x.evidence.reference})),
+    historicalDecisions:selected,
+    workPackages,
     historyNextOffset:offset+limit<sortedDecisions.length ? offset+limit : null,
     documentaryNextAction, liveState:null, projectId:null, realTaskIds:[],
     missingAuthorities:missing, blockers,
