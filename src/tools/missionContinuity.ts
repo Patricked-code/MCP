@@ -8,6 +8,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { githubJsonRequestWithServerCredential } from '../github/connection.js';
 import { liveStateEngine } from '../liveState/engine.js';
+import { PROGRAM_REPOSITORY } from '../governance/programBlueprintMaterialization.js';
 import {
   buildMissionContinuityReadProjection,
   type ContinuityDocument,
@@ -15,9 +16,9 @@ import {
   type ContinuityEvent
 } from '../registryFederation/missionContinuityReadProjection.js';
 
-const REPOSITORY = 'Patricked-code/MCP';
+const REPOSITORY = PROGRAM_REPOSITORY;
 const REPO_ID = 1285534440;
-const BASE = '/repos/Patricked-code/MCP';
+const BASE = '/repos/' + REPOSITORY;
 const INVENTORY = 'docs/governance/markdown-inventory.json';
 const SHA = /^[a-f0-9]{40}$/i;
 const ID = /^[A-Za-z0-9][A-Za-z0-9_-]{5,120}$/;
