@@ -91,7 +91,7 @@ test('a child mission has its own NEXT_ACTION and excludes parent records, never
   assert.equal(result.parentContinuityId, ID);
   assert.equal(result.documentationIndex.length, 1);
   assert.equal(result.historicalTimeline.length, 2);
-  assert.equal(result.nextActionCurrent?.ownerContinuityId, undefined);
+  assert.equal(result.nextActionCurrent?.actionId, 'P2-GITREGISTRY-READ');
   assert.ok(result.blockers.includes('FOREIGN_DOCUMENT_EXCLUDED'));
   assert.ok(result.blockers.includes('FOREIGN_EVENT_EXCLUDED'));
   assert.ok(result.blockers.includes('FOREIGN_ACTION_EXCLUDED'));
@@ -212,4 +212,47 @@ test('invalid cursor, SHA and undocumented mission are rejected; this is not a p
     /MISSION_CONTINUITY_INPUT_INVALID/);
   assert.throws(() => buildMissionContinuityReadProjection({...base, continuityId: ''}),
     /MISSION_CONTINUITY_INPUT_INVALID/);
+});
+
+test('matching identity crosswalk restores project ID only with same SHA and evidence, never grants writing', () => {
+  const base = fixture();
+  const crosswalk = {
+    status: 'CONSISTENT' as const,
+    observedAt, continuityId: ID, documentaryProjectUid: 'WT-PROJECT-MCP-001',
+    repositoryId: 'github:Patricked-code/MCP', matchedProjectId: 'mcp_bridge',
+    sourceCommitSha: SHA, evidenceRefs: ['github:ProjectRecord:mcp_bridge'],
+    reasonCodes: [] as string[], authorizationInferred: false as const, mutationPerformed: false as const
+  };
+  const result = buildMissionContinuityReadProjection({...base, identityCrosswalk: crosswalk});
+  assert.equal(result.projectId, 'mcp_bridge');
+  assert.equal(result.authorizationInferred, false);
+  const stale = buildMissionContinuityReadProjection({
+    ...base, identityCrosswalk: {...crosswalk, sourceCommitSha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
+  });
+  assert.equal(stale.projectId, null);
+  assert.ok(stale.blockers.includes('PROJECT_BINDING_NOT_ATTESTED'));
+});
+
+test('a foreign-repository TaskQueue record cannot be projected as owned work', () => {
+  const taskKey = federatedIdentityKey({
+    kind: 'TASK', authority: 'GOVERNED_TASK_QUEUE',
+    authorityScope: 'AnotherOrg/OtherRepo', sourceId: 'TASK-20261122-102'
+  });
+  const projection = buildFederatedRegistryProjection({
+    observedAt,
+    entities: [{
+      identity: {kind: 'TASK', authority: 'GOVERNED_TASK_QUEUE',
+        authorityScope: 'AnotherOrg/OtherRepo', sourceId: 'TASK-20261122-102'},
+      evidence: {observedAt, verification: 'VERIFIED',
+        evidenceRef: 'queue:foreign', sourceVersion: 'queue-rev:244'},
+      taskStatus: 'READY'
+    }], links: []
+  });
+  const base = fixture();
+  const result = buildMissionContinuityReadProjection({
+    ...base, federation: projection,
+    taskBindings: [{ownerContinuityId: ID, federatedTaskKey: taskKey, evidence: evidence('attestation:declared')}]
+  });
+  assert.deepEqual(result.realTaskIds, []);
+  assert.ok(result.blockers.includes('TASK_QUEUE_BINDING_UNVERIFIED'));
 });
