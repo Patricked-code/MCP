@@ -14,6 +14,7 @@ import { registerSadiaafTools } from './sadiaafDeploy.js';
 import { registerLegacyFundsScopedTools } from './legacyFundsScoped.js';
 import { registerNigeriaScopedTools } from './nigeriaScoped.js';
 import { registerGitRegistryV2ReadOnlyTools } from './githubRegistryV2.js';
+import { registerMissionContinuityReadTools } from './missionContinuity.js';
 import { registerScopedReadOnlyTools } from './writeScoped.js';
 import { registerRuntimeAttestationReadOnlyTools } from './runtimeAttestation.js';
 import { registerGovernedSessionTools } from './governedSessions.js';
@@ -103,6 +104,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerGithubAuthorizationReadOnlyTools(server);
   registerDurableAccountReadOnlyTools(server);
   registerGitRegistryV2ReadOnlyTools(server);
+  registerMissionContinuityReadTools(server);
   registerRuntimeAttestationReadOnlyTools(server);
   registerGovernedSessionTools(server);
   registerGovernedContextTools(server);

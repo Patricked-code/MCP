@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "e0678c885810a394873d63a61ea4e055d258f80eaa1133cc34be41f581491f3e",
-  "registeredToolCount": 153,
-  "readOnlyToolCount": 96,
+  "catalogueDigest": "b41254a6b3be51a318c3461f87c6f7744fa22b28fa461b579660a5afa8b8c616",
+  "registeredToolCount": 154,
+  "readOnlyToolCount": 97,
   "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
@@ -4050,6 +4050,43 @@
         "additionalProperties": false
       },
       "contractDigest": "59246a88e4d6fc81d09b38f3f2750627f4677c9a4072565b962fdc7ba87caf60"
+    },
+    {
+      "name": "mcp_rejoin_continuity",
+      "title": "Rejoin Mission by Continuity ID (Read Only)",
+      "description": "From a Continuity ID only, recover the mission documents and evidenced history from the canonical public MCP GitHub repository. Reports missing Project Binding, CUG, Task Queue and runtime authorities without guessing them; NEVER claims a task or writes. Requires an authenticated MCP connection.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "continuityId": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 121,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{5,120}$"
+          },
+          "historyOffset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "historyLimit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "continuityId"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "dd95b286ba0b09155be221e08307b4fe68193dafcc49c1fa4f6d18be4bf276f5"
     },
     {
       "name": "mcp_release_governed_lock",
