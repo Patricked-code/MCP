@@ -185,6 +185,7 @@ export function buildMissionContinuityReadProjection(
   const conflicts = new Set<string>();
   const blockers = new Set<string>();
   const sourceReferences = new Set<string>();
+  const observedAuthorities = new Set<string>();
   const accepted = <T extends {ownerContinuityId: string; evidence: ContinuityEvidence}>(
     records: readonly T[], label: string
   ): T[] => {
@@ -200,6 +201,7 @@ export function buildMissionContinuityReadProjection(
         continue;
       }
       sourceReferences.add(item.evidence.reference);
+      observedAuthorities.add(item.evidence.authority);
       if (item.evidence.verification !== 'VERIFIED') {
         blockers.add(label + '_' + item.evidence.verification);
       }
@@ -304,6 +306,7 @@ export function buildMissionContinuityReadProjection(
     }
     taskIds.add(entity.identity.sourceId);
     sourceReferences.add(entity.evidence.evidenceRef);
+    observedAuthorities.add('GOVERNED_TASK_QUEUE');
   }
 
   const actions = accepted(input.candidateActions, 'ACTION').sort(
@@ -345,6 +348,10 @@ export function buildMissionContinuityReadProjection(
     || crosswalk.repositoryId !== input.repositoryId) {
     blockers.add('PROJECT_BINDING_NOT_ATTESTED');
   }
+  if (crosswalkEvidenceUsable && crosswalk) {
+    observedAuthorities.add('GIT_REGISTRY');
+    for (const ref of crosswalk.evidenceRefs) sourceReferences.add(ref);
+  }
   const projectId = crosswalkEvidenceUsable && crosswalk?.status === 'CONSISTENT'
     && crosswalk.continuityId === input.continuityId
     && crosswalk.documentaryProjectUid === input.projectUid
@@ -361,8 +368,9 @@ export function buildMissionContinuityReadProjection(
   const admissionRequirements = nextAction?.mode === 'GOVERNED_WRITE'
     ? ['REAL_TASK_ADMISSION', 'GOVERNED_SESSION', 'OWNER_AUTHORITY', 'LOCK_CHECK', 'CI_REVIEW_DEPLOY_GATES']
     : [];
-  const verificationStatus = hasConflict ? 'CONFLICT'
-    : projectId && blockers.size === 0 ? 'VERIFIED' : 'UNVERIFIED';
+  // Without an authenticated live-state / CUG readback, global verification
+  // can NEVER be certified by this pure projection, even with a matching ID.
+  const verificationStatus = hasConflict ? 'CONFLICT' : 'UNVERIFIED';
   const resumeReadiness = hasConflict ? 'BLOCKED'
     : nextAction?.mode === 'READ_ONLY' ? 'READ_ONLY_READY'
     : nextAction?.mode === 'GOVERNED_WRITE' ? 'ADMISSION_REQUIRED'
@@ -377,9 +385,7 @@ export function buildMissionContinuityReadProjection(
     projectId,
     repositoryId: input.repositoryId,
     ownerScope: input.ownerScope,
-    authorityReferences: Object.freeze([...new Set([
-      'GITHUB', 'GIT_REGISTRY', 'GOVERNED_TASK_QUEUE', 'OPERATIONAL_MEMORY'
-    ])]),
+    authorityReferences: Object.freeze([...observedAuthorities].sort()),
     documentationIndex: Object.freeze(documents),
     historicalDecisions: Object.freeze(timeline.filter(e => e.kind === 'DECISION')),
     intentions: Object.freeze(timeline.filter(e => e.kind === 'INTENTION')),
