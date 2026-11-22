@@ -309,21 +309,25 @@ export async function recoverMissionFromGithub(
   const sortedDecisions = decisionIndex(sha, observations);
   const workPackages = documentedWork(sha, observations);
   const selected = sortedDecisions.slice(offset,offset+limit);
-  const continuity = observations.find(x=>x.type==='SUIVI')
-    ?? observations.find(x=>x.type==='CONTINUITY');
   let documentaryNextAction: MissionColdReadResult['documentaryNextAction'] = null;
-  if (continuity) {
-    const lines = continuity.text.split(/\r?\n/);
+  // Follow actual scope-local declarations, not the mere presence of SUIVI.
+  // A child SUIVI can exist without a NEXT_ACTION while CONTINUITY has one.
+  for (const documentType of ['SUIVI', 'CONTINUITY']) {
+    const candidate = observations.find(x=>x.type===documentType);
+    if (!candidate) continue;
+    const lines = candidate.text.split(/\r?\n/);
     let latest = -1;
-    for(let i=0;i<lines.length;i++) {
-      if (/NEXT_ACTION_CURRENT|NEXT_ACTION\s*:|prochaine action/i.test(lines[i]!)) latest=i;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]!.trim();
+      if (/(?:NEXT_ACTION(?:_CURRENT)?)(?:\*{0,2})\s*(?::|$)|prochaine action)/i.test(line)) latest = i;
     }
-    if (latest>=0) {
+    if (latest >= 0) {
       documentaryNextAction = {
-        text: lines.slice(latest,Math.min(lines.length,latest+5)).join('\n').slice(0,1000),
-        source: sourceUrl(sha,continuity.path)+'#L'+(latest+1),
-        verification:'DECLARED'
+        text: lines.slice(latest, Math.min(lines.length, latest + 5)).join('\n').slice(0, 1000),
+        source: sourceUrl(sha, candidate.path) + '#L' + (latest + 1),
+        verification: 'DECLARED'
       };
+      break;
     }
   }
   const required = ['MISSION','DECISIONS','CONTINUITY','ROADMAP','IMPLEMENTATION_PLAN',
