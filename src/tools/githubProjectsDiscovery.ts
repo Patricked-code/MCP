@@ -36,7 +36,7 @@ export const INSPECT_QUERIES = {
 export type Project = {id: string; number: number; title: string; url: string; public: boolean; closed: boolean};
 const normalizeProject = (v: unknown, owner: Owner): Project | null => {
   const p = obj(v), n = num(p?.number), id = str(p?.id), title = str(p?.title), url = str(p?.url);
-  if (!n || !id || !title || !url || typeof p?.public !== 'boolean' || typeof p.closed !== 'boolean' ||
+  if (!n || !id || !title || !url || typeof p?.public !== 'boolean' || typeof p?.closed !== 'boolean' ||
       url.replace(/\/$/, '').toLowerCase() !== targetUrl(owner, n).toLowerCase()) return null;
   return {id, number: n, title, url: targetUrl(owner, n), public: p.public, closed: p.closed};
 };
