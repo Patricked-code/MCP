@@ -107,13 +107,58 @@ test('inspect reads dynamic selected project with no visibility mutation', async
       projectV2:{...projects[1],viewerCanUpdate:false,
         fields:{pageInfo:{hasNextPage:false},nodes:[{id:'fld',name:'Memoire_ID'}]},
         views:{pageInfo:{hasNextPage:false},nodes:[{id:'view',name:'Memoire',layout:'TABLE_LAYOUT'}]},
+        workflows:{totalCount:2,pageInfo:{hasNextPage:false,endCursor:null},nodes:[
+          {id:'WF_1',number:1,name:'Auto set Done',enabled:true,
+            createdAt:'2026-01-01T00:00:00Z',updatedAt:'2026-02-01T00:00:00Z'},
+          {id:'WF_2',number:2,name:'Auto add',enabled:false,
+            createdAt:'2026-01-01T00:00:00Z',updatedAt:'2026-02-01T00:00:00Z'}
+        ]},
         items:{totalCount:2}}}});
   });
   assert.equal(result.status,'SUCCESS_READ_ONLY');
   assert.equal(result.project?.public,false);
   assert.equal(result.fields?.[0]?.name,'Memoire_ID');
   assert.equal(result.viewerCanUpdate,false);
+  assert.equal(result.workflowCount,2);
+  assert.equal(result.workflows?.[0]?.name,'Auto set Done');
+  assert.equal(result.workflows?.[0]?.enabled,true);
+  assert.equal(result.workflows?.[1]?.enabled,false);
+  assert.equal(result.workflowsComplete,true);
   assert.equal(result.noMutation,true);
+});
+
+
+test('workflow inspection reports PARTIAL when GitHub has additional workflow pages', async () => {
+  const actual = await inspectProject('Patricked-code', 4, async (_endpoint, opts) => {
+    const body = opts?.jsonBody as {query: string};
+    assert.match(body.query, /workflows\(first: 50\)/);
+    return response({viewer: {login:'Patricked-code'},user:{login:'Patricked-code',
+      projectV2:{...projects[1],viewerCanUpdate:true,
+        fields:{pageInfo:{hasNextPage:false},nodes:[]},
+        views:{pageInfo:{hasNextPage:false},nodes:[]},
+        workflows:{totalCount:51,pageInfo:{hasNextPage:true,endCursor:'WF_PAGE_2'},
+          nodes:[{id:'WF_1',number:1,name:'Auto status',enabled:true,
+            createdAt:'2026-01-01T00:00:00Z',updatedAt:'2026-01-02T00:00:00Z'}]},
+        items:{totalCount:0}}}});
+  });
+  assert.equal(actual.status,'PARTIAL');
+  assert.equal(actual.workflowsComplete,false);
+  assert.equal(actual.workflowCount,51);
+  assert.equal(actual.workflowsNextCursor,'WF_PAGE_2');
+  assert.equal(actual.noMutation,true);
+});
+
+test('missing workflows connection cannot be mistaken for an empty list', async () => {
+  const actual = await inspectProject('Patricked-code',4,async()=>response({
+    viewer:{login:'Patricked-code'},user:{login:'Patricked-code',
+      projectV2:{...projects[1],viewerCanUpdate:false,
+        fields:{pageInfo:{hasNextPage:false},nodes:[]},
+        views:{pageInfo:{hasNextPage:false},nodes:[]},
+        items:{totalCount:0}}}
+  }));
+  assert.equal(actual.status,'UNVERIFIED');
+  assert.equal(actual.reasonCode,'INVALID_PROJECT_STRUCTURE');
+  assert.equal(actual.noMutation,true);
 });
 
 test('reconcile is a preview and never persists a second registry', async () => {
