@@ -101,3 +101,14 @@ Pour le cas `WT-MCP-REGISTRY-RESOLUTION-20261121-01`, obtenir une réponse de le
 **Tests de recette transversaux D37 :** au moins deux projets distincts, deux missions d'un projet, sous-chantier avec checkpoint propre, tâche et `NEXT_ACTION` propres, tâche du programme central sans relation par défaut, dépendance explicitement inter-missions, événements concurrents/doublons, scénario `UNVERIFIED/CONFLICT`, et conservation des statuts terminales. Un `DONE` global ne peut jamais être induit d'un sous-chantier `DONE` ; un `NEXT_ACTION=null` d'une mission ne clôture pas son parent.
 
 **NEXT_ACTION_CURRENT maintenue :** P2 et son identité vérifiée d'abord, puis index/documentation/tâches scoppés ; aucun remaniement de l'architecture des stores sans tests d'équivalence et décision de gouvernance. Référence D37 dans `__DECISIONS.md` et checkpoint homonyme dans `__CONTINUITY.md`.
+
+### D38 — Barrière de livraison sur les intentions et priorités propres à chaque mission
+
+La prochaine livraison P2 doit attester **les deux capacités distinctes** ci-dessous, sans modifier l'ordre général RG-001…RG-056 :
+
+| Capacité | Contrat de réussite vérifiable |
+| --- | --- |
+| **Document Authority Map / Mission Memory** | À partir d'un Continuity ID, rendre la liste des documents autoritaires hérités ou locaux (AGENTS, SUIVI, MEMORY, SOURCE_OF_TRUTH, MISSION, DECISIONS, ROADMAP, TODO, TASKS, CONTINUITY, EVIDENCE_INDEX, architecture/cartographie) avec `path/ref/SHA/ownerScope/freshness/status`; tout fichier manquant apparaît `MISSING` plutôt que de réutiliser un document d'une autre mission. |
+| **Intentions et ordonnancement dynamique** | Pour une instruction significative authentifiée et accessible : enregistrer provenance, scope, classification, liens RG/décision/tâche, effets et statut ; comparer à l'ordre courant ; recalculer les NEXT_ACTION **du périmètre concerné**, en conservant l'ordre précédent et la justification du changement. Ne jamais auto-admettre une Task P2 ni usurper son owner. |
+
+**Recette bloquante :** deux projets, deux missions d'un même projet, une nouvelle intention prioritaire qui modifie un ordre avec justification, une information doublonnée qui ne crée rien, une contradiction qui bloque seulement son périmètre, une tâche dont les locks empêchent l'exécution, et une reprise à froid avec conservation des états et sources. Réutiliser les lecteurs GitRegistry/Operational Memory/Task Queue et les politiques GRGS ; ne créer les fichiers documentaires locaux qu'après avoir confirmé que l'autorité du même type n'existe pas déjà. **État : spécification D38 sur PR #444, non implémentée ni certifiée.**
