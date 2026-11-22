@@ -213,7 +213,9 @@ test('canonical #430 source checkpoint is verified but its claims stay DECLARED'
       +'**NEXT_ACTION_CURRENT** : découvrir Project Binding et CUG avant toute écriture'
   };
   const spoof={...checkpoint,id:7074000000,user:{login:'unknown-user'}};
-  const result=await recoverMissionFromGithub(P,reader(old,false,[checkpoint,spoof]),{
+  const docsWithoutCurrentAction=old.map(x=>x.path.endsWith(P+'__CONTINUITY.md')
+    ? {...x,content:'# Continuity without a current-action marker'}:x);
+  const result=await recoverMissionFromGithub(P,reader(docsWithoutCurrentAction,false,[checkpoint,spoof]),{
     observedAt:'2026-11-22T03:00:00.000Z'
   });
   assert.equal(result.latestVerifiedCheckpoint?.id,'7073160993');
@@ -254,4 +256,22 @@ test('live state clears NOT_OBSERVED on readback, never promotes task or action 
   assert.ok(stale.blockers.includes('LIVE_STATE_STALE'));
   assert.ok(stale.blockers.includes('GITHUB_LIVE_SHA_MISMATCH'));
   assert.equal(stale.automaticExecutionAuthorized,false);
+});
+
+test('scoped SUIVI current action takes precedence over an older checkpoint declaration',async()=>{
+  const checkpoint={
+    id:7073160993,created_at:'2026-11-22T02:50:11Z',user:{login:'Patricked-code'},
+    body:'### Checkpoint D39 — WT-MCP-REGISTRY-RESOLUTION-20261121-01\n'
+      +'**NEXT_ACTION_CURRENT** : historical action only'
+  };
+  const files=[...old,{path:ROOT+P+'__SUIVI.md',
+    content:'# SUIVI\n## NEXT_ACTION_CURRENT — current scope\n'
+      +'**Opération :** latest scoped action (no Task admission)\n'}];
+  const result=await recoverMissionFromGithub(P,reader(files,false,[checkpoint]),{
+    observedAt:'2026-11-22T03:00:00.000Z'
+  });
+  assert.equal(result.latestVerifiedCheckpoint?.id,'7073160993');
+  assert.match(result.documentaryNextAction?.text??'',/latest scoped action/);
+  assert.ok(!result.documentaryNextAction?.text.includes('historical action only'));
+  assert.equal(result.documentaryNextAction?.verification,'DECLARED');
 });
