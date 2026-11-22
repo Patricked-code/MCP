@@ -35,3 +35,10 @@
 Git conserve l'historique des versions et les PR/issues conservent des commentaires tant qu'ils restent accessibles ; aucun mécanisme actuel ne garantit la copie intégrale de toutes les conversations ChatGPT dans GitHub. Une intention nouvellement reçue par un agent disposant d'accès doit être classifiée puis enregistrée avec preuve, sans inventer des échanges absents. Les versions historiques incorrectes sont **datées et superseded**, jamais supprimées. Une preuve à réobserver reste `UNVERIFIED`, même lorsqu'une ancienne attestation mentionne `FULLY_ALIGNED`.
 
 **NEXT_ACTION_LOCAL** : P2 — valider Project Binding/GitRegistry/CUG, puis implémenter et tester le résolveur de documents/intentions/tâches par Continuity ID et les NEXT_ACTION propres à chaque mission ; ne pas réactiver l'automatisation horaire.
+
+## 2026-11-22 — D39 : correction des autorités de reprise (successeur)
+
+- Checkpoint canonique [#7073160993](https://github.com/Patricked-code/MCP/pull/430#issuecomment-7073160993), fusions #444/#445/#446 attestées et SHA GitHub/S1/runtime `b843818df0b00125f9dd319ab2f4b99b169f5892` ; Live State v1458.
+- Les deux appels MCP `mcp_rejoin_continuity` ont retourné PARTIAL : mère 17 documents et D01–D39 paginées ; enfant 13 documents et 0 A24 malgré `__DECISIONS.md`. Aucun Task ID réel, ProjectRecord admis ni exécution automatique.
+- Correction #447 additivement développée sur sa branche ; niveaux CODE_BRANCH_ONLY, CI et runtime distincts. Le texte des intentions/documentaires n'autorise jamais une Task.
+- Les sources D32/D35–D39, la mémoire du parent et celle de l'enfant demeurent séparées et append-only ; aucun état historique n'a été effacé.
