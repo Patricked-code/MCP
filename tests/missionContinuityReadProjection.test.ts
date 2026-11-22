@@ -77,6 +77,8 @@ test('cold read projection restores historical checkpoint, work and safe P2 next
   assert.equal(result.authorizationInferred, false);
   assert.equal(result.mutationPerformed, false);
   assert.equal(result.liveState, null);
+  assert.deepEqual(result.authorityReferences, ['GITHUB']);
+  assert.ok(!result.authorityReferences.includes('OPERATIONAL_MEMORY'));
 });
 
 test('a child mission has its own NEXT_ACTION and excludes parent records, never inherits tasks implicitly', () => {
@@ -225,6 +227,8 @@ test('matching identity crosswalk restores project ID only with same SHA and evi
   };
   const result = buildMissionContinuityReadProjection({...base, identityCrosswalk: crosswalk});
   assert.equal(result.projectId, 'mcp_bridge');
+  assert.equal(result.verificationStatus, 'UNVERIFIED');
+  assert.ok(result.authorityReferences.includes('GIT_REGISTRY'));
   assert.equal(result.authorizationInferred, false);
   const stale = buildMissionContinuityReadProjection({
     ...base, identityCrosswalk: {...crosswalk, sourceCommitSha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}
