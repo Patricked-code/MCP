@@ -40,3 +40,18 @@
 ## Protocole de tenue
 
 Toute intention significative : `__INTENTIONS.md` → impact et décisions dans `__DECISIONS.md` → ordre `__ROADMAP.md` + journal de changement ici → action `__TASKS.md`/`__TODO.md` → preuve `__EVIDENCE_INDEX.md` → checkpoint `__CONTINUITY.md`. Aucune mise à jour live n'est automatique par la seule présence de ce fichier ; statut de PR et runtime doivent être relus.
+
+## 2026-11-22 — D39 / recette MCP froide / PR #447 (checkpoint additif)
+
+> État courant, sans modifier les observations historiques. Référence : [checkpoint D39 #7073160993](https://github.com/Patricked-code/MCP/pull/430#issuecomment-7073160993).
+
+- [#444](https://github.com/Patricked-code/MCP/pull/444) MERGED `1a569b0f3456946273d49f19c00f0131dcf50ad4` ; [#445](https://github.com/Patricked-code/MCP/pull/445) MERGED `ef81174e2891bc4467079d4d3722cd0a3722d605` ; [#446](https://github.com/Patricked-code/MCP/pull/446) MERGED `b843818df0b00125f9dd319ab2f4b99b169f5892`.
+- MCP main/S1/runtime au SHA `b843818df0b00125f9dd319ab2f4b99b169f5892`, Live State v1458, `FULLY_ALIGNED` et `healthy` à l'observation.
+- Deux appels MCP `mcp_rejoin_continuity` réellement exécutés : mère `PARTIAL` / 17 documents / D01–D39 paginées / 8 lots ; enfant `PARTIAL` / 13 documents / relation parent attestée.
+- Défaillances P2 observées : décisions A24 non lues, héritage documentaire incorrect, `NEXT_ACTION` pris dans le tableau historique, `LIVE_STATE_NOT_OBSERVED` persistant, `VERIFIED_CHECKPOINT_MISSING` malgré #7073160993. Correctifs **proposés seulement en branche** dans [PR #447](https://github.com/Patricked-code/MCP/pull/447).
+- `projectId=null`, `realTaskIds=[]`, `automaticExecutionAuthorized=false` restent non promus ; jointures GitRegistry/Project Binding/CUG/Task Queue/Operational Memory non certifiées. P3 #432, P4 #435 et P5 #436 demeurent ouverts, avec leurs propriétaires.
+- D39 maintenu : tests, CI exact HEAD, protections GitHub sans dérogation ; aucune revue facultative ni Codex ; l'automatisation suspendue n'est pas réactivée.
+
+## NEXT_ACTION_CURRENT — successeur du checkpoint D39
+
+**Opération :** tester/corriger #447 sur exact HEAD, CI, puis effectuer une recette froide parent/enfant après merge et Governed Deploy admissibles et attestation G1. Ensuite réconcilier identités et preuves auprès des autorités propriétaires GitRegistry/Project Binding/CUG/Task Queue/Operational Memory. **État actuel :** CODE_BRANCH_ONLY, certification de la recette corrective non acquise ; aucune Task ID créée. **Rattachement :** RG-011/019/023/027/034/054, D32–D39.
