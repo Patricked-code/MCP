@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "b41254a6b3be51a318c3461f87c6f7744fa22b28fa461b579660a5afa8b8c616",
-  "registeredToolCount": 154,
-  "readOnlyToolCount": 97,
+  "catalogueDigest": "6350065d7204d53ce30811b271ae2ba7e9302a641dc115d11509067b5d7b215a",
+  "registeredToolCount": 159,
+  "readOnlyToolCount": 102,
   "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
@@ -1788,6 +1788,117 @@
         "additionalProperties": false
       },
       "contractDigest": "3468afd62e7acd4cdefff09fe6f2df2904d82baf87c05b82109a341bbb0eeb91"
+    },
+    {
+      "name": "github_project_access_preflight",
+      "title": null,
+      "description": "Vérifie en lecture seule le Project personnel Patricked-code/4 avec le jeton GitHub MCP déjà configuré. Aucune mutation ni secret révélé.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "5436c353e5a4a256f78f8dfa119c066c61c187a76d04a3cd5782d67aff8d8690"
+    },
+    {
+      "name": "github_project_v2_inventory",
+      "title": null,
+      "description": "Inventorie en lecture seule les champs, vues et compteurs du Project personnel Patricked-code/4.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "fcc1c2ce609febaf7603a2a45a811e8af601a3857a93f64555f06e06fc1ec7e2"
+    },
+    {
+      "name": "github_project_v2_workflow_catalogue",
+      "title": null,
+      "description": "Répertorie les workflows GitHub Projects WORKERS réalisables ou explicitement bloqués, sans prétendre exécuter la mémoire privée.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "455f8f46736194a00ad614281153aefaff61a30f7c30e01b4b0ad60118de81c4"
+    },
+    {
+      "name": "github_project_v2_workflow_preflight",
+      "title": null,
+      "description": "Vérifie les préconditions de workflow de WORKERS via GitHub GraphQL sans modification.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "workflow": {
+            "type": "string",
+            "enum": [
+              "ACCESS_PREFLIGHT",
+              "PROJECT_INVENTORY",
+              "CANONICAL_MEMORY_PREVIEW",
+              "PROJECT_RECONCILE_PREVIEW"
+            ]
+          }
+        },
+        "required": [
+          "workflow"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "2f053569c88b2696e393a413bad4591d90b92c8e96b13f63402c5f95581b4a07"
+    },
+    {
+      "name": "github_project_v2_workflow_run_readonly",
+      "title": null,
+      "description": "Exécute une chaîne de vérifications GitHub Projects (accès, inventaire, comparaison) sans mutation.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "workflow": {
+            "type": "string",
+            "enum": [
+              "ACCESS_PREFLIGHT",
+              "PROJECT_INVENTORY",
+              "CANONICAL_MEMORY_PREVIEW",
+              "PROJECT_RECONCILE_PREVIEW"
+            ]
+          }
+        },
+        "required": [
+          "workflow"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "7a187ee97738c815248533416ffecdb30ded7a9649d460d7bb138e8352599186"
     },
     {
       "name": "github_registry_v2_dry_run",
