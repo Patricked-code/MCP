@@ -319,7 +319,7 @@ export async function recoverMissionFromGithub(
     let latest = -1;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]!.trim();
-      if (/(?:NEXT_ACTION(?:_CURRENT)?)(?:\*{0,2})\s*(?::|$)|prochaine action)/i.test(line)) latest = i;
+      if (/(?:\bNEXT_ACTION(?:_CURRENT)?\*{0,2}\s*(?::|$)|prochaine action)/i.test(line)) latest = i;
     }
     if (latest >= 0) {
       documentaryNextAction = {
