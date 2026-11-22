@@ -29,8 +29,8 @@ export const DISCOVER_QUERIES = {
   organization: 'query WorkersProjectsDiscoverOrganization($owner: String!, $first: Int!, $after: String) { viewer { login } organization(login: $owner) { login projectsV2(first: $first, after: $after) { totalCount pageInfo { hasNextPage endCursor } nodes { id number title url public closed } } } }'
 } as const;
 export const INSPECT_QUERIES = {
-  user: 'query WorkersProjectsInspectUser($owner: String!, $number: Int!) { viewer { login } user(login: $owner) { login projectV2(number: $number) { id number title url public closed viewerCanUpdate fields(first: 50) { pageInfo { hasNextPage } nodes { ... on ProjectV2FieldCommon { id name } } } views(first: 50) { pageInfo { hasNextPage } nodes { id name layout } } items(first: 1) { totalCount } } } }',
-  organization: 'query WorkersProjectsInspectOrganization($owner: String!, $number: Int!) { viewer { login } organization(login: $owner) { login projectV2(number: $number) { id number title url public closed viewerCanUpdate fields(first: 50) { pageInfo { hasNextPage } nodes { ... on ProjectV2FieldCommon { id name } } } views(first: 50) { pageInfo { hasNextPage } nodes { id name layout } } items(first: 1) { totalCount } } } }'
+  user: 'query WorkersProjectsInspectUser($owner: String!, $number: Int!) { viewer { login } user(login: $owner) { login projectV2(number: $number) { id number title url public closed viewerCanUpdate fields(first: 50) { pageInfo { hasNextPage } nodes { ... on ProjectV2FieldCommon { id name } } } views(first: 50) { pageInfo { hasNextPage } nodes { id name layout } } workflows(first: 50) { totalCount pageInfo { hasNextPage endCursor } nodes { id number name enabled createdAt updatedAt } } items(first: 1) { totalCount } } } }',
+  organization: 'query WorkersProjectsInspectOrganization($owner: String!, $number: Int!) { viewer { login } organization(login: $owner) { login projectV2(number: $number) { id number title url public closed viewerCanUpdate fields(first: 50) { pageInfo { hasNextPage } nodes { ... on ProjectV2FieldCommon { id name } } } views(first: 50) { pageInfo { hasNextPage } nodes { id name layout } } workflows(first: 50) { totalCount pageInfo { hasNextPage endCursor } nodes { id number name enabled createdAt updatedAt } } items(first: 1) { totalCount } } } }'
 } as const;
 
 export type Project = {id: string; number: number; title: string; url: string; public: boolean; closed: boolean};
@@ -148,10 +148,12 @@ export async function inspectProject(
   const p = obj(result.principal.projectV2), project = normalizeProject(p, owner);
   if (!project || project.number !== number) return {...base, status: 'BLOCKED',
     reasonCode: 'PROJECT_UNAVAILABLE_OR_IDENTITY_MISMATCH'};
-  const fc = obj(p?.fields), vc = obj(p?.views), count = num(obj(p?.items)?.totalCount);
-  if (!fc || !vc || count === null ||
+  const fc = obj(p?.fields), vc = obj(p?.views), wc = obj(p?.workflows),
+    count = num(obj(p?.items)?.totalCount), workflowCount = num(wc?.totalCount);
+  if (!fc || !vc || !wc || count === null || workflowCount === null ||
       typeof obj(fc.pageInfo)?.hasNextPage !== 'boolean' ||
-      typeof obj(vc.pageInfo)?.hasNextPage !== 'boolean') {
+      typeof obj(vc.pageInfo)?.hasNextPage !== 'boolean' ||
+      typeof obj(wc.pageInfo)?.hasNextPage !== 'boolean') {
     return {...base, status: 'UNVERIFIED', reasonCode: 'INVALID_PROJECT_STRUCTURE'};
   }
   const fields = arr(fc.nodes).map(x => {
@@ -162,12 +164,27 @@ export async function inspectProject(
     return str(v?.id) && str(v?.name) && str(v?.layout)
       ? {id: str(v?.id)!, name: str(v?.name)!, layout: str(v?.layout)!} : null;
   });
-  if (fields.some(x => !x) || views.some(x => !x)) {
+  const workflows = arr(wc.nodes).map(x => {
+    const v = obj(x), number = num(v?.number);
+    return str(v?.id) && str(v?.name) && number !== null && number > 0 &&
+      typeof v?.enabled === 'boolean' && str(v.createdAt) && str(v.updatedAt)
+      ? {id: str(v.id)!, number, name: str(v.name)!, enabled: v.enabled,
+          createdAt: str(v.createdAt)!, updatedAt: str(v.updatedAt)!}
+      : null;
+  });
+  if (fields.some(x => !x) || views.some(x => !x) || workflows.some(x => !x) ||
+      new Set(workflows.map(x => x!.id)).size !== workflows.length ||
+      (!obj(wc.pageInfo)?.hasNextPage && workflows.length !== workflowCount) ||
+      (obj(wc.pageInfo)?.hasNextPage === true && !str(obj(wc.pageInfo)?.endCursor))) {
     return {...base, status: 'UNVERIFIED', reasonCode: 'INVALID_PROJECT_STRUCTURE'};
   }
-  const partial = obj(fc.pageInfo)?.hasNextPage === true || obj(vc.pageInfo)?.hasNextPage === true;
+  const partial = obj(fc.pageInfo)?.hasNextPage === true ||
+    obj(vc.pageInfo)?.hasNextPage === true || obj(wc.pageInfo)?.hasNextPage === true;
   return {...base, status: partial ? 'PARTIAL' : 'SUCCESS_READ_ONLY', project,
     itemCount: count, viewerCanUpdate: p?.viewerCanUpdate === true,
+    workflowCount, workflows, workflowsComplete: obj(wc.pageInfo)?.hasNextPage === false,
+    workflowsNextCursor: obj(wc.pageInfo)?.hasNextPage === true
+      ? str(obj(wc.pageInfo)?.endCursor) : null,
     fields, views};
 }
 
