@@ -87,3 +87,17 @@ Nouveau critère obligatoire dans P11 : graphe d'architecture `composants/import
 Pour le cas `WT-MCP-REGISTRY-RESOLUTION-20261121-01`, obtenir une réponse de lecture reproductible associant **mission → corpus Markdown et derniers checkpoints → UID documentaire → ProjectRecord attesté → repository ID stable → installation CUG attestée → tâches et dépendances**, sans lien fabriqué. Les données insuffisantes doivent être marquées `UNVERIFIED`, `CONFLICT` ou `INACCESSIBLE`, avec provenance et date ; les confirmations de GitRegistry/CUG doivent provenir de leurs autorités. La fonction `missionIdentityCrosswalk` (#442) est une **primitive testée**, pas cette intégration complète.
 
 **NEXT_ACTION_CURRENT :** commencer par les preuves Project Binding / CUG (P2), rapprocher les lecteurs existants à cette continuité, vérifier les branches propriétaires #420/#432/#435/#436 puis poursuivre leurs livraisons gouvernées. Respecter la décision D32, la capture D35 et la suspension temporaire Codex/automation portée au fichier des décisions. Ne pas activer un worker par anticipation.
+
+### D37 — Critères P2/P3/P4 pour registres distincts par périmètre
+
+| Lot existant | Contrôle de livraison ajouté (sans nouveau RG) |
+| --- | --- |
+| **P2 — R02/R03/R06, RG-008…024** | Pour chaque projet/sous-projet/mission, produire une identité propre et un index logique de ses `TASKS`, `TODO`, `SUIVI`, `DECISIONS`, `CONTINUITY` et checkpoints ; les tâches opératoires restent sous autorité de Governed Task Queue mais sont projetées par ownerScope/continuityId attesté. Vérifier le lien projectUid ↔ ProjectRecord ↔ repo ID ↔ CUG et les héritages parent/enfant. |
+| **P2 — Attribution de tâches et NEXT_ACTION** | Qualifier les étapes d'intake/préflight/classification/plan/admission P2 et le terme ASQ avant implémentation. Chaque entité a son prochain acte admissible indépendant. Aucune priorité globale ne doit remplacer les next actions des missions ; blocage local ≠ blocage de toute l'usine. L'autorité globale préserve les dépendances entre Task IDs et les locks. |
+| **P3 — Cockpit #432** | Navigation filtrée écosystème → projet → sous-projet → chantier/mission → tâches/checkpoints ; liens parent/enfant et références croisées, données sans fuite entre owners, NEXT_ACTION scope et état global séparés. |
+| **P4 — CUG/P2 #435** | Pour chaque événement : identifier installation/repo/ProjectRecord/Continuity ID et owner ; créer seulement une intention candidate de ce périmètre, puis admission transactionnelle existante si autorisée, idempotente et sans collision. |
+| **P5/P10/P11 — Insights** | Chaque observation conserve son dépôt/projet/chantier/scope et ses preuves ; les relations inter-projets sont typées et jamais assimilées à une identité unique. |
+
+**Tests de recette transversaux D37 :** au moins deux projets distincts, deux missions d'un projet, sous-chantier avec checkpoint propre, tâche et `NEXT_ACTION` propres, tâche du programme central sans relation par défaut, dépendance explicitement inter-missions, événements concurrents/doublons, scénario `UNVERIFIED/CONFLICT`, et conservation des statuts terminales. Un `DONE` global ne peut jamais être induit d'un sous-chantier `DONE` ; un `NEXT_ACTION=null` d'une mission ne clôture pas son parent.
+
+**NEXT_ACTION_CURRENT maintenue :** P2 et son identité vérifiée d'abord, puis index/documentation/tâches scoppés ; aucun remaniement de l'architecture des stores sans tests d'équivalence et décision de gouvernance. Référence D37 dans `__DECISIONS.md` et checkpoint homonyme dans `__CONTINUITY.md`.
