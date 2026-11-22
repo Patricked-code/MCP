@@ -261,3 +261,26 @@ test('a foreign-repository TaskQueue record cannot be projected as owned work', 
   assert.deepEqual(result.realTaskIds, []);
   assert.ok(result.blockers.includes('TASK_QUEUE_BINDING_UNVERIFIED'));
 });
+
+test('blocked work stays blocked even when its dependencies are all DONE', () => {
+  const base = fixture();
+  const output = buildMissionContinuityReadProjection({
+    ...base,
+    workPackages: base.workPackages.map(w => w.workPackageId === 'REG-WP-02'
+      ? {...w,status:'BLOCKED'} : w)
+  });
+  assert.equal(output.nextActionCurrent,null);
+  assert.equal(output.resumeReadiness,'CONTEXT_ONLY');
+});
+
+test('fractional timestamps are ordered chronologically, not lexically', () => {
+  const base=fixture();
+  const first=base.timeline[0]!;
+  const recent={...base.timeline[1]!,eventId:'E03',occurredAt:'2026-11-22T01:00:00.100Z',predecessorId:'E02'};
+  const early={...base.timeline[1]!,eventId:'E02',occurredAt:'2026-11-22T01:00:00Z',predecessorId:'E01'};
+  const output=buildMissionContinuityReadProjection({
+    ...base,timeline:[first,recent,early]
+  });
+  assert.deepEqual(output.historicalTimeline.map(e=>e.eventId),['E01','E02','E03']);
+  assert.equal(output.latestVerifiedCheckpoint?.eventId,'E03');
+});
