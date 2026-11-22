@@ -298,8 +298,8 @@ export function registerMissionContinuityReadTools(
     description:'From a Continuity ID only, recover the mission documents and evidenced history from the canonical public MCP GitHub repository. Reports missing Project Binding, CUG, Task Queue and runtime authorities without guessing them; NEVER claims a task or writes. Requires an authenticated MCP connection.',
     inputSchema: {
       continuityId: z.string().regex(ID).min(6).max(121),
-      historyOffset: z.number().int().nonnegative().default(0),
-      historyLimit: z.number().int().min(1).max(100).default(30)
+      historyOffset: z.number().int().nonnegative().optional(),
+      historyLimit: z.number().int().min(1).max(100).optional()
     },
     annotations:{readOnlyHint:true,destructiveHint:false}
   }, async ({continuityId,historyOffset,historyLimit}) => {
