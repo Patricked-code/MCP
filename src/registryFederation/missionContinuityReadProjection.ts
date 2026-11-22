@@ -133,7 +133,7 @@ export type MissionContinuityReadProjection = Readonly<{
 }>;
 
 const MAX_SOURCE_ITEMS = 5000;
-const TERMINAL_WORK = new Set(['DONE', 'SUPERSEDED']);
+const NON_EXECUTABLE_WORK = new Set(['DONE', 'SUPERSEDED', 'BLOCKED']);
 const TERMINAL_TASKS = new Set(['DONE', 'CANCELLED', 'SUPERSEDED']);
 const sha40 = /^[0-9a-f]{40}$/i;
 
@@ -156,7 +156,7 @@ function fingerprint(value: unknown): string {
 }
 
 function compareEvents(a: ContinuityEvent, b: ContinuityEvent): number {
-  return a.occurredAt.localeCompare(b.occurredAt) || a.eventId.localeCompare(b.eventId);
+  return Date.parse(a.occurredAt) - Date.parse(b.occurredAt) || a.eventId.localeCompare(b.eventId);
 }
 
 /** Evidence-only; never assumes that the caller's declarations grant authority. */
@@ -317,7 +317,7 @@ export function buildMissionContinuityReadProjection(
   for (const action of actions) {
     if (action.evidence.verification !== 'VERIFIED') continue;
     const wp = byWork.get(action.workPackageId);
-    if (!wp || TERMINAL_WORK.has(wp.status)) continue;
+    if (!wp || NON_EXECUTABLE_WORK.has(wp.status)) continue;
     const outstanding = wp.dependsOn.filter(dep => !byWork.has(dep)
       || byWork.get(dep)!.status !== 'DONE');
     if (outstanding.length) {
