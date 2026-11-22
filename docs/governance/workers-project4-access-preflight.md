@@ -114,6 +114,35 @@ conversations WORKERS restent privés ; visibilité GitHub Project préservée.
 Le mécanisme de credential distinct dans cette même PR reste la condition
 d'accès API et nécessite une activation sécurisée et une autorisation de fusion/déploiement.
 
+## Inventaire en lecture seule des automatisations natives du Project (2026-11-22)
+
+La page du Project personnel `Patricked-code/4/workflows` désigne les
+**automatisations natives du GitHub Project** et non les workflows
+`/.github/workflows/*.yml` de GitHub Actions, ni les workflows internes
+de Loop Engineering/MCP. Ces trois espaces restent distincts.
+
+**GraphQL officiel vérifié :** `ProjectV2.workflows(first: 50)` avec
+`totalCount`, `pageInfo { hasNextPage endCursor }` et
+`nodes { id number name enabled createdAt updatedAt }`.
+Référence : https://docs.github.com/en/graphql/reference/projects
+
+Le même `github_project_inspect(owner, number)` candidat expose désormais
+`workflows`, `workflowCount`, `workflowsComplete`,
+`workflowsNextCursor`, avec contrôle d'identité de Project, sans afficher
+de jeton ni envoyer de mutation. Une réponse contenant plus de 50 workflows
+est qualifiée `PARTIAL`, jamais `SUCCESS_READ_ONLY` prétendument exhaustive.
+Un champ GraphQL manquant entraîne un échec explicite, pas un inventaire vide.
+
+**Limites de ce lot :** aucun inventaire réel n'a été récupéré du Project n°4
+tant que le credential Projects API n'est pas provisionné et que la PR n'est
+pas déployée. La documentation publique décrit l'activation des automatisations
+natives depuis l'interface GitHub, mais ne documente pas une API GraphQL
+générale pour **créer ou modifier** leurs règles complètes. Les
+opérations de mutation native et les règles de déclenchement détaillées
+restent `NOT_VERIFIED_NOT_IMPLEMENTED`. Ne pas remplacer ces règles
+avec des GitHub Actions implicites ; étudier d'abord l'équivalence
+fonctionnelle et l'autorité de chaque mécanisme.
+
 ## API officielle
 https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project/using-the-api-to-manage-projects
 
