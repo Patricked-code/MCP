@@ -19,3 +19,14 @@ STOP_WRITE si identité/authority manquante, PR possédée par autrui, droits/lo
 ## Sortie de chaque intervention
 
 `continuityId` · `ownerScope` · `observedAt` · `sourceSha` · `intentionRef` · `operationRG` · `completedEvidence` · `remainingWork` · `dependencies` · `blockers` · `nextActionCurrent` · `actionHistoryRef` · `CI/review/deploy status`. Une valeur inconnue reste `UNVERIFIED` ; un Task ID fictif est interdit.
+
+
+## Entrée universelle par un seul Continuity ID — contrat RG-011 (complément)
+
+**Commande utilisateur attendue :** `Rejoins WT-MCP-REGISTRY-RESOLUTION-20261121-01`. Un nouveau client/agent authentifié doit d'abord rechercher l'outil MCP en lecture seule `mcp_rejoin_continuity` et l'appeler **avec le seul champ obligatoire** `continuityId`. Ne pas redemander les fichiers de passation si les autorités sont accessibles. Historique paginé au besoin via `historyOffset/historyLimit`.
+
+**Gates de réalité :** tant que le code proposé par [PR #445](https://github.com/Patricked-code/MCP/pull/445) n'est pas fusionné et déployé avec attestation, l'outil n'existe **pas** dans le runtime : suivre alors les étapes documentaires 1–7 ci-dessus, en utilisant le checkpoint fondateur [#7068870350](https://github.com/Patricked-code/MCP/pull/430#issuecomment-7068870350) et le dernier commentaire de reprise effectivement accessible de la [PR maîtresse #430](https://github.com/Patricked-code/MCP/pull/430). Ne pas deviner l'état des PR ouvertes, du serveur ni du registre sur la base d'un commentaire.
+
+**Interprétation des résultats :** `documentationIndex` et décisions liées au SHA peuvent être restaurées en lecture ; les mentions `PROJECT_BINDING_NOT_ATTESTED`, `CUG_INSTALLATION_NOT_ATTESTED`, `TASK_SCOPE_BINDINGS_NOT_ATTESTED` ou `LIVE_STATE_STALE` sont de **véritables blocages de certification**, pas une invitation à créer des rattachements ou tâches. L'état `DECLARED` de la prochaine action documentaire ne devient pas un droit `GOVERNED_WRITE`. Les liens parent/enfant sont consultables sans absorber leurs tâches ni leurs mémoires.
+
+**Suite automatique permise :** après vérification des sources propriétaires et des dépendances, effectuer les lectures et contrôles admissibles ; pour toute écriture, passer par les sessions, admissions P2, locks, CI/revue indépendante hors Codex et déploiement gouverné. À chaque action autorisée, conserver l'intention, la preuve, la progression et le nouveau checkpoint dans les **registres propres au périmètre**. L'automatisation de cette mission reste désactivée.
