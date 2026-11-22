@@ -22,7 +22,8 @@ const old=[
   {path: ROOT+P+'__ROADMAP.md',content:'# Roadmap\n'},
   {path: ROOT+P+'__IMPLEMENTATION_PLAN.md',content:'# Operations\nRG-001 to RG-056\n'},
   {path: child+C+'__MEMORY.md',content:'# Child memory should never bleed into parent\n'},
-  {path: child+C+'__CONTINUITY.md',content:'# Child NEXT_ACTION_CURRENT\nchild independent action\n'},
+  {path: child+C+'__CONTINUITY.md',content:'# Child continuity\n**NEXT_ACTION** : child independent action\n'},
+  {path: child+C+'__SUIVI.md',content:'# Child suivi\nNo action marker in this file\n'},
   {path: child+C+'__TASKS.md',content:'# Child tasks\n'}
 ];
 function reader(files=old, privateRepo=false): GithubContinuityReader {
@@ -67,10 +68,11 @@ test('only canonical ID retrieves parent docs and dated decisions from an exact 
 test('child lookup does not absorb parent decisions and has parent reference',async()=>{
   const result=await recoverMissionFromGithub(C,reader(),{observedAt:'2026-11-22T03:00:00.000Z'});
   assert.equal(result.parentContinuityId,P);
-  assert.equal(result.documentationIndex.length,3);
+  assert.equal(result.documentationIndex.length,4);
   assert.deepEqual(result.historicalDecisions,[]);
   assert.ok(!result.documentationIndex.some(x=>x.path.includes(P+'__DECISIONS')));
   assert.match(result.documentaryNextAction?.text??'',/child independent action/);
+  assert.ok(result.documentaryNextAction?.source.includes('__CONTINUITY.md'));
 });
 test('pagination replays same decision references without changing records',async()=>{
   const a=await recoverMissionFromGithub(P,reader(),{historyLimit:1,observedAt:'2026-11-22T03:00:00.000Z'});
