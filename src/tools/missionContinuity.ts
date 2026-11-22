@@ -143,58 +143,138 @@ function decisionReferences(
 
 
 /** All D-numbered headings remain discoverable even without a dated event. */
+
 function decisionIndex(
   sha: string, observations: readonly MissionDocumentObservation[]
 ): Array<{id:string;heading:string;source:string}> {
   type Entry={id:string;heading:string;source:string;kind:'HEADING'|'BULLET'};
   const entries=new Map<string,Entry>();
-  for(const observation of observations){
-    if(observation.type!=='DECISIONS')continue;
-    const lines=observation.text.split(/\r?\n/);
+  for(const doc of observations) {
+    if(doc.type!=='DECISIONS')continue;
+    const lines=doc.text.split(/\r?\n/);
     for(let i=0;i<lines.length;i++){
       const line=lines[i]!.trim();
-      const heading=/^#{2,4}\s+D(\d{1,4})(?:\s*[–-]\s*D(\d{1,4}))?\b/i.exec(line);
-      const bullet=/^-\s+(?:\*\*)?D(\d{1,4})\b/i.exec(line);
+      const heading=/^#{2,4}\s+(D\d{1,4}|A\d{1,4}-\d{1,4})(?:\s*[–-]\s*(D\d{1,4}))?\b/i.exec(line);
+      const bullet=/^-\s+(?:\*\*)?(D\d{1,4}|A\d{1,4}-\d{1,4})\b/i.exec(line);
       if(!heading&&!bullet)continue;
-      const first=Number((bullet??heading)![1]!);
-      const last=heading?.[2] ? Number(heading[2]) : first;
-      if(last<first||last-first>10)throw new Error('CONTINUITY_DECISION_RANGE_INVALID');
-      const source=sourceUrl(sha,observation.path)+'#L'+(i+1);
-      for(let n=first;n<=last;n++){
-        const id='D'+String(n).padStart(2,'0');
+      const firstId=(bullet??heading)![1]!.toUpperCase();
+      const parent=/^D(\d+)$/.exec(firstId);
+      const start=parent?Number(parent[1]):0;
+      const end=parent&&heading?.[2]?Number(heading[2]):start;
+      if(end<start||end-start>10)throw new Error('CONTINUITY_DECISION_RANGE_INVALID');
+      const ref=sourceUrl(sha,doc.path)+'#L'+(i+1);
+      for(let n=start;n<=end;n++){
+        const id=parent?'D'+String(n).padStart(2,'0'):firstId;
         const kind=bullet?'BULLET' as const:'HEADING' as const;
-        const candidate:Entry={id,heading:line.slice(0,500),source,kind};
-        const previous=entries.get(id);
-        if(previous?.kind==='BULLET'&&kind==='HEADING')continue;
-        if(previous?.kind==='BULLET'&&kind==='BULLET'
-          &&previous.heading!==candidate.heading)throw new Error('CONTINUITY_DECISION_ID_CONFLICT');
-        entries.set(id,candidate);
+        const item:Entry={id,heading:line.slice(0,500),source:ref,kind};
+        const old=entries.get(id);
+        if(old?.kind==='BULLET'&&kind==='HEADING')continue;
+        if(old?.kind==='BULLET'&&kind==='BULLET'&&old.heading!==item.heading)
+          throw new Error('CONTINUITY_DECISION_ID_CONFLICT');
+        entries.set(id,item);
       }
     }
   }
-  return [...entries.values()]
-    .sort((a,b)=>Number(a.id.slice(1))-Number(b.id.slice(1)))
+  return [...entries.values()].sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}))
     .map(({id,heading,source})=>({id,heading,source}));
 }
+
+
 function documentedWork(
-  sha: string, observations: readonly MissionDocumentObservation[]
-): Array<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}> {
-  const result: Array<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}> = [];
-  const seen = new Set<string>();
-  for (const observation of observations) {
-    if (observation.type !== 'TASKS') continue;
-    const lines = observation.text.split(/\r?\n/);
+  sha:string,observations:readonly MissionDocumentObservation[]
+):Array<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}>{
+  const result:Array<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}>=[];
+  const seen=new Set<string>();
+  for(const doc of observations){
+    if(doc.type!=='TASKS')continue;
+    const lines=doc.text.split(/\r?\n/);
     for(let i=0;i<lines.length;i++){
-      const match = /^\|\s*\x60?(REG-WP-\d{2})\x60?\s*\|/.exec(lines[i]!);
-      if (!match || seen.has(match[1]!)) continue;
-      seen.add(match[1]!);
-      result.push({
-        id:match[1]!,source:sourceUrl(sha,observation.path)+'#L'+(i+1),
-        classification:'DOCUMENTARY_ONLY'
-      });
+      const line=lines[i]!;
+      const match=/^\|\s*\x60?([A-Z][A-Z0-9_-]{4,80})\x60?\s*\|/.exec(line);
+      if(!match||!/\bRG-\d{3}\b/.test(line))continue;
+      const id=match[1]!;
+      if(!/^REG-WP-\d{2}$/.test(id)&&!/^[A-Z][A-Z_]+$/.test(id))continue;
+      if(seen.has(id))continue;
+      seen.add(id);
+      result.push({id,source:sourceUrl(sha,doc.path)+'#L'+(i+1),classification:'DOCUMENTARY_ONLY'});
     }
   }
   return result;
+}
+
+type InheritedDocument=Readonly<{
+  type:string;path:string;url:string;blobSha:string;
+  ownerContinuityId:string;inherited:true;verification:'VERIFIED';
+}>;
+
+export type EvidencedCheckpoint=Readonly<{
+  id:string;source:string;createdAt:string;author:string;
+  sourceVerification:'VERIFIED';claimsVerification:'DECLARED';
+  documentaryNextAction:string|null;
+}>;
+
+function findCurrentAction(
+  sha:string,observations:readonly MissionDocumentObservation[]
+):MissionColdReadResult['documentaryNextAction']{
+  for(const type of ['SUIVI','CONTINUITY']){
+    const doc=observations.find(x=>x.type===type);
+    if(!doc)continue;
+    const lines=doc.text.split(/\r?\n/);
+    let found:{line:number;text:string}|null=null;
+    for(let i=0;i<lines.length;i++){
+      const raw=lines[i]!.trim();
+      const heading=/^#{1,6}\s+NEXT_ACTION(?:_CURRENT)?\b/i.test(raw);
+      const inline=/^(?:[-*]\s+)?(?:\*\*)?NEXT_ACTION(?:_CURRENT)?(?:\*\*)?\s*[:：]\s*/i.test(raw);
+      if(!heading&&!inline)continue;
+      const selected=[raw];
+      for(let j=i+1;j<lines.length&&selected.length<5;j++){
+        const next=lines[j]!.trim();
+        if(!next||/^\|/.test(next)||/^#{1,6}\s/.test(next)
+          ||/^(?:\*\*)?NEXT_ACTION(?:_CURRENT)?\b/i.test(next))break;
+        selected.push(next);
+      }
+      found={line:i+1,text:selected.join('\n').slice(0,1000)};
+    }
+    if(found)return {text:found.text,source:sourceUrl(sha,doc.path)+'#L'+found.line,
+      verification:'DECLARED'};
+  }
+  return null;
+}
+
+async function readCanonicalCheckpoints(
+  read:GithubContinuityReader,continuityId:string,observedAt:string
+):Promise<{items:EvidencedCheckpoint[];error:string|null}>{
+  const items:EvidencedCheckpoint[]=[];
+  const seen=new Set<number>();
+  try{
+    for(let page=1;page<=4;page++){
+      const response=await read(BASE+'/issues/430/comments?per_page=100&page='+page);
+      if(!response.ok)return {items,error:'CHECKPOINT_SOURCE_'+statusCode(response.status)};
+      if(!Array.isArray(response.json))return {items,error:'CHECKPOINT_SOURCE_INVALID'};
+      for(const raw of response.json){
+        const c=record(raw),u=record(c?.user);
+        if(!c||u?.login!=='Patricked-code')continue;
+        const id=c.id,at=c.created_at,body=c.body;
+        if(typeof id!=='number'||!Number.isSafeInteger(id)||id<=0||seen.has(id)
+          ||typeof at!=='string'||typeof body!=='string'
+          ||!Number.isFinite(Date.parse(at))||Date.parse(at)>Date.parse(observedAt))continue;
+        // PR parent references never confer child checkpoint ownership.
+        if(!body.slice(0,900).includes(continuityId)
+          ||!/\bcheckpoint\b/i.test(body.slice(0,250)))continue;
+        seen.add(id);
+        const action=body.split(/\r?\n/).find(line=>
+          /^\s*\*{0,2}NEXT_ACTION_CURRENT\*{0,2}\s*:/i.test(line));
+        items.push({id:String(id),source:'https://github.com/'+REPOSITORY+
+          '/pull/430#issuecomment-'+id,createdAt:at,author:'Patricked-code',
+          sourceVerification:'VERIFIED',claimsVerification:'DECLARED',
+          documentaryNextAction:action?action.trim().slice(0,1000):null});
+      }
+      if(response.json.length<100)break;
+      if(page===4)return {items,error:'CHECKPOINT_HISTORY_TRUNCATED'};
+    }
+  }catch{return {items,error:'CHECKPOINT_SOURCE_UNAVAILABLE'};}
+  items.sort((a,b)=>Date.parse(a.createdAt)-Date.parse(b.createdAt)||Number(a.id)-Number(b.id));
+  return {items,error:null};
 }
 
 export type MissionColdReadResult = Readonly<{
