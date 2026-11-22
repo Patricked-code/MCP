@@ -7,6 +7,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { githubJsonRequestWithServerCredential } from '../github/connection.js';
+import { liveStateEngine } from '../liveState/engine.js';
 import {
   buildMissionContinuityReadProjection,
   type ContinuityDocument,
@@ -358,7 +359,25 @@ export function registerMissionContinuityReadTools(
   }, async ({continuityId,historyOffset,historyLimit}) => {
     try {
       const result=await recoverMissionFromGithub(continuityId,read,{historyOffset,historyLimit});
-      return {content:[{type:'text' as const,text:JSON.stringify(result)}]};
+      // Existing S1/G1 runtime authority: read its safe summary only.
+      // A stale cached state is not a new deployment attestation.
+      const current=await liveStateEngine.getCurrent().catch(()=>null);
+      const liveState=current ? {
+        stateVersion:current.stateVersion, observedAt:current.generatedAt,
+        freshness:current.freshness, alignment:current.alignment.global,
+        githubHead:current.github.head, s1Head:current.s1.head,
+        runtimeRevision:current.runtime.revision,
+        runtimeHealth:current.runtime.health
+      } : null;
+      const blockers=liveState
+        ? [...result.blockers.filter(x=>x!=='LIVE_STATE_NOT_OBSERVED'),
+          ...(liveState.githubHead===result.sourceCommitSha ? [] : ['GITHUB_LIVE_SHA_MISMATCH']),
+          ...(liveState.freshness==='CURRENT' ? [] : ['LIVE_STATE_STALE'])]
+        : result.blockers;
+      return {content:[{type:'text' as const,text:JSON.stringify({
+        ...result,liveState,blockers,
+        automaticExecutionAuthorized:false
+      })}]};
     } catch(error) {
       const code=error instanceof Error && /^[A-Z_]{6,80}$/.test(error.message)
         ? error.message : 'CONTINUITY_RECOVERY_UNAVAILABLE';
