@@ -194,7 +194,9 @@ export function registerWorkersProjectWorkflowsReadTools(server: McpServer): voi
         workflows: WORKERS_WORKFLOW_CONTRACTS,
         exposedMcpFunctions: ['github_project_access_preflight', 'github_project_v2_inventory',
           'github_project_v2_workflow_catalogue', 'github_project_v2_workflow_preflight',
-          'github_project_v2_workflow_run_readonly'].map(name => ({ name, registered: registered.has(name) }))
+          'github_project_v2_workflow_run_readonly', 'github_projects_discover',
+          'github_projects_inventory', 'github_project_inspect',
+          'github_projects_reconcile'].map(name => ({ name, registered: registered.has(name) }))
       }, null, 2));
     }
   );
