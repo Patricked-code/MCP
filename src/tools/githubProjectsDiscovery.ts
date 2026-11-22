@@ -60,10 +60,20 @@ const unwrap = (response: GitHubJsonResponse | null, kind: 'user' | 'organizatio
   return {principal, viewer} as const;
 };
 
+export type ProjectsDiscoveryPage = {
+  owner: Owner; noMutation: true;
+  status: 'SUCCESS_READ_ONLY' | 'BLOCKED' | 'UNVERIFIED';
+  reasonCode?: string;
+  authenticatedLogin?: string;
+  totalCount?: number;
+  projects?: Project[];
+  hasNextPage?: boolean;
+  nextCursor?: string | null;
+};
 export async function discoverProjects(
   owner: Owner, first = 50, after: string | null = null,
   request: Request = githubJsonRequestWithPersonalProjectsCredential
-) {
+): Promise<ProjectsDiscoveryPage> {
   const base = {owner, noMutation: true as const};
   const kind = OWNER_KINDS[owner];
   if (!kind || !Number.isSafeInteger(first) || first < 1 || first > 100 ||
