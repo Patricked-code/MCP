@@ -22,3 +22,15 @@
 `DECLARED` = source affirme ; `VERIFIED` = source propriétaire et version correspondantes contrôlées ; `UNVERIFIED` = contrôle absent/périmé ; `CONFLICT` = autorités contradictoires ; `INACCESSIBLE` = refus d'accès ; `SUPERSEDED` = preuve ancienne conservée avec successeur. Ne pas convertir une revue historique en approbation du dernier HEAD. Toute preuve CI/Deploy doit conserver son run ID, SHA, horodatage et résultats.
 
 **NEXT_ACTION** : pour P2, ajouter à cet index les preuves de Project Binding, GitRegistry V2, installations CUG et lecture de continuité **après leur observation réelle**. Les liens futurs ne sont pas des preuves.
+
+## 2026-11-22 — D39 : correction des autorités de reprise (successeur)
+
+| Preuve | Autorité et statut | Portée / limite |
+| --- | --- | --- |
+| [Checkpoint #7073160993](https://github.com/Patricked-code/MCP/pull/430#issuecomment-7073160993) | GitHub, existence/source vérifiées | Ses affirmations opérationnelles restent DECLARED hors readback |
+| [PR #444](https://github.com/Patricked-code/MCP/pull/444) | MERGED `1a569b0f3456946273d49f19c00f0131dcf50ad4` | D39 et documents de mission |
+| [PR #445](https://github.com/Patricked-code/MCP/pull/445) | MERGED `ef81174e2891bc4467079d4d3722cd0a3722d605` | Résolveur existant, tests et surface MCP |
+| [PR #446](https://github.com/Patricked-code/MCP/pull/446) | MERGED `b843818df0b00125f9dd319ab2f4b99b169f5892` | G1 et readback v1458 aligné/healthy |
+| Recette MCP parent/enfant | Deux appels réels PARTIAL, source SHA `b843818d...` | 17/13 docs, A24 manquantes, erreurs d'autorité et prochaine action |
+| [PR #447](https://github.com/Patricked-code/MCP/pull/447) | CODE_BRANCH_ONLY / CI et deploy à confirmer | Correctifs et tests sans nouvelle autorité |
+| GitRegistry/Project Binding/CUG/Queue | UNVERIFIED pour les jointures de cette mission | Aucun Task ID, projectId ou droit d'exécution inféré |
