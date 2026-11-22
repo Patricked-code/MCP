@@ -110,7 +110,7 @@ export async function inspectProjectStructure(
     id: str(v?.id) ?? '', name: str(v?.name) ?? '', layout: str(v?.layout)
   }));
   if (fields.some(f => !f.id || !f.name) || views.some(v => !v.id || !v.name) ||
-      !Number.isSafeInteger(items.totalCount) || Number(items.totalCount) < 0 ||
+      (typeof items.totalCount !== 'number' || !Number.isSafeInteger(items.totalCount) || items.totalCount < 0) ||
       typeof object(fieldConnection.pageInfo)?.hasNextPage !== 'boolean' ||
       typeof object(viewConnection.pageInfo)?.hasNextPage !== 'boolean') {
     return { ...base, status: 'UNVERIFIED', reasonCode: 'INVENTORY_INVALID' };
