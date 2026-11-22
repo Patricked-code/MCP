@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "b41254a6b3be51a318c3461f87c6f7744fa22b28fa461b579660a5afa8b8c616",
-  "registeredToolCount": 154,
-  "readOnlyToolCount": 97,
+  "catalogueDigest": "0af7aa1bfc6318a80e975bd3e12d3b65e3be53bcbda4a78ae86f3b873ae89971",
+  "registeredToolCount": 155,
+  "readOnlyToolCount": 98,
   "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
@@ -1788,6 +1788,23 @@
         "additionalProperties": false
       },
       "contractDigest": "3468afd62e7acd4cdefff09fe6f2df2904d82baf87c05b82109a341bbb0eeb91"
+    },
+    {
+      "name": "github_project_access_preflight",
+      "title": null,
+      "description": "Vérifie en lecture seule le Project personnel Patricked-code/4 avec le jeton GitHub MCP déjà configuré. Aucune mutation ni secret révélé.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "contractDigest": "5436c353e5a4a256f78f8dfa119c066c61c187a76d04a3cd5782d67aff8d8690"
     },
     {
       "name": "github_registry_v2_dry_run",
