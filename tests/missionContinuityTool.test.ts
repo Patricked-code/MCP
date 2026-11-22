@@ -1,8 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  recoverMissionFromGithub, type GithubContinuityReader
-} from '../src/tools/missionContinuity.js';
+import type { GithubContinuityReader } from '../src/tools/missionContinuity.js';
+
+process.env.MCP_AUTH_TOKEN ??= 'mcp-unit-test-20261122-registry-p2';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
+
+const { recoverMissionFromGithub } = await import('../src/tools/missionContinuity.js');
 
 const SHA='7f0ae4d35daec8d85a430b5280abd16eda6a42c8';
 const P='WT-MCP-REGISTRY-RESOLUTION-20261121-01';
