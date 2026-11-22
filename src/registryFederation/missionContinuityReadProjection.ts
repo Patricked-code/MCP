@@ -366,14 +366,14 @@ export function buildMissionContinuityReadProjection(
   const hasConflict = conflicts.size > 0;
   if (hasConflict) nextAction = null;
   const admissionRequirements = nextAction?.mode === 'GOVERNED_WRITE'
-    ? ['REAL_TASK_ADMISSION', 'GOVERNED_SESSION', 'OWNER_AUTHORITY', 'LOCK_CHECK', 'CI_REVIEW_DEPLOY_GATES']
+    ? ['PROJECT_BINDING_VERIFIED', 'REAL_TASK_ADMISSION', 'GOVERNED_SESSION', 'OWNER_AUTHORITY', 'LOCK_CHECK', 'CI_REVIEW_DEPLOY_GATES']
     : [];
   // Without an authenticated live-state / CUG readback, global verification
   // can NEVER be certified by this pure projection, even with a matching ID.
   const verificationStatus = hasConflict ? 'CONFLICT' : 'UNVERIFIED';
   const resumeReadiness = hasConflict ? 'BLOCKED'
     : nextAction?.mode === 'READ_ONLY' ? 'READ_ONLY_READY'
-    : nextAction?.mode === 'GOVERNED_WRITE' ? 'ADMISSION_REQUIRED'
+    : nextAction?.mode === 'GOVERNED_WRITE' ? (projectId ? 'ADMISSION_REQUIRED' : 'BLOCKED')
     : 'CONTEXT_ONLY';
 
   return Object.freeze({
