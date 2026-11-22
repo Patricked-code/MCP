@@ -413,7 +413,10 @@ export async function recoverMissionFromGithub(
     :await readCanonicalCheckpoints(read,continuityId,observedAt);
   const latestVerifiedCheckpoint=checkpointRead.items.at(-1)??null;
   let documentaryNextAction=findCurrentAction(sha,observations);
-  if(latestVerifiedCheckpoint?.documentaryNextAction){
+  // The scoped SUIVI/CONTINUITY is the declared current-action authority.
+  // A GitHub checkpoint is fallback evidence, never an overwrite of that local
+  // authority (its claims remain DECLARED even when its source exists).
+  if(!documentaryNextAction && latestVerifiedCheckpoint?.documentaryNextAction){
     documentaryNextAction={text:latestVerifiedCheckpoint.documentaryNextAction,
       source:latestVerifiedCheckpoint.source,verification:'DECLARED'};
   }
