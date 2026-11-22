@@ -81,6 +81,32 @@ test('pagination replays same decision references without changing records',asyn
   assert.equal(b.historyNextOffset,null);
   assert.deepEqual(a,await recoverMissionFromGithub(P,reader(),{historyLimit:1,observedAt:'2026-11-22T03:00:00.000Z'}));
 });
+test('real-format bullet decisions D01–D31 and grouped D32–D34 are all indexed without losing successors',async()=>{
+  const decisionText=[
+    '# Mission decisions',
+    '## Décisions portées par le mandat',
+    '- D01 — Mission stable',
+    '- D02 — Repository boundaries',
+    '## Décisions additionnelles',
+    '- **D09 — One mission.** Original mandate preserved',
+    '## D32–D34 — reprise historique (21/11/2026)',
+    '- **D32 — Anchor immutable**',
+    '- **D33 — G1 not certified by document alone**',
+    '- **D34 — E2 journal preserved**',
+    '## D35 — Capture (22/11/2026)'
+  ].join('\n');
+  const docs=old.map(x=>x.path.endsWith(P+'__DECISIONS.md')
+    ? {...x,content:decisionText}:x);
+  const result=await recoverMissionFromGithub(P,reader(docs),{
+    observedAt:'2026-11-22T03:00:00.000Z'
+  });
+  assert.deepEqual(result.historicalDecisions.map(x=>x.id),[
+    'D01','D02','D09','D32','D33','D34','D35'
+  ]);
+  assert.match(result.historicalDecisions.find(x=>x.id==='D32')?.heading??'',/Anchor immutable/);
+  assert.ok(result.historicalDecisions.every(x=>x.source.includes('#L')));
+});
+
 test('private repository is rejected even with server token to avoid cross-client data leakage',async()=>{
   await assert.rejects(()=>recoverMissionFromGithub(P,reader(old,true)),/CONTINUITY_REPOSITORY_AUTHORITY_UNVERIFIED/);
 });
