@@ -29,3 +29,12 @@ Classes : `NEW`, `COMPLEMENT`, `DUPLICATE`, `DECISION`, `CONTRADICTION`, `EVIDEN
 - Rendre l'index stable et exploitable par un futur résolveur MCP ; à ce jour, sa mise à jour automatique depuis tous les canaux **n'est pas implémentée**.
 
 **NEXT_ACTION** : qualifier `REG-INT-006`/`007` dans P2, relier la carte des autorités à une projection read-only testée et démontrer la récupération par Continuity ID.
+
+## 2026-11-22 — D39 : correction des autorités de reprise (successeur)
+
+| IntentId | Date/source | Classe | Objet | Rattachement/état |
+| --- | --- | --- | --- | --- |
+| REG-INT-008 | 22/11/2026, recette MCP réelle parent/enfant communiquée par le propriétaire et reproduite par la connexion présente | EVIDENCE + CORRECTION | Résolveur PARTIAL (A24, héritage, action, Live State, checkpoint), préserver D39 et terminer la même mission | RG-011/019/023/027/034/054, PR #447, correction BRANCH_ONLY ; pas de promotion opérationnelle |
+| REG-INT-009 | 22/11/2026, [#7073160993](https://github.com/Patricked-code/MCP/pull/430#issuecomment-7073160993) et lectures GitHub/S1/runtime | CHECKPOINT | #444/#445/#446 fusionnées, G1 V1458 aligné, P2 encore PARTIAL | D32/D39, R01–R07, REG-WP-03 ; succède aux assertions historiques branch-only |
+
+**NEXT_ACTION_LOCAL** : CI tests de #447 sur SHA exact, puis recette froide après livraison gouvernée et rapprochement des autorités existantes. Aucune action documentée ne devient une admission P2 sans source légitime.
