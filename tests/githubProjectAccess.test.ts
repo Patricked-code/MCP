@@ -31,6 +31,21 @@ const sample = {
   }
 };
 
+test('dedicated Projects credential rejects arbitrary GraphQL and mutations', async () => {
+  const { githubJsonRequestWithPersonalProjectsCredential } =
+    await import('../src/github/connection.js');
+  for (const input of [
+    { endpoint: '/repos/Patricked-code/MCP', options: {method:'POST' as const, jsonBody:{query:'query WorkersProject4Read($owner: String!) { viewer {login} }'}} },
+    { endpoint: '/graphql', options: {method:'POST' as const, jsonBody:{query:'mutation Test { __typename }'}} },
+    { endpoint: '/graphql', options: {method:'POST' as const, jsonBody:{query:'query ArbitraryQuery { viewer { login } }'}} }
+  ]) {
+    const r = await githubJsonRequestWithPersonalProjectsCredential(input.endpoint, input.options);
+    assert.equal(r.ok, false);
+    assert.equal(r.status, null);
+    assert.equal(r.json, null);
+  }
+});
+
 test('GraphQL operation is a query, never a mutation', () => {
   assert.match(WORKERS_PROJECT4_QUERY, /^query\s/);
   assert.doesNotMatch(WORKERS_PROJECT4_QUERY, /\bmutation\b/i);
