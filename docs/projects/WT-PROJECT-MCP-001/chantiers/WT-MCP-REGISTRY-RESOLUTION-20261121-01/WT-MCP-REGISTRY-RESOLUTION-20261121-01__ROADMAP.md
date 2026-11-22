@@ -67,3 +67,48 @@ Les **56 opérations RG-001…056** restent dans cette unique roadmap ; la sourc
 Nouveau critère obligatoire dans P11 : graphe d'architecture `composants/imports/API/infra` **distinct** du graphe du programme `intentions/lots/TASKS/prérequis/owners`, avec jointures attestées. Nouveau critère P12 : un codeur ne peut intervenir avant dossier d'impact/architecture/plan et une Task P2 admise. Nouveau critère P13 : machine indépendante de ChatGPT avec services UAES isolés et perte/restauration vérifiées. P14/P17 : différencier code GitHub, merge main, Deploy OIDC, runtime exact SHA, réconciliation G1 et certification C27.
 
 **Dépendances communes non effacées** : PR #434 correction documentaire G1 non mergée ; E2 #359 POST HTTP 403 credential serveur ; PR #432 cockpit, #435 candidats CUG et #436 contrat Insights ouvertes sur branches. En attendant ces gates, l'audit de cartographie et les tests indépendants peuvent avancer sur des lots sans collision.
+
+## Projection opérationnelle courante — 2026-11-22, après #442/#443
+
+> Les tableaux historiques P01–P17 au-dessus restent des observations de leur date, **pas** des statuts live. Cette projection les complète sans les effacer. Elle ne crée aucun RG, tâche runtime ou autorité supplémentaire. À toute reprise, valider HEAD GitHub, S1, runtime, GitRegistry, installations CUG, ownership et preuves.
+
+| Ordre | Lot existant / livrable vérifiable | Acquis au 2026-11-22 00:19 UTC | Écart / critère de clôture objectif |
+| --- | --- | --- | --- |
+| **1** | **P2 — identité, couverture et Project Binding (RG-001…012, 021/023, #420)** | #431 projection pure et #442 crosswalk déployés ; baseline GitRegistry V1 2 projets/6 repos/5 mappings/1 migration | Qualifier identité numérique repo, installations CUG, permissions, propriétaires, mapping `mcp-s1-production → mcp_bridge`, UID candidat `WT-PROJECT-MCP-001`, preuves et conflits ; aucun ProjectRecord ni mapping activé sans autorité |
+| **2** | **P2 — reprise par Continuity ID (RG-011/019/023/027/034)** | Documents P1 #430 et historique D32/D35 présents ; lecteurs fédérés et Project Resolution existants | Lire à partir de l'ID mission les documents, décisions, roadmap, tâches, PR, sous-chantiers et dernier checkpoint ; jointures au ProjectRecord et installation uniquement si vérifiées ; API/lecteur MCP effectif et tests readback négatifs requis |
+| **3** | **P3 — cockpit fédéré (RG-025…029, #432)** | PR ouverte, non attestée sur runtime | Rebaser/réconcilier sous propriétaire, fournir vues globale/projet/chantier, historiques DONE/CANCELLED/SUPERSEDED, filtres de scope, erreurs et preuves fraîches ; CI/revue indépendante sans Codex/deploy/G1 |
+| **4** | **P4 — événement CUG → intention P2 (RG-013…020, RG-043…045, #435)** | Candidats d'intention proposés sur branche, pas d'admission attestée | Reçu signé, installation vérifiée, anti-replay, projet/mapping autorisé, mandat, task idempotente, sessions et locks ; aucun claim induit par événement |
+| **5** | **P5/P10/P11 — Insights et dépendances (RG-036…042, #436)** | Observateur proposé en PR, non attesté sur runtime | Couverture GitHub réelle par dépôt, API 403/404 classées, identifiants stables, graphe code/services/plan distincts, jointures sourcées SHA ; lecture cockpit vérifiée |
+| **6** | **P6/P7/P12…P17 — UAES, C26/C27, endurance (RG-043…056)** | Mandat et 13 documents du sous-chantier autonomie disponibles | Hôte isolé, Task P2 admise, ownership, quotas, revues indépendantes hors Codex, Governed Deploy, readback, crash/replay, rollback, endurance et certification C27 pilote ; aucune extension collective avant preuve |
+| **7** | **RG-035 + RG-055/056 — clôture** | Pas de verdict de clôture global | Matrice RG-001…RG-056 avec statut, dépendances, preuve/CI/PR/SHA/Deploy/runtime, décisions et NEXT_ACTION ; `MISSION_DONE` uniquement après satisfaction de tous les critères |
+
+### Prochain jalon concret P2 (critère PASS/FAIL)
+
+Pour le cas `WT-MCP-REGISTRY-RESOLUTION-20261121-01`, obtenir une réponse de lecture reproductible associant **mission → corpus Markdown et derniers checkpoints → UID documentaire → ProjectRecord attesté → repository ID stable → installation CUG attestée → tâches et dépendances**, sans lien fabriqué. Les données insuffisantes doivent être marquées `UNVERIFIED`, `CONFLICT` ou `INACCESSIBLE`, avec provenance et date ; les confirmations de GitRegistry/CUG doivent provenir de leurs autorités. La fonction `missionIdentityCrosswalk` (#442) est une **primitive testée**, pas cette intégration complète.
+
+**NEXT_ACTION_CURRENT :** commencer par les preuves Project Binding / CUG (P2), rapprocher les lecteurs existants à cette continuité, vérifier les branches propriétaires #420/#432/#435/#436 puis poursuivre leurs livraisons gouvernées. Respecter la décision D32, la capture D35 et la suspension temporaire Codex/automation portée au fichier des décisions. Ne pas activer un worker par anticipation.
+
+### D37 — Critères P2/P3/P4 pour registres distincts par périmètre
+
+| Lot existant | Contrôle de livraison ajouté (sans nouveau RG) |
+| --- | --- |
+| **P2 — R02/R03/R06, RG-008…024** | Pour chaque projet/sous-projet/mission, produire une identité propre et un index logique de ses `TASKS`, `TODO`, `SUIVI`, `DECISIONS`, `CONTINUITY` et checkpoints ; les tâches opératoires restent sous autorité de Governed Task Queue mais sont projetées par ownerScope/continuityId attesté. Vérifier le lien projectUid ↔ ProjectRecord ↔ repo ID ↔ CUG et les héritages parent/enfant. |
+| **P2 — Attribution de tâches et NEXT_ACTION** | Qualifier les étapes d'intake/préflight/classification/plan/admission P2 et le terme ASQ avant implémentation. Chaque entité a son prochain acte admissible indépendant. Aucune priorité globale ne doit remplacer les next actions des missions ; blocage local ≠ blocage de toute l'usine. L'autorité globale préserve les dépendances entre Task IDs et les locks. |
+| **P3 — Cockpit #432** | Navigation filtrée écosystème → projet → sous-projet → chantier/mission → tâches/checkpoints ; liens parent/enfant et références croisées, données sans fuite entre owners, NEXT_ACTION scope et état global séparés. |
+| **P4 — CUG/P2 #435** | Pour chaque événement : identifier installation/repo/ProjectRecord/Continuity ID et owner ; créer seulement une intention candidate de ce périmètre, puis admission transactionnelle existante si autorisée, idempotente et sans collision. |
+| **P5/P10/P11 — Insights** | Chaque observation conserve son dépôt/projet/chantier/scope et ses preuves ; les relations inter-projets sont typées et jamais assimilées à une identité unique. |
+
+**Tests de recette transversaux D37 :** au moins deux projets distincts, deux missions d'un projet, sous-chantier avec checkpoint propre, tâche et `NEXT_ACTION` propres, tâche du programme central sans relation par défaut, dépendance explicitement inter-missions, événements concurrents/doublons, scénario `UNVERIFIED/CONFLICT`, et conservation des statuts terminales. Un `DONE` global ne peut jamais être induit d'un sous-chantier `DONE` ; un `NEXT_ACTION=null` d'une mission ne clôture pas son parent.
+
+**NEXT_ACTION_CURRENT maintenue :** P2 et son identité vérifiée d'abord, puis index/documentation/tâches scoppés ; aucun remaniement de l'architecture des stores sans tests d'équivalence et décision de gouvernance. Référence D37 dans `__DECISIONS.md` et checkpoint homonyme dans `__CONTINUITY.md`.
+
+### D38 — Barrière de livraison sur les intentions et priorités propres à chaque mission
+
+La prochaine livraison P2 doit attester **les deux capacités distinctes** ci-dessous, sans modifier l'ordre général RG-001…RG-056 :
+
+| Capacité | Contrat de réussite vérifiable |
+| --- | --- |
+| **Document Authority Map / Mission Memory** | À partir d'un Continuity ID, rendre la liste des documents autoritaires hérités ou locaux (AGENTS, SUIVI, MEMORY, SOURCE_OF_TRUTH, MISSION, DECISIONS, ROADMAP, TODO, TASKS, CONTINUITY, EVIDENCE_INDEX, architecture/cartographie) avec `path/ref/SHA/ownerScope/freshness/status`; tout fichier manquant apparaît `MISSING` plutôt que de réutiliser un document d'une autre mission. |
+| **Intentions et ordonnancement dynamique** | Pour une instruction significative authentifiée et accessible : enregistrer provenance, scope, classification, liens RG/décision/tâche, effets et statut ; comparer à l'ordre courant ; recalculer les NEXT_ACTION **du périmètre concerné**, en conservant l'ordre précédent et la justification du changement. Ne jamais auto-admettre une Task P2 ni usurper son owner. |
+
+**Recette bloquante :** deux projets, deux missions d'un même projet, une nouvelle intention prioritaire qui modifie un ordre avec justification, une information doublonnée qui ne crée rien, une contradiction qui bloque seulement son périmètre, une tâche dont les locks empêchent l'exécution, et une reprise à froid avec conservation des états et sources. Réutiliser les lecteurs GitRegistry/Operational Memory/Task Queue et les politiques GRGS ; ne créer les fichiers documentaires locaux qu'après avoir confirmé que l'autorité du même type n'existe pas déjà. **État : spécification D38 sur PR #444, non implémentée ni certifiée.**
