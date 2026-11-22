@@ -175,8 +175,9 @@ test('a write proposal always requires existing Task Queue gates and never creat
     ...base,
     candidateActions: [{...base.candidateActions[0]!, mode: 'GOVERNED_WRITE'}]
   });
-  assert.equal(result.resumeReadiness, 'ADMISSION_REQUIRED');
+  assert.equal(result.resumeReadiness, 'BLOCKED'); // missing ProjectRecord proof
   assert.equal(result.nextActionCurrent?.readiness, 'ADMISSION_REQUIRED');
+  assert.ok(result.admissionRequirements.includes('PROJECT_BINDING_VERIFIED'));
   assert.ok(result.admissionRequirements.includes('REAL_TASK_ADMISSION'));
   assert.equal(result.realTaskIds.length, 0);
   assert.equal(result.authorizationInferred, false);
