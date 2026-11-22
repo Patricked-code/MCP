@@ -1,9 +1,15 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import {
-  inspectWorkersProject4Access,
-  WORKERS_PROJECT4_QUERY
-} from '../src/tools/githubProjectAccess.js';
+// Like the cartography test harness, provide inert config before importing
+// modules that read env.ts at module evaluation time. No live secrets.
+process.env.MCP_AUTH_TOKEN ??= 'unit-test-only-not-a-runtime-token';
+process.env.S1_HOST ??= '127.0.0.1';
+process.env.S1_KEY_PATH ??= '/tmp/workers-project4-test-s1-unused';
+process.env.S2_HOST ??= '127.0.0.1';
+process.env.S2_KEY_PATH ??= '/tmp/workers-project4-test-s2-unused';
+
+const { inspectWorkersProject4Access, WORKERS_PROJECT4_QUERY } =
+  await import('../src/tools/githubProjectAccess.js');
 import type { GitHubJsonRequestOptions, GitHubJsonResponse } from '../src/github/connection.js';
 
 function response(json: unknown, status = 200): GitHubJsonResponse {
