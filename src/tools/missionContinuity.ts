@@ -277,32 +277,22 @@ async function readCanonicalCheckpoints(
   return {items,error:null};
 }
 
-export type MissionColdReadResult = Readonly<{
-  schemaVersion: 1;
-  status: 'PARTIAL' | 'UNVERIFIED' | 'NOT_FOUND' | 'BLOCKED';
-  continuityId: string;
-  sourceRepository: string;
-  sourceCommitSha: string | null;
-  observedAt: string;
-  projectUid: string | null;
-  parentContinuityId: string | null;
-  documentationIndex: readonly Readonly<{
-    type: string; path: string; url: string; blobSha: string;
-    verification: 'VERIFIED';
-  }>[];
-  historicalDecisions: readonly Readonly<{
-    id: string; heading: string; source: string;
-  }>[];
-  historyNextOffset: number | null;
-  workPackages: readonly Readonly<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}>[];
-  documentaryNextAction: Readonly<{text: string; source: string; verification: 'DECLARED'}> | null;
-  liveState: null;
-  projectId: null;
-  realTaskIds: readonly string[];
-  missingAuthorities: readonly string[];
-  blockers: readonly string[];
-  suggestedNextRead: readonly string[];
-  automaticExecutionAuthorized: false;
+
+export type MissionColdReadResult=Readonly<{
+  schemaVersion:1;status:'PARTIAL'|'UNVERIFIED'|'NOT_FOUND'|'BLOCKED';
+  continuityId:string;sourceRepository:string;sourceCommitSha:string|null;
+  observedAt:string;projectUid:string|null;parentContinuityId:string|null;
+  documentationIndex:readonly Readonly<{type:string;path:string;url:string;blobSha:string;verification:'VERIFIED'}>[];
+  inheritedDocumentationIndex:readonly InheritedDocument[];
+  historicalDecisions:readonly Readonly<{id:string;heading:string;source:string}>[];
+  historyNextOffset:number|null;
+  workPackages:readonly Readonly<{id:string;source:string;classification:'DOCUMENTARY_ONLY'}>[];
+  documentaryNextAction:Readonly<{text:string;source:string;verification:'DECLARED'}>|null;
+  checkpointHistory:readonly EvidencedCheckpoint[];
+  latestVerifiedCheckpoint:EvidencedCheckpoint|null;
+  liveState:null;projectId:null;realTaskIds:readonly string[];
+  missingAuthorities:readonly string[];blockers:readonly string[];
+  suggestedNextRead:readonly string[];automaticExecutionAuthorized:false;
 }>;
 
 export async function recoverMissionFromGithub(
@@ -349,6 +339,7 @@ export async function recoverMissionFromGithub(
     observedAt, projectUid: null, parentContinuityId: null,
     documentationIndex: [], historicalDecisions: [], workPackages: [],
     historyNextOffset: null, documentaryNextAction: null, liveState: null,
+    inheritedDocumentationIndex: [], checkpointHistory: [], latestVerifiedCheckpoint: null,
     projectId: null, realTaskIds: [],
     missingAuthorities: ['CONTINUITY_ID_NOT_INDEXED_IN_CANONICAL_REPOSITORY'],
     blockers: ['PROJECT_BINDING_NOT_ATTESTED'], suggestedNextRead: [],
@@ -376,6 +367,23 @@ export async function recoverMissionFromGithub(
     evidence: {authority: 'GITHUB', reference: sourceUrl(sha, item.path),
       observedAt, sourceCommitSha: sha, verification: 'VERIFIED'}
   }));
+
+  // Child authorities are local; explicit inherited links retain parent ownership.
+  const inheritedDocumentationIndex:InheritedDocument[]=[];
+  if(parents[0]){
+    const owner=parents[0]!;
+    for(const type of ['MISSION','IMPLEMENTATION_PLAN','DOCUMENT_AUTHORITIES']){
+      const path='docs/projects/'+projectUids[0]+'/chantiers/'+owner+'/'+owner+'__'+type+'.md';
+      const indexed=entries.some(item=>record(item)?.path===path&&Boolean(missionPath(path,owner)));
+      if(!indexed){missing.push('INHERITED_DOCUMENT_UNINDEXED:'+type);continue;}
+      try{
+        const file=await fetchText(read,path,sha);
+        inheritedDocumentationIndex.push({type,path,url:sourceUrl(sha,path),
+          blobSha:file.blobSha,ownerContinuityId:owner,
+          inherited:true,verification:'VERIFIED'});
+      }catch{missing.push('INHERITED_DOCUMENT_UNAVAILABLE:'+type);}
+    }
+  }
   const rawEvents = decisionReferences(continuityId, sha, observedAt, observations);
   const projection = buildMissionContinuityReadProjection({
     continuityId, parentContinuityId: parents[0] || null,
@@ -389,40 +397,39 @@ export async function recoverMissionFromGithub(
   const sortedDecisions = decisionIndex(sha, observations);
   const workPackages = documentedWork(sha, observations);
   const selected = sortedDecisions.slice(offset,offset+limit);
-  let documentaryNextAction: MissionColdReadResult['documentaryNextAction'] = null;
-  // Follow actual scope-local declarations, not the mere presence of SUIVI.
-  // A child SUIVI can exist without a NEXT_ACTION while CONTINUITY has one.
-  for (const documentType of ['SUIVI', 'CONTINUITY']) {
-    const candidate = observations.find(x=>x.type===documentType);
-    if (!candidate) continue;
-    const lines = candidate.text.split(/\r?\n/);
-    let latest = -1;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i]!.trim();
-      if (/(?:\bNEXT_ACTION(?:_CURRENT)?\*{0,2}\s*(?::|$)|prochaine action)/i.test(line)) latest = i;
-    }
-    if (latest >= 0) {
-      documentaryNextAction = {
-        text: lines.slice(latest, Math.min(lines.length, latest + 5)).join('\n').slice(0, 1000),
-        source: sourceUrl(sha, candidate.path) + '#L' + (latest + 1),
-        verification: 'DECLARED'
-      };
-      break;
-    }
+
+  const required=parents[0]
+    ? ['MANDATE','DECISIONS','CONTINUITY','ROADMAP','SOURCE_OF_TRUTH',
+      'AGENTS','MEMORY','SUIVI','TASKS','TODO','EVIDENCE_INDEX','ARCHITECTURE','CARTOGRAPHY']
+    : ['MISSION','DECISIONS','CONTINUITY','ROADMAP','IMPLEMENTATION_PLAN',
+      'SOURCE_OF_TRUTH','DOCUMENT_AUTHORITIES','AGENTS','MEMORY','INTENTIONS',
+      'SUIVI','TASKS','TODO','EVIDENCE_INDEX'];
+  for(const item of required){
+    if(!observations.some(x=>x.type===item))missing.push('DOCUMENT_MISSING:'+item);
   }
-  const required = ['MISSION','DECISIONS','CONTINUITY','ROADMAP','IMPLEMENTATION_PLAN',
-    'SOURCE_OF_TRUTH','DOCUMENT_AUTHORITIES','AGENTS','MEMORY','INTENTIONS',
-    'SUIVI','TASKS','TODO','EVIDENCE_INDEX'];
-  for (const item of required) {
-    if (!observations.some(x=>x.type===item)) missing.push('DOCUMENT_MISSING:'+item);
+  // GitHub verifies existence/author/date, not claims within comments.
+  // The parent journal is not a checkpoint authority for the child.
+  const checkpointRead=parents[0]?{items:[] as EvidencedCheckpoint[],error:null}
+    :await readCanonicalCheckpoints(read,continuityId,observedAt);
+  const latestVerifiedCheckpoint=checkpointRead.items.at(-1)??null;
+  let documentaryNextAction=findCurrentAction(sha,observations);
+  if(latestVerifiedCheckpoint?.documentaryNextAction){
+    documentaryNextAction={text:latestVerifiedCheckpoint.documentaryNextAction,
+      source:latestVerifiedCheckpoint.source,verification:'DECLARED'};
   }
+
   missing.push('PROJECT_BINDING_NOT_ATTESTED','CUG_INSTALLATION_NOT_ATTESTED',
     'TASK_SCOPE_BINDINGS_NOT_ATTESTED','LIVE_STATE_NOT_OBSERVED');
-  const blockers = [...new Set([...projection.blockers,...missing])].sort();
+  const blockers=[...new Set([
+    ...projection.blockers.filter(x=>x!=='VERIFIED_CHECKPOINT_MISSING'||!latestVerifiedCheckpoint),
+    ...missing,...(checkpointRead.error?[checkpointRead.error]:[])
+  ])].sort();
   return {
     schemaVersion:1, status: observations.length ? 'PARTIAL' : 'BLOCKED',
     continuityId, sourceRepository:REPOSITORY, sourceCommitSha:sha, observedAt,
     projectUid:projectUids[0]!, parentContinuityId:parents[0]||null,
+    inheritedDocumentationIndex, checkpointHistory:checkpointRead.items,
+    latestVerifiedCheckpoint,
     documentationIndex:observations.map(x=>({
       type:x.type,path:x.path,url:sourceUrl(sha,x.path),
       blobSha:x.blobSha,verification:'VERIFIED' as const
