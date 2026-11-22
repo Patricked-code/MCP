@@ -9,12 +9,12 @@
 3. Reconsulter le GitHub HEAD, les PR, CI exact SHA, revues, autorité GitRegistry, installations CUG, Task Queue, sessions/locks, S1/Live State et G1. La dernière valeur documentée reste historique tant qu'elle n'est pas reconfirmée.
 4. Rattacher chaque demande au projet, à cette mission et à une opération RG ; classifier DUPLICATE, COMPLEMENT, NEW_INTENT, DECISION, CONTRADICTION, BLOCKER, EVIDENCE ou OUT_OF_SCOPE. Conserver l'original accessible, son horodatage, l'émetteur et la référence dans `__INTENTIONS.md`. Une intention n'admet jamais une Task runtime par elle-même.
 5. Évaluer les dépendances, droits et collisions des branches/agents ; privilégier le travail déjà engagé, ensuite la première opération admissible **dans la mission**, en gardant le classement historique et en consignant toute modification de priorité dans `__SUIVI.md`/`__ROADMAP.md`.
-6. Pour toute modification : branche et PR propriétaire, tests de non-régression, CI HEAD exact, revue indépendante admissible **sans Codex** (instruction actuelle), protections, fusion gouvernée, Governed Deploy, preuves GitHub/S1/runtime/G1 et checkpoint.
+6. Pour toute modification : branche et PR propriétaire, tests de non-régression, CI HEAD exact, revue **uniquement si requise par les protections en vigueur** (sans Codex), protections, fusion gouvernée, Governed Deploy, preuves GitHub/S1/runtime/G1 et checkpoint.
 7. Après chaque action significative : mettre à jour l'intention, la tâche documentaire et le suivi **du même scope**, indexer les preuves et écrire `NEXT_ACTION_CURRENT` avec blocage/conditions. Si la PR n'est pas fusionnable, laisser un commentaire horodaté à la PR mère #430 avec référence de la branche, sans prétendre que `main` a été mis à jour.
 
 ## Conditions d'arrêt
 
-STOP_WRITE si identité/authority manquante, PR possédée par autrui, droits/locks non vérifiés, CI/revue inadmissible, secrets, changement de HEAD ou conflit. Une mission bloquée ne bloque pas mécaniquement les autres. **Ne pas réactiver** l'automatisation horaire « Continuité mission registres MCP » et ne pas utiliser Codex sans instruction nouvelle.
+STOP_WRITE si identité/authority manquante, PR possédée par autrui, droits/locks non vérifiés, CI échouée ou revue imposée manquante, secrets, changement de HEAD ou conflit. Une mission bloquée ne bloque pas mécaniquement les autres. **Ne pas réactiver** l'automatisation horaire « Continuité mission registres MCP » et ne pas utiliser Codex sans instruction nouvelle.
 
 ## Sortie de chaque intervention
 
@@ -30,3 +30,7 @@ STOP_WRITE si identité/authority manquante, PR possédée par autrui, droits/lo
 **Interprétation des résultats :** `documentationIndex` et décisions liées au SHA peuvent être restaurées en lecture ; les mentions `PROJECT_BINDING_NOT_ATTESTED`, `CUG_INSTALLATION_NOT_ATTESTED`, `TASK_SCOPE_BINDINGS_NOT_ATTESTED` ou `LIVE_STATE_STALE` sont de **véritables blocages de certification**, pas une invitation à créer des rattachements ou tâches. L'état `DECLARED` de la prochaine action documentaire ne devient pas un droit `GOVERNED_WRITE`. Les liens parent/enfant sont consultables sans absorber leurs tâches ni leurs mémoires.
 
 **Suite automatique permise :** après vérification des sources propriétaires et des dépendances, effectuer les lectures et contrôles admissibles ; pour toute écriture, passer par les sessions, admissions P2, locks, CI/revue indépendante hors Codex et déploiement gouverné. À chaque action autorisée, conserver l'intention, la preuve, la progression et le nouveau checkpoint dans les **registres propres au périmètre**. L'automatisation de cette mission reste désactivée.
+
+## D39 — CI-first sans revue facultative
+
+Les demandes de revue optionnelles ne doivent plus être créées sur les PR de cette mission. Lire la décision D39 dans `__DECISIONS.md`. Si tous les tests, contrôles de sécurité et la CI exact SHA sont concluants, que le HEAD n'a pas changé, et que GitHub n'impose aucune approbation, la fusion gouvernée peut être entreprise sans revue facultative. Si un required review/approval, CODEOWNER ou ruleset est effectif, **ne jamais le contourner** ; marquer le blocage et en conserver la preuve. Aucune invocation Codex, ni manuelle ni volontairement déclenchée par promotion de PR.
