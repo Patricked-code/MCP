@@ -69,11 +69,23 @@ test('different authenticated GitHub user is blocked', async () => {
   assert.equal(result.status, 'GITHUB_PRINCIPAL_MISMATCH');
 });
 
-test('public visibility mismatch is blocked', async () => {
+test('private Project can be read without changing its visibility', async () => {
   const result = await inspectWorkersProject4Access(async () => response({
     data: {
       viewer: sample.data.viewer,
       user: { projectV2: { ...sample.data.user.projectV2, public: false } }
+    }
+  }));
+  assert.equal(result.status, 'READ_ACCESS_VERIFIED');
+  assert.equal(result.public, false);
+  assert.equal(result.noMutation, true);
+});
+
+test('missing Project visibility fails closed', async () => {
+  const result = await inspectWorkersProject4Access(async () => response({
+    data: {
+      viewer: sample.data.viewer,
+      user: { projectV2: { ...sample.data.user.projectV2, public: null } }
     }
   }));
   assert.equal(result.status, 'PROJECT_IDENTITY_MISMATCH');
