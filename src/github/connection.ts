@@ -236,7 +236,13 @@ export async function githubJsonRequestWithPersonalProjectsCredential(
   const denied: GitHubJsonResponse = {
     ok: false, status: null, json: null, tokenExpiresAt: null, oauthScopes: []
   };
-  if (endpoint !== '/graphql' || options.method !== 'POST') return denied;
+  const body = options.jsonBody;
+  const query = body !== null && typeof body === 'object' && !Array.isArray(body)
+    ? (body as Record<string, unknown>).query : null;
+  // Narrow contract: the dedicated credential cannot run arbitrary GraphQL.
+  if (endpoint !== '/graphql' || options.method !== 'POST' ||
+      typeof query !== 'string' ||
+      !/^query\s+WorkersProject4(?:Read|Structure)\s*\(/.test(query)) return denied;
   let file;
   try {
     file = await lstat(PERSONAL_PROJECTS_TOKEN_FILE);
