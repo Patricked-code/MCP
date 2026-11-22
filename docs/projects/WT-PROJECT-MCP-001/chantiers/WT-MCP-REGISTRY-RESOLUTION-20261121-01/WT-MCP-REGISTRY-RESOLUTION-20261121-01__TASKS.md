@@ -20,3 +20,13 @@
 Pour toute future Task réellement admise et liée à cette mission, conserver : `realTaskId` (issu de la Queue ou `null`), `projectId/Uid` vérifiés ou `UNVERIFIED`, `continuityId`, `ownerScope`, `sourceIntentId`, `workPackageId`, `repositoryId`, `dependencies`, `session/locks`, `status`, `nextAction`, `evidenceRefs`, `observedAt`. Ne jamais écrire une Task ID fictive ou transformer un `REG-WP` en claim runtime. Une TASK du sous-chantier doit être indexée dans son propre `__TASKS.md` et seulement référencée ici comme dépendance.
 
 **NEXT_ACTION_CURRENT :** poursuivre `REG-WP-01` et `REG-WP-02` en lecture, puis `REG-WP-03` ; revue/CI de la PR documentaire #444 en parallèle sans déplacer la priorité fonctionnelle. Voir `__SUIVI.md` pour motifs de classement et preuves.
+
+## 2026-11-22 — D39 : correction des autorités de reprise (successeur)
+
+> Complément des huit lots REG-WP existants, sans nouvelle Task Queue ni Task ID inventée. Les colonnes du tableau historique conservent leur vérité datée.
+
+- REG-WP-03 / RG-011/019/023/027/034 : index documentaire #444 **MERGED**, premier résolveur #445 **MERGED et déployé**, deux appels froids **PARTIAL** ; cinq défauts en cours de correction dans #447 (CODE_BRANCH_ONLY). La qualification « runtime non implémenté » du tableau initial est désormais historique.
+- REG-WP-01/02 : Project Binding, UID candidat, repository ID et installation CUG ne sont pas certifiés comme joints. Les 21 tâches visibles (révision 244) n'ont pas de relation de continuité démontrée à cette mission.
+- REG-WP-04/05/06 : conserver les propriétaires #420/#432/#435/#436 ; reprise et jointures soumises aux preuves et à l'isolation.
+- REG-WP-07/08 : enfant UAES, tests C26/C27 et clôture RG-001…056 non certifiés.
+- **NEXT_ACTION_CURRENT (documentaire seulement)** : CI/tests #447 au HEAD final, recette MCP parent/enfant après déploiement gouverné ; ensuite jointures avec autorités runtime existantes.
