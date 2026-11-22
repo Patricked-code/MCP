@@ -146,27 +146,35 @@ function decisionReferences(
 function decisionIndex(
   sha: string, observations: readonly MissionDocumentObservation[]
 ): Array<{id:string;heading:string;source:string}> {
-  const results: Array<{id:string;heading:string;source:string}> = [];
-  const seen = new Map<string,string>();
-  for (const observation of observations) {
-    if (observation.type !== 'DECISIONS') continue;
-    const lines = observation.text.split(/\r?\n/);
-    for (let i = 0; i < lines.length; i++) {
-      const m = /^#{2,4}\s+(D\d{1,4})\b[^\n]*/i.exec(lines[i]!.trim());
-      if (!m) continue;
-      const id = m[1]!.toUpperCase();
-      const heading = lines[i]!.trim().slice(0,500);
-      const source = sourceUrl(sha, observation.path) + '#L' + (i + 1);
-      if (seen.has(id) && seen.get(id) !== heading) {
-        throw new Error('CONTINUITY_DECISION_ID_CONFLICT');
-      }
-      if (!seen.has(id)) {
-        seen.set(id, heading);
-        results.push({id,heading,source});
+  type Entry={id:string;heading:string;source:string;kind:'HEADING'|'BULLET'};
+  const entries=new Map<string,Entry>();
+  for(const observation of observations){
+    if(observation.type!=='DECISIONS')continue;
+    const lines=observation.text.split(/\r?\n/);
+    for(let i=0;i<lines.length;i++){
+      const line=lines[i]!.trim();
+      const heading=/^#{2,4}\s+D(\d{1,4})(?:\s*[–-]\s*D(\d{1,4}))?\b/i.exec(line);
+      const bullet=/^-\s+(?:\*\*)?D(\d{1,4})\b/i.exec(line);
+      if(!heading&&!bullet)continue;
+      const first=Number((bullet??heading)![1]!);
+      const last=heading?.[2] ? Number(heading[2]) : first;
+      if(last<first||last-first>10)throw new Error('CONTINUITY_DECISION_RANGE_INVALID');
+      const source=sourceUrl(sha,observation.path)+'#L'+(i+1);
+      for(let n=first;n<=last;n++){
+        const id='D'+String(n).padStart(2,'0');
+        const kind=bullet?'BULLET' as const:'HEADING' as const;
+        const candidate:Entry={id,heading:line.slice(0,500),source,kind};
+        const previous=entries.get(id);
+        if(previous?.kind==='BULLET'&&kind==='HEADING')continue;
+        if(previous?.kind==='BULLET'&&kind==='BULLET'
+          &&previous.heading!==candidate.heading)throw new Error('CONTINUITY_DECISION_ID_CONFLICT');
+        entries.set(id,candidate);
       }
     }
   }
-  return results.sort((a,b)=>Number(a.id.slice(1))-Number(b.id.slice(1)));
+  return [...entries.values()]
+    .sort((a,b)=>Number(a.id.slice(1))-Number(b.id.slice(1)))
+    .map(({id,heading,source})=>({id,heading,source}));
 }
 function documentedWork(
   sha: string, observations: readonly MissionDocumentObservation[]
