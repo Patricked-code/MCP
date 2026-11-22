@@ -163,7 +163,7 @@ function compareEvents(a: ContinuityEvent, b: ContinuityEvent): number {
 export function buildMissionContinuityReadProjection(
   input: MissionContinuityReadInput
 ): MissionContinuityReadProjection {
-  if (!input.continuityId.trim() || !input.ownerScope.trim()
+  if (!input.continuityId.trim() || input.ownerScope !== input.continuityId
     || !input.repositoryId.trim() || !sha40.test(input.sourceCommitSha)
     || !validDate(input.observedAt, input.observedAt)) {
     throw new Error('MISSION_CONTINUITY_INPUT_INVALID');
@@ -211,6 +211,7 @@ export function buildMissionContinuityReadProjection(
   const documents = accepted(input.documents, 'DOCUMENT').sort(
     (a, b) => a.documentType.localeCompare(b.documentType) || a.path.localeCompare(b.path)
   );
+  if (documents.length === 0) blockers.add('DOCUMENT_AUTHORITIES_MISSING');
   const docByType = new Map<string, ContinuityDocument>();
   for (const doc of documents) {
     const old = docByType.get(doc.documentType);
@@ -291,7 +292,9 @@ export function buildMissionContinuityReadProjection(
       x => x.key === binding.federatedTaskKey && x.identity.kind === 'TASK'
         && x.identity.authority === 'GOVERNED_TASK_QUEUE'
     );
-    if (!entity || entity.evidence.verification !== 'VERIFIED' || !entity.evidence.evidenceRef) {
+    if (!entity || entity.evidence.verification !== 'VERIFIED' || !entity.evidence.evidenceRef
+      || !validDate(entity.evidence.observedAt, input.observedAt)
+      || entity.identity.authorityScope !== input.repositoryId.replace(/^github:/, '')) {
       blockers.add('TASK_QUEUE_BINDING_UNVERIFIED');
       continue;
     }
@@ -331,14 +334,18 @@ export function buildMissionContinuityReadProjection(
 
   const crosswalk = input.identityCrosswalk;
   const identityConflict = crosswalk?.status === 'CONFLICT';
+  const crosswalkEvidenceUsable = Boolean(crosswalk
+    && validDate(crosswalk.observedAt, input.observedAt)
+    && crosswalk.sourceCommitSha === input.sourceCommitSha
+    && crosswalk.evidenceRefs.length > 0);
   if (identityConflict) conflicts.add('PROJECT_IDENTITY_CONFLICT');
-  if (!crosswalk || crosswalk.status !== 'CONSISTENT'
+  if (!crosswalkEvidenceUsable || !crosswalk || crosswalk.status !== 'CONSISTENT'
     || crosswalk.continuityId !== input.continuityId
     || crosswalk.documentaryProjectUid !== input.projectUid
     || crosswalk.repositoryId !== input.repositoryId) {
     blockers.add('PROJECT_BINDING_NOT_ATTESTED');
   }
-  const projectId = crosswalk?.status === 'CONSISTENT'
+  const projectId = crosswalkEvidenceUsable && crosswalk?.status === 'CONSISTENT'
     && crosswalk.continuityId === input.continuityId
     && crosswalk.documentaryProjectUid === input.projectUid
     && crosswalk.repositoryId === input.repositoryId
