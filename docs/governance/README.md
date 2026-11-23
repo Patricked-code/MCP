@@ -1,5 +1,11 @@
 # Gouvernance documentaire MCP
 
+## Orientation des programmes — index documentaire MCP (provisoire)
+
+Pour retrouver les objectifs, les plans, les phases GWC, les priorités PCM, le Loop Engineering historique et les chantiers spécialisés **sans mélanger leurs périmètres**, utiliser l'[index documentaire et de routage des programmes](mcp-program-document-index-20261107.json).
+
+Cet index étiquette chaque source par programme, rôle, ref GitHub et statut (main, historique ou PR non fusionnée). **Il ne crée aucune source de vérité ni aucun droit d'exécution.** Les sources live GitHub/MCP et les autorités existantes restent prépondérantes. En particulier : MCP global = [issue #235](https://github.com/Patricked-code/MCP/issues/235) ; Governed Deploy universel = [issue #349](https://github.com/Patricked-code/MCP/issues/349) ; Loop Engineering WealthTech historique ≠ programme MCP courant. Ne pas appliquer une directive d'un autre dépôt ou programme sans vérifier son périmètre.
+
 ## Point d'entrée commun — INTAKE et reprise à froid (16 octobre 2026)
 
 **Directive de coordination immédiatement disponible : [issue maîtresse #235, commentaire #6203867094](https://github.com/Patricked-code/MCP/issues/235#issuecomment-6203867094).** Elle complète, sans remplacer, les autorités déjà en place et le [protocole d'entrée de AGENTS.md](../../AGENTS.md). Un agent nouvellement connecté reconstruit l'état depuis GitHub, vérifie le HEAD, les PR et la CI/deploy, puis seulement les autorités runtime nécessaires. Ne jamais déduire la présence active d'un agent, son ownership ou ses permissions d'un commentaire ou d'un snapshot.
