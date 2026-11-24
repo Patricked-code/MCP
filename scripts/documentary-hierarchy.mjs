@@ -150,24 +150,42 @@ export function observeLoopbackCheckpoint(body) {
   const fail=reason=>({status:'UNVERIFIED',reason,declared:null});
   if(typeof body!=='string'||body.includes('\uFFFD')||body.includes('\u0000'))return fail('CHECKPOINT_UNREADABLE');
   const lines=body.split(/\r?\n/);
-  const headings=lines.map((line,i)=>/^#{1,6}\s+POINT DE REPRISE COURANT\s*$/i.test(line)?i:-1).filter(i=>i>=0);
-  if(headings.length!==1)return fail(headings.length?'CHECKPOINT_AMBIGUOUS':'CHECKPOINT_MISSING');
-  const from=headings[0],level=lines[from].match(/^#+/)[0].length;
-  let end=lines.length;
-  for(let i=from+1;i<lines.length;i++){
-    const h=/^(#{1,6})\s+/.exec(lines[i]);
-    if(h&&h[1].length<=level){end=i;break;}
-  }
-  const section=lines.slice(from+1,end).join('\n');
   const fence=String.fromCharCode(96).repeat(3);
   const marker=fence+'loopback-checkpoint';
-  const blocks=section.split('\n').filter(l=>l===marker);
-  if(blocks.length!==1)return fail('CHECKPOINT_CONTRACT_MISSING_OR_AMBIGUOUS');
-  const start=section.indexOf(marker+'\n');
-  const finish=section.indexOf('\n'+fence,start+marker.length+1);
-  if(start<0||finish<0||finish-start>4096)return fail('CHECKPOINT_CONTRACT_INVALID');
+  // Interpret headings and contract blocks only outside Markdown code fences.
+  // Archived examples must never become an active navigation checkpoint.
+  const headings=[],blocks=[];
+  let open=null;
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    const token=/^ {0,3}(\x60{3,}|~{3,})(.*)$/.exec(line);
+    if(open){
+      if(token&&token[1][0]===open.char&&token[1].length>=open.length&&/^[ \t]*$/.test(token[2])){
+        if(open.contract)blocks.push({start:open.start,end:i});
+        open=null;
+      }
+      continue;
+    }
+    if(token&&(token[1][0]!=='\x60'||!token[2].includes('\x60'))){
+      open={char:token[1][0],length:token[1].length,start:i,contract:line===marker};
+      continue;
+    }
+    const h=/^(#{1,6})\s+(.+)$/.exec(line);
+    if(h)headings.push({index:i,level:h[1].length,active:/^POINT DE REPRISE COURANT\s*$/i.test(h[2])});
+  }
+  if(open?.contract)blocks.push({start:open.start,end:null});
+  const active=headings.filter(h=>h.active);
+  if(active.length!==1)return fail(active.length?'CHECKPOINT_AMBIGUOUS':'CHECKPOINT_MISSING');
+  const {index:from,level}=active[0];
+  const end=headings.find(h=>h.index>from&&h.level<=level)?.index??lines.length;
+  const scoped=blocks.filter(b=>b.start>from&&b.start<end);
+  if(scoped.length!==1)return fail('CHECKPOINT_CONTRACT_MISSING_OR_AMBIGUOUS');
+  const block=scoped[0];
+  if(block.end===null||block.end>=end)return fail('CHECKPOINT_CONTRACT_INVALID');
+  const raw=lines.slice(block.start+1,block.end).join('\n');
+  if(raw.length>4096)return fail('CHECKPOINT_CONTRACT_INVALID');
   try{
-    const p=JSON.parse(section.slice(start+marker.length+1,finish));
+    const p=JSON.parse(raw);
     const keys=['schemaVersion','scope','observedAt','observedMainSha','continuityId','proofIssue','observationStatus','nextAction'];
     if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).length!==keys.length||
       keys.some(k=>!Object.hasOwn(p,k))||p.schemaVersion!==1||p.scope!=='REPOSITORY_NAVIGATION'||
