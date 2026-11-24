@@ -5,7 +5,8 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { collectCurrentStateEvidence } from './current-state-evidence.mjs';
-import { buildCommonDocumentaryPlan } from './documentary-hierarchy.mjs';
+import { buildCommonDocumentaryPlan, observeLoopbackCheckpoint } from './documentary-hierarchy.mjs';
+import { deriveLoopbackCandidate } from './documentary-loopback.mjs';
 import { validateMarkdownBaseline, extractCanonicalState, validateRequiredCanonicalStates,
   validateProductionState, detectHistoricalMirrors, validateHistoricalMirrorBanner, canonicalStateKeys }
   from './doc-governance-lib.mjs';
@@ -581,6 +582,22 @@ export function main(env = process.env) {
     report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,
       governanceCheckOk,authorityObservation,corpusObservation,existingEvidence,hierarchicalPlan,
       expectedJobId:/^[0-9]{1,30}$/.test(env.GITHUB_RUN_ID??'')?'mcp-s1-'+env.GITHUB_RUN_ID+'-'+headSha.slice(0,12):null});
+    // Produce the next SUIVI candidate from the same exact report, never
+    // from a client-supplied certificate or arbitrary historical prose.
+    try {
+      const raw=readEntry(entriesByPath.get('SUIVI.md'));
+      const old=observeLoopbackCheckpoint(raw);
+      if(old.status!=='PRESENT')throw Error('LOOPBACK_CHECKPOINT_UNVERIFIED');
+      const previous=old.declared.observedMainSha;
+      git(['merge-base','--is-ancestor',previous,headSha]);
+      const checkpointChanges=parseNameStatus(git(['diff','--no-ext-diff','--name-status','-z','-M',previous,headSha,'--']));
+      report.loopbackCandidate=deriveLoopbackCandidate({raw,headSha,checkpointChanges,report,
+        expectedJobId:/^[0-9]{1,30}$/.test(env.GITHUB_RUN_ID??'')?'mcp-s1-'+env.GITHUB_RUN_ID+'-'+headSha.slice(0,12):null});
+    }catch{
+      report.loopbackCandidate={schemaVersion:1,path:'SUIVI.md',status:'BLOCKED_OR_UNVERIFIED',
+        reason:'LOOPBACK_CHECKPOINT_ANCESTRY_OR_CONTENT_UNVERIFIED',mutationPerformed:false,
+        automaticPublicationAuthorized:false,closureAttested:false};
+    }
   } catch (error) {
     const bounded = new Set(['CHECKOUT_SHA_MISMATCH','INVALID_BASELINE','TREE_TRUNCATED','DIFF_TRUNCATED',
       'DIFF_STATUS_INVALID','DIFF_PATH_INVALID','DIFF_LIMIT_EXCEEDED','INVALID_OBSERVATION','INVENTORY_UNREADABLE','INVALID_CHANGE',
@@ -598,6 +615,7 @@ export function main(env = process.env) {
     +(report.corpusObservation ? 'Historical preservation obligations: '+report.corpusObservation.historicalPreservedCount+' verified byte-preservation; '+report.corpusObservation.historicalUnverifiedCount+' unverified. Historical contents are not certified.\n\n' : '')
     +(report.liveAuthorities ? 'Exact authority comparisons: '+report.liveAuthorities.matchedCount+'/'+report.liveAuthorities.checks.length+'; runtime families still unverified: '+report.liveAuthorities.unresolvedRuntime.length+'\n\n' : '')
     +(report.hierarchicalPlan ? 'Common documentary plan: '+report.hierarchicalPlan.status+'; scopes '+report.hierarchicalPlan.coverage.scopeCount+'; obligations/issues '+report.hierarchicalPlan.issues.length+'; candidates '+report.hierarchicalPlan.coverage.plannedCount+'/'+report.hierarchicalPlan.coverage.candidateCount+'; impact reviews '+report.hierarchicalPlan.coverage.impactReviewCount+'\n\n' : '')
+    +(report.loopbackCandidate ? 'Loopback checkpoint candidate: '+report.loopbackCandidate.status+'; '+(report.loopbackCandidate.reason??'exact-content proposal')+'; no publication authorized by this report.\n\n' : '')
     +(report.g1ReasonCodes?.length ? 'G1 diagnostics: '+report.g1ReasonCodes.join(', ')+'\n\n' : '')
     +'Next action: '+report.nextAction+'\n\n'
     +'See the documentary-closure artifact for paths, differences and coverage.\n');
