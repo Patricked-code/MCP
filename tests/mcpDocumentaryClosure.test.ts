@@ -12,7 +12,7 @@ function input(overrides = {}) {
     headSha: HEAD, baselineSha: BASE,
     trackedPaths: ['SUIVI.md', 'docs/OLD.md', '.mcp/registry.json', 'PRODUCTION_STATE.json', 'src/index.ts'],
     inventory: {schemaVersion: 1, trackedCount: 2, entries: [
-      {path:'SUIVI.md',category:'canonical'}, {path:'docs/OLD.md',category:'history'}
+      {path:'SUIVI.md',category:'canonical'}, {path:'docs/OLD.md',category:'documentation'}
     ]},
     changes: [{code:'M',path:'src/index.ts',previousPath:null}],
     g1: {status:'ALIGNED'}, governanceCheckOk: true, ...overrides
@@ -90,4 +90,12 @@ test('post-deploy projection is mandatory on an attested run, read-only and sepa
   assert.match(closure,/scripts\/mcp-documentary-closure\.mjs/);
   assert.match(closure,/actions\/upload-artifact@v4/);
   assert.doesNotMatch(closure,/id-token: write|pull-requests: write|contents: write|merge_pull_request/);
+});
+
+test('wrong inventory category is an explicit documentary drift, not alignment', () => {
+  const fixture = input();
+  const inventory = {...fixture.inventory, entries: fixture.inventory.entries.map(e => e.path === 'docs/OLD.md' ? {...e, category:'history'} : e)};
+  const report = buildDocumentaryClosureReport(input({inventory}));
+  assert.equal(report.status,'DOCUMENTARY_CLOSURE_BLOCKED');
+  assert.deepEqual(report.inventory.categoryDrift,[{path:'docs/OLD.md',expected:'history',actual:'documentation'}]);
 });
