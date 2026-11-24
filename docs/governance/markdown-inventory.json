@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 265,
+  "trackedCount": 281,
   "categories": {
     "canonical": 7,
-    "documentation": 114,
+    "documentation": 130,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -688,6 +688,70 @@
     },
     {
       "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__TODO.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__AGENTS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__ARCHITECTURE.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__CARTOGRAPHY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__CONTINUITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__DECISIONS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__DOCUMENT_AUTHORITIES.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__EVIDENCE_INDEX.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__IMPLEMENTATION_PLAN.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__INTENTIONS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__MEMORY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__MISSION.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__ROADMAP.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__SOURCE_OF_TRUTH.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__SUIVI.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__TASKS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-GLOBAL-RECONCILIATION-20261121-01/WT-MCP-GLOBAL-RECONCILIATION-20261121-01__TODO.md",
       "category": "documentation"
     },
     {
