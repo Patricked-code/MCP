@@ -5,7 +5,8 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { collectCurrentStateEvidence } from './current-state-evidence.mjs';
-import { buildCommonDocumentaryPlan } from './documentary-hierarchy.mjs';
+import { buildCommonDocumentaryPlan, observeLoopbackCheckpoint } from './documentary-hierarchy.mjs';
+import { deriveLoopbackCandidate } from './documentary-loopback.mjs';
 import { validateMarkdownBaseline, extractCanonicalState, validateRequiredCanonicalStates,
   validateProductionState, detectHistoricalMirrors, validateHistoricalMirrorBanner, canonicalStateKeys }
   from './doc-governance-lib.mjs';
@@ -366,6 +367,15 @@ export function compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobI
     if(status==='CONFLICT') differences.push({path,field:liveField,declared,observed,
       reason:'LIVE_AUTHORITY_VALUE_MISMATCH',source:authority,nextAction:'RESOLVE_AUTHORITY_AND_RECONCILE'});
   }
+  // Diagnostic only: missing components never erase or weaken the primary
+  // exact sourceDigest comparison, including for earlier evidence producers.
+  const inventoryDiagnostics=['architectureDigest','sourceGeneratedAt'].map(field=>{
+    const declared=existingEvidence?.[field],observed=e?.[field];
+    const valid=x=>typeof x==='string'&&(field==='architectureDigest'?DIGEST.test(x):
+      x.length<=40&&/^\d{4}-\d{2}-\d{2}T/.test(x)&&Number.isFinite(Date.parse(x)));
+    return {field,declared:valid(declared)?declared:null,observed:valid(observed)?observed:null,
+      status:!bound||!valid(declared)||!valid(observed)?'UNVERIFIED':declared===observed?'MATCHED':'CONFLICT'};
+  });
   const runtimeObservation=bound?validateRuntimeAuthorityObservation({headSha,g1,expectedJobId,now}):null;
   const observedByAuthority=new Map((runtimeObservation?.authorities??[]).map(r=>[r.authority,r]));
   const unresolvedRuntime=RUNTIME_AUTHORITIES.map(([authority,source])=>({
@@ -373,7 +383,7 @@ export function compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobI
     nextAction:'REUSE_EXISTING_AUTHORITY_READER_AND_COMPARE_PROJECTIONS'
   }));
   return {bound,headSha,observedAt:bound?e.observedAt:null,stateVersion:bound?e.stateVersion:null,
-    checks,differences,runtimeObservation,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
+    checks,differences,inventoryDiagnostics,runtimeObservation,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
     complete:false};
 }
 
@@ -410,14 +420,6 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     if(!pathChecks.has(check.path)) pathChecks.set(check.path,[]);
     pathChecks.get(check.path).push(check);
   }
-  const documents = candidates.map(path => ({
-    path, category: byPath.get(path) ?? 'AUTHORITY_UNVERIFIED',
-    change: changed.get(path) ?? 'NO_DIRECT_GIT_CHANGE',
-    // No direct diff does NOT prove that the content has no indirect impact.
-    semanticStatus: 'UNVERIFIED',
-    staticChecks: pathChecks.get(path) ?? [],
-    nextAction: 'RESOLVE_OWNER_AND_VALIDATE_IMPACT'
-  }));
   const differences = [...(authorityObservation?.differences ?? [])];
   const g1Differences = [];
   if (g1?.status === 'DRIFT' && g1.sha === headSha && SHA.test(g1.declaredGithubSha ?? '') &&
@@ -432,6 +434,38 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   differences.push(...g1Differences);
   const liveAuthorities=compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobId});
   differences.push(...liveAuthorities.differences);
+  const differencesByPath = new Map();
+  for (const difference of differences) {
+    if (!differencesByPath.has(difference.path)) differencesByPath.set(difference.path, []);
+    differencesByPath.get(difference.path).push(difference);
+  }
+  const preservedByPath = new Map((corpusObservation?.historicalPreservation ?? [])
+    .filter(record => record.archiveVerified === true &&
+      record.preservationStatus === 'PRESERVED_NON_EXECUTABLE' && record.currentAuthority === false)
+    .map(record => [record.path, record]));
+  const documents = candidates.map(path => {
+    const findings = differencesByPath.get(path) ?? [];
+    const hasConflict = findings.some(finding => ['CANONICAL_STATE_CONFLICT', 'LIVE_AUTHORITY_VALUE_MISMATCH'].includes(finding.reason));
+    const preserved = preservedByPath.get(path);
+    let verdict = 'UNVERIFIED';
+    let nextAction = 'RESOLVE_OWNER_AND_VALIDATE_IMPACT';
+    if (hasConflict) {
+      verdict = 'CONFLICT';
+      nextAction = 'RESOLVE_AUTHORITY_AND_RECONCILE';
+    } else if (findings.length && findings.every(finding => finding.reason === 'G1_DOCUMENTATION_DRIFT')) {
+      verdict = 'RECONCILIATION_REQUIRED';
+      nextAction = 'REUSE_GW60_GW61';
+    } else if (!findings.length && preserved) {
+      verdict = 'HISTORICAL_PRESERVATION';
+      nextAction = preserved.nextAction;
+    }
+    return {
+      path, category: byPath.get(path) ?? 'AUTHORITY_UNVERIFIED',
+      change: changed.get(path) ?? 'NO_DIRECT_GIT_CHANGE',
+      verdict, semanticStatus: 'UNVERIFIED', staticChecks: pathChecks.get(path) ?? [],
+      differences: findings, nextAction
+    };
+  });
   const planPaths=hierarchicalPlan?.documents?.map(d=>d.path)??[];
   const planSet=new Set(planPaths);
   const corpusByPath=new Map((corpusObservation?.rows??[]).map(r=>[r.path,r.oid]));
@@ -569,6 +603,7 @@ export function main(env = process.env) {
       } catch {cartographyProfile={ok:false,reason:'CARTOGRAPHY_PROFILE_GENERATOR_UNAVAILABLE'};}
       existingEvidence={ok:state.evidenceHead===headSha&&state.contradictions.length===0,
         evidenceHead:state.evidenceHead,sourceDigest:state.sourceDigest,
+        architectureDigest:state.architecture.digest,sourceGeneratedAt:state.generatedAt,
         documentationDigest:state.documentation.digest,governanceDigest:state.governance.digest,
         testSuiteDigest:state.testSuiteDigest,cartographyProfile,
         catalogueDigest:cartographyProfile.ok?cartographyProfile.httpDigest:null,
@@ -581,6 +616,22 @@ export function main(env = process.env) {
     report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,
       governanceCheckOk,authorityObservation,corpusObservation,existingEvidence,hierarchicalPlan,
       expectedJobId:/^[0-9]{1,30}$/.test(env.GITHUB_RUN_ID??'')?'mcp-s1-'+env.GITHUB_RUN_ID+'-'+headSha.slice(0,12):null});
+    // Produce the next SUIVI candidate from the same exact report, never
+    // from a client-supplied certificate or arbitrary historical prose.
+    try {
+      const raw=readEntry(entriesByPath.get('SUIVI.md'));
+      const old=observeLoopbackCheckpoint(raw);
+      if(old.status!=='PRESENT')throw Error('LOOPBACK_CHECKPOINT_UNVERIFIED');
+      const previous=old.declared.observedMainSha;
+      git(['merge-base','--is-ancestor',previous,headSha]);
+      const checkpointChanges=parseNameStatus(git(['diff','--no-ext-diff','--name-status','-z','-M',previous,headSha,'--']));
+      report.loopbackCandidate=deriveLoopbackCandidate({raw,headSha,checkpointChanges,report,
+        expectedJobId:/^[0-9]{1,30}$/.test(env.GITHUB_RUN_ID??'')?'mcp-s1-'+env.GITHUB_RUN_ID+'-'+headSha.slice(0,12):null});
+    }catch{
+      report.loopbackCandidate={schemaVersion:1,path:'SUIVI.md',status:'BLOCKED_OR_UNVERIFIED',
+        reason:'LOOPBACK_CHECKPOINT_ANCESTRY_OR_CONTENT_UNVERIFIED',mutationPerformed:false,
+        automaticPublicationAuthorized:false,closureAttested:false};
+    }
   } catch (error) {
     const bounded = new Set(['CHECKOUT_SHA_MISMATCH','INVALID_BASELINE','TREE_TRUNCATED','DIFF_TRUNCATED',
       'DIFF_STATUS_INVALID','DIFF_PATH_INVALID','DIFF_LIMIT_EXCEEDED','INVALID_OBSERVATION','INVENTORY_UNREADABLE','INVALID_CHANGE',
@@ -598,6 +649,7 @@ export function main(env = process.env) {
     +(report.corpusObservation ? 'Historical preservation obligations: '+report.corpusObservation.historicalPreservedCount+' verified byte-preservation; '+report.corpusObservation.historicalUnverifiedCount+' unverified. Historical contents are not certified.\n\n' : '')
     +(report.liveAuthorities ? 'Exact authority comparisons: '+report.liveAuthorities.matchedCount+'/'+report.liveAuthorities.checks.length+'; runtime families still unverified: '+report.liveAuthorities.unresolvedRuntime.length+'\n\n' : '')
     +(report.hierarchicalPlan ? 'Common documentary plan: '+report.hierarchicalPlan.status+'; scopes '+report.hierarchicalPlan.coverage.scopeCount+'; obligations/issues '+report.hierarchicalPlan.issues.length+'; candidates '+report.hierarchicalPlan.coverage.plannedCount+'/'+report.hierarchicalPlan.coverage.candidateCount+'; impact reviews '+report.hierarchicalPlan.coverage.impactReviewCount+'\n\n' : '')
+    +(report.loopbackCandidate ? 'Loopback checkpoint candidate: '+report.loopbackCandidate.status+'; '+(report.loopbackCandidate.reason??'exact-content proposal')+'; no publication authorized by this report.\n\n' : '')
     +(report.g1ReasonCodes?.length ? 'G1 diagnostics: '+report.g1ReasonCodes.join(', ')+'\n\n' : '')
     +'Next action: '+report.nextAction+'\n\n'
     +'See the documentary-closure artifact for paths, differences and coverage.\n');

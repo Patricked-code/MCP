@@ -18,6 +18,9 @@ export type G1AuthorityEvidence = Readonly<{
   testSuiteDigest: string;
   catalogueDigest: string;
   toolCount: number;
+  // Optional bounded diagnostic components for sourceDigest differences.
+  architectureDigest?: string;
+  sourceGeneratedAt?: string;
 }>;
 const DIGEST = /^[0-9a-f]{64}$/;
 export function projectG1AuthorityEvidence(state: LiveStateSnapshot, sha: string): G1AuthorityEvidence | null {
@@ -34,7 +37,9 @@ export function projectG1AuthorityEvidence(state: LiveStateSnapshot, sha: string
   if (!inventoryDigest || !documentationDigest || !governanceDigest || !testSuiteDigest || !catalogueDigest
     || ![inventoryDigest,documentationDigest,governanceDigest,testSuiteDigest,catalogueDigest].every(x=>DIGEST.test(x))) return null;
   return {schemaVersion:1,sha,observedAt:state.generatedAt,stateVersion:state.stateVersion,
-    inventoryDigest,documentationDigest,governanceDigest,testSuiteDigest,catalogueDigest,toolCount:c.registeredToolCount};
+    inventoryDigest,documentationDigest,governanceDigest,testSuiteDigest,catalogueDigest,toolCount:c.registeredToolCount,
+    ...(typeof i.architecture?.digest==='string'&&DIGEST.test(i.architecture.digest)?{architectureDigest:i.architecture.digest}:{}),
+    ...(typeof i.generatedAt==='string'&&i.generatedAt.length<=40&&Number.isFinite(Date.parse(i.generatedAt))?{sourceGeneratedAt:i.generatedAt}:{})};
 }
 export type G1Drift = {
   status: 'DRIFT'; sha: string; observedAt: string; stateVersion: number; imageId: string;

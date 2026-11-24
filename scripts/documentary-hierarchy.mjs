@@ -361,7 +361,14 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
   const rootRequired=uniq([...CURRENT_INTAKE,...FOUNDATION_DOCUMENTS,...ROOT_EXTRA,...LOOPBACK_SOURCES,
     ...candidatePaths.filter(p=>p.startsWith('.mcp/')&&p.endsWith('.json'))]);
   const scopePlans=[];
-  const sortedScopes=[...scopes.values()].sort((a,b)=>a.key===ROOT?-1:b.key===ROOT?1:a.key.split('/').length-b.key.split('/').length||a.key.localeCompare(b.key));
+  // Parent paths are shorter in segments. Use ordinal order for siblings
+  // because this sequence contributes to the digest shared by all clients.
+  const sortedScopes = [...scopes.values()].sort((a, b) => {
+    const depthDifference = a.key.split('/').length - b.key.split('/').length;
+    if (depthDifference) return depthDifference;
+    if (a.key === b.key) return 0;
+    return a.key < b.key ? -1 : 1;
+  });
   const explicitEquivalences=[];
   for(const scope of sortedScopes){
     const required=[];
@@ -527,7 +534,11 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     ['src/deploy/g1MergeAdmission.ts',['MCP_GITHUB_GOVERNANCE.md','DEPLOYMENT_PRODUCTION.md','MCP_SECURITY_MODEL.md','SUIVI.md']],
     ['tests/deployWorkflow.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md']],
     ['tests/g1MergeAdmission.test.ts',['TESTS.md','CODE_REVIEW.md','MCP_GITHUB_GOVERNANCE.md','SUIVI.md']],
-    ['tests/g1OpenCorrection.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md']]
+    ['tests/g1OpenCorrection.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md']],
+    ['scripts/documentary-loopback.mjs',['LOOP_ENGINEERING.md','SUIVI.md','memory/LOOPBACK_WEALTHTECH_CURRENT.md','SOURCE_OF_TRUTH.md','DEPLOYMENT_PRODUCTION.md']],
+    ['tests/documentaryLoopback.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md','LOOP_ENGINEERING.md']],
+    ['scripts/current-state-evidence.mjs',['MCP_REPO_INVENTORY.md','ARCHITECTURE.md','SOURCE_OF_TRUTH.md','SUIVI.md']],
+    ['tests/currentStateEvidence.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md']]
   ]);
   for(const path of changed){
     const row=rowByPath.get(path);
