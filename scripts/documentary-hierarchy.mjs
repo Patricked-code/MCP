@@ -527,6 +527,7 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     ['scripts/documentary-hierarchy.mjs',['LOOP_ENGINEERING.md','AGENTS.md','GPT.md','SUIVI.md','SOURCE_OF_TRUTH.md']],
     ['scripts/mcp-documentary-closure.mjs',['LOOP_ENGINEERING.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md','SOURCE_OF_TRUTH.md']],
     ['tests/documentaryHierarchy.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md']],
+    ['tests/mcpDocumentaryClosure.test.ts',['TESTS.md','CODE_REVIEW.md','LOOP_ENGINEERING.md','DEPLOYMENT_PRODUCTION.md','SOURCE_OF_TRUTH.md','SUIVI.md']],
     // G1 exact-SHA merge implementation: affected documents must be reviewed
     // against their owners. Classification is not proof of semantic currency.
     ['scripts/mcp-g1-merge.ts',['DEPLOYMENT_PRODUCTION.md','MCP_GITHUB_GOVERNANCE.md','LOOP_ENGINEERING.md','SUIVI.md','SOURCE_OF_TRUTH.md']],
