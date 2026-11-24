@@ -378,12 +378,12 @@ export const HISTORICAL_MIRROR_MARKER = 'MCP-DOC-AUTHORITY-MIRROR-20261124';
 export function detectHistoricalMirrors(trackedPaths) {
   const tracked = new Set(trackedPaths);
   return [...tracked]
-    .filter((path) => /^docs\\/[^/]+\\.md$/.test(path) && tracked.has(path.slice(5)))
+    .filter((path) => /^docs\/[^/]+\.md$/.test(path) && tracked.has(path.slice(5)))
     .sort();
 }
 
 export function validateHistoricalMirrorBanner(path, content) {
-  if (typeof path !== 'string' || !/^docs\\/[^/]+\\.md$/.test(path) || typeof content !== 'string') {
+  if (typeof path !== 'string' || !/^docs\/[^/]+\.md$/.test(path) || typeof content !== 'string') {
     return { ok: false, issues: ['invalid_document'] };
   }
   const open = '<!-- ' + HISTORICAL_MIRROR_MARKER + ' -->';
