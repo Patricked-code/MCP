@@ -302,12 +302,12 @@ test('miroirs historiques : découverte dynamique par référence racine, sans s
 test('miroirs historiques : bannière et lien exact sont requis', () => {
   const open = '<!-- MCP-DOC-AUTHORITY-MIRROR-20261124 -->';
   const close = '<!-- /MCP-DOC-AUTHORITY-MIRROR-20261124 -->';
-  const valid = '# TASKS.md\\n\\n' + open + '\\n> Document initial [registre racine](../TASKS.md).\\n' + close + '\\n\\n## Historique\\n';
+  const valid = '# TASKS.md\n\n' + open + '\n> Document initial [registre racine](../TASKS.md).\n' + close + '\n\n## Historique\n';
   assert.deepEqual(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', valid), { ok: true, issues: [] });
   assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', valid.replace('../TASKS.md', '../TODO.md')).ok, false);
   assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', valid.replace(open, '')).ok, false);
   assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', valid + open).ok, false);
-  assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', '# TASKS.md\\n\\nHistorique non balisé').ok, false);
+  assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', '# TASKS.md\n\nHistorique non balisé').ok, false);
 });
 
 test('les miroirs réellement suivis doivent tous déclarer leur autorité historique', async () => {

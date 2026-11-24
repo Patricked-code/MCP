@@ -388,7 +388,7 @@ export function validateHistoricalMirrorBanner(path, content) {
   }
   const open = '<!-- ' + HISTORICAL_MIRROR_MARKER + ' -->';
   const close = '<!-- /' + HISTORICAL_MIRROR_MARKER + ' -->';
-  const firstNewline = content.indexOf('\\n');
+  const firstNewline = content.indexOf('\n');
   const start = content.indexOf(open);
   const end = content.indexOf(close);
   const issues = [];
