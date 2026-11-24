@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 // The workflow report is a standalone dependency-free ESM script.
 // @ts-ignore -- test runner imports the .mjs implementation directly.
-import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities, parseTrackedTree, observeTrackedCorpus, classifyTrackedPath, compareLiveAuthorities } from '../scripts/mcp-documentary-closure.mjs';
+import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities, parseTrackedTree, observeTrackedCorpus, classifyTrackedPath, compareLiveAuthorities, observeHistoricalPreservation, verifyCartographyProfiles } from '../scripts/mcp-documentary-closure.mjs';
 
 const HEAD = 'a'.repeat(40);
 const BASE = 'b'.repeat(40);
@@ -192,4 +194,44 @@ test('documentary certification job cannot succeed on pending or blocked closure
   assert.match(job,/DOCUMENTARY_CLOSURE_STATUS.*!= 'DOCUMENTARY_CLOSURE_ATTESTED'/);
   assert.match(job,/exit 1/);
   assert.match(job,/continue-on-error: true/);
+});
+
+test('historical preservation binds exact archive and provenance bytes without verifying their content',()=>{
+  const archive=Buffer.from([0,255,1,2]), source=Buffer.from('Archive is non-executable');
+  const oid=(b:Buffer)=>createHash('sha1').update('blob '+b.length+'\0').update(b).digest('hex');
+  const paths=['docs/audits/original.md','docs/audits/README.md'];
+  const bytes=new Map([[paths[0],archive],[paths[1],source]]);
+  const entries=paths.map(p=>({path:p,mode:'100644',type:'blob',oid:oid(bytes.get(p)!),size:bytes.get(p)!.length}));
+  const obligations=[{path:paths[0],oid:oid(archive),kind:'CORRUPTED_FORENSIC_ORIGINAL',sources:[[paths[1],oid(source)]]}];
+  const readBytes=(e:{path:string})=>bytes.get(e.path)!;
+  const proof=observeHistoricalPreservation({entries,readBytes,obligations})[0];
+  assert.equal(proof.preservationStatus,'PRESERVED_NON_EXECUTABLE');
+  assert.equal(proof.historicalContentVerified,false);
+  assert.equal(proof.currentAuthority,false);
+  const report=observeTrackedCorpus({entries,trackedPaths:paths,readText:(e:{path:string})=>bytes.get(e.path)!.toString('utf8'),readBytes,historicalObligations:obligations});
+  assert.equal(report.structuralUnverifiedCount,1);
+  assert.equal(report.unresolvedStructuralCount,0);
+  assert.equal(report.historicalPreservedCount,1);
+  assert.equal(report.semanticCoverageComplete,false);
+  bytes.set(paths[1],Buffer.from('replacement'));
+  assert.equal(observeHistoricalPreservation({entries,readBytes,obligations})[0].preservationStatus,'UNVERIFIED');
+  assert.equal(classifyTrackedPath('.env.example'),'INFRASTRUCTURE_CONFIGURATION_IMPACT');
+  assert.equal(classifyTrackedPath('Dockerfile'),'INFRASTRUCTURE_CONFIGURATION_IMPACT');
+});
+test('real cartography generation produces a distinct exact HTTP profile and preserves the baseline',()=>{
+  function generate(args:string[]) {
+    const result=spawnSync(process.execPath,['--import','tsx','scripts/emit-function-cartography.ts',...args],{
+      encoding:'utf8',maxBuffer:8*1024*1024,timeout:45000});
+    assert.equal(result.error,undefined);
+    assert.equal(result.status,0,result.stderr);
+    return JSON.parse(result.stdout);
+  }
+  const standalone=generate([]),httpRuntime=generate(['--http-runtime']);
+  const verified=verifyCartographyProfiles({versioned:standalone,standalone,httpRuntime});
+  assert.equal(verified.ok,true);
+  assert.equal(verified.httpCount,verified.standaloneCount+1);
+  assert.notEqual(verified.httpDigest,verified.standaloneDigest);
+  assert.deepEqual(verified.added,['mcp_issue_plesk_web_pairing_proof']);
+  const invalid=verifyCartographyProfiles({versioned:standalone,standalone,httpRuntime:{...httpRuntime,tools:httpRuntime.tools.map((x:{name:string})=>x.name==='mcp_issue_plesk_web_pairing_proof'?{...x,name:'unknown_tool'}:x)}});
+  assert.equal(invalid.ok,false);
 });

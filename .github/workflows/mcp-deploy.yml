@@ -348,6 +348,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Install dependencies for exact runtime cartography generation
+        run: npm ci --ignore-scripts
       - name: Observe documentary coverage and exact Git differences
         id: closure
         env:
