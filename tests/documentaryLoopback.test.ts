@@ -80,3 +80,36 @@ test('inventory component diagnostics explain differences but never weaken exact
   assert.equal(missing.matchedCount,5);
   assert.equal(missing.inventoryDiagnostics[0].status,'UNVERIFIED');
 });
+
+test('publication preflight independently derives exact bytes without granting write authority',async()=>{
+  // @ts-ignore -- ESM report script
+  const module=await import('../scripts/documentary-loopback.mjs');
+  assert.equal(typeof module.prepareLoopbackPublicationCandidate,'function');
+  const candidate=deriveLoopbackCandidate(input);
+  const trustedReport={...report,schemaVersion:1,repository:'Patricked-code/MCP',
+    technicalDeploymentIndependent:true,closureAttested:false,mutationPerformed:false,
+    observedAt:at,loopbackCandidate:candidate};
+  const args={...input,report:trustedReport,currentMainSha:head};
+  const prepared=module.prepareLoopbackPublicationCandidate(args);
+  assert.equal(prepared.status,'CANDIDATE_READY');
+  assert.equal(prepared.content,materializeLoopbackCandidate(raw,candidate,head));
+  assert.equal(prepared.automaticPublicationAuthorized,false);
+  assert.equal(prepared.mutationPerformed,false);
+  assert.equal(prepared.closureAttested,false);
+  const tampered={...candidate,patch:{...candidate.patch,appendSection:candidate.patch.appendSection+'\nInjected prose\n'}};
+  const crypto=await import('node:crypto');
+  tampered.candidateContentDigest=crypto.createHash('sha256').update(prepared.content+'\nInjected prose\n').digest('hex');
+  assert.throws(()=>module.prepareLoopbackPublicationCandidate({...args,
+    report:{...trustedReport,loopbackCandidate:tampered}}),/LOOPBACK_PUBLICATION_CANDIDATE_MISMATCH/);
+  assert.throws(()=>module.prepareLoopbackPublicationCandidate({...args,currentMainSha:oldSha}),/LOOPBACK_PUBLICATION_BASE_UNVERIFIED/);
+  assert.throws(()=>module.prepareLoopbackPublicationCandidate({...args,
+    report:{...trustedReport,repository:'other/MCP'}}),/LOOPBACK_PUBLICATION_REPORT_UNVERIFIED/);
+  assert.throws(()=>module.prepareLoopbackPublicationCandidate({...args,now:Date.parse(at)+900001}),/LOOPBACK_PUBLICATION_REPORT_UNVERIFIED/);
+  const noChanges={...args,checkpointChanges:[]};
+  const noChangeCandidate=deriveLoopbackCandidate(noChanges);
+  const unchanged=module.prepareLoopbackPublicationCandidate({...noChanges,
+    report:{...trustedReport,loopbackCandidate:noChangeCandidate}});
+  assert.equal(unchanged.status,'NO_CHANGE');
+  assert.equal(unchanged.content,null);
+  assert.equal(unchanged.automaticPublicationAuthorized,false);
+});
