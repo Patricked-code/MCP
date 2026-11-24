@@ -70,3 +70,17 @@ test('invalid SHA can never obtain DRIFT, even if other sources seem aligned',()
   assert.equal(projectG1Evidence(state,'invalid',now).status,'UNVERIFIED');
   assert.ok(diagnoseG1Unverified(state,'invalid',now).includes('G1_INVALID_EXPECTED_SHA'));
 });
+
+test('G1 classifies documentary contradictions without emitting arbitrary source details',()=>{
+  const state=live();
+  state.contradictions=['DOCUMENTATION_DRIFT','CURRENT_STATE_INVENTORY_UNAVAILABLE','AUDIT_BASELINE_EVIDENCE_HEAD_MISMATCH','UNRECOGNIZED_DETAIL'];
+  const reasons=diagnoseG1Unverified(state,sha,now);
+  assert.equal(projectG1Evidence(state,sha,now).status,'UNVERIFIED');
+  assert.ok(reasons.includes('G1_DOCUMENTATION_CONTRADICTIONS'));
+  assert.ok(reasons.includes('G1_CONTRADICTION_INVENTORY_UNAVAILABLE'));
+  assert.ok(reasons.includes('G1_CONTRADICTION_AUDIT_BASELINE_INVALID'));
+  assert.ok(reasons.includes('G1_CONTRADICTION_OTHER'));
+  assert.ok(reasons.length<=20);
+  assert.ok(reasons.every(x=>G1_UNVERIFIED_REASONS.includes(x)));
+  assert.ok(!JSON.stringify(reasons).includes('UNRECOGNIZED_DETAIL'));
+});

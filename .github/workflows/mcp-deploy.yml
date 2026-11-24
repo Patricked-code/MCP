@@ -202,9 +202,77 @@ jobs:
           printf 'Deployment status polling timed out for %s.\n' "$GITHUB_SHA" >&2
           exit 1
 
-  reconcile-documentation:
+  # Retry documentary evidence only; never restart an already attested deployment.
+  reobserve-documentation:
     needs: deploy
-    if: github.repository == 'Patricked-code/MCP' && github.ref == 'refs/heads/main' && needs.deploy.outputs.g1-evidence != ''
+    if: github.repository == 'Patricked-code/MCP' && github.ref == 'refs/heads/main' && needs.deploy.result == 'success' && contains(needs.deploy.outputs.g1-evidence, '"status":"UNVERIFIED"')
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    continue-on-error: true
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      g1-evidence: ${{ steps.refresh.outputs.g1-evidence }}
+    steps:
+      - name: Reobserve exact attested deployment
+        id: refresh
+        shell: bash
+        env:
+          INITIAL_G1: ${{ needs.deploy.outputs.g1-evidence }}
+          MCP_BASE_URL: https://mcp.wealthtechinnovations.com
+        run: |
+          set -euo pipefail
+          G1_EVIDENCE="$(node -e 'const g=JSON.parse(process.env.INITIAL_G1); if(g?.status!=="UNVERIFIED") process.exit(1); process.stdout.write(JSON.stringify(g));')"
+          JOB_ID="$(node -e 'const sha=process.env.GITHUB_SHA, run=process.env.GITHUB_RUN_ID; if(!/^[a-f0-9]{40}$/.test(sha)||!/^[0-9]{1,30}$/.test(run)) process.exit(1); process.stdout.write("mcp-s1-"+run+"-"+sha.slice(0,12));')"
+          get_oidc() {
+            if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
+              printf '%s\n' 'GitHub OIDC request context unavailable.' >&2
+              return 1
+            fi
+
+            local separator='?'
+            case "$ACTIONS_ID_TOKEN_REQUEST_URL" in
+              *\?*) separator='&' ;;
+            esac
+
+            local response
+            response="$(curl --fail --silent --show-error --max-time 10 \
+              --header "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+              "${ACTIONS_ID_TOKEN_REQUEST_URL}${separator}audience=https%3A%2F%2Fmcp.wealthtechinnovations.com%2Fdeploy%2Fgithub%2Fs1")"
+
+            printf '%s' "$response" | node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 32768) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } if (!body || typeof body.value !== 'string' || body.value.length < 32 || body.value.length > 16384) process.exit(1); process.stdout.write(body.value);"
+          }
+          validate_status() {
+            GITHUB_SHA="$GITHUB_SHA" JOB_ID="$JOB_ID" node -e "const fs=require('fs'); const raw=fs.readFileSync(0,'utf8'); if (Buffer.byteLength(raw,'utf8') > 16384) process.exit(1); let body; try { body=JSON.parse(raw); } catch { process.exit(1); } const sha=process.env.GITHUB_SHA; const job=process.env.JOB_ID; if (!body || body.jobId !== job || body.requestedSha !== sha) process.exit(1); if (body.status === 'succeeded') { if (body.phase !== 'attested' || body.runtimeRevision !== sha || body.rollbackStatus !== 'not_needed' || body.healthOk !== true || body.oauthOk !== true || body.mcpAuthOk !== true) process.exit(1); process.stdout.write('succeeded'); } else if (body.status === 'failed') { process.stdout.write('failed'); } else if (body.status === 'queued' || body.status === 'running') { process.stdout.write(body.status); } else { process.exit(1); }"
+          }
+          G1_DEADLINE=$((SECONDS + 240))
+          for g1_attempt in $(seq 1 12); do
+            G1_REMAINING=$((G1_DEADLINE - SECONDS))
+            if (( G1_REMAINING <= 10 )); then break; fi
+            if OIDC_TOKEN="$(get_oidc)"; then
+              printf '::add-mask::%s\n' "$OIDC_TOKEN"
+              if G1_STATUS="$(curl --fail --silent --show-error --max-time "$((G1_REMAINING - 10))" \
+                --header "Authorization: Bearer ${OIDC_TOKEN}" \
+                "${MCP_BASE_URL}/deploy/github/s1/status/${JOB_ID}?sha=${GITHUB_SHA}&g1=1")"; then
+                if [[ "$(printf '%s' "$G1_STATUS" | validate_status)" == 'succeeded' ]] &&
+                  G1_CANDIDATE="$(node -e 'const {g1}=JSON.parse(require("fs").readFileSync(0,"utf8")); if (!["ALIGNED","DRIFT","UNVERIFIED"].includes(g1?.status) || (g1.status==="DRIFT" && g1.sha!==process.env.GITHUB_SHA)) process.exit(1); if (g1.status==="UNVERIFIED" && g1.reasonCodes!==undefined && (!Array.isArray(g1.reasonCodes) || g1.reasonCodes.length>20 || !g1.reasonCodes.every(x=>typeof x==="string" && /^G1_[A-Z0-9_]{2,80}$/.test(x)))) process.exit(1); process.stdout.write(JSON.stringify(g1));' <<<"$G1_STATUS")"; then
+                  G1_EVIDENCE="$G1_CANDIDATE"
+                  # An UNVERIFIED observation is evidence of a BLOCK, not completion.
+                  if [[ "$(node -e 'process.stdout.write(JSON.parse(process.argv[1]).status)' "$G1_CANDIDATE")" != "UNVERIFIED" ]]; then
+                    break
+                  fi
+                fi
+              fi
+            fi
+            if [[ "$g1_attempt" != 12 ]] && (( SECONDS + 10 < G1_DEADLINE )); then sleep 10; fi
+          done
+          printf 'g1-evidence=%s\n' "$G1_EVIDENCE" >> "$GITHUB_OUTPUT"
+          unset OIDC_TOKEN G1_STATUS G1_CANDIDATE G1_EVIDENCE
+
+  reconcile-documentation:
+    needs: [deploy, reobserve-documentation]
+    if: always() && needs.deploy.result == 'success' && github.repository == 'Patricked-code/MCP' && github.ref == 'refs/heads/main' && needs.deploy.outputs.g1-evidence != ''
     runs-on: ubuntu-latest
     timeout-minutes: 6
     # A documentary failure must not suppress existing successful-deploy observers.
@@ -218,7 +286,7 @@ jobs:
       - name: Classify released evidence
         id: g1
         env:
-          G1_EVIDENCE: ${{ needs.deploy.outputs.g1-evidence }}
+          G1_EVIDENCE: ${{ needs.reobserve-documentation.outputs.g1-evidence || needs.deploy.outputs.g1-evidence }}
         run: |
           node -e 'const fs=require("fs"); const {status,reasonCodes}=JSON.parse(process.env.G1_EVIDENCE); if (!["DRIFT","ALIGNED"].includes(status)) {const codes=Array.isArray(reasonCodes)?reasonCodes.filter(x=>typeof x==="string" && /^G1_[A-Z0-9_]{2,80}$/.test(x)).slice(0,20):[]; fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,"### G1 proof blocked — UNVERIFIED\nNo GitHub write performed. Bounded reasons: "+(codes.join(", ")||"G1_CAUSE_UNAVAILABLE")+"\n"); throw Error("G1 proof unavailable; no GitHub write attempted");} fs.appendFileSync(process.env.GITHUB_OUTPUT,"drift="+(status==="DRIFT")+"\n");'
       - uses: actions/checkout@v4
@@ -245,7 +313,7 @@ jobs:
       - name: Publish or reuse exact-SHA docs-only draft
         if: steps.g1.outputs.drift == 'true'
         env:
-          G1_EVIDENCE: ${{ needs.deploy.outputs.g1-evidence }}
+          G1_EVIDENCE: ${{ needs.reobserve-documentation.outputs.g1-evidence || needs.deploy.outputs.g1-evidence }}
           G1_GITHUB_TOKEN: ${{ steps.g1-token.outputs.token }}
         run: |
           set -euo pipefail
@@ -257,3 +325,44 @@ jobs:
         if: failure()
         run: |
           printf '%s\n' '### G1 documentation follow-up blocked' 'No merge was attempted. Inspect the failed G1 step before retrying. The deployment attestation is independent.' >> "$GITHUB_STEP_SUMMARY"
+
+  # REC-00/01: a mandatory observation on each attested deployment.
+  # Keep legacy technical-success observers operational; the report's explicit
+  # closure verdict, not this workflow's success, is the documentary evidence.
+  documentary-closure:
+    needs: [deploy, reobserve-documentation]
+    if: always() && needs.deploy.result == 'success' && github.repository == 'Patricked-code/MCP' && github.ref == 'refs/heads/main' && needs.deploy.outputs.g1-evidence != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    continue-on-error: true
+    permissions:
+      contents: read
+    outputs:
+      closure-status: ${{ steps.closure.outputs.closure-status }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Observe documentary coverage and exact Git differences
+        id: closure
+        env:
+          G1_EVIDENCE: ${{ needs.reobserve-documentation.outputs.g1-evidence || needs.deploy.outputs.g1-evidence }}
+          DOCUMENTARY_REPORT_FILE: ${{ runner.temp }}/mcp-documentary-closure.json
+        run: node scripts/mcp-documentary-closure.mjs
+      - name: Retain documentary closure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentary-closure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/mcp-documentary-closure.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Record unavailable evidence
+        if: failure()
+        run: |
+          printf '%s\n' '### Documentary closure: DOCUMENTARY_CLOSURE_BLOCKED' 'No complete report was retained. Global closure is not attested; reobserve.' >> "$GITHUB_STEP_SUMMARY"
