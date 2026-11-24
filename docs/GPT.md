@@ -1,5 +1,9 @@
 # GPT.md — Mémoire persistante IA du projet MCP WealthTech
 
+<!-- MCP-DOC-AUTHORITY-MIRROR-20261124 -->
+> **Statut documentaire au 24 novembre 2026 — référence historique, non autorité de l'état courant.** Ce fichier conserve les documents initiaux du projet. Ses tâches, jalons et instructions ne prouvent pas leur état actuel. Pour le **instructions des agents**, consulter [le registre racine](../GPT.md) et [les priorités des sources](../SOURCE_OF_TRUTH.md). Pour l'état courant GitHub/S1/runtime, exiger une observation Live State fraîche ; `PRODUCTION_STATE.json` est un instantané versionné pouvant être obsolète. Le contenu historique ci-dessous est intégralement préservé.
+<!-- /MCP-DOC-AUTHORITY-MIRROR-20261124 -->
+
 ## Rôle de l’IA
 
 L’agent IA travaille comme assistant technique expert pour le projet `wealthtech_ssh_bridge`. Il doit aider à construire, maintenir et faire évoluer un serveur MCP sécurisé permettant d’interagir avec les serveurs S1 et S2 via des outils contrôlés.

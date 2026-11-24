@@ -3,7 +3,9 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { validateMarkdownBaseline } from './doc-governance-lib.mjs';
+import { validateMarkdownBaseline, extractCanonicalState, validateRequiredCanonicalStates,
+  validateProductionState, detectHistoricalMirrors, validateHistoricalMirrorBanner, canonicalStateKeys }
+  from './doc-governance-lib.mjs';
 
 const SHA = /^[a-f0-9]{40}$/;
 const REPO = 'Patricked-code/MCP';
@@ -12,7 +14,7 @@ const PRODUCTION = 'PRODUCTION_STATE.json';
 const LIMIT = 20000;
 const MAX_BUFFER = 8 * 1024 * 1024;
 const isCandidate = p => /\.md$/i.test(p) ||
-  (/^(?:docs\/|\.mcp\/|memory\/)/.test(p) && /\.(?:json|ya?ml|txt|csv)$/i.test(p)) ||
+  (/^(?:docs\/|\.mcp\/|memory\/|wealthtech_project_memory\/|Migration\/)/.test(p) && /\.(?:json|ya?ml|txt|csv)$/i.test(p)) ||
   (!p.includes('/') && /\.(?:json|ya?ml)$/i.test(p) && !/^(?:package(?:-lock)?|tsconfig(?:\..*)?)\.json$/.test(p));
 const validPath = p => typeof p === 'string' && p.length > 0 && p.length <= 1024 &&
   !/[\x00-\x1f\x7f]/.test(p) && !p.startsWith('/') && !p.split('/').some(x => x === '' || x === '.' || x === '..');
@@ -35,7 +37,88 @@ export function parseNameStatus(raw) {
   return result;
 }
 
-export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk}) {
+// These are the same five required canonical-state documents as the existing
+// check-doc-governance.mjs. The existing validators remain the authority.
+const REQUIRED_STATES = Object.freeze(['SUIVI.md','TASKS.md','TODO.md',
+  'DEPLOYMENT_PRODUCTION.md','MCP_ANTI_DISPERSION_GOVERNANCE.md']);
+const MAX_JSON_CHECKS = 500;
+function safeValue(value) {
+  if (value === null || typeof value === 'boolean' || typeof value === 'number') return value;
+  if (typeof value !== 'string' || value.length > 240 ||
+      /[\x00-\x1f\x7f]|:\/\/[^/]*@|(?:token|secret|password|authorization)\s*[:=]/i.test(value)) return '[REDACTED]';
+  return value;
+}
+export function observeDocumentAuthorities({trackedPaths, readText, productionState}) {
+  const checks = [];
+  const differences = [];
+  const tracked = new Set(trackedPaths);
+  const required = [];
+  const mark = (path, check, ok, reason) => checks.push({path, check, status:ok?'PASS':'FAIL', reason:ok?null:reason});
+  const add = (path,field,reason,declared,expected) => differences.push({
+    path,field,reason,declared:safeValue(declared),expected:safeValue(expected),
+    source:'EXISTING_DOCUMENT_GOVERNANCE_VALIDATOR',
+    nextAction:'RESOLVE_AUTHORITY_AND_RECONCILE'
+  });
+  for (const path of REQUIRED_STATES) {
+    if (!tracked.has(path)) {
+      mark(path,'CANONICAL_STATE',false,'REQUIRED_DOCUMENT_MISSING');
+      add(path,'$state','REQUIRED_DOCUMENT_MISSING',null,'present');
+      continue;
+    }
+    try {
+      const state=extractCanonicalState(readText(path));
+      required.push({path,state});
+      const missing = canonicalStateKeys.filter(key => typeof state?.[key] !== 'string' || !state[key].trim());
+      mark(path,'CANONICAL_STATE',!!state && !missing.length,'CANONICAL_STATE_INCOMPLETE');
+      for(const key of missing) add(path,key,'CANONICAL_STATE_KEY_MISSING',null,'non-empty string');
+    } catch {
+      mark(path,'CANONICAL_STATE',false,'CANONICAL_STATE_UNREADABLE');
+      add(path,'$state','CANONICAL_STATE_UNREADABLE',null,'readable canonical state');
+    }
+  }
+  const shared=validateRequiredCanonicalStates(REQUIRED_STATES,required);
+  for (const conflict of shared.conflicts) {
+    add(conflict.path,conflict.key,'CANONICAL_STATE_CONFLICT',conflict.actual,conflict.expected);
+  }
+  for(const path of shared.withoutState) add(path,'$state','CANONICAL_STATE_MISSING',null,'present');
+  // Agreement between documents is not evidence that all of their content is current.
+  const canonicalReference=required.find(d=>d.path==='SUIVI.md')?.state;
+  if(canonicalReference && productionState) {
+    const prod=validateProductionState(productionState,canonicalReference);
+    mark(PRODUCTION,'PRODUCTION_STATE_CONTRACT',prod.ok,'PRODUCTION_STATE_CONTRACT_CONFLICT');
+    for(const issue of prod.issues) add(PRODUCTION,issue.path,issue.reason,issue.actual,issue.expected);
+  } else {
+    mark(PRODUCTION,'PRODUCTION_STATE_CONTRACT',false,'PRODUCTION_STATE_REFERENCE_UNAVAILABLE');
+    add(PRODUCTION,'$state','PRODUCTION_STATE_REFERENCE_UNAVAILABLE',null,'canonical reference');
+  }
+  for(const path of detectHistoricalMirrors(trackedPaths)) {
+    try {
+      const result=validateHistoricalMirrorBanner(path,readText(path));
+      mark(path,'HISTORICAL_MIRROR_AUTHORITY',result.ok,'HISTORICAL_MIRROR_AUTHORITY_UNVERIFIED');
+      for(const reason of result.issues) add(path,'$authority',reason,null,path.slice(5));
+    } catch {
+      mark(path,'HISTORICAL_MIRROR_AUTHORITY',false,'HISTORICAL_MIRROR_UNREADABLE');
+      add(path,'$authority','HISTORICAL_MIRROR_UNREADABLE',null,path.slice(5));
+    }
+  }
+  const json=trackedPaths.filter(p=>isCandidate(p)&&p.endsWith('.json')).sort();
+  for(const path of json.slice(0,MAX_JSON_CHECKS)){
+    try {
+      JSON.parse(readText(path));
+      mark(path,'JSON_SYNTAX',true,null);
+    } catch {
+      mark(path,'JSON_SYNTAX',false,'JSON_INVALID_OR_UNREADABLE');
+      add(path,'$syntax','JSON_INVALID_OR_UNREADABLE',null,'valid JSON');
+    }
+  }
+  const omitted=json.slice(MAX_JSON_CHECKS);
+  return {checks,differences,omitted,ok:shared.ok&&!differences.length&&!omitted.length&&checks.every(c=>c.status==='PASS'),
+    coverage:{canonicalDocuments:REQUIRED_STATES.length,canonicalStateKeys:canonicalStateKeys.length,
+      mirrorDocuments:detectHistoricalMirrors(trackedPaths).length,jsonCandidates:json.length,
+      jsonChecked:json.length-omitted.length,complete:false}};
+}
+
+export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk, authorityObservation = null}) {
   if (!SHA.test(headSha ?? '') || !SHA.test(baselineSha ?? '') ||
       !Array.isArray(trackedPaths) || trackedPaths.length > LIMIT ||
       !trackedPaths.every(validPath) || new Set(trackedPaths).size !== trackedPaths.length ||
@@ -63,30 +146,40 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     if (c.previousPath !== null) changed.set(c.previousPath, c.code);
   }
   const candidates = trackedPaths.filter(isCandidate).sort();
+  const pathChecks = new Map();
+  for(const check of authorityObservation?.checks ?? []) {
+    if(!pathChecks.has(check.path)) pathChecks.set(check.path,[]);
+    pathChecks.get(check.path).push(check);
+  }
   const documents = candidates.map(path => ({
     path, category: byPath.get(path) ?? 'AUTHORITY_UNVERIFIED',
     change: changed.get(path) ?? 'NO_DIRECT_GIT_CHANGE',
     // No direct diff does NOT prove that the content has no indirect impact.
     semanticStatus: 'UNVERIFIED',
+    staticChecks: pathChecks.get(path) ?? [],
     nextAction: 'RESOLVE_OWNER_AND_VALIDATE_IMPACT'
   }));
-  const differences = [];
+  const differences = [...(authorityObservation?.differences ?? [])];
+  const g1Differences = [];
   if (g1?.status === 'DRIFT' && g1.sha === headSha && SHA.test(g1.declaredGithubSha ?? '') &&
       SHA.test(g1.declaredS1Sha ?? '') && g1.declaredGithubSha === baselineSha) {
-    differences.push(
+    g1Differences.push(
       {path: PRODUCTION, field: 'githubCommitFull', declared: g1.declaredGithubSha, observed: headSha,
        reason: 'G1_DOCUMENTATION_DRIFT', source: 'G1_ATTESTED_LIVE_STATE', nextAction: 'REUSE_GW60_GW61'},
       {path: PRODUCTION, field: 'serverGitState.lastDirectlyVerifiedCommitFull', declared: g1.declaredS1Sha, observed: headSha,
        reason: 'G1_DOCUMENTATION_DRIFT', source: 'G1_ATTESTED_LIVE_STATE', nextAction: 'REUSE_GW60_GW61'}
     );
   }
+  differences.push(...g1Differences);
   const reasons = ['SEMANTIC_AND_RUNTIME_REGISTRY_COVERAGE_UNVERIFIED'];
+  if (authorityObservation?.ok !== true) reasons.push('STATIC_AUTHORITY_PROOF_MISSING_OR_CONFLICT');
   if (!inventoryAligned) reasons.push('MARKDOWN_INVENTORY_DRIFT');
   if (governanceCheckOk !== true) reasons.push('DOCUMENT_GOVERNANCE_CHECK_NOT_SUCCESS');
-  if (g1?.status === 'DRIFT' && differences.length) reasons.push('G1_DOCUMENTATION_DRIFT');
+  if (g1?.status === 'DRIFT' && g1Differences.length) reasons.push('G1_DOCUMENTATION_DRIFT');
   else if (g1?.status !== 'ALIGNED') reasons.push('G1_PROOF_UNVERIFIED');
   const status = !inventoryAligned || governanceCheckOk !== true ||
-    (g1?.status !== 'ALIGNED' && !differences.length)
+    (authorityObservation !== null && authorityObservation.ok !== true) ||
+    (g1?.status !== 'ALIGNED' && !g1Differences.length)
     ? 'DOCUMENTARY_CLOSURE_BLOCKED' : 'DOCUMENTARY_CLOSURE_PENDING';
   return {
     schemaVersion: 1, repository: REPO, headSha, baselineSha,
@@ -96,11 +189,12 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
       inventoryAligned, missing, absent, duplicates, unclassified: baselineCheck.unclassified,
       categoryDrift: baselineCheck.categoryDrift, candidateCount: documents.length},
     coverage: {semanticVerifiedCount: 0, complete: false, runtimeRegistryCoverage: 'UNVERIFIED'},
+    authorityObservation,
     governanceCheckOk: governanceCheckOk === true,
     g1Status: ['DRIFT','ALIGNED','UNVERIFIED'].includes(g1?.status) ? g1.status : 'UNVERIFIED',
     differences, changes, documents, reasons,
     nextAction: status === 'DOCUMENTARY_CLOSURE_BLOCKED'
-      ? 'REOBSERVE_AND_RESOLVE_BLOCKERS' : differences.length
+      ? 'REOBSERVE_AND_RESOLVE_BLOCKERS' : g1Differences.length
         ? 'RECONCILE_G1_AND_VALIDATE_DOCUMENT_AUTHORITIES' : 'VALIDATE_DOCUMENT_AND_REGISTRY_AUTHORITIES',
     mutationPerformed: false
   };
@@ -132,7 +226,14 @@ export function main(env = process.env) {
       execFileSync(process.execPath,['scripts/check-doc-governance.mjs'],{stdio:'ignore',timeout:60000});
       governanceCheckOk = true;
     } catch { /* absence of proof blocks closure */ }
-    report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,governanceCheckOk});
+    const deadline = Date.now()+90_000;
+    const authorityObservation=observeDocumentAuthorities({trackedPaths,productionState:manifest,readText(path){
+      const remaining=deadline-Date.now();
+      if(remaining<=0) throw Error('DOCUMENT_AUTHORITY_SCAN_TIMEOUT');
+      return execFileSync('git',['show',headSha+':'+path],{encoding:'utf8',maxBuffer:MAX_BUFFER,
+        timeout:Math.min(remaining,5000),stdio:['ignore','pipe','ignore']});
+    }});
+    report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,governanceCheckOk,authorityObservation});
   } catch (error) {
     const bounded = new Set(['CHECKOUT_SHA_MISMATCH','INVALID_BASELINE','TREE_TRUNCATED','DIFF_TRUNCATED',
       'DIFF_STATUS_INVALID','DIFF_PATH_INVALID','DIFF_LIMIT_EXCEEDED','INVALID_OBSERVATION','INVENTORY_UNREADABLE','INVALID_CHANGE']);

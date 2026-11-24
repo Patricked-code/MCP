@@ -3,7 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 // The workflow report is a standalone dependency-free ESM script.
 // @ts-ignore -- test runner imports the .mjs implementation directly.
-import { buildDocumentaryClosureReport, parseNameStatus } from '../scripts/mcp-documentary-closure.mjs';
+import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities } from '../scripts/mcp-documentary-closure.mjs';
 
 const HEAD = 'a'.repeat(40);
 const BASE = 'b'.repeat(40);
@@ -98,4 +98,25 @@ test('wrong inventory category is an explicit documentary drift, not alignment',
   const report = buildDocumentaryClosureReport(input({inventory}));
   assert.equal(report.status,'DOCUMENTARY_CLOSURE_BLOCKED');
   assert.deepEqual(report.inventory.categoryDrift,[{path:'docs/OLD.md',expected:'history',actual:'documentation'}]);
+});
+
+test('authority observation exposes canonical conflicts, broken mirror and invalid JSON without claiming full coverage', () => {
+  const paths=['SUIVI.md','TASKS.md','TODO.md','DEPLOYMENT_PRODUCTION.md','MCP_ANTI_DISPERSION_GOVERNANCE.md',
+    'docs/TASKS.md','.mcp/registry.json','PRODUCTION_STATE.json'];
+  const state={repository:'Patricked-code/MCP',branch:'main',s1Root:'/opt/apps/mcp',fetchRemote:'git@github.com:Patricked-code/MCP.git',pushRemote:'disabled',container:'mcp'};
+  const documents=new Map(paths.map(p=>[p,'# Test\n\n'+String.fromCharCode(96).repeat(3)+'canonical-state\n'+JSON.stringify(p==='TODO.md'?{...state,branch:'old'}:state)+'\n'+String.fromCharCode(96).repeat(3)+'\n']));
+  documents.set('docs/TASKS.md','# Tasks\nNo authority banner');
+  documents.set('.mcp/registry.json','{invalid');
+  documents.set('PRODUCTION_STATE.json','{}');
+  const result=observeDocumentAuthorities({trackedPaths:paths,productionState:{},readText:(p:string)=>documents.get(p)!});
+  assert.equal(result.ok,false);
+  assert.equal(result.coverage.complete,false);
+  assert.ok(result.differences.some((d:{path:string,field:string,reason:string})=>d.path==='TODO.md'&&d.field==='branch'&&d.reason==='CANONICAL_STATE_CONFLICT'));
+  assert.ok(result.differences.some((d:{path:string,reason:string})=>d.path==='.mcp/registry.json'&&d.reason==='JSON_INVALID_OR_UNREADABLE'));
+  assert.ok(result.checks.some((d:{path:string,status:string})=>d.path==='docs/TASKS.md'&&d.status==='FAIL'));
+  const report=buildDocumentaryClosureReport({...input(),authorityObservation:result});
+  assert.equal(report.status,'DOCUMENTARY_CLOSURE_BLOCKED');
+  assert.equal(report.closureAttested,false);
+  assert.ok(report.reasons.includes('STATIC_AUTHORITY_PROOF_MISSING_OR_CONFLICT'));
+  assert.equal(report.differences.length,result.differences.length);
 });

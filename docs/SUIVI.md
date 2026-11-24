@@ -1,5 +1,9 @@
 # SUIVI.md — Journal vivant du projet MCP WealthTech
 
+<!-- MCP-DOC-AUTHORITY-MIRROR-20261124 -->
+> **Statut documentaire au 24 novembre 2026 — référence historique, non autorité de l'état courant.** Ce fichier conserve les documents initiaux du projet. Ses tâches, jalons et instructions ne prouvent pas leur état actuel. Pour le **suivi et point de reprise**, consulter [le registre racine](../SUIVI.md) et [les priorités des sources](../SOURCE_OF_TRUTH.md). Pour l'état courant GitHub/S1/runtime, exiger une observation Live State fraîche ; `PRODUCTION_STATE.json` est un instantané versionné pouvant être obsolète. Le contenu historique ci-dessous est intégralement préservé.
+<!-- /MCP-DOC-AUTHORITY-MIRROR-20261124 -->
+
 ## 2026-07-01 — Initialisation du dépôt MCP
 
 Création du squelette initial du projet `wealthtech_ssh_bridge` dans le dépôt GitHub `Patricked-code/MCP`.
