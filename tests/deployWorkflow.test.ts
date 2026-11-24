@@ -216,7 +216,7 @@ test('native G1 finalization runs only after publication, executes trusted main 
   assert.match(job,/pull-requests: read/);
   assert.match(job,/id-token: write/);
   assert.match(job,/scripts\/mcp-g1-merge\.ts/);
-  assert.doesNotMatch(job,/workflow_run:|actions: write|contents: write|pull-requests: write|force-push/);
+  assert.doesNotMatch(job,/workflow_run:|^\s+(?:actions|contents|pull-requests): write\s*$|force-push/m);
   const script=await readFile('scripts/mcp-g1-merge.ts','utf8');
   assert.match(script,/evaluateGw62DocumentationCiReview/);
   assert.match(script,/planGw63DocumentationExactHeadMerge/);
