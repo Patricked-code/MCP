@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { admissionCatalogue } from '../src/web/admissionCatalogue.js';
 // @ts-ignore -- standalone ESM report module
-import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan,observeLoopbackCheckpoint,LOOPBACK_SOURCES,parseRootDocumentaryEquivalences,parseLocalDocumentaryEquivalences } from '../scripts/documentary-hierarchy.mjs';
+import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan,observeLoopbackCheckpoint,LOOPBACK_SOURCES,parseRootDocumentaryEquivalences,parseLocalDocumentaryEquivalences,parseScopedDocumentaryEquivalences } from '../scripts/documentary-hierarchy.mjs';
 // @ts-ignore -- standalone ESM report module
 import { buildDocumentaryClosureReport } from '../scripts/mcp-documentary-closure.mjs';
 
@@ -164,7 +164,8 @@ test('explicit root equivalences and actual mission authority table resolve exis
   const scopeKey='docs/projects/WT-PROJECT-MCP-001';
   const r=parseRootDocumentaryEquivalences(root,scopeKey);
   assert.equal(r.status,'DECLARED');
-  assert.equal(r.rows.length,13);
+  assert.equal(r.rows.length,16);
+  assert.ok(['INTENTIONS','IMPLEMENTATION_PLAN','EVIDENCE_INDEX'].every(type=>r.rows.some((row:{type:string})=>row.type===type)));
   assert.equal(parseRootDocumentaryEquivalences(root,'docs/projects/ANOTHER').status,'CONFLICT');
   assert.equal(parseRootDocumentaryEquivalences(root.replace('"ROADMAP.md"','"../ROADMAP.md"'),scopeKey).status,'CONFLICT');
   const id='WT-MCP-REGISTRY-RESOLUTION-20261121-01';
@@ -183,4 +184,70 @@ test('historical fenced Markdown examples are not active Loopback checkpoints',(
   assert.equal(observeLoopbackCheckpoint(checkpointFixture.trimEnd()+' invalid closing\n').status,'UNVERIFIED');
   const inside=checkpointFixture.replace('REOBSERVE_REQUIRED','DONE');
   assert.equal(observeLoopbackCheckpoint('~~~markdown\n'+inside+'~~~\n'+checkpointFixture).status,'PRESENT');
+});
+
+test('scoped equivalences use exact same-owner documents and never certify their semantics',()=>{
+  const {input}=fixture([p(child,'MANDATE')],[p(child,'MEMORY')]);
+  const missing=['DOCUMENT_AUTHORITIES','INTENTIONS','IMPLEMENTATION_PLAN','MISSION'].map(type=>p(child,type));
+  const entries=input.entries.filter(x=>!missing.includes(x.path));
+  const paths=entries.map(x=>x.path);
+  const source=p(child,'SOURCE_OF_TRUTH');
+  const scope={key:child,id:'CHILD-01'};
+  const data={schemaVersion:1,scopeKey:child,identityStatus:'DOCUMENTARY_CANDIDATE',equivalences:[
+    {type:'DOCUMENT_AUTHORITIES',paths:[source]},
+    {type:'INTENTIONS',paths:[p(child,'MANDATE'),p(child,'MEMORY')]},
+    {type:'IMPLEMENTATION_PLAN',paths:[p(child,'ROADMAP'),p(child,'TASKS')]}
+  ]};
+  const fence=String.fromCharCode(96).repeat(3);
+  const block=(value:unknown)=>fence+'scoped-documentary-equivalence\n'+JSON.stringify(value)+'\n'+fence+'\n';
+  assert.equal(parseScopedDocumentaryEquivalences(block(data),scope).status,'DECLARED');
+  assert.equal(parseScopedDocumentaryEquivalences('~~~~markdown\n'+block(data)+'~~~~\n',scope).status,'ABSENT');
+  assert.equal(parseScopedDocumentaryEquivalences(block(data)+block(data),scope).status,'CONFLICT');
+  assert.equal(parseScopedDocumentaryEquivalences(block({...data,scopeKey:work}),scope).status,'CONFLICT');
+  assert.equal(parseScopedDocumentaryEquivalences(block({...data,equivalences:[{type:'INTENTIONS',paths:[p(work,'MISSION'),p(child,'MEMORY')]}]}),scope).status,'CONFLICT');
+  const plan=buildCommonDocumentaryPlan({...input,entries,candidatePaths:paths,readText:(path:string)=>path===source?block(data):input.readText(path)});
+  const local=plan.scopes.find((s:{scopeKey:string})=>s.scopeKey===child);
+  for(const type of ['DOCUMENT_AUTHORITIES','INTENTIONS','IMPLEMENTATION_PLAN']){
+    const r=local.required.find((x:{type:string})=>x.type===type);
+    assert.equal(r.status,'DECLARED_EQUIVALENT_READ');
+    assert.equal(r.semanticStatus,'UNVERIFIED');
+  }
+  assert.equal(local.authorityMapStatus,'DECLARATION_PRESENT_NOT_SEMANTICALLY_VERIFIED');
+  assert.ok(plan.dependencies.some((e:{from:string,to:string,kind:string})=>e.from===p(child,'MEMORY')&&e.to===source&&e.kind==='DECLARED_EQUIVALENCE_REVIEW'));
+  assert.equal(plan.closureAttested,false);
+  const lost=entries.filter(x=>x.path!==p(child,'TASKS'));
+  const incomplete=buildCommonDocumentaryPlan({...input,entries:lost,candidatePaths:lost.map(x=>x.path),readText:(path:string)=>path===source?block(data):input.readText(path)});
+  assert.ok(incomplete.issues.some((x:{type:string,scopeKey:string})=>x.type==='IMPLEMENTATION_PLAN'&&x.scopeKey===child));
+});
+
+test('project equivalents participate in hierarchy propagation without moving document ownership',()=>{
+  const {input}=fixture(['PROJECT_BRIEF.md','DECISIONS_LOG.md'],[p(work,'TASKS'),'PROJECT_BRIEF.md']);
+  const absent=[p(project,'MISSION'),p(project,'SUIVI')];
+  const entries=input.entries.filter(x=>!absent.includes(x.path));
+  const fence=String.fromCharCode(96).repeat(3);
+  const body=fence+'documentary-authority-equivalence\n'+JSON.stringify({schemaVersion:1,scopeKey:project,
+    identityStatus:'DOCUMENTARY_CANDIDATE',equivalences:[
+      {type:'MISSION',paths:['PROJECT_BRIEF.md']},{type:'SUIVI',paths:['SUIVI.md']}
+    ]})+'\n'+fence+'\n';
+  const plan=buildCommonDocumentaryPlan({...input,entries,candidatePaths:entries.map(x=>x.path),
+    readText:(path:string)=>path==='SOURCE_OF_TRUTH.md'?body:input.readText(path)});
+  assert.ok(plan.dependencies.some((e:{from:string,to:string,kind:string})=>e.from===p(sub,'TASKS')&&e.to==='SUIVI.md'&&e.kind==='ASCENDING_IMPACT_REVIEW'));
+  assert.ok(plan.dependencies.some((e:{from:string,to:string,kind:string})=>e.from==='PROJECT_BRIEF.md'&&e.to===p(sub,'AGENTS')&&e.kind==='DESCENDING_IMPACT_REVIEW'));
+  assert.equal(plan.documents.find((d:{path:string})=>d.path==='SUIVI.md').scopeKey,'REPOSITORY_ROOT');
+  assert.equal(plan.closureAttested,false);
+});
+
+test('six observed G1 implementation changes trigger documentary reviews, not semantic certification',()=>{
+  const paths=['scripts/mcp-g1-merge.ts','src/deploy/g1Documentation.ts','src/deploy/g1MergeAdmission.ts',
+    'tests/deployWorkflow.test.ts','tests/g1MergeAdmission.test.ts','tests/g1OpenCorrection.test.ts'];
+  const {input}=fixture(['MCP_GITHUB_GOVERNANCE.md','MCP_SECURITY_MODEL.md','TESTS.md'],paths);
+  const entries=[...input.entries,...paths.map(path=>({path,mode:'100644',type:'blob',oid:sha,size:10}))];
+  const plan=buildCommonDocumentaryPlan({...input,entries});
+  assert.ok(paths.every(path=>!plan.issues.some((i:{path:string,code:string})=>i.path===path&&i.code==='CHANGE_IMPACT_UNRESOLVED')));
+  for(const path of ['DEPLOYMENT_PRODUCTION.md','MCP_GITHUB_GOVERNANCE.md','TESTS.md','SUIVI.md','SOURCE_OF_TRUTH.md']){
+    const row=plan.documents.find((d:{path:string})=>d.path===path);
+    assert.equal(row.impactReviewRequired,true);
+    assert.equal(row.semanticStatus,'UNVERIFIED');
+  }
+  assert.equal(plan.closureAttested,false);
 });

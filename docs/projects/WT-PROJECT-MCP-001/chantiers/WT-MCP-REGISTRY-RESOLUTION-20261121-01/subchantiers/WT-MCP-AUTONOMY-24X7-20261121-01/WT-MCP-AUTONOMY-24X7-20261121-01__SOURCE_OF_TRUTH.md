@@ -20,3 +20,38 @@
 | Documents de ce sous-chantier | GitHub branch/PR propriétaire (source) | Leur statut n'autorise rien tant que branch non revue/merge |
 
 En cas de conflit, conserver toutes les preuves, classifier `CONFLICT`, refuser toute promotion automatique. `UNKNOWN` signifie absence d'observation, jamais `ALLOWED` ou `DISABLED`. Les versions datées de `SUIVI/CONTINUITY` sont append-only. Un ancien commit SHA historique reste référence historique, non current state.
+
+
+## Équivalences documentaires locales — 24 novembre 2026
+
+La table d'autorités ci-dessus remplit la fonction DOCUMENT_AUTHORITIES. Le mandat et la mémoire locale conservent les intentions et leur provenance, sans prétendre remplacer le DOCX original non publié. La roadmap et TASKS constituent la projection locale du plan RG-043…RG-056 de la mission parente : le plan parent conserve l'ordre de référence, et aucune Task runtime n'est créée ici. Ces fonctions sont déclarées sur les documents propriétaires déjà présents, sans duplication. La lecture de ces équivalences ne prouve ni leur exhaustivité sémantique, ni l'admission runtime, ni la réalisation des travaux. Les preuves absentes restent UNVERIFIED.
+
+```scoped-documentary-equivalence
+{
+  "schemaVersion": 1,
+  "scopeKey": "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01",
+  "identityStatus": "DOCUMENTARY_CANDIDATE",
+  "equivalences": [
+    {
+      "type": "DOCUMENT_AUTHORITIES",
+      "paths": [
+        "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__SOURCE_OF_TRUTH.md"
+      ]
+    },
+    {
+      "type": "INTENTIONS",
+      "paths": [
+        "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__MANDATE.md",
+        "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__MEMORY.md"
+      ]
+    },
+    {
+      "type": "IMPLEMENTATION_PLAN",
+      "paths": [
+        "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__ROADMAP.md",
+        "docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/subchantiers/WT-MCP-AUTONOMY-24X7-20261121-01/WT-MCP-AUTONOMY-24X7-20261121-01__TASKS.md"
+      ]
+    }
+  ]
+}
+```
