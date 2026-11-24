@@ -45,7 +45,8 @@ export type G1Evidence = G1Drift | { status: 'ALIGNED'; authorityEvidence?: G1Au
 
 // Use the base repository's file list so manually named and fork PRs are visible.
 // Never interpret unavailable or truncated file data as absence of a collision.
-export async function findG1OpenCorrection(get: (path: string) => Promise<unknown>): Promise<number | null> {
+export async function findG1OpenCorrection(get: (path: string) => Promise<unknown>, excludedNumber?: number): Promise<number | null> {
+  if (excludedNumber !== undefined && (!Number.isSafeInteger(excludedNumber) || excludedNumber < 1)) throw Error('g1_invalid_excluded_pr');
   const pageSize = 100;
   const seen = new Set<number>();
   const query = (page: number) => 'per_page=' + pageSize + '&page=' + page;
@@ -57,6 +58,7 @@ export async function findG1OpenCorrection(get: (path: string) => Promise<unknow
       const number = pr?.number;
       if (!Number.isSafeInteger(number) || number < 1 || seen.has(number)) throw new Error('g1_invalid_pr_number');
       seen.add(number);
+      if (number === excludedNumber) continue;
       for (let filePage = 1; filePage <= 10; filePage++) {
         const files = await get(root + '/' + number + '/files?' + query(filePage));
         if (!Array.isArray(files) || files.length > pageSize || (filePage === 1 && files.length === 0)) {

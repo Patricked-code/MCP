@@ -126,7 +126,8 @@ test('GWC-15 self-review: push gate propagates its authorizing CI run into the b
 });
 
 test('G1 job inherits only the attested projection and has no OIDC or workflow write rights', async () => {
-  const [deploy, g1] = (await workflowSource()).split('  reconcile-documentation:');
+  const [deploy, rest] = (await workflowSource()).split('  reconcile-documentation:');
+  const g1=rest!.split('  finalize-documentation:')[0]!;
   assert.match(deploy!, /succeeded\)[\s\S]*&g1=1/);
   assert.match(g1!, /needs: \[deploy, reobserve-documentation\]/);
   assert.match(g1!, /continue-on-error: true/);
@@ -147,7 +148,8 @@ test('G1 retries only the post-attestation proof and keeps UNVERIFIED on bounded
 });
 
 test('G1 renders bounded reason codes for UNVERIFIED without opening an unverified PR', async () => {
-  const [deploy, g1] = (await workflowSource()).split('  reconcile-documentation:');
+  const [deploy, rest] = (await workflowSource()).split('  reconcile-documentation:');
+  const g1=rest!.split('  finalize-documentation:')[0]!;
   assert.match(deploy!, /G1_CANDIDATE[\s\S]*UNVERIFIED/);
   assert.match(g1!, /G1 proof blocked/);
   assert.match(g1!, /No GitHub write performed/);
@@ -201,4 +203,23 @@ test('G1 reobserves only a prior attested job, preserves unverified proof on mis
       assert.doesNotMatch(result.stderr,/unexpected endpoint/);
     }
   } finally {await rm(dir,{recursive:true,force:true});}
+});
+
+test('native G1 finalization runs only after publication, executes trusted main and keeps the job token read-only',async()=>{
+  const source=await workflowSource();
+  const job=source.split('  finalize-documentation:')[1]!.split('  documentary-closure:')[0]!;
+  assert.match(job,/needs: \[deploy, reconcile-documentation\]/);
+  assert.match(job,/needs\.reconcile-documentation\.outputs\.candidate-ready == 'true'/);
+  assert.match(job,/ref: \$\{\{ github\.sha \}\}/);
+  assert.match(job,/contents: read/);
+  assert.match(job,/checks: read/);
+  assert.match(job,/pull-requests: read/);
+  assert.match(job,/id-token: write/);
+  assert.match(job,/scripts\/mcp-g1-merge\.ts/);
+  assert.doesNotMatch(job,/workflow_run:|^\s+(?:actions|contents|pull-requests): write\s*$|force-push/m);
+  const script=await readFile('scripts/mcp-g1-merge.ts','utf8');
+  assert.match(script,/evaluateGw62DocumentationCiReview/);
+  assert.match(script,/planGw63DocumentationExactHeadMerge/);
+  assert.match(script,/await fresh\(\)/);
+  assert.match(script,/sha:head,merge_method:'squash'/);
 });

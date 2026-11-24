@@ -39,3 +39,11 @@ test('G1 fails closed on unavailable, empty, malformed or truncated PR file evid
   await assert.rejects(findG1OpenCorrection(async path => path.includes('/pulls?') ? [{ number: 405 }]
     : Array.from({ length: 100 }, () => ({ filename: 'other.md', status: 'modified' }))), /g1_pr_file_scan_limit/);
 });
+
+test('G1 excludes only the already verified candidate and still detects a competing correction',async()=>{
+  const api=async(path:string)=>path.includes('/pulls?')?[{number:405},{number:406}]:
+    [{filename:G1_MANIFEST,status:'modified'}];
+  assert.equal(await findG1OpenCorrection(api,405),406);
+  assert.equal(await findG1OpenCorrection(api),405);
+  await assert.rejects(findG1OpenCorrection(api,0),/g1_invalid_excluded_pr/);
+});

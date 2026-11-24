@@ -279,6 +279,8 @@ jobs:
     continue-on-error: true
     permissions:
       contents: read
+    outputs:
+      candidate-ready: ${{ steps.publish.outputs.candidate-ready }}
     concurrency:
       group: mcp-g1-documentation
       cancel-in-progress: false
@@ -311,6 +313,7 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
       - name: Publish or reuse exact-SHA docs-only draft
+        id: publish
         if: steps.g1.outputs.drift == 'true'
         env:
           G1_EVIDENCE: ${{ needs.reobserve-documentation.outputs.g1-evidence || needs.deploy.outputs.g1-evidence }}
@@ -320,11 +323,52 @@ jobs:
           evidence_file="$RUNNER_TEMP/mcp-g1-evidence.json"
           printf '%s' "$G1_EVIDENCE" > "$evidence_file"
           G1_EVIDENCE_FILE="$evidence_file" node --import tsx scripts/mcp-g1-documentation.ts
+          printf 'candidate-ready=true\n' >> "$GITHUB_OUTPUT"
 
       - name: Record blocked documentary follow-up
         if: failure()
         run: |
           printf '%s\n' '### G1 documentation follow-up blocked' 'No merge was attempted. Inspect the failed G1 step before retrying. The deployment attestation is independent.' >> "$GITHUB_STEP_SUMMARY"
+
+  # Native G1 correction only: exact SHA, current proof, native GitHub gates.
+  finalize-documentation:
+    needs: [deploy, reconcile-documentation]
+    if: always() && needs.deploy.result == 'success' && needs.reconcile-documentation.outputs.candidate-ready == 'true' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    concurrency:
+      group: mcp-g1-native-finalization
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      actions: read
+      checks: read
+      pull-requests: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Mint the existing repository-scoped G1 token
+        id: g1-finalize-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ vars.MCP_G1_APP_ID }}
+          private-key: ${{ secrets.MCP_G1_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+      - name: Finalize only the native exact-head correction after CI and fresh evidence
+        env:
+          G1_READ_TOKEN: ${{ github.token }}
+          G1_GITHUB_TOKEN: ${{ steps.g1-finalize-token.outputs.token }}
+        run: node --import tsx scripts/mcp-g1-merge.ts
 
   # REC-00/01: a mandatory observation on each attested deployment.
   # Keep legacy technical-success observers operational; the report's explicit
