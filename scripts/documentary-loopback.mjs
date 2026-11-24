@@ -2,6 +2,7 @@
 // report, not a store, a new workflow, or authorization to edit a repository.
 // The trusted checkout provides the old checkpoint ancestry and exact diff.
 import { createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import { observeLoopbackCheckpoint } from './documentary-hierarchy.mjs';
 
 const SHA=/^[0-9a-f]{40}$/;
@@ -118,4 +119,33 @@ export function materializeLoopbackCandidate(raw,candidate,expectedHeadSha) {
     next.declared.continuityId!==old.declared.continuityId||next.declared.proofIssue!==old.declared.proofIssue)
     throw Error('LOOPBACK_CANDIDATE_CONTENT_MISMATCH');
   return body;
+}
+
+/**
+ * Pure publication preflight, not an authorization or a GitHub writer.
+ * The caller must authenticate the report's provenance, independently obtain
+ * raw bytes, the checkpoint diff and current main, and enforce ownership,
+ * freshness, branch/PR/CI rules and compare-and-swap at the mutation boundary.
+ */
+export function prepareLoopbackPublicationCandidate({raw,headSha,currentMainSha,
+  checkpointChanges,report,expectedJobId,now=Date.now()}) {
+  if(!SHA.test(headSha??'')||currentMainSha!==headSha)
+    throw Error('LOOPBACK_PUBLICATION_BASE_UNVERIFIED');
+  const reportAge=now-Date.parse(report?.observedAt??'');
+  if(report?.schemaVersion!==1||report.repository!=='Patricked-code/MCP'||
+    report.headSha!==headSha||report.technicalDeploymentIndependent!==true||
+    report.mutationPerformed!==false||report.closureAttested!==false||
+    !Number.isFinite(reportAge)||reportAge< -5000||reportAge>900000)
+    throw Error('LOOPBACK_PUBLICATION_REPORT_UNVERIFIED');
+  const derived=deriveLoopbackCandidate({raw,headSha,checkpointChanges,report,expectedJobId,now});
+  // Never trust a candidate's self-reported digest or patch alone. Independently
+  // derive all fields from the trusted observations and compare the full object.
+  if(!isDeepStrictEqual(report.loopbackCandidate,derived))
+    throw Error('LOOPBACK_PUBLICATION_CANDIDATE_MISMATCH');
+  return {
+    status:derived.status,reason:derived.reason,candidate:derived,
+    content:derived.status==='CANDIDATE_READY'
+      ? materializeLoopbackCandidate(raw,derived,headSha):null,
+    mutationPerformed:false,automaticPublicationAuthorized:false,closureAttested:false
+  };
 }
