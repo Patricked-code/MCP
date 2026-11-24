@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { constants, type Stats } from 'node:fs';
 import { open, lstat } from 'node:fs/promises';
 import type { z } from 'zod';
+import { GITHUB_OIDC_POLICY } from './githubOidc.js';
 import { canonicalJson } from '../currentState/toolCatalog.js';
 import type { GitRegistryProjectEvidence } from '../github/registry.js';
 import {
@@ -58,7 +59,7 @@ export type RuntimeAuthorityReaders={
   locks:()=>Promise<LockStoreDocument>;
 };
 export type RuntimeAuthorityEvidence=Readonly<{
-  schemaVersion:1; repository:'Patricked-code/MCP'; sha:string; jobId:string; stateVersion:number;
+  schemaVersion:1; repository:typeof GITHUB_OIDC_POLICY.repository; sha:string; jobId:string; stateVersion:number;
   observedAt:string; status:'OBSERVED'|'UNVERIFIED'|'CONFLICT'; stableRead:boolean;
   authorities:readonly AuthorityRow[]; conflicts:readonly {code:string;count:number}[];
   coverage:'RETAINED_AUTHORITY_RECORDS_ONLY'; semanticCoverageComplete:false; mutationPerformed:false;
@@ -171,7 +172,7 @@ export async function observeDocumentaryRuntimeAuthorities(input:{
     end>=start&&end-start<=MAX_OBSERVATION_MS?r:unknownRow(r.authority));
   const conflicts=stableRead?compareRetainedAuthorityRelations(second,end):[];
   const projection={
-    schemaVersion:1 as const,repository:'Patricked-code/MCP' as const,sha:input.sha,jobId:input.jobId,stateVersion:input.stateVersion,
+    schemaVersion:1 as const,repository:GITHUB_OIDC_POLICY.repository,sha:input.sha,jobId:input.jobId,stateVersion:input.stateVersion,
     observedAt:new Date(end).toISOString(),status:!stableRead?'UNVERIFIED' as const:conflicts.length?'CONFLICT' as const:'OBSERVED' as const,
     stableRead,authorities,conflicts,coverage:'RETAINED_AUTHORITY_RECORDS_ONLY' as const,
     semanticCoverageComplete:false as const,mutationPerformed:false as const
