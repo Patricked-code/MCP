@@ -53,3 +53,24 @@ test('candidate updates the same 15 observations as #400 and preserves historic 
   assert.equal(originalLines.length, candidateLines.length);
   assert.equal(originalLines.filter((line, i) => line !== candidateLines[i]).length, 15);
 });
+
+test('G1 binds existing live inventory and catalogue digests to the exact attested SHA without certifying all runtime stores',()=>{
+  const state=live();
+  const d='d'.repeat(64);
+  state.inventory={status:'CURRENT',evidenceHead:sha,sourceDigest:d,documentation:{digest:d},governance:{digest:d},
+    testSuiteDigest:d,contradictions:[]} as unknown as NonNullable<LiveStateSnapshot['inventory']>;
+  state.governance={status:'CURRENT',digest:d,contradictions:[]} as unknown as NonNullable<LiveStateSnapshot['governance']>;
+  state.auditBaseline={status:'CURRENT',evidenceHead:sha,runtimeRevision:sha,valid:true,invalidReasons:[],sourceDigest:d,
+    governanceDigest:d,testSuiteDigest:d,catalogueDigest:d} as NonNullable<LiveStateSnapshot['auditBaseline']>;
+  state.capabilities={status:'CURRENT',catalogueDigest:d,registeredToolCount:160,contradictions:[]} as unknown as NonNullable<LiveStateSnapshot['capabilities']>;
+  const proof=projectG1Evidence(state,sha);
+  assert.equal(proof.status,'DRIFT');
+  if(proof.status!=='DRIFT') throw Error('expected drift');
+  assert.equal(proof.authorityEvidence?.sha,sha);
+  assert.equal(proof.authorityEvidence?.toolCount,160);
+  assert.equal(proof.authorityEvidence?.inventoryDigest,d);
+  state.inventory.evidenceHead=old;
+  const unbound=projectG1Evidence(state,sha);
+  assert.equal(unbound.status,'DRIFT');
+  if(unbound.status==='DRIFT') assert.equal(unbound.authorityEvidence,undefined);
+});

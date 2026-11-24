@@ -3,7 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 // The workflow report is a standalone dependency-free ESM script.
 // @ts-ignore -- test runner imports the .mjs implementation directly.
-import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities, parseTrackedTree, observeTrackedCorpus, classifyTrackedPath } from '../scripts/mcp-documentary-closure.mjs';
+import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities, parseTrackedTree, observeTrackedCorpus, classifyTrackedPath, compareLiveAuthorities } from '../scripts/mcp-documentary-closure.mjs';
 
 const HEAD = 'a'.repeat(40);
 const BASE = 'b'.repeat(40);
@@ -155,4 +155,41 @@ test('unreadable candidate and missing runtime proof prevent a false certificati
   assert.equal(result.status,'DOCUMENTARY_CLOSURE_BLOCKED');
   assert.deepEqual(result.g1ReasonCodes,['G1_DOCUMENTATION_CONTRADICTIONS']);
   assert.ok(result.reasons.includes('CORPUS_CONTENT_UNVERIFIED'));
+});
+
+test('live authority mismatch names exact field; a matching digest never certifies unknown runtime stores',()=>{
+  const now=Date.now(),d='d'.repeat(64);
+  const existingEvidence={ok:true,evidenceHead:HEAD,sourceDigest:d,documentationDigest:d,governanceDigest:d,
+    testSuiteDigest:d,catalogueDigest:d,toolCount:159};
+  const g1={status:'ALIGNED',authorityEvidence:{schemaVersion:1,sha:HEAD,observedAt:new Date(now).toISOString(),stateVersion:5,
+    inventoryDigest:d,documentationDigest:d,governanceDigest:d,testSuiteDigest:d,catalogueDigest:d,toolCount:160}};
+  const conflict=compareLiveAuthorities({headSha:HEAD,g1,existingEvidence,now});
+  assert.equal(conflict.bound,true);
+  assert.equal(conflict.matchedCount,5);
+  assert.equal(conflict.differences.length,1);
+  assert.equal(conflict.differences[0].path,'.mcp/function-cartography.json');
+  assert.equal(conflict.differences[0].field,'toolCount');
+  assert.equal(conflict.differences[0].observed,160);
+  assert.equal(conflict.complete,false);
+  assert.ok(conflict.unresolvedRuntime.every((r:{status:string})=>r.status==='UNVERIFIED'));
+  const report=buildDocumentaryClosureReport({...input(),g1,existingEvidence});
+  assert.equal(report.status,'DOCUMENTARY_CLOSURE_BLOCKED');
+  assert.equal(report.closureAttested,false);
+  const matched=compareLiveAuthorities({headSha:HEAD,g1:{...g1,authorityEvidence:{...g1.authorityEvidence,toolCount:159}},existingEvidence,now});
+  assert.equal(matched.matchedCount,6);
+  assert.equal(matched.complete,false);
+  for(const proof of [undefined,{...g1.authorityEvidence,sha:BASE},{...g1.authorityEvidence,observedAt:new Date(now-901000).toISOString()}]) {
+    const invalid=compareLiveAuthorities({headSha:HEAD,g1:{...g1,authorityEvidence:proof},existingEvidence,now});
+    assert.equal(invalid.bound,false);
+    assert.equal(invalid.matchedCount,0);
+  }
+});
+
+test('documentary certification job cannot succeed on pending or blocked closure reports',async()=>{
+  const source=await readFile('.github/workflows/mcp-deploy.yml','utf8');
+  const job=source.split('\n  documentary-closure:')[1]!;
+  assert.match(job,/Enforce explicit documentary certification verdict/);
+  assert.match(job,/DOCUMENTARY_CLOSURE_STATUS.*!= 'DOCUMENTARY_CLOSURE_ATTESTED'/);
+  assert.match(job,/exit 1/);
+  assert.match(job,/continue-on-error: true/);
 });

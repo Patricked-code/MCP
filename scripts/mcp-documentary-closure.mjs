@@ -215,6 +215,55 @@ export function observeDocumentAuthorities({trackedPaths, readText, productionSt
       jsonChecked:json.length-omitted.length,complete:false}};
 }
 
+// Compare the existing GitHub/S1 evidence producers, not self-declared
+// status flags. Matching byte digests is not semantic certification.
+const DIGEST=/^[0-9a-f]{64}$/;
+const RUNTIME_AUTHORITIES = Object.freeze([
+  ['GIT_REGISTRY_AND_PROJECT_BINDING','EXISTING_GIT_REGISTRY_READER'],
+  ['GOVERNED_TASK_QUEUE','EXISTING_TASK_QUEUE_READER'],
+  ['GOVERNED_SESSIONS','EXISTING_SESSION_READER'],
+  ['GOVERNED_LOCKS','EXISTING_LOCK_READER'],
+  ['OPERATIONAL_MEMORY','EXISTING_OPERATIONAL_MEMORY_AUTHORITY'],
+  ['CUG_RECEIPTS_AND_INSTALLATIONS','EXISTING_CUG_AUTHORITY'],
+  ['PROGRAM_BACKLOG_GWC_UAC','EXISTING_PROGRAM_CONTRACTS']
+]);
+export function compareLiveAuthorities({headSha,g1,existingEvidence,now=Date.now()}) {
+  const e=g1?.authorityEvidence;
+  const pairs=[
+    ['inventoryDigest','sourceDigest','CURRENT_STATE_EVIDENCE','scripts/current-state-evidence.mjs'],
+    ['documentationDigest','documentationDigest','MARKDOWN_CONTENT','docs/governance/markdown-inventory.json'],
+    ['governanceDigest','governanceDigest','GOVERNANCE_PROJECTION','.mcp/manifest.json'],
+    ['testSuiteDigest','testSuiteDigest','TEST_SUITE','tests/'],
+    ['catalogueDigest','catalogueDigest','FUNCTION_CARTOGRAPHY','.mcp/function-cartography.json'],
+    ['toolCount','toolCount','FUNCTION_CARTOGRAPHY','.mcp/function-cartography.json']
+  ];
+  const age=now-Date.parse(e?.observedAt??'');
+  // The report may be queued after the fresh authenticated observation.
+  // This bounds the report's provenance window; it is not proof of freshness
+  // for future mutations or a substitute for a new Live State read.
+  const bound=existingEvidence?.ok===true&&existingEvidence.evidenceHead===headSha&&
+    ['ALIGNED','DRIFT'].includes(g1?.status)&&e?.schemaVersion===1&&e.sha===headSha&&
+    Number.isSafeInteger(e.stateVersion)&&e.stateVersion>0&&Number.isFinite(age)&&age>=-5000&&age<=900000;
+  const checks=[],differences=[];
+  for(const [liveField,localField,authority,path] of pairs) {
+    const observed=e?.[liveField],declared=existingEvidence?.[localField];
+    const valid=liveField==='toolCount'
+      ? Number.isSafeInteger(observed)&&observed>0&&Number.isSafeInteger(declared)&&declared>0
+      : typeof observed==='string'&&DIGEST.test(observed)&&typeof declared==='string'&&DIGEST.test(declared);
+    const status=!bound||!valid?'UNVERIFIED':observed===declared?'MATCHED':'CONFLICT';
+    checks.push({authority,path,field:liveField,status,declared:valid?declared:null,observed:valid?observed:null});
+    if(status==='CONFLICT') differences.push({path,field:liveField,declared,observed,
+      reason:'LIVE_AUTHORITY_VALUE_MISMATCH',source:authority,nextAction:'RESOLVE_AUTHORITY_AND_RECONCILE'});
+  }
+  const unresolvedRuntime=RUNTIME_AUTHORITIES.map(([authority,source])=>({
+    authority,source,status:'UNVERIFIED',reason:'SOURCE_BOUND_SEMANTIC_RECONCILIATION_NOT_ATTESTED',
+    nextAction:'REUSE_EXISTING_AUTHORITY_READER_AND_COMPARE_PROJECTIONS'
+  }));
+  return {bound,headSha,observedAt:bound?e.observedAt:null,stateVersion:bound?e.stateVersion:null,
+    checks,differences,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
+    complete:false};
+}
+
 export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk, authorityObservation = null, corpusObservation = null, existingEvidence = null}) {
   if (!SHA.test(headSha ?? '') || !SHA.test(baselineSha ?? '') ||
       !Array.isArray(trackedPaths) || trackedPaths.length > LIMIT ||
@@ -268,11 +317,15 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     );
   }
   differences.push(...g1Differences);
+  const liveAuthorities=compareLiveAuthorities({headSha,g1,existingEvidence});
+  differences.push(...liveAuthorities.differences);
   const reasons = ['SEMANTIC_AND_RUNTIME_REGISTRY_COVERAGE_UNVERIFIED'];
   if (authorityObservation?.ok !== true) reasons.push('STATIC_AUTHORITY_PROOF_MISSING_OR_CONFLICT');
   if (corpusObservation?.inventoryCoverageComplete !== true) reasons.push('EXACT_CORPUS_INVENTORY_UNVERIFIED');
   if (corpusObservation?.structuralUnverifiedCount > 0) reasons.push('CORPUS_CONTENT_UNVERIFIED');
   if (existingEvidence && existingEvidence.ok !== true) reasons.push('CURRENT_STATE_EVIDENCE_CONTRADICTIONS');
+  if (liveAuthorities.differences.length) reasons.push('LIVE_AUTHORITY_CONFLICT');
+  if (!liveAuthorities.bound || liveAuthorities.checks.some(c=>c.status==='UNVERIFIED')) reasons.push('LIVE_AUTHORITY_PROOF_UNVERIFIED');
   const g1ReasonCodes=Array.isArray(g1?.reasonCodes)?g1.reasonCodes.filter(x=>typeof x==='string'&&/^G1_[A-Z0-9_]{2,80}$/.test(x)).slice(0,20):[];
   if (!inventoryAligned) reasons.push('MARKDOWN_INVENTORY_DRIFT');
   if (governanceCheckOk !== true) reasons.push('DOCUMENT_GOVERNANCE_CHECK_NOT_SUCCESS');
@@ -282,6 +335,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     (authorityObservation !== null && authorityObservation.ok !== true) ||
     (corpusObservation !== null && (corpusObservation.inventoryCoverageComplete !== true || corpusObservation.structuralUnverifiedCount>0)) ||
     (existingEvidence !== null && existingEvidence.ok !== true) ||
+    liveAuthorities.differences.length>0 ||
     (g1?.status !== 'ALIGNED' && !g1Differences.length)
     ? 'DOCUMENTARY_CLOSURE_BLOCKED' : 'DOCUMENTARY_CLOSURE_PENDING';
   return {
@@ -292,7 +346,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
       inventoryAligned, missing, absent, duplicates, unclassified: baselineCheck.unclassified,
       categoryDrift: baselineCheck.categoryDrift, candidateCount: documents.length},
     coverage: {semanticVerifiedCount: 0, complete: false, runtimeRegistryCoverage: 'UNVERIFIED'},
-    corpusObservation, existingEvidence, authorityObservation, g1ReasonCodes,
+    corpusObservation, existingEvidence, authorityObservation, liveAuthorities, g1ReasonCodes,
     governanceCheckOk: governanceCheckOk === true,
     g1Status: ['DRIFT','ALIGNED','UNVERIFIED'].includes(g1?.status) ? g1.status : 'UNVERIFIED',
     differences, changes, documents, reasons,
@@ -350,9 +404,11 @@ export function main(env = process.env) {
     let existingEvidence;
     try {
       const state=collectCurrentStateEvidence();
+      const cartography=JSON.parse(readEntry(entriesByPath.get('.mcp/function-cartography.json')));
       existingEvidence={ok:state.evidenceHead===headSha&&state.contradictions.length===0,
         evidenceHead:state.evidenceHead,sourceDigest:state.sourceDigest,
         documentationDigest:state.documentation.digest,governanceDigest:state.governance.digest,
+        testSuiteDigest:state.testSuiteDigest,catalogueDigest:cartography.catalogueDigest,toolCount:cartography.registeredToolCount,
         contradictions:state.contradictions.map(({code,path})=>({code,path:path??null})),
         authority:'EXISTING_CURRENT_STATE_EVIDENCE'};
     } catch {
@@ -374,6 +430,7 @@ export function main(env = process.env) {
     +'Technical deployment and documentary closure are independent. Global closure is NOT attested.\n\n'
     +'Reasons: '+report.reasons.join(', ')+'\n\n'
     +(report.corpusObservation ? 'Tracked Git objects: '+report.corpusObservation.trackedCount+'; documentary candidates: '+report.corpusObservation.candidateCount+'; structural reads: '+report.corpusObservation.structuralReadCount+'; identity only: '+report.corpusObservation.identityOnlyCount+'; unverified content: '+report.corpusObservation.structuralUnverifiedCount+'\n\n' : '')
+    +(report.liveAuthorities ? 'Exact authority comparisons: '+report.liveAuthorities.matchedCount+'/'+report.liveAuthorities.checks.length+'; runtime families still unverified: '+report.liveAuthorities.unresolvedRuntime.length+'\n\n' : '')
     +(report.g1ReasonCodes?.length ? 'G1 diagnostics: '+report.g1ReasonCodes.join(', ')+'\n\n' : '')
     +'Next action: '+report.nextAction+'\n\n'
     +'See the documentary-closure artifact for paths, differences and coverage.\n');
