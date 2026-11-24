@@ -236,3 +236,18 @@ test('project equivalents participate in hierarchy propagation without moving do
   assert.equal(plan.documents.find((d:{path:string})=>d.path==='SUIVI.md').scopeKey,'REPOSITORY_ROOT');
   assert.equal(plan.closureAttested,false);
 });
+
+test('six observed G1 implementation changes trigger documentary reviews, not semantic certification',()=>{
+  const paths=['scripts/mcp-g1-merge.ts','src/deploy/g1Documentation.ts','src/deploy/g1MergeAdmission.ts',
+    'tests/deployWorkflow.test.ts','tests/g1MergeAdmission.test.ts','tests/g1OpenCorrection.test.ts'];
+  const {input}=fixture(['MCP_GITHUB_GOVERNANCE.md','MCP_SECURITY_MODEL.md','TESTS.md'],paths);
+  const entries=[...input.entries,...paths.map(path=>({path,mode:'100644',type:'blob',oid:sha,size:10}))];
+  const plan=buildCommonDocumentaryPlan({...input,entries});
+  assert.ok(paths.every(path=>!plan.issues.some((i:{path:string,code:string})=>i.path===path&&i.code==='CHANGE_IMPACT_UNRESOLVED')));
+  for(const path of ['DEPLOYMENT_PRODUCTION.md','MCP_GITHUB_GOVERNANCE.md','TESTS.md','SUIVI.md','SOURCE_OF_TRUTH.md']){
+    const row=plan.documents.find((d:{path:string})=>d.path===path);
+    assert.equal(row.impactReviewRequired,true);
+    assert.equal(row.semanticStatus,'UNVERIFIED');
+  }
+  assert.equal(plan.closureAttested,false);
+});

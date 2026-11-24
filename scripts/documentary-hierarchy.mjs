@@ -519,7 +519,15 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
   const knownImplementationImpacts=new Map([
     ['scripts/documentary-hierarchy.mjs',['LOOP_ENGINEERING.md','AGENTS.md','GPT.md','SUIVI.md','SOURCE_OF_TRUTH.md']],
     ['scripts/mcp-documentary-closure.mjs',['LOOP_ENGINEERING.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md','SOURCE_OF_TRUTH.md']],
-    ['tests/documentaryHierarchy.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md']]
+    ['tests/documentaryHierarchy.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md']],
+    // G1 exact-SHA merge implementation: affected documents must be reviewed
+    // against their owners. Classification is not proof of semantic currency.
+    ['scripts/mcp-g1-merge.ts',['DEPLOYMENT_PRODUCTION.md','MCP_GITHUB_GOVERNANCE.md','LOOP_ENGINEERING.md','SUIVI.md','SOURCE_OF_TRUTH.md']],
+    ['src/deploy/g1Documentation.ts',['DEPLOYMENT_PRODUCTION.md','SOURCE_OF_TRUTH.md','SUIVI.md','MCP_GITHUB_GOVERNANCE.md']],
+    ['src/deploy/g1MergeAdmission.ts',['MCP_GITHUB_GOVERNANCE.md','DEPLOYMENT_PRODUCTION.md','MCP_SECURITY_MODEL.md','SUIVI.md']],
+    ['tests/deployWorkflow.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md']],
+    ['tests/g1MergeAdmission.test.ts',['TESTS.md','CODE_REVIEW.md','MCP_GITHUB_GOVERNANCE.md','SUIVI.md']],
+    ['tests/g1OpenCorrection.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md']]
   ]);
   for(const path of changed){
     const row=rowByPath.get(path);
