@@ -258,3 +258,14 @@ Journal chronologique factuel des interventions significatives sur le MCP. Ce fi
 - Les trois threads tardifs PR #49 ont reçu les preuves PR #52 puis ont été résolus.
 - Session `913048d7-1128-4179-b0bb-3d961730c3f8` acquittée sur Live State `39`; lock repository `dc1df1a8-224b-4a0f-bb4b-c20be7d5e3db` actif pendant la réconciliation.
 - Aucun push direct `main`, écriture S1, activation `enforce`, changement OIDC/Autodeploy ou 2FA.
+
+
+## 2026-11-24 — Index de preuves du chantier documentaire #441 (observation 08:03 UTC)
+
+- Périmètre : WT-MCP-REGISTRY-RESOLUTION-20261121-01 / WT-MCP-GLOBAL-RECONCILIATION-20261121-01 ; [issue et checkpoints](https://github.com/Patricked-code/MCP/issues/441). Aucun Task ID runtime déduit.
+- [Plan documentaire #464](https://github.com/Patricked-code/MCP/pull/464) et [SUIVI / Loopback #465](https://github.com/Patricked-code/MCP/pull/465) fusionnés ; [CI #45348130477](https://github.com/Patricked-code/MCP/actions/runs/45348130477) sur le HEAD de #465.
+- [Rapport de déploiement #45351113448](https://github.com/Patricked-code/MCP/actions/runs/45351113448), [artefact #14900646521](https://github.com/Patricked-code/MCP/actions/runs/45351113448/artifacts/14900646521) : dernier checkpoint #441 indique 456 candidats, six obligations structurelles non résolues. Rapport bloqué, pas de certificat exhaustif.
+- [Finalisation G1 #462](https://github.com/Patricked-code/MCP/pull/462) fusionnée au SHA `43ef2a94c51976499d4d57ad48bd077175a4cebc` ; [CI main #45351879694](https://github.com/Patricked-code/MCP/actions/runs/45351879694) SUCCESS. Live State v1533, 2026-11-24T08:03:18.556Z : GitHub/S1/runtime exact SHA, healthy, DOCUMENTATION_DRIFT, aucune autre contradiction, aucun lock actif. [Governed Deploy #45351879676](https://github.com/Patricked-code/MCP/actions/runs/45351879676) : déploiement technique réussi ; finalisation native en cours à la lecture suivante, ne pas assimiler à une correction attestée.
+- [Équivalences #468](https://github.com/Patricked-code/MCP/pull/468) : CI [#45352083509](https://github.com/Patricked-code/MCP/actions/runs/45352083509) SUCCESS sur le HEAD initial `27789ec709504780a813ea9d3d278f0512485249` ; nouveau HEAD à valider après cet enrichissement. Aucun résultat de CI ou d'attestation futur prédit.
+
+Index historique append-only : la preuve actuelle se relit auprès de GitHub, Live State et des autorités de chaque chantier. Ce lot ne prétend pas avoir indexé tous les événements historiques.
