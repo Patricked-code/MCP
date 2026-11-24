@@ -2352,7 +2352,7 @@ Date : 2026-08-29
 - Gouvernance : `TASK-20260920-001` reste bloquée jusqu’au HEAD documentaire final vert et à la résolution explicite des deux review threads. Aucun merge `main`, aucune mutation S1/runtime et aucun déploiement n’ont été effectués.
 - NEXT_ACTION : valider le HEAD final après traçabilité documentaire, répondre/résoudre les deux threads P1/P2, réobserver `main` + ruleset + check `validate`, puis seulement réouvrir l’admission de merge.
 
-## POINT DE REPRISE COURANT
+## POINT DE REPRISE HISTORIQUE — 2026-11-24T07:27:17.502Z
 
 **Navigation active du dépôt MCP — 24 novembre 2026.** Cette section est le point de reprise documentaire explicite ; les entrées datées précédentes restent des preuves historiques. Rechercher cette section par son titre, et non le premier SHA ou le premier NEXT_ACTION trouvé dans le journal. Elle ne se substitue ni aux continuités locales, ni à l'autorité Live State, ni à la file de tâches gouvernées.
 
@@ -2380,3 +2380,32 @@ Date : 2026-08-29
 ```
 
 La projection structurée ci-dessus sert à localiser le prochain point de lecture. Elle ne constitue pas une preuve de fraîcheur, une admission, une attribution de tâche, une autorisation d'exécution ou une attestation de clôture. Les mises à jour ultérieures doivent préserver les checkpoints antérieurs en les reliant à la continuité propriétaire et ne remplacer que le point courant après vérification des preuves et des collisions.
+
+## POINT DE REPRISE COURANT
+
+**Navigation automatique proposée — observation de déploiement exacte.**
+Le checkpoint précédent et son contenu sont conservés comme historique. Cette observation ne remplace ni les autorités opérationnelles ni les continuités locales.
+
+- Continuité de navigation conservée : WT-MCP-GLOBAL-RECONCILIATION-20261121-01.
+- Issue de preuve existante : #441.
+- SHA observé : 27b4e9575b2ba2c8002ac82ab7a9681d404b71f8 ; Live State v1557 ; observation 2026-11-24T10:26:27.230Z.
+- Governed Deploy : run 45373939000 ; job mcp-s1-45373939000-27b4e9575b2b ; six comparaisons d’autorités concordantes ; G1 ALIGNED.
+- Empreinte de l’observation runtime : e2e903caa2edbeb892fb8d1da17ff539367e862cd11dd2ac115bf1180823f1f7.
+- Verdict documentaire au moment de l’observation : DOCUMENTARY_CLOSURE_PENDING. **La certification exhaustive n’est pas acquise.**
+- Obligations ouvertes : SEMANTIC_AND_RUNTIME_REGISTRY_COVERAGE_UNVERIFIED.
+- NEXT_ACTION : REOBSERVE_GITHUB_S1_RUNTIME_AND_CONTINUITY ; lire les preuves de l’issue existante et le plan commun, ne pas inférer de mandat ou de Task runtime.
+
+```loopback-checkpoint
+{
+  "schemaVersion": 1,
+  "scope": "REPOSITORY_NAVIGATION",
+  "observedAt": "2026-11-24T10:26:27.230Z",
+  "observedMainSha": "27b4e9575b2ba2c8002ac82ab7a9681d404b71f8",
+  "continuityId": "WT-MCP-GLOBAL-RECONCILIATION-20261121-01",
+  "proofIssue": 441,
+  "observationStatus": "REOBSERVE_REQUIRED",
+  "nextAction": "REOBSERVE_GITHUB_S1_RUNTIME_AND_CONTINUITY"
+}
+```
+
+Le prochain agent revalide les preuves et les propriétaires avant toute intervention. Cette section ne déclare aucun travail DONE.
