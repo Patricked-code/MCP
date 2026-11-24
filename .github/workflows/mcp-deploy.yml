@@ -381,8 +381,10 @@ jobs:
     continue-on-error: true
     permissions:
       contents: read
+      actions: read
     outputs:
       closure-status: ${{ steps.closure.outputs.closure-status }}
+      loopback-admission: ${{ steps.loopback-admission.outputs.loopback-admission }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -400,6 +402,12 @@ jobs:
           G1_EVIDENCE: ${{ needs.reobserve-documentation.outputs.g1-evidence || needs.deploy.outputs.g1-evidence }}
           DOCUMENTARY_REPORT_FILE: ${{ runner.temp }}/mcp-documentary-closure.json
         run: node scripts/mcp-documentary-closure.mjs
+      - name: Independently verify same-run Loopback publication admission (read-only)
+        id: loopback-admission
+        env:
+          LOOPBACK_READ_TOKEN: ${{ github.token }}
+          LOOPBACK_REPORT_DIGEST: ${{ steps.closure.outputs.report-digest }}
+        run: node scripts/documentary-loopback-publisher.mjs
       - name: Retain documentary closure evidence
         if: always()
         uses: actions/upload-artifact@v4
