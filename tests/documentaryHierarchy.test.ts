@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { admissionCatalogue } from '../src/web/admissionCatalogue.js';
 // @ts-ignore -- standalone ESM report module
-import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan,observeLoopbackCheckpoint,LOOPBACK_SOURCES,parseRootDocumentaryEquivalences,parseLocalDocumentaryEquivalences } from '../scripts/documentary-hierarchy.mjs';
+import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan,observeLoopbackCheckpoint,LOOPBACK_SOURCES,parseRootDocumentaryEquivalences,parseLocalDocumentaryEquivalences,parseScopedDocumentaryEquivalences } from '../scripts/documentary-hierarchy.mjs';
 // @ts-ignore -- standalone ESM report module
 import { buildDocumentaryClosureReport } from '../scripts/mcp-documentary-closure.mjs';
 
@@ -183,4 +183,38 @@ test('historical fenced Markdown examples are not active Loopback checkpoints',(
   assert.equal(observeLoopbackCheckpoint(checkpointFixture.trimEnd()+' invalid closing\n').status,'UNVERIFIED');
   const inside=checkpointFixture.replace('REOBSERVE_REQUIRED','DONE');
   assert.equal(observeLoopbackCheckpoint('~~~markdown\n'+inside+'~~~\n'+checkpointFixture).status,'PRESENT');
+});
+
+test('scoped equivalences use exact same-owner documents and never certify their semantics',()=>{
+  const {input}=fixture([p(child,'MANDATE')],[p(child,'MEMORY')]);
+  const missing=['DOCUMENT_AUTHORITIES','INTENTIONS','IMPLEMENTATION_PLAN','MISSION'].map(type=>p(child,type));
+  const entries=input.entries.filter(x=>!missing.includes(x.path));
+  const paths=entries.map(x=>x.path);
+  const source=p(child,'SOURCE_OF_TRUTH');
+  const scope={key:child,id:'CHILD-01'};
+  const data={schemaVersion:1,scopeKey:child,identityStatus:'DOCUMENTARY_CANDIDATE',equivalences:[
+    {type:'DOCUMENT_AUTHORITIES',paths:[source]},
+    {type:'INTENTIONS',paths:[p(child,'MANDATE'),p(child,'MEMORY')]},
+    {type:'IMPLEMENTATION_PLAN',paths:[p(child,'ROADMAP'),p(child,'TASKS')]}
+  ]};
+  const fence=String.fromCharCode(96).repeat(3);
+  const block=(value:unknown)=>fence+'scoped-documentary-equivalence\n'+JSON.stringify(value)+'\n'+fence+'\n';
+  assert.equal(parseScopedDocumentaryEquivalences(block(data),scope).status,'DECLARED');
+  assert.equal(parseScopedDocumentaryEquivalences('~~~~markdown\n'+block(data)+'~~~~\n',scope).status,'ABSENT');
+  assert.equal(parseScopedDocumentaryEquivalences(block(data)+block(data),scope).status,'CONFLICT');
+  assert.equal(parseScopedDocumentaryEquivalences(block({...data,scopeKey:work}),scope).status,'CONFLICT');
+  assert.equal(parseScopedDocumentaryEquivalences(block({...data,equivalences:[{type:'INTENTIONS',paths:[p(work,'MISSION'),p(child,'MEMORY')]}]}),scope).status,'CONFLICT');
+  const plan=buildCommonDocumentaryPlan({...input,entries,candidatePaths:paths,readText:(path:string)=>path===source?block(data):input.readText(path)});
+  const local=plan.scopes.find((s:{scopeKey:string})=>s.scopeKey===child);
+  for(const type of ['DOCUMENT_AUTHORITIES','INTENTIONS','IMPLEMENTATION_PLAN']){
+    const r=local.required.find((x:{type:string})=>x.type===type);
+    assert.equal(r.status,'DECLARED_EQUIVALENT_READ');
+    assert.equal(r.semanticStatus,'UNVERIFIED');
+  }
+  assert.equal(local.authorityMapStatus,'DECLARATION_PRESENT_NOT_SEMANTICALLY_VERIFIED');
+  assert.ok(plan.dependencies.some((e:{from:string,to:string,kind:string})=>e.from===p(child,'MEMORY')&&e.to===source&&e.kind==='DECLARED_EQUIVALENCE_REVIEW'));
+  assert.equal(plan.closureAttested,false);
+  const lost=entries.filter(x=>x.path!==p(child,'TASKS'));
+  const incomplete=buildCommonDocumentaryPlan({...input,entries:lost,candidatePaths:lost.map(x=>x.path),readText:(path:string)=>path===source?block(data):input.readText(path)});
+  assert.ok(incomplete.issues.some((x:{type:string,scopeKey:string})=>x.type==='IMPLEMENTATION_PLAN'&&x.scopeKey===child));
 });

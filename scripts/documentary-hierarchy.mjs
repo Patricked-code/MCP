@@ -240,6 +240,59 @@ export function parseLocalDocumentaryEquivalences(body,scope) {
   return new Set(rows.map(r=>r.type)).size===rows.length?rows:[];
 }
 
+// Local SOURCE_OF_TRUTH may explicitly carry several documentary functions.
+// Only exact paths in the SAME lexical scope are admissible. No authority,
+// admission, runtime identity or content attestation is inferred. Other
+// scopes keep their own source maps; parent plans are referenced in prose.
+export function parseScopedDocumentaryEquivalences(body,scope) {
+  const none=status=>({status,rows:[]});
+  if(typeof body!=='string'||!scope?.id||!scope?.key)return none('UNVERIFIED');
+  const sourcePath=scope.key+'/'+scope.id+'__SOURCE_OF_TRUTH.md';
+  if(parseDocumentScope(sourcePath)?.scopeKey!==scope.key)return none('UNVERIFIED');
+  const lines=body.split(/\r?\n/), marker='\x60\x60\x60scoped-documentary-equivalence';
+  let open=null;const blocks=[];
+  for(let i=0;i<lines.length;i++){
+    const token=/^ {0,3}(\x60{3,}|~{3,})(.*)$/.exec(lines[i]);
+    if(open){
+      if(token&&token[1][0]===open.char&&token[1].length>=open.length&&/^[ \t]*$/.test(token[2])){
+        if(open.contract)blocks.push(lines.slice(open.start+1,i).join('\n'));
+        open=null;
+      }
+      continue;
+    }
+    if(token&&(token[1][0]!=='\x60'||!token[2].includes('\x60')))
+      open={char:token[1][0],length:token[1].length,start:i,contract:lines[i]===marker};
+  }
+  if(open?.contract)return none('CONFLICT');
+  if(!blocks.length)return none('ABSENT');
+  if(blocks.length!==1||blocks[0].length>16384)return none('CONFLICT');
+  // These roles are compatible documentary forms, not arbitrary aliases.
+  // A dedicated authoritative document always wins; a simultaneous local
+  // declaration must be surfaced as an ambiguity, not silently preferred.
+  const permitted={
+    DOCUMENT_AUTHORITIES:['SOURCE_OF_TRUTH'],
+    INTENTIONS:['MANDATE','MISSION','MEMORY'],
+    IMPLEMENTATION_PLAN:['ROADMAP','TASKS']
+  };
+  try{
+    const data=JSON.parse(blocks[0]);
+    if(!data||Object.keys(data).sort().join(',')!=='equivalences,identityStatus,schemaVersion,scopeKey'||
+      data.schemaVersion!==1||data.scopeKey!==scope.key||data.identityStatus!=='DOCUMENTARY_CANDIDATE'||
+      !Array.isArray(data.equivalences)||data.equivalences.length<1||data.equivalences.length>3||
+      new Set(data.equivalences.map(r=>r.type)).size!==data.equivalences.length)return none('CONFLICT');
+    for(const r of data.equivalences){
+      if(!r||Object.keys(r).sort().join(',')!=='paths,type'||!Object.hasOwn(permitted,r.type)||
+        !Array.isArray(r.paths)||!r.paths.length||r.paths.length>3||new Set(r.paths).size!==r.paths.length||
+        r.paths.some(path=>{const p=parseDocumentScope(path);return !p||p.scopeKey!==scope.key||
+          !permitted[r.type].includes(p.type)||sensitive(path);}))return none('CONFLICT');
+      const types=r.paths.map(path=>parseDocumentScope(path).type);
+      if(r.type==='INTENTIONS'&&(!types.includes('MEMORY')||!types.some(t=>t==='MISSION'||t==='MANDATE')))return none('CONFLICT');
+      if(r.type==='IMPLEMENTATION_PLAN'&&(!types.includes('ROADMAP')||!types.includes('TASKS')))return none('CONFLICT');
+    }
+    return {status:'DECLARED',rows:data.equivalences.map(({type,paths})=>({type,paths,sourcePath}))};
+  }catch{return none('CONFLICT');}
+}
+
 export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,changes=[],readText}) {
   if(!SHA.test(headSha??'')||!Array.isArray(entries)||entries.length>LIMIT||
     !entries.every(e=>safePath(e?.path)&&SHA.test(e.oid??''))||
@@ -319,6 +372,16 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
         else if(r.status==='CONFLICT')issue.push({code:'PROJECT_AUTHORITY_EQUIVALENCE_CONFLICT',scopeKey:scope.key});
       }catch{issue.push({code:'PROJECT_AUTHORITY_EQUIVALENCE_UNVERIFIED',scopeKey:scope.key});}
     }
+    const truthPaths=scope.types.get('SOURCE_OF_TRUTH')??[];
+    if(scope.key!==ROOT&&truthPaths.length===1&&read(truthPaths[0]).status==='CONTENT_READ')try{
+      const local=parseScopedDocumentaryEquivalences(readText(truthPaths[0]),scope);
+      if(local.status==='DECLARED'){
+        for(const eq of local.rows){
+          if(scope.types.has(eq.type))issue.push({code:'LOCAL_AUTHORITY_EQUIVALENCE_CONFLICT',scopeKey:scope.key,type:eq.type});
+          else equivalences.push(eq);
+        }
+      }else if(local.status==='CONFLICT')issue.push({code:'LOCAL_AUTHORITY_EQUIVALENCE_CONFLICT',scopeKey:scope.key});
+    }catch{issue.push({code:'LOCAL_AUTHORITY_EQUIVALENCE_UNVERIFIED',scopeKey:scope.key});}
     const authorityPaths=scope.types.get('DOCUMENT_AUTHORITIES')??[];
     if(scope.key!==ROOT&&authorityPaths.length===1&&read(authorityPaths[0]).status==='CONTENT_READ')try{
       equivalences.push(...parseLocalDocumentaryEquivalences(readText(authorityPaths[0]),scope));
@@ -360,7 +423,7 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     scopePlans.push({scopeKey:scope.key,scopeId:scope.id,kind:scope.kind,level:scope.level,parentKey:scope.parentKey,
       inheritedScopes,identityStatus:scope.key===ROOT?'EXACT_REPOSITORY_TREE':'DOCUMENTARY_PATH_ONLY',
       required,readSequence,authorityMapStatus:scope.key===ROOT?'EXISTING_ROOT_AUTHORITIES_REUSED':
-        (scope.types.get('DOCUMENT_AUTHORITIES')?.length===1?'DECLARATION_PRESENT_NOT_SEMANTICALLY_VERIFIED':'UNVERIFIED'),
+        (required.some(r=>r.type==='DOCUMENT_AUTHORITIES'&&['CONTENT_READ','DECLARED_EQUIVALENT_READ'].includes(r.status))?'DECLARATION_PRESENT_NOT_SEMANTICALLY_VERIFIED':'UNVERIFIED'),
       semanticStatus:'UNVERIFIED'});
   }
   // A change creates review obligations, not an assertion that content must
@@ -392,6 +455,17 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
               for(const q of child.types.get(k)??[])edge(p,q,'DESCENDING_IMPACT_REVIEW');
         }
       }
+    }
+  }
+  // A declared equivalence must remain connected to the original sources
+  // so later changes in either direction trigger a review, not a rewrite.
+  for(const eq of explicitEquivalences)if(eq.status==='DECLARED_EQUIVALENT_READ'){
+    for(const path of eq.paths){
+      edge(path,eq.sourcePath,'DECLARED_EQUIVALENCE_REVIEW');
+      edge(eq.sourcePath,path,'DECLARED_EQUIVALENCE_REVIEW');
+      const scope=scopes.get(eq.scopeKey);
+      for(const target of IMPACT_TYPES[eq.type]??[])
+        for(const q of scope?.types.get(target)??[])edge(path,q,'DECLARED_EQUIVALENCE_IMPACT_REVIEW');
     }
   }
   const rootJoins=[
