@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
+import { validateMarkdownBaseline } from './doc-governance-lib.mjs';
 
 const SHA = /^[a-f0-9]{40}$/;
 const REPO = 'Patricked-code/MCP';
@@ -50,7 +51,8 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   const missing = markdown.filter(p => !declaredSet.has(p));
   const absent = [...declaredSet].filter(p => !actualSet.has(p)).sort();
   const duplicates = declared.length !== declaredSet.size;
-  const inventoryAligned = !missing.length && !absent.length && !duplicates &&
+  const baselineCheck = validateMarkdownBaseline(inventory.entries, markdown);
+  const inventoryAligned = baselineCheck.ok && !missing.length && !absent.length && !duplicates &&
     inventory.trackedCount === declared.length && inventory.trackedCount === markdown.length;
   const byPath = new Map(inventory.entries.map(e => [e.path, e.category]));
   const changed = new Map();
@@ -91,7 +93,8 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     comparisonBasis: 'PRODUCTION_STATE_DECLARED_GITHUB_SHA_NOT_PREVIOUS_DEPLOY_PROOF',
     status, closureAttested: false, technicalDeploymentIndependent: true,
     inventory: {markdownCount: markdown.length, declaredCount: inventory.trackedCount,
-      inventoryAligned, missing, absent, duplicates, candidateCount: documents.length},
+      inventoryAligned, missing, absent, duplicates, unclassified: baselineCheck.unclassified,
+      categoryDrift: baselineCheck.categoryDrift, candidateCount: documents.length},
     coverage: {semanticVerifiedCount: 0, complete: false, runtimeRegistryCoverage: 'UNVERIFIED'},
     governanceCheckOk: governanceCheckOk === true,
     g1Status: ['DRIFT','ALIGNED','UNVERIFIED'].includes(g1?.status) ? g1.status : 'UNVERIFIED',
@@ -130,10 +133,13 @@ export function main(env = process.env) {
       governanceCheckOk = true;
     } catch { /* absence of proof blocks closure */ }
     report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,governanceCheckOk});
-  } catch {
+  } catch (error) {
+    const bounded = new Set(['CHECKOUT_SHA_MISMATCH','INVALID_BASELINE','TREE_TRUNCATED','DIFF_TRUNCATED',
+      'DIFF_STATUS_INVALID','DIFF_PATH_INVALID','DIFF_LIMIT_EXCEEDED','INVALID_OBSERVATION','INVENTORY_UNREADABLE','INVALID_CHANGE']);
+    const reason = bounded.has(error?.message) ? error.message : 'DOCUMENTARY_OBSERVATION_UNVERIFIED';
     report = {schemaVersion:1,repository:REPO,headSha,status:'DOCUMENTARY_CLOSURE_BLOCKED',
       closureAttested:false,technicalDeploymentIndependent:true,coverage:{complete:false},
-      reasons:['DOCUMENTARY_OBSERVATION_UNVERIFIED'],nextAction:'REOBSERVE_AND_RESOLVE_BLOCKERS',mutationPerformed:false};
+      reasons:[reason],nextAction:'REOBSERVE_AND_RESOLVE_BLOCKERS',mutationPerformed:false};
   }
   writeFileSync(env.DOCUMENTARY_REPORT_FILE, JSON.stringify({...report,observedAt:new Date().toISOString()},null,2)+'\n',{mode:0o600});
   appendFileSync(env.GITHUB_STEP_SUMMARY, '\n### Documentary closure: '+report.status+'\n\n'
