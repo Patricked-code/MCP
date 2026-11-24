@@ -270,3 +270,21 @@ test('one snapshot has the same scope order and plan digest in different locales
   assert.deepEqual(english.order, ['REPOSITORY_ROOT', 'docs/projects/AA-PROJECT', 'docs/projects/Z-PROJECT']);
   assert.deepEqual(run('da_DK.UTF-8'), english);
 });
+
+test('documentary closure tests route to their exact document authorities without certifying semantics',()=>{
+  const path='tests/mcpDocumentaryClosure.test.ts';
+  const unknown='tests/unmappedDocumentaryAuthority.test.ts';
+  const targets=['TESTS.md','CODE_REVIEW.md','LOOP_ENGINEERING.md','DEPLOYMENT_PRODUCTION.md','SOURCE_OF_TRUTH.md','SUIVI.md'];
+  const {input}=fixture(targets,[path,unknown]);
+  const entries=[...input.entries,...[path,unknown].map(path=>({path,mode:'100644',type:'blob',oid:sha,size:10}))];
+  const plan=buildCommonDocumentaryPlan({...input,entries});
+  assert.equal(plan.issues.some((i:{path:string,code:string})=>i.path===path&&i.code==='CHANGE_IMPACT_UNRESOLVED'),false);
+  assert.ok(plan.issues.some((i:{path:string,code:string})=>i.path===unknown&&i.code==='CHANGE_IMPACT_UNRESOLVED'));
+  for(const target of targets){
+    const row=plan.documents.find((d:{path:string})=>d.path===target);
+    assert.equal(row.impactReviewRequired,true);
+    assert.equal(row.semanticStatus,'UNVERIFIED');
+  }
+  assert.equal(plan.coverage.semanticCoverageComplete,false);
+  assert.equal(plan.closureAttested,false);
+});
