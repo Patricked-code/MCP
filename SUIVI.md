@@ -2360,16 +2360,18 @@ Date : 2026-08-29
 - **Mission en cours de cette intervention** : `WT-MCP-REGISTRY-RESOLUTION-20261121-01`, sous-chantier `WT-MCP-GLOBAL-RECONCILIATION-20261121-01` ; [issue #441 et checkpoints](https://github.com/Patricked-code/MCP/issues/441). Ce point ne remplace pas les autres chantiers actifs.
 - **Dernière preuve de stabilité avant le lot #464** : Live State v1514 à 2026-11-24T04:12:47.670Z, GitHub/S1/runtime au SHA `5702694f1ebee3162fc5898772301f2104d8bc1f`, healthy, FULLY_ALIGNED. Preuve historique, à réobserver.
 - **Évolution intégrée** : [PR #464](https://github.com/Patricked-code/MCP/pull/464), CI exacte [45323994952](https://github.com/Patricked-code/MCP/actions/runs/45323994952) SUCCESS, fusion `3f4bbd7acd841f0f59816de621b12d6f1e726806`. À 2026-11-24T04:15:30.677Z, GitHub avait avancé, S1/runtime étaient encore sur l'ancien SHA ; [Governed Deploy #45324905246](https://github.com/Patricked-code/MCP/actions/runs/45324905246) en cours à cette observation. Ne pas déclarer ce déploiement réussi sans nouvelle preuve.
+- **Dernière observation opérationnelle attestée** : Live State v1522, 2026-11-24T07:27:17.502Z, GitHub main/S1/origin/runtime `b3f11c0ba4bb3ba01a927413b12f1c361741abe0`, healthy, FULLY_ALIGNED, aucune contradiction. [PR #466](https://github.com/Patricked-code/MCP/pull/466) fusionnée ; la [comparaison](https://github.com/Patricked-code/MCP/compare/3f4bbd7acd841f0f59816de621b12d6f1e726806...b3f11c0ba4bb3ba01a927413b12f1c361741abe0) confirme que seul PRODUCTION_STATE.json a changé. Ceci ne certifie pas la couverture documentaire exhaustive.
+- **Candidat SUIVI / Loopback** : [PR #465](https://github.com/Patricked-code/MCP/pull/465), tests additionnels et correction du lecteur de checkpoints Markdown (commits `1a028f02ab88ea7f8fa13d8b01b7bd17f38e9d98` et `66f2aa302240c81b8d2a28bc34d01f488ce769ed`). CI du nouvel ensemble et intégration non encore attestées à ce checkpoint.
 - **Travaux ouverts** : réconciliation #462 et validation native G1 ; équivalences documentaires et raccordement des admissions ; propagation effective, autorités Operational Memory/CUG/GWC/UAC/Program Backlog et garde terminale. Certification exhaustive non acquise.
-- **NEXT_ACTION** : réobserver GitHub, S1, runtime et les attestations du déploiement #464 ; identifier et traiter toute correction G1 native ; reprendre les obligations du plan commun et les preuves de #441 sur le HEAD courant. Ne pas répéter des travaux déjà attestés.
+- **NEXT_ACTION** : réobserver GitHub/S1/runtime, vérifier CI et revue du HEAD exact de #465, absence de collision, puis promotion gouvernée et rapport documentaire post-deploy ; réconcilier #462 ensuite, résoudre les obligations résiduelles par niveau et raccorder l'écriture Loopback aux événements autorisés. Ne pas répéter les travaux attestés ni confondre lecture structurelle et certification sémantique.
 - **Relecture** : [Loop Engineering](LOOP_ENGINEERING.md), [source fondatrice](memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md), [Loopback historique](memory/LOOPBACK_WEALTHTECH_CURRENT.md), [suivi mémoire](memory/SUIVI_MEMORY.md), [continuité de la mission](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__CONTINUITY.md) et [plan de réalisation](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__IMPLEMENTATION_PLAN.md).
 
 ```loopback-checkpoint
 {
   "schemaVersion": 1,
   "scope": "REPOSITORY_NAVIGATION",
-  "observedAt": "2026-11-24T04:15:30.677Z",
-  "observedMainSha": "3f4bbd7acd841f0f59816de621b12d6f1e726806",
+  "observedAt": "2026-11-24T07:27:17.502Z",
+  "observedMainSha": "b3f11c0ba4bb3ba01a927413b12f1c361741abe0",
   "continuityId": "WT-MCP-GLOBAL-RECONCILIATION-20261121-01",
   "proofIssue": 441,
   "observationStatus": "REOBSERVE_REQUIRED",
