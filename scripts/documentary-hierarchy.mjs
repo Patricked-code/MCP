@@ -26,6 +26,14 @@ const ROOT_EXTRA=Object.freeze(['PROJECT_BRIEF.md','PROJECT_SCOPE.md','PROJECT_R
   'MCP_CONNECTION_IDENTITY_MODEL.md','MCP_PERMISSIONS_MODEL.md','PRODUCTION_STATE.json',
   'data/mcp-git-registry.json','data/github-accounts.json','memory/manifest.json',
   'docs/governance/markdown-inventory.json']);
+export const LOOPBACK_SOURCES=Object.freeze([
+  'LOOP_ENGINEERING.md','memory/README.md','memory/SUIVI_MEMORY.md',
+  'memory/INDEX_MEMOIRE_WEALTHTECH_20260701.md','memory/LOOPBACK_WEALTHTECH_CURRENT.md',
+  'memory/LOOP_ENGINEERING_WEALTHTECH_20260701.md',
+  'memory/LOOP_ENGINEERING_WEALTHTECH_MASTER_PLAN_20260702.md',
+  'memory/LOOP_ENGINEERING_WEALTHTECH_PLAYBOOK_COMPLET_20260702.md',
+  'memory/MATRICE_TRACABILITE_SOURCES_EXIGENCES_TRACKS_20260702.md'
+]);
 const MISSION_TYPES=Object.freeze(['SOURCE_OF_TRUTH','DOCUMENT_AUTHORITIES','MISSION','DECISIONS',
   'CONTINUITY','MEMORY','INTENTIONS','ROADMAP','SUIVI','TASKS','TODO','IMPLEMENTATION_PLAN',
   'EVIDENCE_INDEX','AGENTS']);
@@ -136,6 +144,41 @@ const statusRead=(path,byPath,readText)=>{
   } catch {return 'CONTENT_UNVERIFIED';}
 };
 
+// Only the explicitly designated active checkpoint is interpreted. Other
+// historical NEXT_ACTION entries and free-form SHAs remain historical.
+export function observeLoopbackCheckpoint(body) {
+  const fail=reason=>({status:'UNVERIFIED',reason,declared:null});
+  if(typeof body!=='string'||body.includes('\uFFFD')||body.includes('\u0000'))return fail('CHECKPOINT_UNREADABLE');
+  const lines=body.split(/\r?\n/);
+  const headings=lines.map((line,i)=>/^#{1,6}\s+POINT DE REPRISE COURANT\s*$/i.test(line)?i:-1).filter(i=>i>=0);
+  if(headings.length!==1)return fail(headings.length?'CHECKPOINT_AMBIGUOUS':'CHECKPOINT_MISSING');
+  const from=headings[0],level=lines[from].match(/^#+/)[0].length;
+  let end=lines.length;
+  for(let i=from+1;i<lines.length;i++){
+    const h=/^(#{1,6})\s+/.exec(lines[i]);
+    if(h&&h[1].length<=level){end=i;break;}
+  }
+  const section=lines.slice(from+1,end).join('\n');
+  const fence=String.fromCharCode(96).repeat(3);
+  const marker=fence+'loopback-checkpoint';
+  const blocks=section.split('\n').filter(l=>l===marker);
+  if(blocks.length!==1)return fail('CHECKPOINT_CONTRACT_MISSING_OR_AMBIGUOUS');
+  const start=section.indexOf(marker+'\n');
+  const finish=section.indexOf('\n'+fence,start+marker.length+1);
+  if(start<0||finish<0||finish-start>4096)return fail('CHECKPOINT_CONTRACT_INVALID');
+  try{
+    const p=JSON.parse(section.slice(start+marker.length+1,finish));
+    const keys=['schemaVersion','scope','observedAt','observedMainSha','continuityId','proofIssue','observationStatus','nextAction'];
+    if(!p||typeof p!=='object'||Array.isArray(p)||Object.keys(p).length!==keys.length||
+      keys.some(k=>!Object.hasOwn(p,k))||p.schemaVersion!==1||p.scope!=='REPOSITORY_NAVIGATION'||
+      typeof p.observedAt!=='string'||!Number.isFinite(Date.parse(p.observedAt))||!SHA.test(p.observedMainSha??'')||
+      !ID.test(p.continuityId??'')||!Number.isSafeInteger(p.proofIssue)||p.proofIssue<1||
+      p.observationStatus!=='REOBSERVE_REQUIRED'||p.nextAction!=='REOBSERVE_GITHUB_S1_RUNTIME_AND_CONTINUITY')
+      return fail('CHECKPOINT_CONTRACT_INVALID');
+    return {status:'PRESENT',reason:null,declared:p,proofStatus:'DECLARED_REOBSERVE_REQUIRED',closureAttested:false};
+  }catch{return fail('CHECKPOINT_CONTRACT_INVALID');}
+}
+
 export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,changes=[],readText}) {
   if(!SHA.test(headSha??'')||!Array.isArray(entries)||entries.length>LIMIT||
     !entries.every(e=>safePath(e?.path)&&SHA.test(e.oid??''))||
@@ -195,12 +238,13 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
   const foundingSequence=ORIGINAL_READING_ORDER.map(read);
   // Re-read from the same immutable snapshot, not a stale mutable worktree.
   const checkpoint=read('SUIVI.md');
-  let checkpointStatus='UNVERIFIED';
-  if(checkpoint.status==='CONTENT_READ')try{
-    if(/^#{1,6}\s+POINT DE REPRISE COURANT\b/im.test(readText('SUIVI.md')))checkpointStatus='PRESENT';
-  }catch{}
-  if(checkpointStatus!=='PRESENT')issue.push({code:'FOUNDATION_CHECKPOINT_UNVERIFIED',path:'SUIVI.md'});
-  const rootRequired=uniq([...CURRENT_INTAKE,...FOUNDATION_DOCUMENTS,...ROOT_EXTRA,
+  let checkpointObservation={status:'UNVERIFIED',reason:'CHECKPOINT_UNREADABLE',declared:null};
+  if(checkpoint.status==='CONTENT_READ')try{checkpointObservation=observeLoopbackCheckpoint(readText('SUIVI.md'));}catch{}
+  if(checkpointObservation.status!=='PRESENT')issue.push({code:'FOUNDATION_CHECKPOINT_UNVERIFIED',path:'SUIVI.md',reason:checkpointObservation.reason});
+  const loopbackReads=LOOPBACK_SOURCES.map(read);
+  for(const source of loopbackReads)if(source.status!=='CONTENT_READ')issue.push({code:'LOOPBACK_SOURCE_UNVERIFIED',path:source.path});
+
+  const rootRequired=uniq([...CURRENT_INTAKE,...FOUNDATION_DOCUMENTS,...ROOT_EXTRA,...LOOPBACK_SOURCES,
     ...candidatePaths.filter(p=>p.startsWith('.mcp/')&&p.endsWith('.json'))]);
   const scopePlans=[];
   const sortedScopes=[...scopes.values()].sort((a,b)=>a.key===ROOT?-1:b.key===ROOT?1:a.key.split('/').length-b.key.split('/').length||a.key.localeCompare(b.key));
@@ -276,6 +320,7 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     ['PRODUCTION_STATE.json','DEPLOYMENT_PRODUCTION.md']
   ];
   for(const [a,b] of rootJoins){edge(a,b,'AUTHORITY_JOIN_REVIEW');edge(b,a,'AUTHORITY_JOIN_REVIEW');}
+  for(const p of LOOPBACK_SOURCES){edge(p,'SUIVI.md','LOOPBACK_REVIEW');edge('SUIVI.md',p,'LOOPBACK_REVIEW');}
   // Existing explicit local Markdown links provide a cross-scope reference
   // to review, not a declaration that two scopes share an authority.
   // Never fetch URL targets or traverse outside the observed tree.
@@ -322,7 +367,7 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
   const projection={schemaVersion:1,headSha,planId:'COMMON_HIERARCHICAL_DOCUMENTARY_PLAN_V1',
     entryIndependent:true,mutationPerformed:false,automaticExecutionAuthorized:false,
     foundation:{level:0,sourcePath:FOUNDATION_SOURCE,sourceOid:foundationEntry?.oid??null,...foundation,
-      intake,originalReadingSequence:foundingSequence,checkpoint:{path:'SUIVI.md',heading:'POINT DE REPRISE COURANT',status:checkpointStatus}},
+      intake,originalReadingSequence:foundingSequence,checkpoint:{path:'SUIVI.md',heading:'POINT DE REPRISE COURANT',...checkpointObservation},loopbackReads},
     scopes:scopePlans,documents:rows,dependencies:[...edges.values()],issues:issue,
     coverage:{candidateCount:candidatePaths.length,plannedCount:rows.length,scopeCount:scopePlans.length,
       contentReadCount:rows.filter(r=>r.readStatus==='CONTENT_READ').length,

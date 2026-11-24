@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { admissionCatalogue } from '../src/web/admissionCatalogue.js';
 // @ts-ignore -- standalone ESM report module
-import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan } from '../scripts/documentary-hierarchy.mjs';
+import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan,observeLoopbackCheckpoint,LOOPBACK_SOURCES } from '../scripts/documentary-hierarchy.mjs';
 // @ts-ignore -- standalone ESM report module
 import { buildDocumentaryClosureReport } from '../scripts/mcp-documentary-closure.mjs';
 
@@ -17,13 +17,18 @@ const localTypes=['SOURCE_OF_TRUTH','DOCUMENT_AUTHORITIES','MISSION','DECISIONS'
   'INTENTIONS','ROADMAP','SUIVI','TASKS','TODO','IMPLEMENTATION_PLAN','EVIDENCE_INDEX','AGENTS','ARCHITECTURE','CARTOGRAPHY'];
 const p=(base:string,type:string)=>base+'/'+base.split('/').at(-1)+'__'+type+'.md';
 const foundation=readFileSync(FOUNDATION_SOURCE,'utf8');
+const checkpointFixture='# POINT DE REPRISE COURANT\n'+String.fromCharCode(96).repeat(3)+'loopback-checkpoint\n'+JSON.stringify({
+  schemaVersion:1,scope:'REPOSITORY_NAVIGATION',observedAt:'2026-11-24T04:15:30.677Z',observedMainSha:sha,
+  continuityId:'MISSION-01',proofIssue:441,observationStatus:'REOBSERVE_REQUIRED',
+  nextAction:'REOBSERVE_GITHUB_S1_RUNTIME_AND_CONTINUITY'
+})+'\n'+String.fromCharCode(96).repeat(3)+'\n';
 function fixture(extra:string[]=[],changed:string[]=[]) {
-  const paths=[...new Set<string>([...FOUNDATION_DOCUMENTS,FOUNDATION_SOURCE,'AGENTS.md','CLAUDE.md','SOURCE_OF_TRUTH.md',
+  const paths=[...new Set<string>([...FOUNDATION_DOCUMENTS,FOUNDATION_SOURCE,...LOOPBACK_SOURCES,'AGENTS.md','CLAUDE.md','SOURCE_OF_TRUTH.md',
     ...[project,sub,work,child].flatMap(s=>localTypes.map(t=>p(s,t))),...extra])];
   const entries=paths.map(path=>({path,mode:'100644',type:'blob',oid:sha,size:10}));
   const reads:string[]=[];
   const input={headSha:sha,entries,candidatePaths:paths,changes:changed.map(path=>({path,previousPath:null,code:'M'})),
-    readText:(path:string)=>{reads.push(path);return path===FOUNDATION_SOURCE?foundation:path==='SUIVI.md'?'# POINT DE REPRISE COURANT\nCurrent':path.endsWith('.json')?'{}':'# Test';}};
+    readText:(path:string)=>{reads.push(path);return path===FOUNDATION_SOURCE?foundation:path==='SUIVI.md'?checkpointFixture:path.endsWith('.json')?'{}':'# Test';}};
   return {input,reads};
 }
 test('original founding contract is read from the actual retained source; 20 documents, exact order of 17 plus checkpoint',()=>{
@@ -128,4 +133,28 @@ test('real checkout preflight uses exact Git SHA and same plan independently of 
     encoding:'utf8',timeout:10000});
   assert.notEqual(wrong.status,0);
   assert.match(wrong.stderr,/CHECKOUT_SHA_MISMATCH/);
+});
+
+test('Loopback locates one explicit active checkpoint, never interprets old free-text SHA or claims DONE',()=>{
+  const old='# Old history\n- NEXT_ACTION: old task\n- '+sha+'\n';
+  const observed=observeLoopbackCheckpoint(old+checkpointFixture);
+  assert.equal(observed.status,'PRESENT');
+  assert.equal(observed.proofStatus,'DECLARED_REOBSERVE_REQUIRED');
+  assert.equal(observed.closureAttested,false);
+  assert.equal(observeLoopbackCheckpoint(old).status,'UNVERIFIED');
+  assert.equal(observeLoopbackCheckpoint(checkpointFixture+checkpointFixture).reason,'CHECKPOINT_AMBIGUOUS');
+  assert.equal(observeLoopbackCheckpoint(checkpointFixture.replace('REOBSERVE_REQUIRED','DONE')).status,'UNVERIFIED');
+  const {input}=fixture([],['SUIVI.md']);
+  const plan=buildCommonDocumentaryPlan(input);
+  assert.equal(plan.foundation.loopbackReads.length,LOOPBACK_SOURCES.length);
+  assert.ok(plan.foundation.loopbackReads.every((r:{status:string})=>r.status==='CONTENT_READ'));
+  assert.ok(plan.dependencies.some((e:{from:string,to:string,kind:string})=>e.from==='SUIVI.md'&&e.to==='memory/LOOPBACK_WEALTHTECH_CURRENT.md'&&e.kind==='LOOPBACK_REVIEW'));
+  assert.equal(plan.closureAttested,false);
+});
+test('actual SUIVI checkpoint is present without overwriting the historical Loopback',()=>{
+  const body=readFileSync('SUIVI.md','utf8');
+  assert.equal(observeLoopbackCheckpoint(body).status,'PRESENT');
+  const loopback=readFileSync('memory/LOOPBACK_WEALTHTECH_CURRENT.md','utf8');
+  assert.match(loopback,/SUIVI\.md#point-de-reprise-courant/);
+  assert.match(loopback,/Date UTC : 2026-07-01/);
 });

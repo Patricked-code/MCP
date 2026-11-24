@@ -1,5 +1,7 @@
 # SUIVI MEMORY — WealthTech MCP
 
+> **Orientation du 24 novembre 2026.** Ce journal conserve les faits de synchronisation mémoire et les preuves d'ingestion. Pour l'état de travail MCP actuel, lire le [SUIVI racine](../SUIVI.md#point-de-reprise-courant) et la continuité propriétaire ; pour la méthode commune, lire [LOOP_ENGINEERING.md](../LOOP_ENGINEERING.md). Les synchronisations historiques ci-dessous ne certifient pas une copie serveur actuelle. Ajouter toute nouvelle synchronisation uniquement avec sa preuve réelle.
+
 Ce fichier suit les synchronisations de mémoire MCP vers le serveur.
 
 Règles :
