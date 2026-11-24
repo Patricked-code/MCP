@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { admissionCatalogue } from '../src/web/admissionCatalogue.js';
 // @ts-ignore -- standalone ESM report module
 import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan } from '../scripts/documentary-hierarchy.mjs';
@@ -85,10 +86,46 @@ test('missing scope equivalence and unreadable evidence block actual report, nev
   const plan=buildCommonDocumentaryPlan({...input,entries:input.entries.filter(x=>x.path!==absent),
     candidatePaths:input.candidatePaths.filter(x=>x!==absent)});
   assert.ok(plan.issues.some((x:{scopeKey:string,type:string})=>x.scopeKey===child&&x.type==='CONTINUITY'));
-  const report=buildDocumentaryClosureReport({headSha:sha,baselineSha:sha,trackedPaths:['SUIVI.md'],
-    inventory:{schemaVersion:1,trackedCount:1,entries:[{path:'SUIVI.md',category:'canonical'}]},
+  const trackedPaths=plan.documents.map((r:{path:string})=>r.path);
+  const report=buildDocumentaryClosureReport({headSha:sha,baselineSha:sha,trackedPaths,
+    inventory:{schemaVersion:1,trackedCount:trackedPaths.length,entries:trackedPaths.map((path:string)=>({path,category:'documentation'}))},
     changes:[],g1:{status:'ALIGNED'},governanceCheckOk:true,hierarchicalPlan:plan});
   assert.equal(report.status,'DOCUMENTARY_CLOSURE_BLOCKED');
   assert.ok(report.reasons.includes('HIERARCHICAL_DOCUMENTARY_OBLIGATIONS_UNRESOLVED'));
   assert.equal(report.closureAttested,false);
+});
+
+test('explicit relative reference links a dependent document to another scope without inferring ownership',()=>{
+  const {input}=fixture([], [p(child,'TASKS')]);
+  const target=p(child,'TASKS'),dependent=p(work,'SUIVI');
+  const result=buildCommonDocumentaryPlan({...input,readText:(path:string)=>path===dependent
+    ?'# Test\n[Child tasks](subchantiers/CHILD-01/CHILD-01__TASKS.md)':input.readText(path)});
+  assert.ok(result.dependencies.some((e:{from:string,to:string,kind:string})=>e.from===target&&e.to===dependent&&e.kind==='EXPLICIT_CROSS_SCOPE_REFERENCE_REVIEW'));
+  assert.equal(result.coverage.transversalDependencyCoverageComplete,false);
+});
+test('plan bound to a different candidate corpus cannot satisfy the report',()=>{
+  const {input}=fixture();
+  const plan=buildCommonDocumentaryPlan(input);
+  const report=buildDocumentaryClosureReport({headSha:sha,baselineSha:sha,trackedPaths:['SUIVI.md'],
+    inventory:{schemaVersion:1,trackedCount:1,entries:[{path:'SUIVI.md',category:'canonical'}]},
+    changes:[],g1:{status:'ALIGNED'},governanceCheckOk:true,hierarchicalPlan:plan});
+  assert.equal(report.status,'DOCUMENTARY_CLOSURE_BLOCKED');
+  assert.ok(report.reasons.includes('HIERARCHICAL_DOCUMENTARY_PLAN_UNVERIFIED'));
+});
+test('real checkout preflight uses exact Git SHA and same plan independently of deploy and credentials',()=>{
+  const head=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+  const result=spawnSync(process.execPath,['scripts/mcp-documentary-closure.mjs','--plan',head],{
+    encoding:'utf8',maxBuffer:8*1024*1024,timeout:120000});
+  assert.equal(result.error,undefined);
+  assert.ok(result.status===0||result.status===2,result.stderr);
+  const plan=JSON.parse(result.stdout);
+  assert.equal(plan.headSha,head);
+  assert.equal(plan.foundation.status,'MATCHED');
+  assert.equal(plan.coverage.allCandidatesAccountedFor,true);
+  assert.equal(plan.entryIndependent,true);
+  assert.equal(plan.closureAttested,false);
+  const wrong=spawnSync(process.execPath,['scripts/mcp-documentary-closure.mjs','--plan','f'.repeat(40)],{
+    encoding:'utf8',timeout:10000});
+  assert.notEqual(wrong.status,0);
+  assert.match(wrong.stderr,/CHECKOUT_SHA_MISMATCH/);
 });

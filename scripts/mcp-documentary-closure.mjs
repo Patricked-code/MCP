@@ -432,8 +432,18 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   differences.push(...g1Differences);
   const liveAuthorities=compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobId});
   differences.push(...liveAuthorities.differences);
+  const planPaths=hierarchicalPlan?.documents?.map(d=>d.path)??[];
+  const planSet=new Set(planPaths);
+  const corpusByPath=new Map((corpusObservation?.rows??[]).map(r=>[r.path,r.oid]));
+  const {planDigest,...planProjection}=hierarchicalPlan??{};
+  const planBound=hierarchicalPlan?.headSha===headSha&&hierarchicalPlan.entryIndependent===true&&
+    hierarchicalPlan.coverage?.allCandidatesAccountedFor===true&&
+    Array.isArray(hierarchicalPlan.issues)&&Array.isArray(hierarchicalPlan.documents)&&
+    planPaths.length===candidates.length&&planSet.size===candidates.length&&candidates.every(p=>planSet.has(p))&&
+    (!corpusObservation||hierarchicalPlan.documents.every(d=>d.oid===corpusByPath.get(d.path)))&&
+    DIGEST.test(planDigest??'')&&digest(planProjection)===planDigest;
   const reasons = ['SEMANTIC_AND_RUNTIME_REGISTRY_COVERAGE_UNVERIFIED'];
-  if(hierarchicalPlan?.headSha!==headSha || hierarchicalPlan?.coverage?.allCandidatesAccountedFor!==true) reasons.push('HIERARCHICAL_DOCUMENTARY_PLAN_UNVERIFIED');
+  if(!planBound) reasons.push('HIERARCHICAL_DOCUMENTARY_PLAN_UNVERIFIED');
   else if(hierarchicalPlan.issues.length) reasons.push('HIERARCHICAL_DOCUMENTARY_OBLIGATIONS_UNRESOLVED');
   if (authorityObservation?.ok !== true) reasons.push('STATIC_AUTHORITY_PROOF_MISSING_OR_CONFLICT');
   if (corpusObservation?.inventoryCoverageComplete !== true) reasons.push('EXACT_CORPUS_INVENTORY_UNVERIFIED');
@@ -452,7 +462,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   if (g1?.status === 'DRIFT' && g1Differences.length) reasons.push('G1_DOCUMENTATION_DRIFT');
   else if (g1?.status !== 'ALIGNED') reasons.push('G1_PROOF_UNVERIFIED');
   const status = !inventoryAligned || governanceCheckOk !== true ||
-    (hierarchicalPlan!==null && (hierarchicalPlan.headSha!==headSha || hierarchicalPlan.coverage?.allCandidatesAccountedFor!==true || hierarchicalPlan.issues.length>0)) ||
+    (hierarchicalPlan!==null && (!planBound || hierarchicalPlan.issues.length>0)) ||
     (authorityObservation !== null && authorityObservation.ok !== true) ||
     (corpusObservation !== null && (corpusObservation.inventoryCoverageComplete !== true || (corpusObservation.unresolvedStructuralCount ?? corpusObservation.structuralUnverifiedCount)>0 || corpusObservation.historicalUnverifiedCount>0 || corpusObservation.unknownImpactCount>0)) ||
     (existingEvidence !== null && existingEvidence.ok !== true) ||
@@ -482,6 +492,44 @@ function git(args) {
   return execFileSync('git', args, {encoding:'utf8', env:{...process.env,GIT_NO_REPLACE_OBJECTS:'1'}, maxBuffer:MAX_BUFFER, timeout:60000, stdio:['ignore','pipe','ignore']});
 }
 
+function createExactBlobReader(entries) {
+  const deadline=Date.now()+90_000;
+  const entriesByPath=new Map(entries.map(e=>[e.path,e]));
+  const texts=new Map();
+  let bytesRead=0;
+  function readBytes(entry) {
+    if(!entry||SENSITIVE_PATH.test(entry.path)||entry.type!=='blob'||!['100644','100755'].includes(entry.mode)||
+      entry.size>MAX_BUFFER-1024||Date.now()>=deadline||bytesRead+entry.size>48*1024*1024) throw Error('DOCUMENT_AUTHORITY_SCAN_LIMIT');
+    const bytes=execFileSync('git',['cat-file','blob',entry.oid],{
+      env:{...process.env,GIT_NO_REPLACE_OBJECTS:'1'},maxBuffer:MAX_BUFFER,
+      timeout:Math.min(deadline-Date.now(),5000),stdio:['ignore','pipe','ignore']});
+    bytesRead+=entry.size;
+    return bytes;
+  }
+  function readEntry(entry) {
+    if(!entry||SENSITIVE_PATH.test(entry.path)||entry.type!=='blob'||!['100644','100755'].includes(entry.mode))
+      throw Error('CONTENT_UNVERIFIED');
+    if(texts.has(entry.path))return texts.get(entry.path);
+    const content=readBytes(entry).toString('utf8');
+    texts.set(entry.path,content);
+    return content;
+  }
+  return {entriesByPath,readEntry,readBytes};
+}
+
+// Same resolver is available BEFORE a work session, independently of OIDC,
+// a deploy run or an admission channel. It cannot create authority or write.
+export function observeCommonPlanAtCheckout(headSha,baselineSha=headSha) {
+  if(!SHA.test(headSha??'')||!SHA.test(baselineSha??'')||git(['rev-parse','HEAD']).trim()!==headSha)
+    throw Error('CHECKOUT_SHA_MISMATCH');
+  git(['merge-base','--is-ancestor',baselineSha,headSha]);
+  const entries=parseTrackedTree(git(['ls-tree','-r','--long','-z',headSha]));
+  const changes=parseNameStatus(git(['diff','--no-ext-diff','--name-status','-z','-M',baselineSha,headSha,'--']));
+  const {entriesByPath,readEntry}=createExactBlobReader(entries);
+  return buildCommonDocumentaryPlan({headSha,entries,candidatePaths:entries.map(e=>e.path).filter(isCandidate),
+    changes,readText:path=>readEntry(entriesByPath.get(path))});
+}
+
 export function main(env = process.env) {
   const headSha = env.GITHUB_SHA ?? '';
   if (env.GITHUB_REPOSITORY !== REPO || env.GITHUB_REF !== 'refs/heads/main' || !SHA.test(headSha)
@@ -503,34 +551,10 @@ export function main(env = process.env) {
       execFileSync(process.execPath,['scripts/check-doc-governance.mjs'],{stdio:'ignore',timeout:60000});
       governanceCheckOk = true;
     } catch { /* absence of proof blocks closure */ }
-    const deadline = Date.now()+90_000;
-    const entriesByPath = new Map(entries.map(e=>[e.path,e]));
-    const texts=new Map();
-    let bytesRead=0;
-    function readEntry(entry) {
-      if(!entry || SENSITIVE_PATH.test(entry.path) || entry.type!=='blob' ||
-         !['100644','100755'].includes(entry.mode) || entry.size>MAX_BUFFER-1024) throw Error('CONTENT_UNVERIFIED');
-      if(texts.has(entry.path)) return texts.get(entry.path);
-      const remaining=deadline-Date.now();
-      if(remaining<=0 || bytesRead+entry.size>48*1024*1024) throw Error('DOCUMENT_AUTHORITY_SCAN_LIMIT');
-      const content=execFileSync('git',['cat-file','blob',entry.oid],{encoding:'utf8',
-        env:{...process.env,GIT_NO_REPLACE_OBJECTS:'1'},maxBuffer:MAX_BUFFER,
-        timeout:Math.min(remaining,5000),stdio:['ignore','pipe','ignore']});
-      bytesRead+=entry.size;texts.set(entry.path,content);
-      return content;
-    }
-    // Compute and observe the common ordered plan before the generic corpus scan.
+    const {entriesByPath,readEntry,readBytes}=createExactBlobReader(entries);
     const hierarchicalPlan=buildCommonDocumentaryPlan({headSha,entries,candidatePaths:trackedPaths.filter(isCandidate),changes,
       readText:path=>readEntry(entriesByPath.get(path))});
-    const corpusObservation=observeTrackedCorpus({entries,trackedPaths,readText:readEntry,readBytes(entry){
-      if(!entry||SENSITIVE_PATH.test(entry.path)||entry.type!=='blob'||!['100644','100755'].includes(entry.mode)||
-        entry.size>MAX_BUFFER-1024||Date.now()>=deadline||bytesRead+entry.size>48*1024*1024) throw Error('ARCHIVE_READ_UNVERIFIED');
-      const bytes=execFileSync('git',['cat-file','blob',entry.oid],{
-        env:{...process.env,GIT_NO_REPLACE_OBJECTS:'1'},maxBuffer:MAX_BUFFER,
-        timeout:Math.min(deadline-Date.now(),5000),stdio:['ignore','pipe','ignore']});
-      bytesRead+=entry.size;
-      return bytes;
-    }});
+    const corpusObservation=observeTrackedCorpus({entries,trackedPaths,readText:readEntry,readBytes});
     const authorityObservation=observeDocumentAuthorities({trackedPaths,productionState:manifest,
       readText:path=>readEntry(entriesByPath.get(path))});
     let existingEvidence;
@@ -581,4 +605,13 @@ export function main(env = process.env) {
   return report;
 }
 
-if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) main();
+if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
+  if(process.argv[2]==='--plan'){
+    if(process.argv.length<4||process.argv.length>5)throw Error('DOCUMENTARY_PLAN_ARGUMENTS_INVALID');
+    const plan=observeCommonPlanAtCheckout(process.argv[3],process.argv[4]??process.argv[3]);
+    console.log(JSON.stringify(plan,null,2));
+    // Successful observation != semantic certification. Exit status is the
+    // structural planning gate; semantic verdict remains in the envelope.
+    if(plan.status==='BLOCKED_OR_UNVERIFIED')process.exitCode=2;
+  }else main();
+}

@@ -3,6 +3,7 @@
 // tree and existing documentary authorities. Structural reads are not proof
 // of semantic currency, nor proof that an external agent read a document.
 import { createHash } from 'node:crypto';
+import { posix } from 'node:path';
 
 export const FOUNDATION_SOURCE='memory/LOOP_ENGINEERING_INSTRUCTIONS_DOCX_EXTRACT_20260702.md';
 export const FOUNDATION_DOCUMENTS=Object.freeze([
@@ -241,6 +242,11 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     if(!edges.has(key))edges.set(key,{from,to,kind,verification:'REVIEW_RULE_NOT_PROVEN_DEPENDENCY'});
     if(edges.size>LIMIT*8)throw Error('DOCUMENTARY_PLAN_EDGE_LIMIT');
   }
+  const childrenByParent=new Map();
+  for(const scope of scopes.values())if(scope.parentKey){
+    if(!childrenByParent.has(scope.parentKey))childrenByParent.set(scope.parentKey,[]);
+    childrenByParent.get(scope.parentKey).push(scope);
+  }
   for(const scope of scopes.values()){
     for(const [type,paths] of scope.types){
       for(const p of paths){
@@ -251,7 +257,7 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
             for(const q of parent?.types.get(k)??[])edge(p,q,'ASCENDING_IMPACT_REVIEW');
         }
         if(['MISSION','DECISIONS','AGENTS','SOURCE_OF_TRUTH','ARCHITECTURE','DOCUMENT_AUTHORITIES'].includes(type)){
-          for(const child of scopes.values())if(child.parentKey===scope.key)
+          for(const child of childrenByParent.get(scope.key)??[])
             for(const k of ['AGENTS','MISSION','SOURCE_OF_TRUTH','ARCHITECTURE','ROADMAP','TASKS','SUIVI'])
               for(const q of child.types.get(k)??[])edge(p,q,'DESCENDING_IMPACT_REVIEW');
         }
@@ -270,6 +276,26 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     ['PRODUCTION_STATE.json','DEPLOYMENT_PRODUCTION.md']
   ];
   for(const [a,b] of rootJoins){edge(a,b,'AUTHORITY_JOIN_REVIEW');edge(b,a,'AUTHORITY_JOIN_REVIEW');}
+  // Existing explicit local Markdown links provide a cross-scope reference
+  // to review, not a declaration that two scopes share an authority.
+  // Never fetch URL targets or traverse outside the observed tree.
+  for(const row of rows){
+    if(row.scopeKey===null||row.readStatus!=='CONTENT_READ'||!row.path.endsWith('.md'))continue;
+    try {
+      const body=readText(row.path);
+      if(typeof body!=='string')continue;
+      let count=0;
+      for(const link of body.matchAll(/\]\(([^)\s]+)\)/g)){
+        if(++count>2000){issue.push({code:'DOCUMENT_LINK_REVIEW_LIMIT',path:row.path});break;}
+        const raw=link[1].split('#')[0];
+        if(!raw||raw.startsWith('/')||/[:%\\?]/.test(raw))continue;
+        const target=posix.normalize(posix.join(posix.dirname(row.path),raw));
+        const linked=rowByPath.get(target);
+        if(linked&&linked.scopeKey!==null&&linked.scopeKey!==row.scopeKey&&safePath(target))
+          edge(target,row.path,'EXPLICIT_CROSS_SCOPE_REFERENCE_REVIEW');
+      }
+    }catch{issue.push({code:'DOCUMENT_LINK_REVIEW_UNVERIFIED',path:row.path});}
+  }
   const changed=uniq(changes.flatMap(c=>[c?.path,c?.previousPath].filter(x=>x!==null&&x!==undefined)));
   if(!changed.every(safePath))throw Error('DOCUMENTARY_PLAN_CHANGE_INVALID');
   const outgoing=new Map();
@@ -295,7 +321,7 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
   // edge was found. All remaining documents retain an explicit review duty.
   const projection={schemaVersion:1,headSha,planId:'COMMON_HIERARCHICAL_DOCUMENTARY_PLAN_V1',
     entryIndependent:true,mutationPerformed:false,automaticExecutionAuthorized:false,
-    foundation:{sourcePath:FOUNDATION_SOURCE,sourceOid:foundationEntry?.oid??null,...foundation,
+    foundation:{level:0,sourcePath:FOUNDATION_SOURCE,sourceOid:foundationEntry?.oid??null,...foundation,
       intake,originalReadingSequence:foundingSequence,checkpoint:{path:'SUIVI.md',heading:'POINT DE REPRISE COURANT',status:checkpointStatus}},
     scopes:scopePlans,documents:rows,dependencies:[...edges.values()],issues:issue,
     coverage:{candidateCount:candidatePaths.length,plannedCount:rows.length,scopeCount:scopePlans.length,
@@ -303,7 +329,7 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
       unresolvedScopeCount:rows.filter(r=>r.scopeKey===null).length,
       directChangeCount:changed.length,impactReviewCount:impacted.size,
       allCandidatesAccountedFor:rows.length===candidatePaths.length,
-      runtimeTaskAndSessionScopeStatus:'RESOLVE_FROM_EXISTING_RUNTIME_AUTHORITIES',
+      runtimeTaskAndSessionScopeStatus:'RESOLVE_FROM_EXISTING_RUNTIME_AUTHORITIES',runtimeScopeLevel:6,
       semanticCoverageComplete:false,transversalDependencyCoverageComplete:false},
     status:issue.length?'BLOCKED_OR_UNVERIFIED':'PLAN_READY_SEMANTIC_REVIEW_PENDING',
     closureAttested:false};
