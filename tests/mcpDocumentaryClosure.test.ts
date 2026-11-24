@@ -83,7 +83,7 @@ test('post-deploy projection is mandatory on an attested run, read-only and sepa
   const source = await readFile('.github/workflows/mcp-deploy.yml','utf8');
   const closure = source.split('\n  documentary-closure:')[1]!;
   assert.ok(closure);
-  assert.match(closure,/needs: deploy/);
+  assert.match(closure,/needs: \[deploy, reobserve-documentation\]/);
   assert.match(closure,/needs\.deploy\.outputs\.g1-evidence != ''/);
   assert.match(closure,/fetch-depth: 0/);
   assert.match(closure,/permissions:\s*\n\s+contents: read/);

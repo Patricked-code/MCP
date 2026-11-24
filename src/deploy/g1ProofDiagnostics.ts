@@ -22,6 +22,13 @@ export const G1_UNVERIFIED_REASONS = [
   'G1_RUNTIME_HEALTH_UNVERIFIED',
   'G1_ALIGNMENT_UNVERIFIED',
   'G1_DOCUMENTATION_CONTRADICTIONS',
+  'G1_DOCUMENTATION_VERDICT_MISMATCH',
+  'G1_CONTRADICTION_CAPABILITIES_UNAVAILABLE',
+  'G1_CONTRADICTION_INVENTORY_UNAVAILABLE',
+  'G1_CONTRADICTION_GOVERNANCE_UNAVAILABLE',
+  'G1_CONTRADICTION_AUDIT_BASELINE_INVALID',
+  'G1_CONTRADICTION_TARGET_SELECTION_UNRESOLVED',
+  'G1_CONTRADICTION_OTHER',
   'G1_DOCUMENTATION_BASELINE_UNVERIFIED',
   'G1_RUNTIME_IMAGE_UNVERIFIED',
   'G1_LIVESTATE_VERSION_UNVERIFIED'
@@ -72,7 +79,23 @@ export function diagnoseG1Unverified(
     && state.contradictions.length === 1
     && state.contradictions[0] === 'DOCUMENTATION_DRIFT';
 
-  if (!isAligned && !isDocumentDrift) note('G1_DOCUMENTATION_CONTRADICTIONS');
+  if (!isAligned && !isDocumentDrift) {
+    note('G1_DOCUMENTATION_CONTRADICTIONS');
+    if ((state.documentation.drift && (state.alignment.documentation !== 'DOCUMENTATION_DRIFT'
+      || state.alignment.global !== 'RECONCILIATION_REQUIRED' || state.nextAction !== 'reconcile_canonical_documentation'))
+      || (!state.documentation.drift && state.alignment.documentation !== 'ALIGNED')) {
+      note('G1_DOCUMENTATION_VERDICT_MISMATCH');
+    }
+    if (state.targetSelection?.status === 'UNRESOLVED') note('G1_CONTRADICTION_TARGET_SELECTION_UNRESOLVED');
+    for (const code of state.contradictions) {
+      if (code === 'DOCUMENTATION_DRIFT') continue;
+      if (code === 'CAPABILITIES_UNAVAILABLE') note('G1_CONTRADICTION_CAPABILITIES_UNAVAILABLE');
+      else if (code === 'CURRENT_STATE_INVENTORY_UNAVAILABLE') note('G1_CONTRADICTION_INVENTORY_UNAVAILABLE');
+      else if (code === 'GOVERNANCE_EVIDENCE_UNAVAILABLE') note('G1_CONTRADICTION_GOVERNANCE_UNAVAILABLE');
+      else if (code.startsWith('AUDIT_BASELINE_')) note('G1_CONTRADICTION_AUDIT_BASELINE_INVALID');
+      else note('G1_CONTRADICTION_OTHER');
+    }
+  }
   if (isDocumentDrift) {
     if (!state.documentation.declaredGithubSha || !SHA.test(state.documentation.declaredGithubSha)
       || !state.documentation.declaredS1Sha || !SHA.test(state.documentation.declaredS1Sha)) {

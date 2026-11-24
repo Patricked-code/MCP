@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, mkdtemp, rm } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
 
 const WORKFLOW = new URL('../.github/workflows/mcp-deploy.yml', import.meta.url);
@@ -125,7 +128,7 @@ test('GWC-15 self-review: push gate propagates its authorizing CI run into the b
 test('G1 job inherits only the attested projection and has no OIDC or workflow write rights', async () => {
   const [deploy, g1] = (await workflowSource()).split('  reconcile-documentation:');
   assert.match(deploy!, /succeeded\)[\s\S]*&g1=1/);
-  assert.match(g1!, /needs: deploy/);
+  assert.match(g1!, /needs: \[deploy, reobserve-documentation\]/);
   assert.match(g1!, /continue-on-error: true/);
   assert.match(g1!, /permission-contents: write/);
   assert.match(g1!, /permission-pull-requests: write/);
@@ -151,4 +154,51 @@ test('G1 renders bounded reason codes for UNVERIFIED without opening an unverifi
   assert.match(g1!, /throw Error\("G1 proof unavailable/);
   assert.match(g1!, /G1_EVIDENCE/);
   assert.doesNotMatch(g1!, /id-token: write|actions: write|merge_pull_request/);
+});
+
+test('G1 reobserves only a prior attested job, preserves unverified proof on mismatches, and never starts a deploy', async () => {
+  const source=await workflowSource();
+  const job=source.split('  reobserve-documentation:')[1]!.split('  reconcile-documentation:')[0]!;
+  assert.match(job,/needs: deploy/);
+  assert.match(job,/needs\.deploy\.result == 'success'/);
+  assert.match(job,/G1_DEADLINE=\$\(\(SECONDS \+ 240\)\)/);
+  assert.match(job,/for g1_attempt in \$\(seq 1 12\)/);
+  assert.doesNotMatch(job,/\/deploy\/github\/s1\/start|--request POST|contents: write|pull-requests: write|secrets\./);
+  const shell=job.split('        run: |\n')[1]!.split('\n').filter(l=>l.startsWith('          ')||l==='').map(l=>l.slice(10)).join('\n');
+  const syntax=spawnSync('bash',['-n'],{input:shell,encoding:'utf8',timeout:5000});
+  assert.equal(syntax.status,0,syntax.stderr);
+  const dir=await mkdtemp(join(tmpdir(),'mcp-g1-reobserve-'));
+  try {
+    const sha='a'.repeat(40);
+    const initial={status:'UNVERIFIED',reasonCodes:['G1_DOCUMENTATION_CONTRADICTIONS']};
+    const attested={jobId:'mcp-s1-12-'+sha.slice(0,12),requestedSha:sha,status:'succeeded',phase:'attested',
+      runtimeRevision:sha,rollbackStatus:'not_needed',healthOk:true,oauthOk:true,mcpAuthOk:true};
+    const mocks=[
+      'sleep() { :; }',
+      'curl() {',
+      '  case "$'+'{!#}" in',
+      '    https://oidc.test/*) printf "%s" "$TEST_OIDC" ;;',
+      '    *"&g1=1") printf "%s" "$TEST_G1" ;;',
+      '    *) printf "unexpected endpoint" >&2; return 1 ;;',
+      '  esac',
+      '}'
+    ].join('\n');
+    for(const [i,g1,revision,expected] of [
+      [0,{status:'DRIFT',sha},sha,{status:'DRIFT',sha}],
+      [1,{status:'ALIGNED'},sha,{status:'ALIGNED'}],
+      [2,{status:'DRIFT',sha},'b'.repeat(40),initial],
+      [3,{status:'DRIFT',sha:'b'.repeat(40)},sha,initial]
+    ] as const) {
+      const output=join(dir,String(i));
+      const result=spawnSync('bash',['-s'],{input:mocks+'\n'+shell,encoding:'utf8',timeout:10000,
+        env:{...process.env,GITHUB_SHA:sha,GITHUB_RUN_ID:'12',GITHUB_OUTPUT:output,INITIAL_G1:JSON.stringify(initial),
+          MCP_BASE_URL:'https://mcp.test',ACTIONS_ID_TOKEN_REQUEST_URL:'https://oidc.test/token',
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN:'mock',TEST_OIDC:JSON.stringify({value:'a'.repeat(32)}),
+          TEST_G1:JSON.stringify({...attested,runtimeRevision:revision,g1})}});
+      assert.equal(result.error,undefined);
+      assert.equal(result.status,0,result.stderr);
+      assert.equal(await readFile(output,'utf8'),'g1-evidence='+JSON.stringify(expected)+'\n');
+      assert.doesNotMatch(result.stderr,/unexpected endpoint/);
+    }
+  } finally {await rm(dir,{recursive:true,force:true});}
 });
