@@ -128,3 +128,26 @@ test('evidence ignores replacement refs and keeps metadata bound to the reported
 
   assert.deepEqual(collectCurrentStateEvidence({ repositoryRoot: root }), original);
 });
+
+test('same exact tree evidence has identical hashes across locales and time zones',async()=>{
+  const root=await repositoryFixture();
+  for(const name of ['å','z','ä','A']){
+    await writeFile(path.join(root,'src',name+'.ts'),"import './b.js';\nexport const sample = true;\n");
+  }
+  const added=spawnSync('git',['add','src'],{cwd:root,encoding:'utf8'});
+  assert.equal(added.status,0,added.stderr);
+  const commit=spawnSync('git',['commit','-m','locale fixture'],{cwd:root,encoding:'utf8',
+    env:{...process.env,GIT_AUTHOR_DATE:'2026-11-24T09:00:00+01:00',GIT_COMMITTER_DATE:'2026-11-24T09:00:00+01:00'}});
+  assert.equal(commit.status,0,commit.stderr);
+  const observe=(locale:string,tz:string)=>{
+    const r=spawnSync(process.execPath,[script,'--root',root],{cwd:root,encoding:'utf8',
+      env:{...process.env,LANG:locale,LC_ALL:locale,TZ:tz},maxBuffer:1_048_576});
+    assert.equal(r.status,0,r.stderr);
+    return JSON.parse(r.stdout);
+  };
+  const english=observe('en_US.UTF-8','UTC'),swedish=observe('sv_SE.UTF-8','Pacific/Auckland');
+  assert.deepEqual(english,swedish);
+  assert.equal(english.generatedAt,'2026-11-24T08:00:00.000Z');
+  assert.deepEqual(english.architecture.imports.map((r:{from:string})=>r.from),
+    [...english.architecture.imports.map((r:{from:string})=>r.from)].sort());
+});

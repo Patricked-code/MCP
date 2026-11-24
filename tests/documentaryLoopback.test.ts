@@ -4,6 +4,8 @@ import test from 'node:test';
 import { deriveLoopbackCandidate,materializeLoopbackCandidate } from '../scripts/documentary-loopback.mjs';
 // @ts-ignore -- ESM report scripts
 import { observeLoopbackCheckpoint } from '../scripts/documentary-hierarchy.mjs';
+// @ts-ignore -- standalone ESM report script
+import { compareLiveAuthorities } from '../scripts/mcp-documentary-closure.mjs';
 
 const oldSha='a'.repeat(40),head='b'.repeat(40),jobId='mcp-s1-123-'+head.slice(0,12);
 const fence=String.fromCharCode(96).repeat(3);
@@ -61,4 +63,20 @@ test('refuses drift, stale or wrong proof, conflicting source and malformed chec
   const blocked=deriveLoopbackCandidate({...input,report:{...report,status:'DOCUMENTARY_CLOSURE_BLOCKED'}});
   assert.equal(blocked.status,'CANDIDATE_READY');
   assert.equal(blocked.closureAttested,false);
+});
+
+test('inventory component diagnostics explain differences but never weaken exact sourceDigest comparison',()=>{
+  const now=Date.parse(at),d='d'.repeat(64),other='e'.repeat(64);
+  const existingEvidence={ok:true,evidenceHead:head,sourceDigest:d,documentationDigest:d,governanceDigest:d,
+    testSuiteDigest:d,catalogueDigest:d,toolCount:160,architectureDigest:d,sourceGeneratedAt:at};
+  const g1={status:'ALIGNED',authorityEvidence:{schemaVersion:1,sha:head,observedAt:at,stateVersion:5,
+    inventoryDigest:other,documentationDigest:d,governanceDigest:d,testSuiteDigest:d,catalogueDigest:d,toolCount:160,
+    architectureDigest:other,sourceGeneratedAt:at}};
+  const r=compareLiveAuthorities({headSha:head,g1,existingEvidence,now});
+  assert.equal(r.matchedCount,5);assert.equal(r.differences[0].field,'inventoryDigest');
+  assert.deepEqual(r.inventoryDiagnostics.map((x:{field:string,status:string})=>[x.field,x.status]),
+    [['architectureDigest','CONFLICT'],['sourceGeneratedAt','MATCHED']]);
+  const missing=compareLiveAuthorities({headSha:head,g1:{...g1,authorityEvidence:{...g1.authorityEvidence,architectureDigest:undefined}},existingEvidence,now});
+  assert.equal(missing.matchedCount,5);
+  assert.equal(missing.inventoryDiagnostics[0].status,'UNVERIFIED');
 });

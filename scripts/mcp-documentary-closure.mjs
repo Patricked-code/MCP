@@ -367,6 +367,15 @@ export function compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobI
     if(status==='CONFLICT') differences.push({path,field:liveField,declared,observed,
       reason:'LIVE_AUTHORITY_VALUE_MISMATCH',source:authority,nextAction:'RESOLVE_AUTHORITY_AND_RECONCILE'});
   }
+  // Diagnostic only: missing components never erase or weaken the primary
+  // exact sourceDigest comparison, including for earlier evidence producers.
+  const inventoryDiagnostics=['architectureDigest','sourceGeneratedAt'].map(field=>{
+    const declared=existingEvidence?.[field],observed=e?.[field];
+    const valid=x=>typeof x==='string'&&(field==='architectureDigest'?DIGEST.test(x):
+      x.length<=40&&/^\d{4}-\d{2}-\d{2}T/.test(x)&&Number.isFinite(Date.parse(x)));
+    return {field,declared:valid(declared)?declared:null,observed:valid(observed)?observed:null,
+      status:!bound||!valid(declared)||!valid(observed)?'UNVERIFIED':declared===observed?'MATCHED':'CONFLICT'};
+  });
   const runtimeObservation=bound?validateRuntimeAuthorityObservation({headSha,g1,expectedJobId,now}):null;
   const observedByAuthority=new Map((runtimeObservation?.authorities??[]).map(r=>[r.authority,r]));
   const unresolvedRuntime=RUNTIME_AUTHORITIES.map(([authority,source])=>({
@@ -374,7 +383,7 @@ export function compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobI
     nextAction:'REUSE_EXISTING_AUTHORITY_READER_AND_COMPARE_PROJECTIONS'
   }));
   return {bound,headSha,observedAt:bound?e.observedAt:null,stateVersion:bound?e.stateVersion:null,
-    checks,differences,runtimeObservation,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
+    checks,differences,inventoryDiagnostics,runtimeObservation,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
     complete:false};
 }
 
@@ -570,6 +579,7 @@ export function main(env = process.env) {
       } catch {cartographyProfile={ok:false,reason:'CARTOGRAPHY_PROFILE_GENERATOR_UNAVAILABLE'};}
       existingEvidence={ok:state.evidenceHead===headSha&&state.contradictions.length===0,
         evidenceHead:state.evidenceHead,sourceDigest:state.sourceDigest,
+        architectureDigest:state.architecture.digest,sourceGeneratedAt:state.generatedAt,
         documentationDigest:state.documentation.digest,governanceDigest:state.governance.digest,
         testSuiteDigest:state.testSuiteDigest,cartographyProfile,
         catalogueDigest:cartographyProfile.ok?cartographyProfile.httpDigest:null,

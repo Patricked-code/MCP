@@ -23,12 +23,16 @@ const REQUIRED_GOVERNANCE_FILES = [
 ];
 const SENSITIVE_PATH = /(^|\/)(?:\.env(?:\.|$)|secrets?|credentials?)(?:\/|$)/iu;
 
+// Stable ordinal comparison for evidence hashes; default localeCompare is
+// environment/ICU dependent. Historical attestations remain bound to their SHA.
+const ordinal = (left, right) => left < right ? -1 : left > right ? 1 : 0;
+
 function canonical(value) {
   if (Array.isArray(value)) return value.map(canonical);
   if (value && typeof value === 'object') {
     return Object.fromEntries(Object.entries(value)
       .filter(([, entry]) => entry !== undefined)
-      .sort(([left], [right]) => left.localeCompare(right))
+      .sort(([left], [right]) => ordinal(left, right))
       .map(([key, entry]) => [key, canonical(entry)]));
   }
   return value;
@@ -78,7 +82,7 @@ export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } =
 
   const evidenceHead = git(['rev-parse', 'HEAD']);
   if (!/^[0-9a-f]{40}$/u.test(evidenceHead)) throw new Error('CURRENT_STATE_EVIDENCE_HEAD_INVALID');
-  const generatedAt = git(['show', '-s', '--format=%cI', evidenceHead]);
+  const generatedAt = new Date(git(['show', '-s', '--format=%cI', evidenceHead])).toISOString();
   const treeEntries = new Map();
   for (const rawEntry of gitRaw(['ls-tree', '-r', '-z', '--long', evidenceHead]).split('\0').filter(Boolean)) {
     const separator = rawEntry.indexOf('\t');
@@ -175,10 +179,10 @@ export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } =
       routes.push({ method: match[1].toUpperCase(), path: match[2], source: module });
     }
   }
-  imports.sort((left, right) => left.from.localeCompare(right.from) || left.to.localeCompare(right.to));
-  routes.sort((left, right) => left.path.localeCompare(right.path)
-    || left.method.localeCompare(right.method)
-    || left.source.localeCompare(right.source));
+  imports.sort((left, right) => ordinal(left.from, right.from) || ordinal(left.to, right.to));
+  routes.sort((left, right) => ordinal(left.path, right.path)
+    || ordinal(left.method, right.method)
+    || ordinal(left.source, right.source));
 
   const markdown = tracked.filter((file) => file.toLowerCase().endsWith('.md'));
   const audits = markdown.filter((file) => file.startsWith('docs/audits/'));
@@ -268,7 +272,7 @@ export function collectCurrentStateEvidence({ repositoryRoot = process.cwd() } =
     governance,
     testSuiteDigest,
     contradictions: contradictions.sort((left, right) => (
-      left.code.localeCompare(right.code) || (left.path ?? '').localeCompare(right.path ?? '')
+      ordinal(left.code, right.code) || ordinal(left.path ?? '', right.path ?? '')
     ))
   };
   const evidence = { ...stableProof, sourceDigest: digest(stableProof) };
