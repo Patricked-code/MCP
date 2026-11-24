@@ -5,7 +5,9 @@ import {
   extractCanonicalState,
   validateMarkdownBaseline,
   validateProductionState,
-  validateRequiredCanonicalStates
+  validateRequiredCanonicalStates,
+  detectHistoricalMirrors,
+  validateHistoricalMirrorBanner
 } from './doc-governance-lib.mjs';
 
 const BASELINE_FILE = 'docs/governance/markdown-inventory.json';
@@ -59,6 +61,20 @@ if (!process.exitCode) {
       baselineEntries: baseline.entries.length,
       actual: actualPaths.length
     });
+  }
+}
+
+// Prevent a legacy docs/ mirror from silently becoming a competing active
+// source. The set is derived from the same tracked Markdown baseline as above.
+if (!process.exitCode) {
+  for (const path of detectHistoricalMirrors(baseline.entries.map((entry) => entry.path))) {
+    try {
+      const content = await readFile(path, 'utf8');
+      const result = validateHistoricalMirrorBanner(path, content);
+      if (!result.ok) fail('historical_mirror_authority_unverified', { path, issues: result.issues });
+    } catch (error) {
+      fail('historical_mirror_unreadable', { path, error: error instanceof Error ? error.message : 'unknown' });
+    }
   }
 }
 

@@ -371,5 +371,38 @@ export function validateProductionState(state, canonicalState) {
   return { ok: issues.length === 0, issues };
 }
 
+// Derived from the tracked inventory: only docs/NAME.md files with a matching
+// root NAME.md are historical mirrors. No second static document registry.
+export const HISTORICAL_MIRROR_MARKER = 'MCP-DOC-AUTHORITY-MIRROR-20261124';
+
+export function detectHistoricalMirrors(trackedPaths) {
+  const tracked = new Set(trackedPaths);
+  return [...tracked]
+    .filter((path) => /^docs\/[^/]+\.md$/.test(path) && tracked.has(path.slice(5)))
+    .sort();
+}
+
+export function validateHistoricalMirrorBanner(path, content) {
+  if (typeof path !== 'string' || !/^docs\/[^/]+\.md$/.test(path) || typeof content !== 'string') {
+    return { ok: false, issues: ['invalid_document'] };
+  }
+  const open = '<!-- ' + HISTORICAL_MIRROR_MARKER + ' -->';
+  const close = '<!-- /' + HISTORICAL_MIRROR_MARKER + ' -->';
+  const firstNewline = content.indexOf('\n');
+  const start = content.indexOf(open);
+  const end = content.indexOf(close);
+  const issues = [];
+  if (!content.startsWith('# ') || firstNewline < 0) issues.push('missing_title');
+  if (start < firstNewline || start > firstNewline + 8 || end < start + open.length || end - start > 2500) {
+    issues.push('missing_or_misplaced_banner');
+  }
+  if (start >= 0 && content.indexOf(open, start + open.length) !== -1) issues.push('duplicate_open_banner');
+  if (end >= 0 && content.indexOf(close, end + close.length) !== -1) issues.push('duplicate_close_banner');
+  if (start >= 0 && end > start && !content.slice(start + open.length, end).includes('](../' + path.slice(5) + ')')) {
+    issues.push('missing_exact_root_authority_link');
+  }
+  return { ok: issues.length === 0, issues };
+}
+
 export const canonicalStateKeys = Object.freeze([...MCP_CANONICAL_KEYS]);
 export const canonicalRootDocuments = Object.freeze([...MCP_CANONICAL_ROOT_DOCUMENTS]);

@@ -292,3 +292,30 @@ test('GWC-11 RED: documentation governance accepts a project-scoped declaration 
   assert.equal(validation.ok, true);
   assert.deepEqual(validation.conflicts, []);
 });
+
+
+test('miroirs historiques : découverte dynamique par référence racine, sans second registre', () => {
+  const tracked = ['docs/TASKS.md', 'TASKS.md', 'docs/GPT.md', 'GPT.md', 'docs/governance/README.md', 'docs/ONLY.md'];
+  assert.deepEqual(docGovernance.detectHistoricalMirrors(tracked), ['docs/GPT.md', 'docs/TASKS.md']);
+});
+
+test('miroirs historiques : bannière et lien exact sont requis', () => {
+  const open = '<!-- MCP-DOC-AUTHORITY-MIRROR-20261124 -->';
+  const close = '<!-- /MCP-DOC-AUTHORITY-MIRROR-20261124 -->';
+  const valid = '# TASKS.md\n\n' + open + '\n> Document initial [registre racine](../TASKS.md).\n' + close + '\n\n## Historique\n';
+  assert.deepEqual(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', valid), { ok: true, issues: [] });
+  assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', valid.replace('../TASKS.md', '../TODO.md')).ok, false);
+  assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', valid.replace(open, '')).ok, false);
+  assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', valid + open).ok, false);
+  assert.equal(docGovernance.validateHistoricalMirrorBanner('docs/TASKS.md', '# TASKS.md\n\nHistorique non balisé').ok, false);
+});
+
+test('les miroirs réellement suivis doivent tous déclarer leur autorité historique', async () => {
+  const inventory = JSON.parse(await readFile('docs/governance/markdown-inventory.json', 'utf8'));
+  const mirroredPaths = docGovernance.detectHistoricalMirrors(inventory.entries.map((entry) => entry.path));
+  assert.equal(mirroredPaths.length, 20);
+  for (const path of mirroredPaths) {
+    const content = await readFile(path, 'utf8');
+    assert.deepEqual(docGovernance.validateHistoricalMirrorBanner(path, content).issues, [], path);
+  }
+});
