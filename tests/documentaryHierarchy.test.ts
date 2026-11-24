@@ -164,7 +164,8 @@ test('explicit root equivalences and actual mission authority table resolve exis
   const scopeKey='docs/projects/WT-PROJECT-MCP-001';
   const r=parseRootDocumentaryEquivalences(root,scopeKey);
   assert.equal(r.status,'DECLARED');
-  assert.equal(r.rows.length,13);
+  assert.equal(r.rows.length,16);
+  assert.ok(['INTENTIONS','IMPLEMENTATION_PLAN','EVIDENCE_INDEX'].every(type=>r.rows.some((row:{type:string})=>row.type===type)));
   assert.equal(parseRootDocumentaryEquivalences(root,'docs/projects/ANOTHER').status,'CONFLICT');
   assert.equal(parseRootDocumentaryEquivalences(root.replace('"ROADMAP.md"','"../ROADMAP.md"'),scopeKey).status,'CONFLICT');
   const id='WT-MCP-REGISTRY-RESOLUTION-20261121-01';
@@ -217,4 +218,21 @@ test('scoped equivalences use exact same-owner documents and never certify their
   const lost=entries.filter(x=>x.path!==p(child,'TASKS'));
   const incomplete=buildCommonDocumentaryPlan({...input,entries:lost,candidatePaths:lost.map(x=>x.path),readText:(path:string)=>path===source?block(data):input.readText(path)});
   assert.ok(incomplete.issues.some((x:{type:string,scopeKey:string})=>x.type==='IMPLEMENTATION_PLAN'&&x.scopeKey===child));
+});
+
+test('project equivalents participate in hierarchy propagation without moving document ownership',()=>{
+  const {input}=fixture(['PROJECT_BRIEF.md','DECISIONS_LOG.md'],[p(work,'TASKS'),'PROJECT_BRIEF.md']);
+  const absent=[p(project,'MISSION'),p(project,'SUIVI')];
+  const entries=input.entries.filter(x=>!absent.includes(x.path));
+  const fence=String.fromCharCode(96).repeat(3);
+  const body=fence+'documentary-authority-equivalence\n'+JSON.stringify({schemaVersion:1,scopeKey:project,
+    identityStatus:'DOCUMENTARY_CANDIDATE',equivalences:[
+      {type:'MISSION',paths:['PROJECT_BRIEF.md']},{type:'SUIVI',paths:['SUIVI.md']}
+    ]})+'\n'+fence+'\n';
+  const plan=buildCommonDocumentaryPlan({...input,entries,candidatePaths:entries.map(x=>x.path),
+    readText:(path:string)=>path==='SOURCE_OF_TRUTH.md'?body:input.readText(path)});
+  assert.ok(plan.dependencies.some((e:{from:string,to:string,kind:string})=>e.from===p(sub,'TASKS')&&e.to==='SUIVI.md'&&e.kind==='ASCENDING_IMPACT_REVIEW'));
+  assert.ok(plan.dependencies.some((e:{from:string,to:string,kind:string})=>e.from==='PROJECT_BRIEF.md'&&e.to===p(sub,'AGENTS')&&e.kind==='DESCENDING_IMPACT_REVIEW'));
+  assert.equal(plan.documents.find((d:{path:string})=>d.path==='SUIVI.md').scopeKey,'REPOSITORY_ROOT');
+  assert.equal(plan.closureAttested,false);
 });

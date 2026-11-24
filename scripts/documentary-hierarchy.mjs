@@ -435,24 +435,31 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     if(!edges.has(key))edges.set(key,{from,to,kind,verification:'REVIEW_RULE_NOT_PROVEN_DEPENDENCY'});
     if(edges.size>LIMIT*8)throw Error('DOCUMENTARY_PLAN_EDGE_LIMIT');
   }
+  // Declared equivalent paths participate in the SAME review graph as
+  // dedicated local documents, without altering their actual owner.
+  const reviewTypes=new Map([...scopes.values()].map(s=>[s.key,new Map(s.types)]));
+  for(const eq of explicitEquivalences)if(eq.status==='DECLARED_EQUIVALENT_READ'){
+    const types=reviewTypes.get(eq.scopeKey);
+    if(types&&!types.has(eq.type))types.set(eq.type,eq.paths);
+  }
   const childrenByParent=new Map();
   for(const scope of scopes.values())if(scope.parentKey){
     if(!childrenByParent.has(scope.parentKey))childrenByParent.set(scope.parentKey,[]);
     childrenByParent.get(scope.parentKey).push(scope);
   }
   for(const scope of scopes.values()){
-    for(const [type,paths] of scope.types){
+    for(const [type,paths] of reviewTypes.get(scope.key)){
       for(const p of paths){
-        for(const targetType of IMPACT_TYPES[type]??[])for(const q of scope.types.get(targetType)??[])edge(p,q,'LOCAL_IMPACT_REVIEW');
+        for(const targetType of IMPACT_TYPES[type]??[])for(const q of reviewTypes.get(scope.key).get(targetType)??[])edge(p,q,'LOCAL_IMPACT_REVIEW');
         if(scope.parentKey&&['SUIVI','CONTINUITY','EVIDENCE_INDEX','TASKS','ROADMAP'].includes(type)){
           const parent=scopes.get(scope.parentKey);
           for(const k of ['SUIVI','ROADMAP','TASKS','TODO','CONTINUITY','EVIDENCE_INDEX'])
-            for(const q of parent?.types.get(k)??[])edge(p,q,'ASCENDING_IMPACT_REVIEW');
+            for(const q of reviewTypes.get(parent?.key)?.get(k)??[])edge(p,q,'ASCENDING_IMPACT_REVIEW');
         }
         if(['MISSION','DECISIONS','AGENTS','SOURCE_OF_TRUTH','ARCHITECTURE','DOCUMENT_AUTHORITIES'].includes(type)){
           for(const child of childrenByParent.get(scope.key)??[])
             for(const k of ['AGENTS','MISSION','SOURCE_OF_TRUTH','ARCHITECTURE','ROADMAP','TASKS','SUIVI'])
-              for(const q of child.types.get(k)??[])edge(p,q,'DESCENDING_IMPACT_REVIEW');
+              for(const q of reviewTypes.get(child.key)?.get(k)??[])edge(p,q,'DESCENDING_IMPACT_REVIEW');
         }
       }
     }

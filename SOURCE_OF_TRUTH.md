@@ -155,9 +155,38 @@ Pour la racine documentaire candidate `WT-PROJECT-MCP-001`, les documents racine
         "MCP_REPO_INVENTORY.md",
         "MCP_SERVER_MAPPING.md"
       ]
+    },
+    {
+      "type": "INTENTIONS",
+      "paths": [
+        "PROJECT_BRIEF.md",
+        "DECISIONS_LOG.md"
+      ]
+    },
+    {
+      "type": "IMPLEMENTATION_PLAN",
+      "paths": [
+        "ROADMAP.md",
+        "docs/governance/program-backlog-convergence.json",
+        "LOOP_ENGINEERING.md"
+      ]
+    },
+    {
+      "type": "EVIDENCE_INDEX",
+      "paths": [
+        "ACTIVITY_LOG.md",
+        "DEPLOYMENT_PRODUCTION.md",
+        "SUIVI.md"
+      ]
     }
   ]
 }
 ```
 
-Les types INTENTIONS, IMPLEMENTATION_PLAN et EVIDENCE_INDEX du projet restent à résoudre par les autorités existantes (notamment les dossiers de conception et de continuité) : ne pas les assimiler sans preuve à une roadmap, à un brief ou à un journal générique. La mission et les sous-chantiers conservent leurs propres documents propriétaires. La [carte d'autorités de la mission](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__DOCUMENT_AUTHORITIES.md) désigne déjà ses équivalences architecture/cartographie. Voir [#441](https://github.com/Patricked-code/MCP/issues/441) et [Loop Engineering](LOOP_ENGINEERING.md).
+### Rattachement des trois fonctions projet restantes — 24 novembre 2026
+
+- **INTENTIONS** : le [brief projet](PROJECT_BRIEF.md#intentions-du-projet-mcp) conserve les intentions explicites et leur provenance ; [DECISIONS_LOG](DECISIONS_LOG.md) conserve les décisions réellement adoptées. Une intention non décidée ne devient pas une autorisation.
+- **IMPLEMENTATION_PLAN** : le [Programme d'évolution gouvernée](ROADMAP.md#programme-dévolution-gouvernée) fournit les chantiers et leur réalisation par lots ; [Program Backlog V2](docs/governance/program-backlog-convergence.json) fournit les `workItems`, `taskBlueprints`, `executionModel.waves`, dépendances et gates ; [Loop Engineering](LOOP_ENGINEERING.md) fournit la procédure commune de réalisation. Cette composition constitue le plan documentaire de référence, pas une file d'exécution ; les plans locaux restent propriétaires de leur détail.
+- **EVIDENCE_INDEX** : le [journal des preuves](ACTIVITY_LOG.md) indexe les événements et leurs références GitHub ; [DEPLOYMENT_PRODUCTION](DEPLOYMENT_PRODUCTION.md) détient les attestations de déploiement historiques ; [SUIVI](SUIVI.md#point-de-reprise-courant) indique le checkpoint et les preuves à réobserver. Le journal n'est pas une preuve runtime actuelle.
+
+Ces trois équivalences rendent les sources identifiables et lisibles ; elles ne certifient pas que toutes les intentions historiques ont été récupérées, tous les plans réconciliés ou toutes les preuves indexées. Le dossier candidat #389 reste distinct et son intégration ne se déduit pas de cette déclaration. La mission et les sous-chantiers conservent leurs propres documents propriétaires. La [carte d'autorités de la mission](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__DOCUMENT_AUTHORITIES.md) désigne déjà ses équivalences architecture/cartographie. Voir [#441](https://github.com/Patricked-code/MCP/issues/441) et [Loop Engineering](LOOP_ENGINEERING.md).
