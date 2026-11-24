@@ -1,8 +1,10 @@
 // REC-00/01: evidence projection, not a new registry or a write authority.
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
+import { writeFileSync, appendFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+import { collectCurrentStateEvidence } from './current-state-evidence.mjs';
 import { validateMarkdownBaseline, extractCanonicalState, validateRequiredCanonicalStates,
   validateProductionState, detectHistoricalMirrors, validateHistoricalMirrorBanner, canonicalStateKeys }
   from './doc-governance-lib.mjs';
@@ -13,11 +15,106 @@ const INVENTORY = 'docs/governance/markdown-inventory.json';
 const PRODUCTION = 'PRODUCTION_STATE.json';
 const LIMIT = 20000;
 const MAX_BUFFER = 8 * 1024 * 1024;
-const isCandidate = p => /\.md$/i.test(p) ||
-  (/^(?:docs\/|\.mcp\/|memory\/|wealthtech_project_memory\/|Migration\/)/.test(p) && /\.(?:json|ya?ml|txt|csv)$/i.test(p)) ||
-  (!p.includes('/') && /\.(?:json|ya?ml)$/i.test(p) && !/^(?:package(?:-lock)?|tsconfig(?:\..*)?)\.json$/.test(p));
+// Do not filter on a fixed list of folders. Every tracked object is inventoried;
+// classification is a routing hint, never a proof that a file is non-impacting.
+const isCandidate = p => /\.(?:md|json|ya?ml|txt|csv|tsv|xml|pdf|docx?|xlsx?|toml|ini|rst|adoc)$/i.test(p) ||
+  /^(?:docs\/|\.mcp\/|memory\/|wealthtech_project_memory\/|Migration\/|data\/)/.test(p);
+const SENSITIVE_PATH = /(^|\/)(?:\.env(?:\.|$)|secrets?|credentials?)(?:\/|$)/iu;
+const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const validPath = p => typeof p === 'string' && p.length > 0 && p.length <= 1024 &&
   !/[\x00-\x1f\x7f]/.test(p) && !p.startsWith('/') && !p.split('/').some(x => x === '' || x === '.' || x === '..');
+
+export function parseTrackedTree(raw) {
+  if (typeof raw !== 'string' || (raw !== '' && !raw.endsWith('\0'))) throw Error('TREE_TRUNCATED');
+  const seen=new Set();
+  const entries=[];
+  for(const row of raw ? raw.slice(0,-1).split('\0') : []) {
+    const tab=row.indexOf('\t');
+    const meta=tab < 0 ? [] : row.slice(0,tab).trim().split(/\s+/);
+    const [mode,type,oid,size]=meta;
+    const path=tab<0?'':row.slice(tab+1);
+    if(meta.length!==4 || !/^[0-9]{6}$/.test(mode??'') || !['blob','commit'].includes(type) ||
+       !SHA.test(oid??'') || !validPath(path) || seen.has(path) ||
+       (type==='blob' && (!/^\d+$/.test(size??'') || !Number.isSafeInteger(Number(size)))) ||
+       (type==='commit' && size!=='-')) throw Error('TREE_ENTRY_INVALID');
+    seen.add(path);
+    entries.push({path,mode,type,oid,size:size==='-'?null:Number(size)});
+    if(entries.length>LIMIT) throw Error('TREE_LIMIT_EXCEEDED');
+  }
+  return entries.sort((a,b)=>a.path.localeCompare(b.path));
+}
+
+export function classifyTrackedPath(path) {
+  if(!validPath(path)) throw Error('TREE_ENTRY_INVALID');
+  if(/^(?:tests\/fixtures\/|capsules\/[^/]+\/test\/)/.test(path)) return 'TEST_FIXTURE';
+  if(/^docs\/projects\//.test(path)) return 'SCOPED_PROJECT_DOCUMENT';
+  if(/^\.mcp\//.test(path)) return 'VERSIONED_GOVERNANCE';
+  if(/^data\//.test(path)) return 'VERSIONED_DATA_NOT_RUNTIME_AUTHORITY';
+  if(/^(?:docs\/history\/|docs\/audits\/|docs\/reports\/|Migration\/)/.test(path)) return 'HISTORICAL_EVIDENCE_CANDIDATE';
+  if(/^(?:memory\/|wealthtech_project_memory\/|docs\/gwc\/canonical-memory\/)/.test(path)) return 'MEMORY_CANDIDATE';
+  if(/^(?:\.github\/workflows\/)/.test(path)) return 'WORKFLOW_CONTRACT';
+  if(path===PRODUCTION) return 'PRODUCTION_DECLARATION';
+  if(/^docs\//.test(path) || /\.md$/i.test(path)) return 'DOCUMENT_CANDIDATE';
+  if(isCandidate(path)) return 'STRUCTURED_OR_DOCUMENT_CANDIDATE';
+  if(/^(?:src\/|scripts\/|tests\/|capsules\/)/.test(path)) return 'IMPLEMENTATION_OR_TEST_IMPACT';
+  return 'UNCLASSIFIED_IMPACT';
+}
+
+// Inventory coverage is distinct from semantic reconciliation coverage.
+// Even a binary, symlink, submodule or unknown format gets an explicit row.
+export function observeTrackedCorpus({entries, trackedPaths, readText}) {
+  const entriesByPath=new Map(entries.map(e=>[e.path,e]));
+  if(entries.length!==entriesByPath.size || entries.length!==trackedPaths.length ||
+    !trackedPaths.every(p=>entriesByPath.has(p))) throw Error('TREE_COVERAGE_MISMATCH');
+  const rows=[];
+  let deadline=Date.now()+90_000;
+  const groups={};
+  for(const entry of entries) {
+    const {path,mode,type,oid,size}=entry;
+    const role=classifyTrackedPath(path);
+    groups[role]=(groups[role]??0)+1;
+    let structuralStatus='IDENTITY_ONLY';
+    let reason='SEMANTIC_IMPACT_UNVERIFIED';
+    let scopeHint=null;
+    if(role==='SCOPED_PROJECT_DOCUMENT') {
+      const pieces=path.split('/');
+      const file=pieces.at(-1);
+      const parent=pieces.at(-2);
+      if(file.includes('__') && file.startsWith(parent+'__')) scopeHint=parent;
+    }
+    if(SENSITIVE_PATH.test(path)) {
+      structuralStatus='UNVERIFIED';reason='SENSITIVE_PATH_NO_CONTENT_READ';
+    } else if(type!=='blob'||!['100644','100755'].includes(mode)) {
+      structuralStatus='UNVERIFIED';reason='NON_REGULAR_GIT_OBJECT';
+    } else if(isCandidate(path) && /\.(?:md|json|txt|csv|tsv|xml|ya?ml|toml|ini|rst|adoc)$/i.test(path)) {
+      if(Date.now()>=deadline) {
+        structuralStatus='UNVERIFIED';reason='CORPUS_SCAN_DEADLINE';
+      } else {
+        try {
+          const body=readText(entry);
+          if(typeof body!=='string' || body.includes('\u0000') || body.includes('\uFFFD')) throw Error('TEXT_ENCODING_UNVERIFIED');
+          if(/\.json$/i.test(path)) {
+            JSON.parse(body);structuralStatus='JSON_PARSED';reason='SEMANTIC_SCHEMA_UNVERIFIED';
+          } else {
+            structuralStatus='TEXT_READ';reason='SEMANTIC_CONTENT_UNVERIFIED';
+          }
+        } catch {
+          structuralStatus='UNVERIFIED';reason='CONTENT_UNREADABLE_OR_INVALID';
+        }
+      }
+    }
+    rows.push({path,mode,type,oid,size,role,scopeHint,structuralStatus,reason,semanticStatus:'UNVERIFIED'});
+  }
+  const candidateRows=rows.filter(r=>isCandidate(r.path));
+  const structuralRead=candidateRows.filter(r=>['JSON_PARSED','TEXT_READ'].includes(r.structuralStatus)).length;
+  return {treeDigest:digest(rows.map(({path,mode,type,oid,size})=>({path,mode,type,oid,size}))),
+    trackedCount:rows.length,inventoryCoverageComplete:true,roleCounts:groups,
+    candidateCount:candidateRows.length,structuralReadCount:structuralRead,
+    identityOnlyCount:candidateRows.filter(r=>r.structuralStatus==='IDENTITY_ONLY').length,
+    structuralUnverifiedCount:candidateRows.filter(r=>r.structuralStatus==='UNVERIFIED').length,
+    unknownImpactCount:rows.filter(r=>r.role==='UNCLASSIFIED_IMPACT').length,
+    semanticCoverageComplete:false,rows};
+}
 
 export function parseNameStatus(raw) {
   if (raw === '') return [];
@@ -41,7 +138,7 @@ export function parseNameStatus(raw) {
 // check-doc-governance.mjs. The existing validators remain the authority.
 const REQUIRED_STATES = Object.freeze(['SUIVI.md','TASKS.md','TODO.md',
   'DEPLOYMENT_PRODUCTION.md','MCP_ANTI_DISPERSION_GOVERNANCE.md']);
-const MAX_JSON_CHECKS = 500;
+const MAX_JSON_CHECKS = LIMIT;
 function safeValue(value) {
   if (value === null || typeof value === 'boolean' || typeof value === 'number') return value;
   if (typeof value !== 'string' || value.length > 240 ||
@@ -101,7 +198,7 @@ export function observeDocumentAuthorities({trackedPaths, readText, productionSt
       add(path,'$authority','HISTORICAL_MIRROR_UNREADABLE',null,path.slice(5));
     }
   }
-  const json=trackedPaths.filter(p=>isCandidate(p)&&p.endsWith('.json')).sort();
+  const json=trackedPaths.filter(p=>p.endsWith('.json')&&!SENSITIVE_PATH.test(p)).sort();
   for(const path of json.slice(0,MAX_JSON_CHECKS)){
     try {
       JSON.parse(readText(path));
@@ -118,7 +215,7 @@ export function observeDocumentAuthorities({trackedPaths, readText, productionSt
       jsonChecked:json.length-omitted.length,complete:false}};
 }
 
-export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk, authorityObservation = null}) {
+export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk, authorityObservation = null, corpusObservation = null, existingEvidence = null}) {
   if (!SHA.test(headSha ?? '') || !SHA.test(baselineSha ?? '') ||
       !Array.isArray(trackedPaths) || trackedPaths.length > LIMIT ||
       !trackedPaths.every(validPath) || new Set(trackedPaths).size !== trackedPaths.length ||
@@ -173,12 +270,18 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   differences.push(...g1Differences);
   const reasons = ['SEMANTIC_AND_RUNTIME_REGISTRY_COVERAGE_UNVERIFIED'];
   if (authorityObservation?.ok !== true) reasons.push('STATIC_AUTHORITY_PROOF_MISSING_OR_CONFLICT');
+  if (corpusObservation?.inventoryCoverageComplete !== true) reasons.push('EXACT_CORPUS_INVENTORY_UNVERIFIED');
+  if (corpusObservation?.structuralUnverifiedCount > 0) reasons.push('CORPUS_CONTENT_UNVERIFIED');
+  if (existingEvidence && existingEvidence.ok !== true) reasons.push('CURRENT_STATE_EVIDENCE_CONTRADICTIONS');
+  const g1ReasonCodes=Array.isArray(g1?.reasonCodes)?g1.reasonCodes.filter(x=>typeof x==='string'&&/^G1_[A-Z0-9_]{2,80}$/.test(x)).slice(0,20):[];
   if (!inventoryAligned) reasons.push('MARKDOWN_INVENTORY_DRIFT');
   if (governanceCheckOk !== true) reasons.push('DOCUMENT_GOVERNANCE_CHECK_NOT_SUCCESS');
   if (g1?.status === 'DRIFT' && g1Differences.length) reasons.push('G1_DOCUMENTATION_DRIFT');
   else if (g1?.status !== 'ALIGNED') reasons.push('G1_PROOF_UNVERIFIED');
   const status = !inventoryAligned || governanceCheckOk !== true ||
     (authorityObservation !== null && authorityObservation.ok !== true) ||
+    (corpusObservation !== null && (corpusObservation.inventoryCoverageComplete !== true || corpusObservation.structuralUnverifiedCount>0)) ||
+    (existingEvidence !== null && existingEvidence.ok !== true) ||
     (g1?.status !== 'ALIGNED' && !g1Differences.length)
     ? 'DOCUMENTARY_CLOSURE_BLOCKED' : 'DOCUMENTARY_CLOSURE_PENDING';
   return {
@@ -189,7 +292,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
       inventoryAligned, missing, absent, duplicates, unclassified: baselineCheck.unclassified,
       categoryDrift: baselineCheck.categoryDrift, candidateCount: documents.length},
     coverage: {semanticVerifiedCount: 0, complete: false, runtimeRegistryCoverage: 'UNVERIFIED'},
-    authorityObservation,
+    corpusObservation, existingEvidence, authorityObservation, g1ReasonCodes,
     governanceCheckOk: governanceCheckOk === true,
     g1Status: ['DRIFT','ALIGNED','UNVERIFIED'].includes(g1?.status) ? g1.status : 'UNVERIFIED',
     differences, changes, documents, reasons,
@@ -201,7 +304,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
 }
 
 function git(args) {
-  return execFileSync('git', args, {encoding:'utf8', maxBuffer:MAX_BUFFER, timeout:60000, stdio:['ignore','pipe','ignore']});
+  return execFileSync('git', args, {encoding:'utf8', env:{...process.env,GIT_NO_REPLACE_OBJECTS:'1'}, maxBuffer:MAX_BUFFER, timeout:60000, stdio:['ignore','pipe','ignore']});
 }
 
 export function main(env = process.env) {
@@ -211,14 +314,13 @@ export function main(env = process.env) {
   let report;
   try {
     if (git(['rev-parse','HEAD']).trim() !== headSha) throw Error('CHECKOUT_SHA_MISMATCH');
-    const manifest = JSON.parse(readFileSync(PRODUCTION, 'utf8'));
+    const manifest = JSON.parse(git(['show',headSha+':'+PRODUCTION]));
     const baselineSha = manifest.githubCommitFull;
     if (!SHA.test(baselineSha ?? '') || manifest.repository !== REPO || manifest.branch !== 'main') throw Error('INVALID_BASELINE');
     git(['merge-base','--is-ancestor',baselineSha,headSha]);
-    const inventory = JSON.parse(readFileSync(INVENTORY, 'utf8'));
-    const tree = git(['ls-tree','-r','--name-only','-z',headSha]);
-    if (tree && !tree.endsWith('\0')) throw Error('TREE_TRUNCATED');
-    const trackedPaths = tree ? tree.slice(0,-1).split('\0') : [];
+    const inventory = JSON.parse(git(['show',headSha+':'+INVENTORY]));
+    const entries=parseTrackedTree(git(['ls-tree','-r','--long','-z',headSha]));
+    const trackedPaths=entries.map(e=>e.path);
     const changes = parseNameStatus(git(['diff','--no-ext-diff','--name-status','-z','-M',baselineSha,headSha,'--']));
     const g1 = JSON.parse(env.G1_EVIDENCE ?? 'null');
     let governanceCheckOk = false;
@@ -227,16 +329,41 @@ export function main(env = process.env) {
       governanceCheckOk = true;
     } catch { /* absence of proof blocks closure */ }
     const deadline = Date.now()+90_000;
-    const authorityObservation=observeDocumentAuthorities({trackedPaths,productionState:manifest,readText(path){
+    const entriesByPath = new Map(entries.map(e=>[e.path,e]));
+    const texts=new Map();
+    let bytesRead=0;
+    function readEntry(entry) {
+      if(!entry || SENSITIVE_PATH.test(entry.path) || entry.type!=='blob' ||
+         !['100644','100755'].includes(entry.mode) || entry.size>MAX_BUFFER-1024) throw Error('CONTENT_UNVERIFIED');
+      if(texts.has(entry.path)) return texts.get(entry.path);
       const remaining=deadline-Date.now();
-      if(remaining<=0) throw Error('DOCUMENT_AUTHORITY_SCAN_TIMEOUT');
-      return execFileSync('git',['show',headSha+':'+path],{encoding:'utf8',maxBuffer:MAX_BUFFER,
+      if(remaining<=0 || bytesRead+entry.size>48*1024*1024) throw Error('DOCUMENT_AUTHORITY_SCAN_LIMIT');
+      const content=execFileSync('git',['cat-file','blob',entry.oid],{encoding:'utf8',
+        env:{...process.env,GIT_NO_REPLACE_OBJECTS:'1'},maxBuffer:MAX_BUFFER,
         timeout:Math.min(remaining,5000),stdio:['ignore','pipe','ignore']});
-    }});
-    report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,governanceCheckOk,authorityObservation});
+      bytesRead+=entry.size;texts.set(entry.path,content);
+      return content;
+    }
+    const corpusObservation=observeTrackedCorpus({entries,trackedPaths,readText:readEntry});
+    const authorityObservation=observeDocumentAuthorities({trackedPaths,productionState:manifest,
+      readText:path=>readEntry(entriesByPath.get(path))});
+    let existingEvidence;
+    try {
+      const state=collectCurrentStateEvidence();
+      existingEvidence={ok:state.evidenceHead===headSha&&state.contradictions.length===0,
+        evidenceHead:state.evidenceHead,sourceDigest:state.sourceDigest,
+        documentationDigest:state.documentation.digest,governanceDigest:state.governance.digest,
+        contradictions:state.contradictions.map(({code,path})=>({code,path:path??null})),
+        authority:'EXISTING_CURRENT_STATE_EVIDENCE'};
+    } catch {
+      existingEvidence={ok:false,contradictions:[{code:'CURRENT_STATE_EVIDENCE_UNAVAILABLE',path:null}]};
+    }
+    report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,
+      governanceCheckOk,authorityObservation,corpusObservation,existingEvidence});
   } catch (error) {
     const bounded = new Set(['CHECKOUT_SHA_MISMATCH','INVALID_BASELINE','TREE_TRUNCATED','DIFF_TRUNCATED',
-      'DIFF_STATUS_INVALID','DIFF_PATH_INVALID','DIFF_LIMIT_EXCEEDED','INVALID_OBSERVATION','INVENTORY_UNREADABLE','INVALID_CHANGE']);
+      'DIFF_STATUS_INVALID','DIFF_PATH_INVALID','DIFF_LIMIT_EXCEEDED','INVALID_OBSERVATION','INVENTORY_UNREADABLE','INVALID_CHANGE',
+      'TREE_ENTRY_INVALID','TREE_LIMIT_EXCEEDED','TREE_COVERAGE_MISMATCH']);
     const reason = bounded.has(error?.message) ? error.message : 'DOCUMENTARY_OBSERVATION_UNVERIFIED';
     report = {schemaVersion:1,repository:REPO,headSha,status:'DOCUMENTARY_CLOSURE_BLOCKED',
       closureAttested:false,technicalDeploymentIndependent:true,coverage:{complete:false},
@@ -246,6 +373,8 @@ export function main(env = process.env) {
   appendFileSync(env.GITHUB_STEP_SUMMARY, '\n### Documentary closure: '+report.status+'\n\n'
     +'Technical deployment and documentary closure are independent. Global closure is NOT attested.\n\n'
     +'Reasons: '+report.reasons.join(', ')+'\n\n'
+    +(report.corpusObservation ? 'Tracked Git objects: '+report.corpusObservation.trackedCount+'; documentary candidates: '+report.corpusObservation.candidateCount+'; structural reads: '+report.corpusObservation.structuralReadCount+'; identity only: '+report.corpusObservation.identityOnlyCount+'; unverified content: '+report.corpusObservation.structuralUnverifiedCount+'\n\n' : '')
+    +(report.g1ReasonCodes?.length ? 'G1 diagnostics: '+report.g1ReasonCodes.join(', ')+'\n\n' : '')
     +'Next action: '+report.nextAction+'\n\n'
     +'See the documentary-closure artifact for paths, differences and coverage.\n');
   if (env.GITHUB_OUTPUT) appendFileSync(env.GITHUB_OUTPUT,'closure-status='+report.status+'\n');

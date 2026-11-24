@@ -3,7 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 // The workflow report is a standalone dependency-free ESM script.
 // @ts-ignore -- test runner imports the .mjs implementation directly.
-import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities } from '../scripts/mcp-documentary-closure.mjs';
+import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities, parseTrackedTree, observeTrackedCorpus, classifyTrackedPath } from '../scripts/mcp-documentary-closure.mjs';
 
 const HEAD = 'a'.repeat(40);
 const BASE = 'b'.repeat(40);
@@ -119,4 +119,40 @@ test('authority observation exposes canonical conflicts, broken mirror and inval
   assert.equal(report.closureAttested,false);
   assert.ok(report.reasons.includes('STATIC_AUTHORITY_PROOF_MISSING_OR_CONFLICT'));
   assert.equal(report.differences.length,result.differences.length);
+});
+
+test('every Git tree object is accounted for, including data outside docs, workflows, PDF and unknown formats', () => {
+  const paths=['SUIVI.md','data/mcp-git-registry.json','.github/workflows/mcp-deploy.yml',
+    'Migration/archive.pdf','docs/projects/WT-PROJECT-MCP-001/chantiers/CH-01/CH-01__TASKS.md','new/opaque.custom'];
+  const tree=paths.map(p=>'100644 blob '+HEAD+' 10\t'+p+'\0').join('');
+  const entries=parseTrackedTree(tree);
+  const report=observeTrackedCorpus({entries,trackedPaths:paths,readText:(e:{path:string})=>e.path.endsWith('.json')?'{}':'text'});
+  assert.equal(report.trackedCount,6);
+  assert.equal(report.inventoryCoverageComplete,true);
+  assert.equal(report.semanticCoverageComplete,false);
+  assert.equal(report.candidateCount,5);
+  assert.equal(report.structuralReadCount,4);
+  assert.equal(report.identityOnlyCount,1);
+  assert.equal(report.unknownImpactCount,1);
+  assert.equal(report.rows.find((r:{path:string})=>r.path===paths[1]).role,'VERSIONED_DATA_NOT_RUNTIME_AUTHORITY');
+  assert.equal(report.rows.find((r:{path:string})=>r.path===paths[4]).scopeHint,'CH-01');
+  assert.equal(classifyTrackedPath('tests/fixtures/registry.json'),'TEST_FIXTURE');
+  assert.throws(()=>observeTrackedCorpus({entries,trackedPaths:paths.slice(1),readText:()=>''}));
+  assert.throws(()=>parseTrackedTree(tree+tree));
+  assert.throws(()=>parseTrackedTree(tree.slice(0,-1)));
+});
+test('unreadable candidate and missing runtime proof prevent a false certification', () => {
+  const paths=['data/registry.json','docs/secret.txt','docs/link.md'];
+  const entries=parseTrackedTree('100644 blob '+HEAD+' 10\t'+paths[0]+'\0'+
+    '100644 blob '+HEAD+' 10\t'+paths[1]+'\0'+'120000 blob '+HEAD+' 10\t'+paths[2]+'\0');
+  let reads=0;
+  const corpus=observeTrackedCorpus({entries,trackedPaths:paths,readText:()=>{reads++;return '{invalid';}});
+  assert.equal(corpus.structuralUnverifiedCount,2);
+  assert.equal(reads,2);
+  const result=buildDocumentaryClosureReport({...input(),corpusObservation:corpus,
+    g1:{status:'UNVERIFIED',reasonCodes:['G1_DOCUMENTATION_CONTRADICTIONS','unsafe output']}});
+  assert.equal(result.closureAttested,false);
+  assert.equal(result.status,'DOCUMENTARY_CLOSURE_BLOCKED');
+  assert.deepEqual(result.g1ReasonCodes,['G1_DOCUMENTATION_CONTRADICTIONS']);
+  assert.ok(result.reasons.includes('CORPUS_CONTENT_UNVERIFIED'));
 });
