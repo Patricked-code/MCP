@@ -174,3 +174,13 @@ test('explicit root equivalences and actual mission authority table resolve exis
   assert.deepEqual(local.map((r:{type:string})=>r.type),['CARTOGRAPHY','ARCHITECTURE']);
   assert.ok(local.every((r:{paths:string[]})=>r.paths.every(path=>readFileSync(path,'utf8').length>0)));
 });
+
+test('historical fenced Markdown examples are not active Loopback checkpoints',()=>{
+  const fence=String.fromCharCode(96).repeat(4);
+  const quoted=fence+'markdown\n'+checkpointFixture+fence+'\n';
+  assert.equal(observeLoopbackCheckpoint(quoted).reason,'CHECKPOINT_MISSING');
+  assert.equal(observeLoopbackCheckpoint(quoted+checkpointFixture).status,'PRESENT');
+  assert.equal(observeLoopbackCheckpoint(checkpointFixture.trimEnd()+' invalid closing\n').status,'UNVERIFIED');
+  const inside=checkpointFixture.replace('REOBSERVE_REQUIRED','DONE');
+  assert.equal(observeLoopbackCheckpoint('~~~markdown\n'+inside+'~~~\n'+checkpointFixture).status,'PRESENT');
+});
