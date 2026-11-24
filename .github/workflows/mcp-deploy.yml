@@ -257,3 +257,44 @@ jobs:
         if: failure()
         run: |
           printf '%s\n' '### G1 documentation follow-up blocked' 'No merge was attempted. Inspect the failed G1 step before retrying. The deployment attestation is independent.' >> "$GITHUB_STEP_SUMMARY"
+
+  # REC-00/01: a mandatory observation on each attested deployment.
+  # Keep legacy technical-success observers operational; the report's explicit
+  # closure verdict, not this workflow's success, is the documentary evidence.
+  documentary-closure:
+    needs: deploy
+    if: github.repository == 'Patricked-code/MCP' && github.ref == 'refs/heads/main' && needs.deploy.outputs.g1-evidence != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    continue-on-error: true
+    permissions:
+      contents: read
+    outputs:
+      closure-status: ${{ steps.closure.outputs.closure-status }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Observe documentary coverage and exact Git differences
+        id: closure
+        env:
+          G1_EVIDENCE: ${{ needs.deploy.outputs.g1-evidence }}
+          DOCUMENTARY_REPORT_FILE: ${{ runner.temp }}/mcp-documentary-closure.json
+        run: node scripts/mcp-documentary-closure.mjs
+      - name: Retain documentary closure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentary-closure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/mcp-documentary-closure.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Record unavailable evidence
+        if: failure()
+        run: |
+          printf '%s\n' '### Documentary closure: DOCUMENTARY_CLOSURE_BLOCKED' 'No complete report was retained. Global closure is not attested; reobserve.' >> "$GITHUB_STEP_SUMMARY"
