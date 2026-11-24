@@ -179,6 +179,49 @@ export function observeLoopbackCheckpoint(body) {
   }catch{return fail('CHECKPOINT_CONTRACT_INVALID');}
 }
 
+// Resolve only explicit declarations in the existing owner's document.
+// Never infer identity from a similar filename or make a child a runtime
+// project. The resulting evidence is a declared documentary equivalence.
+export function parseRootDocumentaryEquivalences(body,scopeKey) {
+  if(typeof body!=='string'||typeof scopeKey!=='string'||!/^docs\/projects\/[A-Za-z0-9_.-]+$/.test(scopeKey))
+    return {status:'UNVERIFIED',rows:[]};
+  const fence=String.fromCharCode(96).repeat(3);
+  const marker=fence+'documentary-authority-equivalence';
+  const blocks=body.split('\n').filter(l=>l===marker);
+  if(blocks.length!==1)return {status:blocks.length?'CONFLICT':'UNVERIFIED',rows:[]};
+  const start=body.indexOf(marker+'\n'),end=body.indexOf('\n'+fence,start+marker.length+1);
+  if(start<0||end<0||end-start>16384)return {status:'UNVERIFIED',rows:[]};
+  try{
+    const data=JSON.parse(body.slice(start+marker.length+1,end));
+    if(data?.schemaVersion!==1||data.scopeKey!==scopeKey||data.identityStatus!=='DOCUMENTARY_CANDIDATE'||
+      !Array.isArray(data.equivalences)||data.equivalences.length>LOCAL_TYPES.length||
+      new Set(data.equivalences.map(r=>r.type)).size!==data.equivalences.length||
+      data.equivalences.some(r=>!LOCAL_TYPES.includes(r.type)||!Array.isArray(r.paths)||!r.paths.length||
+        r.paths.length>12||new Set(r.paths).size!==r.paths.length||r.paths.some(p=>!safePath(p)||sensitive(p)||
+          !(p.endsWith('.md')||p.endsWith('.json'))||p.startsWith('docs/projects/')||
+          !(!p.includes('/')||p.startsWith('memory/')||p.startsWith('docs/governance/')||p.startsWith('.mcp/')))))
+      return {status:'CONFLICT',rows:[]};
+    return {status:'DECLARED',rows:data.equivalences.map(({type,paths})=>({type,paths,sourcePath:'SOURCE_OF_TRUTH.md'}))};
+  }catch{return {status:'UNVERIFIED',rows:[]};}
+}
+export function parseLocalDocumentaryEquivalences(body,scope) {
+  if(typeof body!=='string'||!scope?.id||!scope?.key)return [];
+  // Existing authority map uses an explicit Markdown table. Parse only its
+  // architecture and cartography rows, not arbitrary prose or links.
+  const section=body.split('## Référentiel de types et autorité de la mission')[1]?.split(/\n## /)[0];
+  if(!section)return [];
+  const rows=[];
+  const families=new Map([['AUDIT / CARTOGRAPHY','CARTOGRAPHY'],['ARCHITECTURE / CONVERGENCE','ARCHITECTURE']]);
+  for(const line of section.split('\n')){
+    const cells=line.split('|').map(s=>s.trim());
+    const type=families.get(cells[1]);
+    if(!type)continue;
+    const paths=[...cells[2].matchAll(/\x60(__[A-Z0-9_]+\.md)\x60/g)].map(m=>scope.key+'/'+scope.id+m[1]);
+    if(paths.length&&new Set(paths).size===paths.length&&paths.every(safePath))rows.push({type,paths,sourcePath:scope.key+'/'+scope.id+'__DOCUMENT_AUTHORITIES.md'});
+  }
+  return new Set(rows.map(r=>r.type)).size===rows.length?rows:[];
+}
+
 export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,changes=[],readText}) {
   if(!SHA.test(headSha??'')||!Array.isArray(entries)||entries.length>LIMIT||
     !entries.every(e=>safePath(e?.path)&&SHA.test(e.oid??''))||
@@ -248,8 +291,21 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     ...candidatePaths.filter(p=>p.startsWith('.mcp/')&&p.endsWith('.json'))]);
   const scopePlans=[];
   const sortedScopes=[...scopes.values()].sort((a,b)=>a.key===ROOT?-1:b.key===ROOT?1:a.key.split('/').length-b.key.split('/').length||a.key.localeCompare(b.key));
+  const explicitEquivalences=[];
   for(const scope of sortedScopes){
     const required=[];
+    let equivalences=[];
+    if(scope.kind==='PROJECT'&&read('SOURCE_OF_TRUTH.md').status==='CONTENT_READ'){
+      try{const r=parseRootDocumentaryEquivalences(readText('SOURCE_OF_TRUTH.md'),scope.key);
+        if(r.status==='DECLARED')equivalences=r.rows;
+        else if(r.status==='CONFLICT')issue.push({code:'PROJECT_AUTHORITY_EQUIVALENCE_CONFLICT',scopeKey:scope.key});
+      }catch{issue.push({code:'PROJECT_AUTHORITY_EQUIVALENCE_UNVERIFIED',scopeKey:scope.key});}
+    }
+    const authorityPaths=scope.types.get('DOCUMENT_AUTHORITIES')??[];
+    if(scope.key!==ROOT&&authorityPaths.length===1&&read(authorityPaths[0]).status==='CONTENT_READ')try{
+      equivalences.push(...parseLocalDocumentaryEquivalences(readText(authorityPaths[0]),scope));
+    }catch{issue.push({code:'LOCAL_AUTHORITY_EQUIVALENCE_UNVERIFIED',scopeKey:scope.key});}
+
     if(scope.key===ROOT){
       for(const path of rootRequired){
         const observed=read(path);
@@ -258,11 +314,23 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     }else{
       for(const type of LOCAL_TYPES){
         const paths=scope.types.get(type)??[];
+        if(paths.length===0){
+          const declared=equivalences.filter(r=>r.type===type);
+          if(declared.length===1){
+            const eq=declared[0];
+            const available=eq.paths.every(p=>rowByPath.has(p)&&read(p).status==='CONTENT_READ');
+            const status=available?'DECLARED_EQUIVALENT_READ':'MISSING_OR_EQUIVALENT_UNVERIFIED';
+            required.push({type,paths:eq.paths,status,authoritySource:eq.sourcePath,semanticStatus:'UNVERIFIED'});
+            explicitEquivalences.push({scopeKey:scope.key,type,paths:eq.paths,sourcePath:eq.sourcePath,status,semanticStatus:'UNVERIFIED'});
+            continue;
+          }
+          if(declared.length>1){required.push({type,paths:[],status:'AUTHORITY_AMBIGUOUS'});continue;}
+        }
         const status=paths.length===0?'MISSING_OR_EQUIVALENT_UNVERIFIED':paths.length>1?'AUTHORITY_AMBIGUOUS':read(paths[0]).status;
         required.push({type,paths,status});
       }
     }
-    for(const r of required)if(r.status!=='CONTENT_READ')issue.push({code:'REQUIRED_DOCUMENT_'+r.status,scopeKey:scope.key,type:r.type,paths:r.paths});
+    for(const r of required)if(!['CONTENT_READ','DECLARED_EQUIVALENT_READ'].includes(r.status))issue.push({code:'REQUIRED_DOCUMENT_'+r.status,scopeKey:scope.key,type:r.type,paths:r.paths});
     const ordered=uniq([...required.flatMap(r=>r.paths),...scope.documents.sort()]);
     const readSequence=ordered.map(p=>({
       path:p,oid:byPath.get(p)?.oid??null,
@@ -341,15 +409,25 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
       }
     }catch{issue.push({code:'DOCUMENT_LINK_REVIEW_UNVERIFIED',path:row.path});}
   }
+  for(const eq of explicitEquivalences)if(eq.status==='DECLARED_EQUIVALENT_READ'){
+    for(const p of eq.paths){edge(eq.sourcePath,p,'DECLARED_AUTHORITY_EQUIVALENCE_REVIEW');edge(p,eq.sourcePath,'DECLARED_AUTHORITY_EQUIVALENCE_REVIEW');}
+  }
   const changed=uniq(changes.flatMap(c=>[c?.path,c?.previousPath].filter(x=>x!==null&&x!==undefined)));
   if(!changed.every(safePath))throw Error('DOCUMENTARY_PLAN_CHANGE_INVALID');
   const outgoing=new Map();
   for(const e of edges.values()){if(!outgoing.has(e.from))outgoing.set(e.from,[]);outgoing.get(e.from).push(e.to);}
   const impacted=new Set(),queue=[];
+  const knownImplementationImpacts=new Map([
+    ['scripts/documentary-hierarchy.mjs',['LOOP_ENGINEERING.md','AGENTS.md','GPT.md','SUIVI.md','SOURCE_OF_TRUTH.md']],
+    ['scripts/mcp-documentary-closure.mjs',['LOOP_ENGINEERING.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md','SOURCE_OF_TRUTH.md']],
+    ['tests/documentaryHierarchy.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md']]
+  ]);
   for(const path of changed){
     const row=rowByPath.get(path);
     if(row){row.directChange=true;impacted.add(path);queue.push(path);}
-    else issue.push({code:'CHANGE_IMPACT_UNRESOLVED',path});
+    else if(knownImplementationImpacts.has(path)&&byPath.has(path)){
+      for(const target of knownImplementationImpacts.get(path))if(rowByPath.has(target)&&!impacted.has(target)){impacted.add(target);queue.push(target);}
+    }else issue.push({code:'CHANGE_IMPACT_UNRESOLVED',path});
   }
   for(let i=0;i<queue.length;i++)for(const to of outgoing.get(queue[i])??[])if(!impacted.has(to)){
     impacted.add(to);queue.push(to);
@@ -368,10 +446,11 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     entryIndependent:true,mutationPerformed:false,automaticExecutionAuthorized:false,
     foundation:{level:0,sourcePath:FOUNDATION_SOURCE,sourceOid:foundationEntry?.oid??null,...foundation,
       intake,originalReadingSequence:foundingSequence,checkpoint:{path:'SUIVI.md',heading:'POINT DE REPRISE COURANT',...checkpointObservation},loopbackReads},
-    scopes:scopePlans,documents:rows,dependencies:[...edges.values()],issues:issue,
+    scopes:scopePlans,documents:rows,dependencies:[...edges.values()],explicitEquivalences,issues:issue,
     coverage:{candidateCount:candidatePaths.length,plannedCount:rows.length,scopeCount:scopePlans.length,
       contentReadCount:rows.filter(r=>r.readStatus==='CONTENT_READ').length,
       unresolvedScopeCount:rows.filter(r=>r.scopeKey===null).length,
+      declaredEquivalencesReadCount:explicitEquivalences.filter(e=>e.status==='DECLARED_EQUIVALENT_READ').length,
       directChangeCount:changed.length,impactReviewCount:impacted.size,
       allCandidatesAccountedFor:rows.length===candidatePaths.length,
       runtimeTaskAndSessionScopeStatus:'RESOLVE_FROM_EXISTING_RUNTIME_AUTHORITIES',runtimeScopeLevel:6,

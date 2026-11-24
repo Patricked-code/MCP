@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { admissionCatalogue } from '../src/web/admissionCatalogue.js';
 // @ts-ignore -- standalone ESM report module
-import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan,observeLoopbackCheckpoint,LOOPBACK_SOURCES } from '../scripts/documentary-hierarchy.mjs';
+import { FOUNDATION_SOURCE,FOUNDATION_DOCUMENTS,ORIGINAL_READING_ORDER,observeFoundationContract,parseDocumentScope,buildCommonDocumentaryPlan,observeLoopbackCheckpoint,LOOPBACK_SOURCES,parseRootDocumentaryEquivalences,parseLocalDocumentaryEquivalences } from '../scripts/documentary-hierarchy.mjs';
 // @ts-ignore -- standalone ESM report module
 import { buildDocumentaryClosureReport } from '../scripts/mcp-documentary-closure.mjs';
 
@@ -157,4 +157,20 @@ test('actual SUIVI checkpoint is present without overwriting the historical Loop
   const loopback=readFileSync('memory/LOOPBACK_WEALTHTECH_CURRENT.md','utf8');
   assert.match(loopback,/SUIVI\.md#point-de-reprise-courant/);
   assert.match(loopback,/Date UTC : 2026-07-01/);
+});
+
+test('explicit root equivalences and actual mission authority table resolve existing sources, not runtime identities',()=>{
+  const root=readFileSync('SOURCE_OF_TRUTH.md','utf8');
+  const scopeKey='docs/projects/WT-PROJECT-MCP-001';
+  const r=parseRootDocumentaryEquivalences(root,scopeKey);
+  assert.equal(r.status,'DECLARED');
+  assert.equal(r.rows.length,13);
+  assert.equal(parseRootDocumentaryEquivalences(root,'docs/projects/ANOTHER').status,'CONFLICT');
+  assert.equal(parseRootDocumentaryEquivalences(root.replace('"ROADMAP.md"','"../ROADMAP.md"'),scopeKey).status,'CONFLICT');
+  const id='WT-MCP-REGISTRY-RESOLUTION-20261121-01';
+  const key=scopeKey+'/chantiers/'+id;
+  const map=readFileSync(key+'/'+id+'__DOCUMENT_AUTHORITIES.md','utf8');
+  const local=parseLocalDocumentaryEquivalences(map,{key,id});
+  assert.deepEqual(local.map((r:{type:string})=>r.type),['CARTOGRAPHY','ARCHITECTURE']);
+  assert.ok(local.every((r:{paths:string[]})=>r.paths.every(path=>readFileSync(path,'utf8').length>0)));
 });
