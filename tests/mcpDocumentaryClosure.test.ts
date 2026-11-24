@@ -250,3 +250,42 @@ test('runtime evidence is exact-job bound, digest checked and never implies sema
   assert.equal(validateRuntimeAuthorityObservation({headSha:HEAD,g1,expectedJobId:'other',now}),null);
   assert.equal(validateRuntimeAuthorityObservation({headSha:HEAD,g1:{...g1,runtimeEvidence:{...runtimeEvidence,stableRead:false}},expectedJobId:jobId,now}),null);
 });
+
+test('routes archive, drift and conflicting fields without certifying their semantics', () => {
+  const path = 'docs/OLD.md';
+  const archive = {path, archiveVerified:true, preservationStatus:'PRESERVED_NON_EXECUTABLE',
+    currentAuthority:false, nextAction:'PRESERVE_BYTES_AND_USE_CURRENT_AUTHORITY'};
+  const options = {corpusObservation:{historicalPreservation:[archive]},
+    g1:{status:'DRIFT',sha:HEAD,declaredGithubSha:BASE,declaredS1Sha:BASE}};
+  const find = (report: ReturnType<typeof buildDocumentaryClosureReport>, name: string) =>
+    report.documents.find((row: {path:string}) => row.path === name);
+  const report = buildDocumentaryClosureReport(input(options));
+  assert.equal(find(report,path).verdict,'HISTORICAL_PRESERVATION');
+  assert.equal(find(report,'SUIVI.md').verdict,'UNVERIFIED');
+  const production = find(report,'PRODUCTION_STATE.json');
+  assert.equal(production.verdict,'RECONCILIATION_REQUIRED');
+  assert.equal(production.differences.length,2);
+  const difference = {path,field:'digest',reason:'CANONICAL_STATE_CONFLICT'};
+  const conflict = buildDocumentaryClosureReport(input({...options,
+    authorityObservation:{checks:[],differences:[difference],ok:false}}));
+  assert.equal(find(conflict,path).verdict,'CONFLICT');
+  assert.deepEqual(find(conflict,path).differences,[difference]);
+  assert.equal(find(conflict,path).semanticStatus,'UNVERIFIED');
+  assert.equal(conflict.closureAttested,false);
+  const unavailable = buildDocumentaryClosureReport(input({
+    corpusObservation:{historicalPreservation:[{...archive,archiveVerified:false}]}}));
+  assert.equal(find(unavailable,path).verdict,'UNVERIFIED');
+});
+
+test('an unreadable source cannot become a conflict or an eligible G1 correction', () => {
+  const report = buildDocumentaryClosureReport(input({
+    g1:{status:'DRIFT',sha:HEAD,declaredGithubSha:BASE,declaredS1Sha:BASE},
+    authorityObservation:{checks:[],ok:false,differences:[{
+      path:'PRODUCTION_STATE.json',field:'$state',reason:'PRODUCTION_STATE_REFERENCE_UNAVAILABLE'
+    }]}
+  }));
+  const row = report.documents.find((doc: {path:string}) => doc.path === 'PRODUCTION_STATE.json');
+  assert.equal(row.verdict,'UNVERIFIED');
+  assert.equal(row.nextAction,'RESOLVE_OWNER_AND_VALIDATE_IMPACT');
+  assert.equal(row.differences.length,3);
+});

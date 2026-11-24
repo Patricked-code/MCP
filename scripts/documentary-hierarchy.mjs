@@ -361,7 +361,14 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
   const rootRequired=uniq([...CURRENT_INTAKE,...FOUNDATION_DOCUMENTS,...ROOT_EXTRA,...LOOPBACK_SOURCES,
     ...candidatePaths.filter(p=>p.startsWith('.mcp/')&&p.endsWith('.json'))]);
   const scopePlans=[];
-  const sortedScopes=[...scopes.values()].sort((a,b)=>a.key===ROOT?-1:b.key===ROOT?1:a.key.split('/').length-b.key.split('/').length||a.key.localeCompare(b.key));
+  // Parent paths are shorter in segments. Use ordinal order for siblings
+  // because this sequence contributes to the digest shared by all clients.
+  const sortedScopes = [...scopes.values()].sort((a, b) => {
+    const depthDifference = a.key.split('/').length - b.key.split('/').length;
+    if (depthDifference) return depthDifference;
+    if (a.key === b.key) return 0;
+    return a.key < b.key ? -1 : 1;
+  });
   const explicitEquivalences=[];
   for(const scope of sortedScopes){
     const required=[];

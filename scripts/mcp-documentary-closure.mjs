@@ -420,14 +420,6 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     if(!pathChecks.has(check.path)) pathChecks.set(check.path,[]);
     pathChecks.get(check.path).push(check);
   }
-  const documents = candidates.map(path => ({
-    path, category: byPath.get(path) ?? 'AUTHORITY_UNVERIFIED',
-    change: changed.get(path) ?? 'NO_DIRECT_GIT_CHANGE',
-    // No direct diff does NOT prove that the content has no indirect impact.
-    semanticStatus: 'UNVERIFIED',
-    staticChecks: pathChecks.get(path) ?? [],
-    nextAction: 'RESOLVE_OWNER_AND_VALIDATE_IMPACT'
-  }));
   const differences = [...(authorityObservation?.differences ?? [])];
   const g1Differences = [];
   if (g1?.status === 'DRIFT' && g1.sha === headSha && SHA.test(g1.declaredGithubSha ?? '') &&
@@ -442,6 +434,38 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   differences.push(...g1Differences);
   const liveAuthorities=compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobId});
   differences.push(...liveAuthorities.differences);
+  const differencesByPath = new Map();
+  for (const difference of differences) {
+    if (!differencesByPath.has(difference.path)) differencesByPath.set(difference.path, []);
+    differencesByPath.get(difference.path).push(difference);
+  }
+  const preservedByPath = new Map((corpusObservation?.historicalPreservation ?? [])
+    .filter(record => record.archiveVerified === true &&
+      record.preservationStatus === 'PRESERVED_NON_EXECUTABLE' && record.currentAuthority === false)
+    .map(record => [record.path, record]));
+  const documents = candidates.map(path => {
+    const findings = differencesByPath.get(path) ?? [];
+    const hasConflict = findings.some(finding => ['CANONICAL_STATE_CONFLICT', 'LIVE_AUTHORITY_VALUE_MISMATCH'].includes(finding.reason));
+    const preserved = preservedByPath.get(path);
+    let verdict = 'UNVERIFIED';
+    let nextAction = 'RESOLVE_OWNER_AND_VALIDATE_IMPACT';
+    if (hasConflict) {
+      verdict = 'CONFLICT';
+      nextAction = 'RESOLVE_AUTHORITY_AND_RECONCILE';
+    } else if (findings.length && findings.every(finding => finding.reason === 'G1_DOCUMENTATION_DRIFT')) {
+      verdict = 'RECONCILIATION_REQUIRED';
+      nextAction = 'REUSE_GW60_GW61';
+    } else if (!findings.length && preserved) {
+      verdict = 'HISTORICAL_PRESERVATION';
+      nextAction = preserved.nextAction;
+    }
+    return {
+      path, category: byPath.get(path) ?? 'AUTHORITY_UNVERIFIED',
+      change: changed.get(path) ?? 'NO_DIRECT_GIT_CHANGE',
+      verdict, semanticStatus: 'UNVERIFIED', staticChecks: pathChecks.get(path) ?? [],
+      differences: findings, nextAction
+    };
+  });
   const planPaths=hierarchicalPlan?.documents?.map(d=>d.path)??[];
   const planSet=new Set(planPaths);
   const corpusByPath=new Map((corpusObservation?.rows??[]).map(r=>[r.path,r.oid]));

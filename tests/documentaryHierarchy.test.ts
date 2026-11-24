@@ -251,3 +251,22 @@ test('six observed G1 implementation changes trigger documentary reviews, not se
   }
   assert.equal(plan.closureAttested,false);
 });
+
+test('one snapshot has the same scope order and plan digest in different locales', () => {
+  const probe = `
+    import { buildCommonDocumentaryPlan } from './scripts/documentary-hierarchy.mjs';
+    const headSha = 'a'.repeat(40);
+    const paths = ['AA-PROJECT', 'Z-PROJECT'].map(id => 'docs/projects/' + id + '/' + id + '__MISSION.md');
+    const plan = buildCommonDocumentaryPlan({
+      headSha, candidatePaths: paths, readText: () => '# Mission',
+      entries: paths.map(path => ({ path, type: 'blob', mode: '100644', oid: headSha, size: 9 }))
+    });
+    console.log(JSON.stringify({ order: plan.scopes.map(scope => scope.scopeKey), digest: plan.planDigest }));
+  `;
+  const run = (locale: string) => JSON.parse(execFileSync(process.execPath, ['--input-type=module', '-e', probe], {
+    encoding: 'utf8', env: { ...process.env, LANG: locale, LC_ALL: locale }
+  }));
+  const english = run('en_US.UTF-8');
+  assert.deepEqual(english.order, ['REPOSITORY_ROOT', 'docs/projects/AA-PROJECT', 'docs/projects/Z-PROJECT']);
+  assert.deepEqual(run('da_DK.UTF-8'), english);
+});
