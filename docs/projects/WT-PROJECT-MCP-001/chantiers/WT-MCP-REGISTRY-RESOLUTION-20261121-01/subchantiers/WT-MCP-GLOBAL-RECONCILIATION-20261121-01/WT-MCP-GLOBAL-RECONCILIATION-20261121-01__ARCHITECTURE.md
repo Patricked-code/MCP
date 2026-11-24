@@ -1,0 +1,11 @@
+# WT-MCP-GLOBAL-RECONCILIATION-20261121-01 — Architecture de convergence
+
+> documentType: `ARCHITECTURE` ; ownerContinuityId: `WT-MCP-GLOBAL-RECONCILIATION-20261121-01` ; parentContinuityId: `WT-MCP-REGISTRY-RESOLUTION-20261121-01` ; projectUid: `WT-PROJECT-MCP-001` (identité documentaire candidate) ; repository: `Patricked-code/MCP`.
+> Scope: `SUBWORKSTREAM` ; statut: DOCUMENTARY_CANDIDATE / CERTIFICATION_PARTIAL ; source de préparation: `c02af022a80c2f63b64599ef853237a932c1df23` ; mandat: [issue #441](https://github.com/Patricked-code/MCP/issues/441). Ne pas inférer une admission runtime, un ProjectRecord ou une permission.
+
+## Architecture existante et cible
+Chaîne existante : entrée authentifiée/GitHub-first → plan documentaire commun et autorités → diff exact → CI et Governed Deploy → Live State/G1 → rapport de clôture → candidat Loopback. Publication GitHub-first du candidat prouvée ; publication automatique complète non implémentée/attestée.
+
+Les modules du dépôt restent uniques : [scripts/documentary-hierarchy.mjs](https://github.com/Patricked-code/MCP/blob/c02af022a80c2f63b64599ef853237a932c1df23/scripts/documentary-hierarchy.mjs), [scripts/mcp-documentary-closure.mjs](https://github.com/Patricked-code/MCP/blob/c02af022a80c2f63b64599ef853237a932c1df23/scripts/mcp-documentary-closure.mjs), [scripts/documentary-loopback.mjs](https://github.com/Patricked-code/MCP/blob/c02af022a80c2f63b64599ef853237a932c1df23/scripts/documentary-loopback.mjs), [src/deploy/documentaryRuntimeEvidence.ts](https://github.com/Patricked-code/MCP/blob/c02af022a80c2f63b64599ef853237a932c1df23/src/deploy/documentaryRuntimeEvidence.ts), [src/tools/missionContinuity.ts](https://github.com/Patricked-code/MCP/blob/c02af022a80c2f63b64599ef853237a932c1df23/src/tools/missionContinuity.ts). Réutiliser le publisher G1 et les primitives GW60–63 sans élargissement implicite de leur contrat.
+
+Cible : ajouter des lecteurs propriétaires au collecteur, des vérifications sémantiques par champ et des preuves de publication/relecture/reprise ; aucun nouveau service de registre ni changement d'autorité. Couverture structurelle != sémantique. Chaque périmètre conserve ses documents et preuves. Voir [IMPLEMENTATION_PLAN](WT-MCP-GLOBAL-RECONCILIATION-20261121-01__IMPLEMENTATION_PLAN.md).
