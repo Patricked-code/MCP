@@ -641,7 +641,8 @@ export function main(env = process.env) {
       closureAttested:false,technicalDeploymentIndependent:true,coverage:{complete:false},
       reasons:[reason],nextAction:'REOBSERVE_AND_RESOLVE_BLOCKERS',mutationPerformed:false};
   }
-  writeFileSync(env.DOCUMENTARY_REPORT_FILE, JSON.stringify({...report,observedAt:new Date().toISOString()},null,2)+'\n',{mode:0o600});
+  const reportBytes=JSON.stringify({...report,observedAt:new Date().toISOString()},null,2)+'\n';
+  writeFileSync(env.DOCUMENTARY_REPORT_FILE,reportBytes,{mode:0o600});
   appendFileSync(env.GITHUB_STEP_SUMMARY, '\n### Documentary closure: '+report.status+'\n\n'
     +'Technical deployment and documentary closure are independent. Global closure is NOT attested.\n\n'
     +'Reasons: '+report.reasons.join(', ')+'\n\n'
@@ -653,7 +654,7 @@ export function main(env = process.env) {
     +(report.g1ReasonCodes?.length ? 'G1 diagnostics: '+report.g1ReasonCodes.join(', ')+'\n\n' : '')
     +'Next action: '+report.nextAction+'\n\n'
     +'See the documentary-closure artifact for paths, differences and coverage.\n');
-  if (env.GITHUB_OUTPUT) appendFileSync(env.GITHUB_OUTPUT,'closure-status='+report.status+'\n');
+  if (env.GITHUB_OUTPUT) appendFileSync(env.GITHUB_OUTPUT,'closure-status='+report.status+'\nreport-digest='+createHash('sha256').update(reportBytes).digest('hex')+'\n');
   return report;
 }
 
