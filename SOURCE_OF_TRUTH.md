@@ -60,3 +60,104 @@ Cette annotation empêche de prendre les vingt documents miroirs à la racine de
 **Anti-collision :** la PR #449 reste seule propriétaire du correctif exact-SHA G1 sur `PRODUCTION_STATE.json`. Aucune copie automatique du contenu des documents racine vers les miroirs historiques. Une modification de contenu actif n'est autoritaire qu'avec ses propres preuves de révision et de gouvernance ; l'existence d'un Markdown n'est pas une attestation runtime.
 
 **Continuité :** `WT-MCP-REGISTRY-RESOLUTION-20261121-01`. Cette passe est documentaire et sans changement de code, runtime ou source de vérité. Les corrections de l'inventaire et les registres de projet en PR ouvertes restent propriétaires de leurs périmètres.
+
+## Équivalences documentaires du projet MCP — 24 novembre 2026
+
+Pour la racine documentaire candidate `WT-PROJECT-MCP-001`, les documents racine du dépôt détiennent déjà les fonctions indiquées ci-dessous. Les rattachements se limitent à la navigation et à l'autorité **documentaire** du projet MCP ; ils ne prouvent pas un ProjectRecord runtime ni le rattachement d'autres projets. Ne pas créer de copies locales pour satisfaire mécaniquement une nomenclature. Une équivalence déclarée et lisible n'atteste ni l'actualité sémantique ni l'exhaustivité du contenu.
+
+```documentary-authority-equivalence
+{
+  "schemaVersion": 1,
+  "scopeKey": "docs/projects/WT-PROJECT-MCP-001",
+  "identityStatus": "DOCUMENTARY_CANDIDATE",
+  "equivalences": [
+    {
+      "type": "SOURCE_OF_TRUTH",
+      "paths": [
+        "SOURCE_OF_TRUTH.md"
+      ]
+    },
+    {
+      "type": "DOCUMENT_AUTHORITIES",
+      "paths": [
+        "SOURCE_OF_TRUTH.md"
+      ]
+    },
+    {
+      "type": "MISSION",
+      "paths": [
+        "PROJECT_BRIEF.md",
+        "PROJECT_SCOPE.md"
+      ]
+    },
+    {
+      "type": "DECISIONS",
+      "paths": [
+        "DECISIONS_LOG.md"
+      ]
+    },
+    {
+      "type": "CONTINUITY",
+      "paths": [
+        "SUIVI.md"
+      ]
+    },
+    {
+      "type": "MEMORY",
+      "paths": [
+        "GPT.md",
+        "memory/README.md",
+        "memory/manifest.json"
+      ]
+    },
+    {
+      "type": "ROADMAP",
+      "paths": [
+        "ROADMAP.md"
+      ]
+    },
+    {
+      "type": "SUIVI",
+      "paths": [
+        "SUIVI.md"
+      ]
+    },
+    {
+      "type": "TASKS",
+      "paths": [
+        "TASKS.md"
+      ]
+    },
+    {
+      "type": "TODO",
+      "paths": [
+        "TODO.md"
+      ]
+    },
+    {
+      "type": "AGENTS",
+      "paths": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "GPT.md"
+      ]
+    },
+    {
+      "type": "ARCHITECTURE",
+      "paths": [
+        "ARCHITECTURE.md"
+      ]
+    },
+    {
+      "type": "CARTOGRAPHY",
+      "paths": [
+        "MCP_FUNCTIONAL_CARTOGRAPHY.md",
+        "MCP_REPO_INVENTORY.md",
+        "MCP_SERVER_MAPPING.md"
+      ]
+    }
+  ]
+}
+```
+
+Les types INTENTIONS, IMPLEMENTATION_PLAN et EVIDENCE_INDEX du projet restent à résoudre par les autorités existantes (notamment les dossiers de conception et de continuité) : ne pas les assimiler sans preuve à une roadmap, à un brief ou à un journal générique. La mission et les sous-chantiers conservent leurs propres documents propriétaires. La [carte d'autorités de la mission](docs/projects/WT-PROJECT-MCP-001/chantiers/WT-MCP-REGISTRY-RESOLUTION-20261121-01/WT-MCP-REGISTRY-RESOLUTION-20261121-01__DOCUMENT_AUTHORITIES.md) désigne déjà ses équivalences architecture/cartographie. Voir [#441](https://github.com/Patricked-code/MCP/issues/441) et [Loop Engineering](LOOP_ENGINEERING.md).

@@ -1,5 +1,7 @@
 # LOOPBACK_WEALTHTECH_CURRENT.md
 
+> **Orientation du 24 novembre 2026 — préservation du Loopback de juillet.** Pour une intervention sur le projet MCP, la reprise active est le [POINT DE REPRISE COURANT de SUIVI.md](../SUIVI.md#point-de-reprise-courant) puis la continuité propriétaire et une observation fraîche des autorités. Les éléments ci-dessous restent les preuves historiques WealthTech des 1–3 juillet ; leur intitulé « current » et leurs anciennes prochaines actions ne prouvent pas l'état live d'un projet en novembre. Consulter [Loop Engineering](../LOOP_ENGINEERING.md) pour le cycle commun. Aucune reprise des autres tracks ni aucune synchronisation serveur n'est attestée par cette annotation.
+
 Date UTC : 2026-07-01
 Statut : point de reprise courant de la boucle WEALTHTECH.
 
