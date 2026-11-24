@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { collectCurrentStateEvidence } from './current-state-evidence.mjs';
+import { buildCommonDocumentaryPlan } from './documentary-hierarchy.mjs';
 import { validateMarkdownBaseline, extractCanonicalState, validateRequiredCanonicalStates,
   validateProductionState, detectHistoricalMirrors, validateHistoricalMirrorBanner, canonicalStateKeys }
   from './doc-governance-lib.mjs';
@@ -376,7 +377,7 @@ export function compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobI
     complete:false};
 }
 
-export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk, authorityObservation = null, corpusObservation = null, existingEvidence = null, expectedJobId = null}) {
+export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk, authorityObservation = null, corpusObservation = null, existingEvidence = null, expectedJobId = null, hierarchicalPlan = null}) {
   if (!SHA.test(headSha ?? '') || !SHA.test(baselineSha ?? '') ||
       !Array.isArray(trackedPaths) || trackedPaths.length > LIMIT ||
       !trackedPaths.every(validPath) || new Set(trackedPaths).size !== trackedPaths.length ||
@@ -432,6 +433,8 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   const liveAuthorities=compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobId});
   differences.push(...liveAuthorities.differences);
   const reasons = ['SEMANTIC_AND_RUNTIME_REGISTRY_COVERAGE_UNVERIFIED'];
+  if(hierarchicalPlan?.headSha!==headSha || hierarchicalPlan?.coverage?.allCandidatesAccountedFor!==true) reasons.push('HIERARCHICAL_DOCUMENTARY_PLAN_UNVERIFIED');
+  else if(hierarchicalPlan.issues.length) reasons.push('HIERARCHICAL_DOCUMENTARY_OBLIGATIONS_UNRESOLVED');
   if (authorityObservation?.ok !== true) reasons.push('STATIC_AUTHORITY_PROOF_MISSING_OR_CONFLICT');
   if (corpusObservation?.inventoryCoverageComplete !== true) reasons.push('EXACT_CORPUS_INVENTORY_UNVERIFIED');
   if ((corpusObservation?.unresolvedStructuralCount ?? corpusObservation?.structuralUnverifiedCount ?? 0)>0) reasons.push('CORPUS_CONTENT_UNVERIFIED');
@@ -449,6 +452,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   if (g1?.status === 'DRIFT' && g1Differences.length) reasons.push('G1_DOCUMENTATION_DRIFT');
   else if (g1?.status !== 'ALIGNED') reasons.push('G1_PROOF_UNVERIFIED');
   const status = !inventoryAligned || governanceCheckOk !== true ||
+    (hierarchicalPlan!==null && (hierarchicalPlan.headSha!==headSha || hierarchicalPlan.coverage?.allCandidatesAccountedFor!==true || hierarchicalPlan.issues.length>0)) ||
     (authorityObservation !== null && authorityObservation.ok !== true) ||
     (corpusObservation !== null && (corpusObservation.inventoryCoverageComplete !== true || (corpusObservation.unresolvedStructuralCount ?? corpusObservation.structuralUnverifiedCount)>0 || corpusObservation.historicalUnverifiedCount>0 || corpusObservation.unknownImpactCount>0)) ||
     (existingEvidence !== null && existingEvidence.ok !== true) ||
@@ -463,7 +467,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
       inventoryAligned, missing, absent, duplicates, unclassified: baselineCheck.unclassified,
       categoryDrift: baselineCheck.categoryDrift, candidateCount: documents.length},
     coverage: {semanticVerifiedCount: 0, complete: false, runtimeRegistryCoverage: 'UNVERIFIED'},
-    corpusObservation, existingEvidence, authorityObservation, liveAuthorities, g1ReasonCodes,
+    corpusObservation, existingEvidence, authorityObservation, liveAuthorities, g1ReasonCodes, hierarchicalPlan,
     governanceCheckOk: governanceCheckOk === true,
     g1Status: ['DRIFT','ALIGNED','UNVERIFIED'].includes(g1?.status) ? g1.status : 'UNVERIFIED',
     differences, changes, documents, reasons,
@@ -515,6 +519,9 @@ export function main(env = process.env) {
       bytesRead+=entry.size;texts.set(entry.path,content);
       return content;
     }
+    // Compute and observe the common ordered plan before the generic corpus scan.
+    const hierarchicalPlan=buildCommonDocumentaryPlan({headSha,entries,candidatePaths:trackedPaths.filter(isCandidate),changes,
+      readText:path=>readEntry(entriesByPath.get(path))});
     const corpusObservation=observeTrackedCorpus({entries,trackedPaths,readText:readEntry,readBytes(entry){
       if(!entry||SENSITIVE_PATH.test(entry.path)||entry.type!=='blob'||!['100644','100755'].includes(entry.mode)||
         entry.size>MAX_BUFFER-1024||Date.now()>=deadline||bytesRead+entry.size>48*1024*1024) throw Error('ARCHIVE_READ_UNVERIFIED');
@@ -548,7 +555,7 @@ export function main(env = process.env) {
       existingEvidence={ok:false,contradictions:[{code:'CURRENT_STATE_EVIDENCE_UNAVAILABLE',path:null}]};
     }
     report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,
-      governanceCheckOk,authorityObservation,corpusObservation,existingEvidence,
+      governanceCheckOk,authorityObservation,corpusObservation,existingEvidence,hierarchicalPlan,
       expectedJobId:/^[0-9]{1,30}$/.test(env.GITHUB_RUN_ID??'')?'mcp-s1-'+env.GITHUB_RUN_ID+'-'+headSha.slice(0,12):null});
   } catch (error) {
     const bounded = new Set(['CHECKOUT_SHA_MISMATCH','INVALID_BASELINE','TREE_TRUNCATED','DIFF_TRUNCATED',
@@ -566,6 +573,7 @@ export function main(env = process.env) {
     +(report.corpusObservation ? 'Tracked Git objects: '+report.corpusObservation.trackedCount+'; documentary candidates: '+report.corpusObservation.candidateCount+'; structural reads: '+report.corpusObservation.structuralReadCount+'; identity only: '+report.corpusObservation.identityOnlyCount+'; unverified content: '+report.corpusObservation.structuralUnverifiedCount+'\n\n' : '')
     +(report.corpusObservation ? 'Historical preservation obligations: '+report.corpusObservation.historicalPreservedCount+' verified byte-preservation; '+report.corpusObservation.historicalUnverifiedCount+' unverified. Historical contents are not certified.\n\n' : '')
     +(report.liveAuthorities ? 'Exact authority comparisons: '+report.liveAuthorities.matchedCount+'/'+report.liveAuthorities.checks.length+'; runtime families still unverified: '+report.liveAuthorities.unresolvedRuntime.length+'\n\n' : '')
+    +(report.hierarchicalPlan ? 'Common documentary plan: '+report.hierarchicalPlan.status+'; scopes '+report.hierarchicalPlan.coverage.scopeCount+'; obligations/issues '+report.hierarchicalPlan.issues.length+'; candidates '+report.hierarchicalPlan.coverage.plannedCount+'/'+report.hierarchicalPlan.coverage.candidateCount+'; impact reviews '+report.hierarchicalPlan.coverage.impactReviewCount+'\n\n' : '')
     +(report.g1ReasonCodes?.length ? 'G1 diagnostics: '+report.g1ReasonCodes.join(', ')+'\n\n' : '')
     +'Next action: '+report.nextAction+'\n\n'
     +'See the documentary-closure artifact for paths, differences and coverage.\n');
