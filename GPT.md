@@ -115,3 +115,7 @@ Règles permanentes :
 - non-régression obligatoire.
 
 Mise à jour : 2026-07-09T20:08:09Z
+
+## Continuité documentaire et Loopback
+
+Appliquer le même plan commun de [Loop Engineering](LOOP_ENGINEERING.md) à tous les modes d'entrée, sans contourner l'INTAKE et les autorisations actuelles. Lire le [POINT DE REPRISE COURANT de SUIVI.md](SUIVI.md#point-de-reprise-courant), le [Loopback historique](memory/LOOPBACK_WEALTHTECH_CURRENT.md), le [suivi mémoire](memory/SUIVI_MEMORY.md), les documents propriétaires et les autorités parentes avant de poursuivre. Actualiser les faits démontrés, répercuter les impacts documentaires et préparer le prochain checkpoint ; ne pas déduire une autorisation, un SHA runtime, une tâche terminée ou une certification du seul texte d'un fichier Markdown.

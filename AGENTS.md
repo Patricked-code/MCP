@@ -200,3 +200,7 @@ Current post-integration bootstrap rule:
 
 Canonical machine policy: `.mcp/github-first-operational-policy.json`.
 Design: `docs/superpowers/specs/2026-09-20-github-first-operational-continuity-v1-design.md`.
+
+## Plan documentaire hiérarchique et Loopback commun
+
+À chaque arrivée, reprise ou fin de lot significatif, appliquer [LOOP_ENGINEERING.md](LOOP_ENGINEERING.md) et le [POINT DE REPRISE COURANT](SUIVI.md#point-de-reprise-courant) en complément de l'INTAKE courant. Après résolution de l'identité et du périmètre, consulter le plan commun sur un checkout de confiance au SHA observé (`node scripts/mcp-documentary-closure.mjs --plan "$(git rev-parse HEAD)"`) ; en l'absence de checkout, résoudre les sources via l'autorité GitHub et déclarer l'équivalent de preuve non disponible, sans prétendre que le préflight a été exécuté. Même obligation pour E1 et E2, sans attribution ou droit implicite. Une lecture structurale ne prouve pas la compréhension ni la conformité sémantique. Consigner les obligations ouvertes dans les autorités propriétaires, préserver les documents historiques et ne pas modifier les contributions des autres PR. Le [Loopback de juillet](memory/LOOPBACK_WEALTHTECH_CURRENT.md) reste une source historique ; la prochaine action MCP doit provenir de la continuité locale et de l'observation fraîche.
