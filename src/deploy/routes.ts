@@ -2,6 +2,7 @@ import express from 'express';
 import type { Router } from 'express';
 
 import type { G1Evidence } from './g1Documentation.js';
+import type { RuntimeAuthorityEvidence } from './documentaryRuntimeEvidence.js';
 import type { GithubOidcClaims } from './githubOidc.js';
 import {
   buildS1DeployJobId,
@@ -26,6 +27,7 @@ export interface GithubDeployRouteDependencies {
   runWrite: (command: string) => Promise<CommandResultLike>;
   runRead: (command: string) => Promise<CommandResultLike>;
   readG1Evidence?: (sha: string) => Promise<G1Evidence>;
+  readDocumentaryRuntimeEvidence?: (input:{sha:string;jobId:string;stateVersion:number})=>Promise<RuntimeAuthorityEvidence>;
 }
 
 function bearerToken(value: string | undefined): string | null {
@@ -208,6 +210,27 @@ export function createGithubDeployRouter(dependencies: GithubDeployRouteDependen
         && status.runtimeRevision === sha && status.rollbackStatus === 'not_needed'
         && status.healthOk === true && status.oauthOk === true && status.mcpAuthOk === true) {
         const evidence = await g1(sha).catch((): G1Evidence => ({ status: 'UNVERIFIED', reasonCodes: ['G1_EVIDENCE_READ_FAILED'] }));
+        // This observer is reachable only after the exact-run OIDC check
+        // and successful technical attestation above. Legacy G1 stays intact.
+        if (evidence.status!=='UNVERIFIED'&&evidence.authorityEvidence?.sha===sha) {
+          const binding=evidence.authorityEvidence;
+          try {
+            const read=dependencies.readDocumentaryRuntimeEvidence??
+              (await import('./documentaryRuntimeEvidence.js')).observeDocumentaryRuntimeAuthorities;
+            const runtimeEvidence=await read({sha,jobId:status.jobId,stateVersion:binding.stateVersion});
+            const refreshed=await g1(sha);
+            if(refreshed.status!=='UNVERIFIED'&&refreshed.status===evidence.status&&
+              refreshed.authorityEvidence?.sha===sha&&refreshed.authorityEvidence.stateVersion===binding.stateVersion&&
+              refreshed.authorityEvidence.inventoryDigest===binding.inventoryDigest&&
+              runtimeEvidence.sha===sha&&runtimeEvidence.jobId===status.jobId&&runtimeEvidence.stateVersion===binding.stateVersion) {
+              return response.status(200).json({...status,g1:{...refreshed,runtimeEvidence}});
+            }
+            return response.status(200).json({...status,g1:refreshed});
+          } catch {
+            // A missing auxiliary authority must never be called verified or
+            // invalidate an otherwise legitimate technical deployment.
+          }
+        }
         return response.status(200).json({ ...status, g1: evidence });
       }
       return response.status(200).json(status);
