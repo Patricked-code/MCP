@@ -348,6 +348,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Install dependencies for exact runtime cartography generation
+        run: npm ci --ignore-scripts
       - name: Observe documentary coverage and exact Git differences
         id: closure
         env:
@@ -366,3 +368,12 @@ jobs:
         if: failure()
         run: |
           printf '%s\n' '### Documentary closure: DOCUMENTARY_CLOSURE_BLOCKED' 'No complete report was retained. Global closure is not attested; reobserve.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Enforce explicit documentary certification verdict
+        if: success()
+        env:
+          DOCUMENTARY_CLOSURE_STATUS: ${{ steps.closure.outputs.closure-status }}
+        run: |
+          if [[ "$DOCUMENTARY_CLOSURE_STATUS" != 'DOCUMENTARY_CLOSURE_ATTESTED' ]]; then
+            printf '%s\n' 'Documentary certification has not been attained. The technical deployment receipt remains independent.'
+            exit 1
+          fi

@@ -11,7 +11,21 @@ const [{ buildMcpServer }, { getCurrentToolCatalog }] = await Promise.all([
   import('../src/currentState/toolCatalog.js')
 ]);
 
-buildMcpServer();
+// The historical versioned catalogue remains the standalone profile. The
+// HTTP server always supplies the pairing dependency (startHttpServer).
+// Build the actual registration surface with an inert dependency: no OAuth
+// session, token, network request or Plesk operation is executed.
+const profile = process.argv.slice(2);
+if (profile.length === 0) {
+  buildMcpServer();
+} else if (profile.length === 1 && profile[0] === '--http-runtime') {
+  const { createPleskWebTransportPairing } = await import('../src/provisioning/pleskWebTransportPairing.js');
+  buildMcpServer(createPleskWebTransportPairing({
+    now: () => 0, lookupSessionId: () => null, inspectOauth: () => null
+  }));
+} else {
+  throw Error('FUNCTION_CARTOGRAPHY_PROFILE_INVALID');
+}
 const catalogue = getCurrentToolCatalog();
 const result = {
   schemaVersion: 2,

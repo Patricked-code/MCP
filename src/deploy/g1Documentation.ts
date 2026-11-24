@@ -5,11 +5,43 @@ export const G1_REPOSITORY = GITHUB_OIDC_POLICY.repository;
 export const G1_MANIFEST = 'PRODUCTION_STATE.json';
 const SHA = /^[0-9a-f]{40}$/;
 const IMAGE = /^sha256:[0-9a-f]{64}$/;
+// Read-only projection of existing authorities; no new store and no claim
+// that the dynamic registries or Markdown semantics have been certified.
+export type G1AuthorityEvidence = Readonly<{
+  schemaVersion: 1;
+  sha: string;
+  observedAt: string;
+  stateVersion: number;
+  inventoryDigest: string;
+  documentationDigest: string;
+  governanceDigest: string;
+  testSuiteDigest: string;
+  catalogueDigest: string;
+  toolCount: number;
+}>;
+const DIGEST = /^[0-9a-f]{64}$/;
+export function projectG1AuthorityEvidence(state: LiveStateSnapshot, sha: string): G1AuthorityEvidence | null {
+  const i=state.inventory, g=state.governance, a=state.auditBaseline, c=state.capabilities;
+  if (!i || !g || !a || !c || i.status!=='CURRENT' || g.status!=='CURRENT' || a.status!=='CURRENT' || c.status!=='CURRENT'
+    || i.evidenceHead!==sha || a.evidenceHead!==sha || a.runtimeRevision!==sha || !a.valid || a.invalidReasons.length
+    || i.contradictions.length || g.contradictions.length || c.contradictions.length
+    || i.sourceDigest!==a.sourceDigest || i.governance.digest!==g.digest || g.digest!==a.governanceDigest
+    || i.testSuiteDigest!==a.testSuiteDigest || c.catalogueDigest!==a.catalogueDigest
+    || !Number.isSafeInteger(state.stateVersion) || state.stateVersion<1
+    || !Number.isSafeInteger(c.registeredToolCount) || c.registeredToolCount<1) return null;
+  const inventoryDigest=i.sourceDigest, documentationDigest=i.documentation.digest, governanceDigest=g.digest,
+    testSuiteDigest=i.testSuiteDigest, catalogueDigest=c.catalogueDigest;
+  if (!inventoryDigest || !documentationDigest || !governanceDigest || !testSuiteDigest || !catalogueDigest
+    || ![inventoryDigest,documentationDigest,governanceDigest,testSuiteDigest,catalogueDigest].every(x=>DIGEST.test(x))) return null;
+  return {schemaVersion:1,sha,observedAt:state.generatedAt,stateVersion:state.stateVersion,
+    inventoryDigest,documentationDigest,governanceDigest,testSuiteDigest,catalogueDigest,toolCount:c.registeredToolCount};
+}
 export type G1Drift = {
   status: 'DRIFT'; sha: string; observedAt: string; stateVersion: number; imageId: string;
   declaredGithubSha: string; declaredS1Sha: string;
+  authorityEvidence?: G1AuthorityEvidence;
 };
-export type G1Evidence = G1Drift | { status: 'ALIGNED' } | { status: 'UNVERIFIED'; reasonCodes?: readonly string[] };
+export type G1Evidence = G1Drift | { status: 'ALIGNED'; authorityEvidence?: G1AuthorityEvidence } | { status: 'UNVERIFIED'; reasonCodes?: readonly string[] };
 
 // Use the base repository's file list so manually named and fork PRs are visible.
 // Never interpret unavailable or truncated file data as absence of a collision.
@@ -57,8 +89,10 @@ export function projectG1Evidence(state: LiveStateSnapshot, sha: string, now = D
     || state.s1.workingTreeClean !== true || state.s1.diffEmpty !== true
     || state.runtime.containerStatus !== 'running' || state.runtime.health !== 'healthy'
     || state.alignment.githubVsS1 !== 'ALIGNED' || state.alignment.runtime !== 'ALIGNED') return { status: 'UNVERIFIED' };
+  const authorityEvidence=projectG1AuthorityEvidence(state,sha);
+  const projection=authorityEvidence ? {authorityEvidence} : {};
   if (state.alignment.global === 'FULLY_ALIGNED' && state.alignment.documentation === 'ALIGNED'
-    && !state.documentation.drift && !state.contradictions.length) return { status: 'ALIGNED' };
+    && !state.documentation.drift && !state.contradictions.length) return { status: 'ALIGNED', ...projection };
   const { declaredGithubSha, declaredS1Sha } = state.documentation;
   if (state.alignment.global !== 'RECONCILIATION_REQUIRED' || state.alignment.documentation !== 'DOCUMENTATION_DRIFT'
     || state.nextAction !== 'reconcile_canonical_documentation' || state.documentation.drift !== true
@@ -67,7 +101,7 @@ export function projectG1Evidence(state: LiveStateSnapshot, sha: string, now = D
     || !state.runtime.imageId || !IMAGE.test(state.runtime.imageId)
     || !Number.isSafeInteger(state.stateVersion) || state.stateVersion < 1) return { status: 'UNVERIFIED' };
   return { status: 'DRIFT', sha, observedAt: state.generatedAt, stateVersion: state.stateVersion,
-    imageId: state.runtime.imageId, declaredGithubSha, declaredS1Sha };
+    imageId: state.runtime.imageId, declaredGithubSha, declaredS1Sha, ...projection };
 }
 
 export function prepareG1Candidate(raw: string, evidence: G1Drift, expectedSha: string, now = Date.now()): string {
