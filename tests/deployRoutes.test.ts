@@ -363,3 +363,29 @@ test('G1 projection requires the same OIDC run attested and does not alter legac
     assert.equal(calls, 1);
   });
 });
+
+test('documentary runtime observation is bound to the same attested OIDC run and stable Live State',async()=>{
+  const {observeDocumentaryRuntimeAuthorities}=await import('../src/deploy/documentaryRuntimeEvidence.js');
+  const {createEmptyTaskStoreDocument,createEmptySessionStoreDocument,createEmptyLockStoreDocument}=await import('../src/operationalMemory/types.js');
+  const d='d'.repeat(64),at=new Date().toISOString();
+  let calls=0,reads=0;
+  const authority={schemaVersion:1 as const,sha:SHA,observedAt:at,stateVersion:9,inventoryDigest:d,
+    documentationDigest:d,governanceDigest:d,testSuiteDigest:d,catalogueDigest:d,toolCount:160};
+  await withServer(dependencies({
+    readG1Evidence:async()=>{calls++;return {status:'ALIGNED',authorityEvidence:authority};},
+    readDocumentaryRuntimeEvidence:async(input)=>{reads++;return observeDocumentaryRuntimeAuthorities({...input,readers:{
+      registry:async()=>({available:true,sourceSchemaVersion:1,digest:d,candidateDigest:d,mappings:[],projects:[],activationReadiness:[]}),
+      tasks:async()=>createEmptyTaskStoreDocument(),sessions:async()=>createEmptySessionStoreDocument(),locks:async()=>createEmptyLockStoreDocument()
+    }});}
+  }),async baseUrl=>{
+    const opts={headers:{authorization:'Bearer valid-oidc'}};
+    const url=baseUrl+'/deploy/github/s1/status/'+JOB_ID+'?sha='+SHA+'&g1=1';
+    assert.equal((await fetch(url.replace(RUN_ID,'100'),opts)).status,403);
+    assert.equal(reads,0);
+    const response=await fetch(url,opts);
+    const body=await response.json();
+    assert.equal(body.g1.runtimeEvidence.jobId,JOB_ID);
+    assert.equal(body.g1.runtimeEvidence.semanticCoverageComplete,false);
+    assert.equal(reads,1);assert.equal(calls,2);
+  });
+});

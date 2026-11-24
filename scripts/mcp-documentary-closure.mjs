@@ -305,7 +305,39 @@ export function verifyCartographyProfiles({versioned,standalone,httpRuntime}) {
     httpDigest:httpRuntime.catalogueDigest,added,removed,changed};
 }
 
-export function compareLiveAuthorities({headSha,g1,existingEvidence,now=Date.now()}) {
+export function validateRuntimeAuthorityObservation({headSha,g1,expectedJobId,now=Date.now()}) {
+  const e=g1?.runtimeEvidence;
+  const names=RUNTIME_AUTHORITIES.slice(0,4).map(([authority])=>authority);
+  const age=now-Date.parse(e?.observedAt??'');
+  const rowOk=r=>r&&names.includes(r.authority)&&['OBSERVED','UNVERIFIED'].includes(r.status)&&
+    (r.status==='OBSERVED'?Number.isSafeInteger(r.sourceVersion)&&r.sourceVersion>=0&&
+      Number.isSafeInteger(r.recordCount)&&r.recordCount>=0&&DIGEST.test(r.digest??'')&&
+      ['RETAINED_RECORDS','BOUNDED_REGISTRY_PROJECTION'].includes(r.coverage):
+      r.sourceVersion===null&&r.recordCount===null&&r.digest===null&&r.coverage==='UNVERIFIED');
+  if(!expectedJobId||e?.schemaVersion!==1||e.repository!==REPO||e.sha!==headSha||e.jobId!==expectedJobId||
+    e.stateVersion!==g1?.authorityEvidence?.stateVersion||!Number.isFinite(age)||age< -5000||age>900000||
+    !['OBSERVED','UNVERIFIED','CONFLICT'].includes(e.status)||typeof e.stableRead!=='boolean'||
+    e.coverage!=='RETAINED_AUTHORITY_RECORDS_ONLY'||e.semanticCoverageComplete!==false||e.mutationPerformed!==false||
+    !DIGEST.test(e.evidenceDigest??'')||!Array.isArray(e.authorities)||e.authorities.length!==names.length||
+    !e.authorities.every(rowOk)||new Set(e.authorities.map(r=>r.authority)).size!==names.length||
+    !Array.isArray(e.conflicts)||e.conflicts.length>30||!e.conflicts.every(r=>r&&
+      /^[A-Z_]{3,80}$/.test(r.code??'')&&Number.isSafeInteger(r.count)&&r.count>0)) return null;
+  if((e.status==='OBSERVED'&&(!e.stableRead||e.conflicts.length||e.authorities.some(r=>r.status!=='OBSERVED')))||
+    (e.status==='CONFLICT'&&(!e.stableRead||!e.conflicts.length||e.authorities.some(r=>r.status!=='OBSERVED')))||
+    (e.status==='UNVERIFIED'&&e.stableRead))return null;
+  // The producer's canonical hash is verified against a fixed, publication-safe
+  // shape. Arbitrary extra fields from an untrusted envelope are not retained.
+  const {evidenceDigest,...body}=e;
+  const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'
+    ?Object.fromEntries(Object.entries(value).filter(([,v])=>v!==undefined).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>[k,canonical(v)])):value;
+  const expected=digest(canonical(body));
+  if(expected!==evidenceDigest)return null;
+  return {sha:e.sha,jobId:e.jobId,stateVersion:e.stateVersion,observedAt:e.observedAt,status:e.status,
+    stableRead:e.stableRead,evidenceDigest,coverage:e.coverage,semanticCoverageComplete:false,
+    authorities:e.authorities.map(({authority,status,sourceVersion,recordCount,digest,coverage})=>({authority,status,sourceVersion,recordCount,digest,coverage})),
+    conflicts:e.conflicts.map(({code,count})=>({code,count}))};
+}
+export function compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobId=null,now=Date.now()}) {
   const e=g1?.authorityEvidence;
   const pairs=[
     ['inventoryDigest','sourceDigest','CURRENT_STATE_EVIDENCE','scripts/current-state-evidence.mjs'],
@@ -333,16 +365,18 @@ export function compareLiveAuthorities({headSha,g1,existingEvidence,now=Date.now
     if(status==='CONFLICT') differences.push({path,field:liveField,declared,observed,
       reason:'LIVE_AUTHORITY_VALUE_MISMATCH',source:authority,nextAction:'RESOLVE_AUTHORITY_AND_RECONCILE'});
   }
+  const runtimeObservation=bound?validateRuntimeAuthorityObservation({headSha,g1,expectedJobId,now}):null;
+  const observedByAuthority=new Map((runtimeObservation?.authorities??[]).map(r=>[r.authority,r]));
   const unresolvedRuntime=RUNTIME_AUTHORITIES.map(([authority,source])=>({
-    authority,source,status:'UNVERIFIED',reason:'SOURCE_BOUND_SEMANTIC_RECONCILIATION_NOT_ATTESTED',
+    authority,source,status:'UNVERIFIED',sourceObservation:observedByAuthority.get(authority)??null,reason:'SOURCE_BOUND_SEMANTIC_RECONCILIATION_NOT_ATTESTED',
     nextAction:'REUSE_EXISTING_AUTHORITY_READER_AND_COMPARE_PROJECTIONS'
   }));
   return {bound,headSha,observedAt:bound?e.observedAt:null,stateVersion:bound?e.stateVersion:null,
-    checks,differences,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
+    checks,differences,runtimeObservation,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
     complete:false};
 }
 
-export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk, authorityObservation = null, corpusObservation = null, existingEvidence = null}) {
+export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPaths, inventory, changes, g1, governanceCheckOk, authorityObservation = null, corpusObservation = null, existingEvidence = null, expectedJobId = null}) {
   if (!SHA.test(headSha ?? '') || !SHA.test(baselineSha ?? '') ||
       !Array.isArray(trackedPaths) || trackedPaths.length > LIMIT ||
       !trackedPaths.every(validPath) || new Set(trackedPaths).size !== trackedPaths.length ||
@@ -395,7 +429,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     );
   }
   differences.push(...g1Differences);
-  const liveAuthorities=compareLiveAuthorities({headSha,g1,existingEvidence});
+  const liveAuthorities=compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobId});
   differences.push(...liveAuthorities.differences);
   const reasons = ['SEMANTIC_AND_RUNTIME_REGISTRY_COVERAGE_UNVERIFIED'];
   if (authorityObservation?.ok !== true) reasons.push('STATIC_AUTHORITY_PROOF_MISSING_OR_CONFLICT');
@@ -405,6 +439,8 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   if (corpusObservation?.unknownImpactCount>0) reasons.push('UNCLASSIFIED_IMPACT');
   if (existingEvidence && existingEvidence.ok !== true) reasons.push('CURRENT_STATE_EVIDENCE_CONTRADICTIONS');
   if (liveAuthorities.differences.length) reasons.push('LIVE_AUTHORITY_CONFLICT');
+  if(liveAuthorities.runtimeObservation?.status==='CONFLICT') reasons.push('RUNTIME_AUTHORITY_RELATION_CONFLICT');
+  if(liveAuthorities.runtimeObservation?.status!=='OBSERVED') reasons.push('RUNTIME_AUTHORITY_OBSERVATION_UNVERIFIED');
   if (existingEvidence?.cartographyProfile?.ok===false) reasons.push(existingEvidence.cartographyProfile.reason);
   if (!liveAuthorities.bound || liveAuthorities.checks.some(c=>c.status==='UNVERIFIED')) reasons.push('LIVE_AUTHORITY_PROOF_UNVERIFIED');
   const g1ReasonCodes=Array.isArray(g1?.reasonCodes)?g1.reasonCodes.filter(x=>typeof x==='string'&&/^G1_[A-Z0-9_]{2,80}$/.test(x)).slice(0,20):[];
@@ -416,7 +452,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     (authorityObservation !== null && authorityObservation.ok !== true) ||
     (corpusObservation !== null && (corpusObservation.inventoryCoverageComplete !== true || (corpusObservation.unresolvedStructuralCount ?? corpusObservation.structuralUnverifiedCount)>0 || corpusObservation.historicalUnverifiedCount>0 || corpusObservation.unknownImpactCount>0)) ||
     (existingEvidence !== null && existingEvidence.ok !== true) ||
-    liveAuthorities.differences.length>0 || existingEvidence?.cartographyProfile?.ok===false ||
+    liveAuthorities.differences.length>0 || liveAuthorities.runtimeObservation?.status==='CONFLICT' || existingEvidence?.cartographyProfile?.ok===false ||
     (g1?.status !== 'ALIGNED' && !g1Differences.length)
     ? 'DOCUMENTARY_CLOSURE_BLOCKED' : 'DOCUMENTARY_CLOSURE_PENDING';
   return {
@@ -512,7 +548,8 @@ export function main(env = process.env) {
       existingEvidence={ok:false,contradictions:[{code:'CURRENT_STATE_EVIDENCE_UNAVAILABLE',path:null}]};
     }
     report = buildDocumentaryClosureReport({headSha,baselineSha,trackedPaths,inventory,changes,g1,
-      governanceCheckOk,authorityObservation,corpusObservation,existingEvidence});
+      governanceCheckOk,authorityObservation,corpusObservation,existingEvidence,
+      expectedJobId:/^[0-9]{1,30}$/.test(env.GITHUB_RUN_ID??'')?'mcp-s1-'+env.GITHUB_RUN_ID+'-'+headSha.slice(0,12):null});
   } catch (error) {
     const bounded = new Set(['CHECKOUT_SHA_MISMATCH','INVALID_BASELINE','TREE_TRUNCATED','DIFF_TRUNCATED',
       'DIFF_STATUS_INVALID','DIFF_PATH_INVALID','DIFF_LIMIT_EXCEEDED','INVALID_OBSERVATION','INVENTORY_UNREADABLE','INVALID_CHANGE',

@@ -5,7 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 // The workflow report is a standalone dependency-free ESM script.
 // @ts-ignore -- test runner imports the .mjs implementation directly.
-import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities, parseTrackedTree, observeTrackedCorpus, classifyTrackedPath, compareLiveAuthorities, observeHistoricalPreservation, verifyCartographyProfiles } from '../scripts/mcp-documentary-closure.mjs';
+import { buildDocumentaryClosureReport, parseNameStatus, observeDocumentAuthorities, parseTrackedTree, observeTrackedCorpus, classifyTrackedPath, compareLiveAuthorities, observeHistoricalPreservation, verifyCartographyProfiles, validateRuntimeAuthorityObservation } from '../scripts/mcp-documentary-closure.mjs';
 
 const HEAD = 'a'.repeat(40);
 const BASE = 'b'.repeat(40);
@@ -234,4 +234,19 @@ test('real cartography generation produces a distinct exact HTTP profile and pre
   assert.deepEqual(verified.added,['mcp_issue_plesk_web_pairing_proof']);
   const invalid=verifyCartographyProfiles({versioned:standalone,standalone,httpRuntime:{...httpRuntime,tools:httpRuntime.tools.map((x:{name:string})=>x.name==='mcp_issue_plesk_web_pairing_proof'?{...x,name:'unknown_tool'}:x)}});
   assert.equal(invalid.ok,false);
+});
+
+test('runtime evidence is exact-job bound, digest checked and never implies semantic closure',async()=>{
+  const {observeDocumentaryRuntimeAuthorities}=await import('../src/deploy/documentaryRuntimeEvidence.js');
+  const {createEmptyTaskStoreDocument,createEmptySessionStoreDocument,createEmptyLockStoreDocument}=await import('../src/operationalMemory/types.js');
+  const now=Date.now(),d='d'.repeat(64),jobId='mcp-s1-123-'+HEAD.slice(0,12);
+  const runtimeEvidence=await observeDocumentaryRuntimeAuthorities({sha:HEAD,jobId,stateVersion:5,now:()=>now,readers:{
+    registry:async()=>({available:true,sourceSchemaVersion:1,digest:d,candidateDigest:d,mappings:[],projects:[],activationReadiness:[]}),
+    tasks:async()=>createEmptyTaskStoreDocument(),sessions:async()=>createEmptySessionStoreDocument(),locks:async()=>createEmptyLockStoreDocument()
+  }});
+  const g1={status:'ALIGNED',authorityEvidence:{stateVersion:5},runtimeEvidence};
+  const verified=validateRuntimeAuthorityObservation({headSha:HEAD,g1,expectedJobId:jobId,now});
+  assert.equal(verified.status,'OBSERVED');assert.equal(verified.semanticCoverageComplete,false);
+  assert.equal(validateRuntimeAuthorityObservation({headSha:HEAD,g1,expectedJobId:'other',now}),null);
+  assert.equal(validateRuntimeAuthorityObservation({headSha:HEAD,g1:{...g1,runtimeEvidence:{...runtimeEvidence,stableRead:false}},expectedJobId:jobId,now}),null);
 });
