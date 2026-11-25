@@ -45,7 +45,8 @@ const ExpectedRevisionSchema = z.number().int().nonnegative();
 
 export type GovernedTaskToolDependencies = {
   queue: GovernedTaskQueue;
-  sessions: Pick<GovernedSessionService, 'getVisibleSession'>;
+  sessions: Pick<GovernedSessionService, 'getVisibleSession'>
+    & Partial<Pick<GovernedSessionService, 'lookupGovernedSessionId'>>;
   liveState: Pick<typeof liveStateEngine, 'getCurrent'>;
   lifecycle: TaskLifecycleCoordinator;
   ready: () => Promise<unknown>;
@@ -231,14 +232,45 @@ function registerGovernedTaskMutationToolsWithDependencies(
     })));
 
   server.registerTool('mcp_claim_next_governed_task', {
-    description: 'Réclame atomiquement la première tâche exécutable selon priorité puis séquence.',
-    inputSchema: { ...BootstrapInputShape, expectedStoreRevision: ExpectedRevisionSchema },
+    description: 'Réclame atomiquement la première tâche exécutable selon priorité puis séquence. targetTask optionnel : claim exact dans une session OAuth liée au transport et au Task ID, sans repli vers une autre tâche.',
+    inputSchema: {
+      ...BootstrapInputShape,
+      expectedStoreRevision: ExpectedRevisionSchema,
+      targetTask: z.object({ taskId: TaskIdSchema, expectedTaskRevision: ExpectedRevisionSchema }).strict().optional()
+    },
     annotations: mutationAnnotations
   }, async (input, extra) => handled(() => active.lifecycle.run(async () => {
       const session = await assertBootstrap(input, extra, active);
-      return active.queue.claimNextTask(input.governedSessionId, input.expectedStoreRevision, {
-        sessionTargetScope: session.targetScope ?? null
-      });
+      const options = { sessionTargetScope: session.targetScope ?? null };
+      if (input.targetTask !== undefined) {
+        // Exact selection is opt-in; keep the legacy dispatch order unchanged.
+        // A visible session alone is insufficient: require the bound OAuth owner.
+        const request = sessionRequestFromToolExtra(extra);
+        if (request.identity.assurance !== 'oauth_subject'
+          || session.identityAssurance !== 'oauth_subject'
+          || request.identity.principalId !== session.ownerPrincipalId
+          || active.sessions.lookupGovernedSessionId?.(request.transportSessionId) !== input.governedSessionId) {
+          throw new Error('TARGET_CLAIM_SESSION_NOT_BOUND');
+        }
+        if (session.status !== 'OPEN' && session.status !== 'ACTIVE') {
+          throw new Error('TARGET_CLAIM_SESSION_NOT_ACTIVE');
+        }
+        if (session.taskScope !== input.targetTask.taskId) throw new Error('TARGET_CLAIM_TASK_SCOPE_MISMATCH');
+        if (session.lastAcknowledgedStateVersion !== input.expectedStateVersion
+          || session.bootstrapReceipt?.status !== 'ACKNOWLEDGED'
+          || session.bootstrapReceipt.governedSessionId !== session.governedSessionId
+          || session.bootstrapReceipt.repository !== session.repository) {
+          throw new Error('TARGET_CLAIM_BOOTSTRAP_MISMATCH');
+        }
+        const task = await active.queue.getVisibleTask(input.targetTask.taskId);
+        if (!task) throw new Error('TASK_NOT_FOUND');
+        if (task.repository !== session.repository) throw new Error('TARGET_CLAIM_REPOSITORY_MISMATCH');
+        // The same queue performs task/store CAS, eligibility, dependencies,
+        // ownership and collision checks under the existing lifecycle coordinator.
+        return active.queue.claimTaskById(input.governedSessionId, input.targetTask.taskId,
+          input.targetTask.expectedTaskRevision, input.expectedStoreRevision, options);
+      }
+      return active.queue.claimNextTask(input.governedSessionId, input.expectedStoreRevision, options);
     })));
 
   server.registerTool('mcp_transition_governed_task', {
