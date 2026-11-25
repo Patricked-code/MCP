@@ -26,6 +26,7 @@ import { registerGithubControlPlaneReadTools } from './githubControlPlaneRead.js
 import { registerGithubLifecycleReadTools } from './githubLifecycle.js';
 import { registerWorkersProject4AccessReadTool } from './githubProjectAccess.js';
 import { registerWorkersProjectWorkflowsReadTools } from './githubProjectWorkflows.js';
+import { registerGithubProjectsDiscoveryReadTools } from './githubProjectsDiscovery.js';
 import { getCurrentToolCatalog } from '../currentState/toolCatalog.js';
 import { extendProjectContextWithUniversalCapabilities } from '../provisioning/universalCapabilityDiscovery.js';
 import { probeExistingAdminReadCapabilities } from '../provisioning/universalAdminLiveProbe.js';
@@ -105,6 +106,7 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerGithubLifecycleReadTools(server);
   registerWorkersProject4AccessReadTool(server);
   registerWorkersProjectWorkflowsReadTools(server);
+  registerGithubProjectsDiscoveryReadTools(server);
   registerGithubAuthorizationReadOnlyTools(server);
   registerDurableAccountReadOnlyTools(server);
   registerGitRegistryV2ReadOnlyTools(server);

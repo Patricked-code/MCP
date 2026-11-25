@@ -31,6 +31,21 @@ const sample = {
   }
 };
 
+test('dedicated Projects credential rejects arbitrary GraphQL and mutations', async () => {
+  const { githubJsonRequestWithPersonalProjectsCredential } =
+    await import('../src/github/connection.js');
+  for (const input of [
+    { endpoint: '/repos/Patricked-code/MCP', options: {method:'POST' as const, jsonBody:{query:'query WorkersProject4Read($owner: String!) { viewer {login} }'}} },
+    { endpoint: '/graphql', options: {method:'POST' as const, jsonBody:{query:'mutation Test { __typename }'}} },
+    { endpoint: '/graphql', options: {method:'POST' as const, jsonBody:{query:'query ArbitraryQuery { viewer { login } }'}} }
+  ]) {
+    const r = await githubJsonRequestWithPersonalProjectsCredential(input.endpoint, input.options);
+    assert.equal(r.ok, false);
+    assert.equal(r.status, null);
+    assert.equal(r.json, null);
+  }
+});
+
 test('GraphQL operation is a query, never a mutation', () => {
   assert.match(WORKERS_PROJECT4_QUERY, /^query\s/);
   assert.doesNotMatch(WORKERS_PROJECT4_QUERY, /\bmutation\b/i);
@@ -69,11 +84,23 @@ test('different authenticated GitHub user is blocked', async () => {
   assert.equal(result.status, 'GITHUB_PRINCIPAL_MISMATCH');
 });
 
-test('public visibility mismatch is blocked', async () => {
+test('private Project can be read without changing its visibility', async () => {
   const result = await inspectWorkersProject4Access(async () => response({
     data: {
       viewer: sample.data.viewer,
       user: { projectV2: { ...sample.data.user.projectV2, public: false } }
+    }
+  }));
+  assert.equal(result.status, 'READ_ACCESS_VERIFIED');
+  assert.equal(result.public, false);
+  assert.equal(result.noMutation, true);
+});
+
+test('missing Project visibility fails closed', async () => {
+  const result = await inspectWorkersProject4Access(async () => response({
+    data: {
+      viewer: sample.data.viewer,
+      user: { projectV2: { ...sample.data.user.projectV2, public: null } }
     }
   }));
   assert.equal(result.status, 'PROJECT_IDENTITY_MISMATCH');

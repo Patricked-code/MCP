@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "6350065d7204d53ce30811b271ae2ba7e9302a641dc115d11509067b5d7b215a",
-  "registeredToolCount": 159,
-  "readOnlyToolCount": 102,
+  "catalogueDigest": "3f901b3aa543adf00e78bea6a81a385bdb25417145bed6626ac31260e9f825a4",
+  "registeredToolCount": 163,
+  "readOnlyToolCount": 106,
   "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
@@ -1807,6 +1807,41 @@
       "contractDigest": "5436c353e5a4a256f78f8dfa119c066c61c187a76d04a3cd5782d67aff8d8690"
     },
     {
+      "name": "github_project_inspect",
+      "title": null,
+      "description": "Inspecte un Project V2 sélectionné par propriétaire et numéro, en lecture seule.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "enum": [
+              "Patricked-code",
+              "Wealthtechinnovations",
+              "chainsolutions-wealthtech"
+            ]
+          },
+          "number": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          }
+        },
+        "required": [
+          "owner",
+          "number"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "4ae73f33d136c2ea0ee58f6b8010172198eda6e9fa564a2821dfa2a12890d8d1"
+    },
+    {
       "name": "github_project_v2_inventory",
       "title": null,
       "description": "Inventorie en lecture seule les champs, vues et compteurs du Project personnel Patricked-code/4.",
@@ -1899,6 +1934,119 @@
         "additionalProperties": false
       },
       "contractDigest": "7a187ee97738c815248533416ffecdb30ded7a9649d460d7bb138e8352599186"
+    },
+    {
+      "name": "github_projects_discover",
+      "title": null,
+      "description": "Découvre une page de Projects V2 accessibles à un compte configuré, sans écriture.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "enum": [
+              "Patricked-code",
+              "Wealthtechinnovations",
+              "chainsolutions-wealthtech"
+            ]
+          },
+          "pageSize": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "after": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        },
+        "required": [
+          "owner",
+          "pageSize"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "99cff171b0792cafb88a9163ae09fa31208f52c42f905319d1325439f7fe33b9"
+    },
+    {
+      "name": "github_projects_inventory",
+      "title": null,
+      "description": "Inventorie les Projects V2 par pages avec preuve de complétude.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "enum": [
+              "Patricked-code",
+              "Wealthtechinnovations",
+              "chainsolutions-wealthtech"
+            ]
+          },
+          "maxPages": {
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "owner",
+          "maxPages"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "bb6726b2688b6a5b5c0241bbe4fb5a6693336d4f40f849af7c30ffdc8452def2"
+    },
+    {
+      "name": "github_projects_reconcile",
+      "title": null,
+      "description": "Prépare les jointures GitRegistry existantes sans rien créer ou modifier.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": null,
+        "destructiveHint": null
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "enum": [
+              "Patricked-code",
+              "Wealthtechinnovations",
+              "chainsolutions-wealthtech"
+            ]
+          },
+          "maxPages": {
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "owner",
+          "maxPages"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "dcd65a7f925c61d8d22737bb19a57fb92f4071a33d4418d3daccb29354c52fa5"
     },
     {
       "name": "github_registry_v2_dry_run",

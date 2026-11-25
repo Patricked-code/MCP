@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
-  githubJsonRequestWithServerCredential,
+  githubJsonRequestWithPersonalProjectsCredential,
   type GitHubJsonRequestOptions,
   type GitHubJsonResponse
 } from '../github/connection.js';
@@ -66,6 +66,7 @@ export type ProjectInventory = {
   status: 'READ_ACCESS_VERIFIED' | 'BLOCKED' | 'UNVERIFIED' | 'PARTIAL';
   reasonCode?: string;
   projectNodeId?: string;
+  public?: boolean;
   fields?: { id: string; name: string }[];
   views?: { id: string; name: string; layout: string | null }[];
   itemsTotalCount?: number;
@@ -74,7 +75,7 @@ export type ProjectInventory = {
 };
 
 export async function inspectProjectStructure(
-  request: Response = githubJsonRequestWithServerCredential
+  request: Response = githubJsonRequestWithPersonalProjectsCredential
 ): Promise<ProjectInventory> {
   const base = { target: WORKERS_PROJECT4.url, noMutation: true as const };
   let response: GitHubJsonResponse;
@@ -96,7 +97,7 @@ export async function inspectProjectStructure(
   }
   const project = object(object(data?.user)?.projectV2);
   if (!project || str(project.id) === null || project.number !== WORKERS_PROJECT4.number ||
-      project.public !== true || str(project.url)?.toLowerCase() !== WORKERS_PROJECT4.url.toLowerCase()) {
+      typeof project.public !== 'boolean' || str(project.url)?.toLowerCase() !== WORKERS_PROJECT4.url.toLowerCase()) {
     return { ...base, status: 'BLOCKED', reasonCode: 'PROJECT_UNAVAILABLE_OR_IDENTITY_MISMATCH' };
   }
   const fieldConnection = object(project.fields);
@@ -121,6 +122,7 @@ export async function inspectProjectStructure(
     ...base,
     status: paginationIncomplete ? 'PARTIAL' : 'READ_ACCESS_VERIFIED',
     projectNodeId: str(project.id)!,
+    public: project.public as boolean,
     fields,
     views,
     itemsTotalCount: Number(items.totalCount),
@@ -142,7 +144,7 @@ export type WorkflowResult = {
 
 export async function runProjectWorkflowReadOnly(
   workflow: Workflow,
-  request: Response = githubJsonRequestWithServerCredential
+  request: Response = githubJsonRequestWithPersonalProjectsCredential
 ): Promise<WorkflowResult> {
   const base = { workflow, target: WORKERS_PROJECT4.url, noMutation: true as const };
   const access = await inspectWorkersProject4Access(request);
@@ -192,7 +194,9 @@ export function registerWorkersProjectWorkflowsReadTools(server: McpServer): voi
         workflows: WORKERS_WORKFLOW_CONTRACTS,
         exposedMcpFunctions: ['github_project_access_preflight', 'github_project_v2_inventory',
           'github_project_v2_workflow_catalogue', 'github_project_v2_workflow_preflight',
-          'github_project_v2_workflow_run_readonly'].map(name => ({ name, registered: registered.has(name) }))
+          'github_project_v2_workflow_run_readonly', 'github_projects_discover',
+          'github_projects_inventory', 'github_project_inspect',
+          'github_projects_reconcile'].map(name => ({ name, registered: registered.has(name) }))
       }, null, 2));
     }
   );

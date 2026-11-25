@@ -75,6 +75,24 @@ test('inventory uses exact personal-project target and no mutation', async () =>
   assert.equal(result.noMutation, true);
 });
 
+test('private Project structure is readable but never published or mutated', async () => {
+  const res = await runProjectWorkflowReadOnly('CANONICAL_MEMORY_PREVIEW', fakeRequest({
+    access: {
+      ...access,
+      user: {projectV2: {...access.user.projectV2, public: false}}
+    },
+    structure: {
+      ...structure,
+      user: {projectV2: {...structure.user.projectV2, public: false}}
+    }
+  }));
+  assert.equal(res.status, 'SUCCESS_READ_ONLY');
+  assert.equal(res.access?.public, false);
+  assert.equal(res.inventory?.public, false);
+  assert.equal(res.proposal?.requiresApproval, true);
+  assert.equal(res.noMutation, true);
+});
+
 test('workflow ACCESS_PREFLIGHT is one bounded API read', async () => {
   const count={n:0};
   const result=await runProjectWorkflowReadOnly('ACCESS_PREFLIGHT', fakeRequest({count}));

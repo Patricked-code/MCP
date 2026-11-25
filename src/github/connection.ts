@@ -1,5 +1,5 @@
 import { consoleDocument } from '../web/consoleUi.js';
-import { mkdir, readFile, writeFile, chmod, stat } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, chmod, stat, lstat } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { env } from '../config/env.js';
 import { downloadGithubArchive, type ArchiveDownloadResult } from '../provisioning/sourceArchive.js';
@@ -23,6 +23,7 @@ import type {
 } from './identityResolution.js';
 
 const DEFAULT_TOKEN_FILE = '/app/secrets/github_token';
+const PERSONAL_PROJECTS_TOKEN_FILE = '/app/secrets/github_personal_projects_token';
 const MAX_RESPONSE_BYTES = 1_000_000;
 
 export type GitHubConnectionStatus = {
@@ -215,6 +216,51 @@ export async function githubJsonRequestWithServerCredential(
     };
   }
   return githubJsonRequest(token, endpoint, options);
+}
+
+/**
+ * WORKERS: optional independent credential for user-owned GitHub Projects V2.
+ *
+ * GitHub currently does not support fine-grained PATs for personal Projects.
+ * A dedicated classic PAT with read:project may be provisioned as a *separate*
+ * secret. Never replace GITHUB_TOKEN_FILE: repository operations keep using it.
+ *
+ * If the dedicated secret is absent, retain the previous read-only behavior.
+ * If present but insecure, fail closed (never silently use the repo credential).
+ * Secrets, GraphQL messages and authorization headers are not surfaced here.
+ */
+export async function githubJsonRequestWithPersonalProjectsCredential(
+  endpoint: string,
+  options: GitHubJsonRequestOptions = {}
+): Promise<GitHubJsonResponse> {
+  const denied: GitHubJsonResponse = {
+    ok: false, status: null, json: null, tokenExpiresAt: null, oauthScopes: []
+  };
+  const body = options.jsonBody;
+  const query = body !== null && typeof body === 'object' && !Array.isArray(body)
+    ? (body as Record<string, unknown>).query : null;
+  // Narrow contract: the dedicated credential cannot run arbitrary GraphQL.
+  if (endpoint !== '/graphql' || options.method !== 'POST' ||
+      typeof query !== 'string' ||
+      !/^query\s+(?:WorkersProject4(?:Read|Structure)|WorkersProjects(?:DiscoverUser|DiscoverOrganization|InspectUser|InspectOrganization))\s*\(/.test(query)) return denied;
+  let file;
+  try {
+    file = await lstat(PERSONAL_PROJECTS_TOKEN_FILE);
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error &&
+        error.code === 'ENOENT') {
+      return githubJsonRequestWithServerCredential(endpoint, options);
+    }
+    return denied;
+  }
+  if (!file.isFile() || (file.mode & 0o077) !== 0) return denied;
+  try {
+    const token = (await readFile(PERSONAL_PROJECTS_TOKEN_FILE, 'utf8')).trim();
+    if (!token) return denied;
+    return githubJsonRequest(token, endpoint, options);
+  } catch {
+    return denied;
+  }
 }
 
 /**

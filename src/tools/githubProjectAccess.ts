@@ -1,6 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
-  githubJsonRequestWithServerCredential,
+  githubJsonRequestWithPersonalProjectsCredential,
   type GitHubJsonResponse,
   type GitHubJsonRequestOptions
 } from '../github/connection.js';
@@ -8,7 +8,7 @@ import { asText } from './format.js';
 
 /**
  * WORKERS bootstrap P0: query exactly one personal-account ProjectV2.
- * Uses the existing server credential and allowlisted GitHub GraphQL client.
+ * Uses a separate read-only credential when securely provisioned, otherwise the existing server credential.
  * No PAT creation, no scope escalation, no mutation, no repository writes.
  */
 export const WORKERS_PROJECT4 = Object.freeze({
@@ -57,7 +57,7 @@ export type WorkersProject4AccessResult = {
 
 /** Result intentionally excludes token, HTTP headers, and GraphQL error messages. */
 export async function inspectWorkersProject4Access(
-  request: Request = githubJsonRequestWithServerCredential
+  request: Request = githubJsonRequestWithPersonalProjectsCredential
 ): Promise<WorkersProject4AccessResult> {
   const base: WorkersProject4AccessResult = {
     target: WORKERS_PROJECT4.url, noMutation: true, status: 'NOT_VERIFIED'
@@ -103,7 +103,7 @@ export async function inspectWorkersProject4Access(
   if (
     !projectNodeId ||
     project.number !== WORKERS_PROJECT4.number ||
-    project.public !== true ||
+    typeof project.public !== 'boolean' ||
     !url ||
     url.toLowerCase() !== WORKERS_PROJECT4.url.toLowerCase()
   ) {
@@ -119,7 +119,7 @@ export async function inspectWorkersProject4Access(
     projectNodeId,
     projectNumber: WORKERS_PROJECT4.number,
     title: string(project.title),
-    public: true,
+    public: project.public as boolean,
     viewerCanUpdate: project.viewerCanUpdate,
     notice: 'viewerCanUpdate is informational and does not authorize a mutation.'
   };
