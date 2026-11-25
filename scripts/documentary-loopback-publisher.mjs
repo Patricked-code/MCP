@@ -8,7 +8,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { observeLoopbackCheckpoint } from './documentary-hierarchy.mjs';
 import { parseNameStatus } from './mcp-documentary-closure.mjs';
-import { prepareLoopbackPublicationCandidate } from './documentary-loopback.mjs';
+import { decodeLoopbackSource, prepareLoopbackPublicationCandidate } from './documentary-loopback.mjs';
 
 const REPO='Patricked-code/MCP', WORKFLOW='.github/workflows/mcp-deploy.yml';
 const SHA=/^[a-f0-9]{40}$/, DIGEST=/^[a-f0-9]{64}$/, ID=/^[1-9][0-9]{0,14}$/;
@@ -53,8 +53,8 @@ export function inspectLoopbackPublication({env,run,reportBytes,currentMainSha,c
     automaticPublicationAuthorized:false,closureAttested:false};
 }
 
-function git(args) {
-  return execFileSync('git',args,{encoding:'utf8',env:{...process.env,GIT_NO_REPLACE_OBJECTS:'1'},
+function git(args, encoding='utf8') {
+  return execFileSync('git',args,{encoding,env:{...process.env,GIT_NO_REPLACE_OBJECTS:'1'},
     maxBuffer:MAX_GIT,timeout:60000,stdio:['ignore','pipe','ignore']});
 }
 
@@ -93,7 +93,7 @@ export async function main(env=process.env) {
     const binding=verifyTrustedLoopbackRun(env,run),checkoutSha=git(['rev-parse','HEAD']).trim();
     const currentMainSha=await readMain(token);
     if(checkoutSha!==binding.headSha||currentMainSha!==binding.headSha)fail('LOOPBACK_RUN_HEAD_UNVERIFIED');
-    const raw=git(['show',binding.headSha+':SUIVI.md']);
+    const raw=decodeLoopbackSource(git(['show',binding.headSha+':SUIVI.md'],null));
     const old=observeLoopbackCheckpoint(raw);
     if(old.status!=='PRESENT'||!SHA.test(old.declared.observedMainSha??''))
       fail('LOOPBACK_CHECKPOINT_UNVERIFIED');

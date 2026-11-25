@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { collectCurrentStateEvidence } from './current-state-evidence.mjs';
 import { buildCommonDocumentaryPlan, observeLoopbackCheckpoint } from './documentary-hierarchy.mjs';
-import { deriveLoopbackCandidate } from './documentary-loopback.mjs';
+import { decodeLoopbackSource, deriveLoopbackCandidate } from './documentary-loopback.mjs';
 import { validateMarkdownBaseline, extractCanonicalState, validateRequiredCanonicalStates,
   validateProductionState, detectHistoricalMirrors, validateHistoricalMirrorBanner, canonicalStateKeys }
   from './doc-governance-lib.mjs';
@@ -544,7 +544,8 @@ function createExactBlobReader(entries) {
     if(!entry||SENSITIVE_PATH.test(entry.path)||entry.type!=='blob'||!['100644','100755'].includes(entry.mode))
       throw Error('CONTENT_UNVERIFIED');
     if(texts.has(entry.path))return texts.get(entry.path);
-    const content=readBytes(entry).toString('utf8');
+    const bytes=readBytes(entry);
+    const content=entry.path==='SUIVI.md' ? decodeLoopbackSource(bytes) : bytes.toString('utf8');
     texts.set(entry.path,content);
     return content;
   }

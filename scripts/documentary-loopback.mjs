@@ -22,6 +22,15 @@ const isSelfMaintenance=c=>c.code==='M'&&c.previousPath===null&&
   [PATH,'PRODUCTION_STATE.json'].includes(c.path);
 const headingMatches=raw=>[...raw.matchAll(/^(#{1,6})[ \t]+POINT DE REPRISE COURANT[ \t]*(?=\r?$)/gim)];
 
+// Keep the Git blob byte-for-byte reproducible, including a leading BOM.
+export function decodeLoopbackSource(bytes) {
+  try {
+    return new TextDecoder('utf-8', {fatal:true, ignoreBOM:true}).decode(bytes);
+  } catch {
+    throw Error('LOOPBACK_SOURCE_ENCODING_UNVERIFIED');
+  }
+}
+
 export function deriveLoopbackCandidate({raw,headSha,checkpointChanges,report,expectedJobId,now=Date.now()}) {
   if(typeof raw!=='string'||Buffer.byteLength(raw)>MAX||!SHA.test(headSha??'')||
     !Array.isArray(checkpointChanges)||checkpointChanges.length>20000||
