@@ -72,6 +72,9 @@ function appJwt(appId: string, key: string, now: Date): string {
   }
 }
 
+// Same signing implementation for operator-only GitHub App metadata evidence.
+export { appJwt as createGithubAppJwt };
+
 export async function mintGithubAppRepoToken(
   input: GithubAppTokenInput,
   deps: GithubAppTokenDeps
