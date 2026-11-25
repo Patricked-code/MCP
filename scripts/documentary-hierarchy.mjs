@@ -548,7 +548,9 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     ['tests/governedTaskTools.test.ts',['TESTS.md','CODE_REVIEW.md','MCP_SECURITY_MODEL.md','TASKS.md','SUIVI.md']],
     ['src/server.ts',['ARCHITECTURE.md','MCP_TOOLS.md','.mcp/function-cartography.json','DEPLOYMENT_PRODUCTION.md','MCP_SECURITY_MODEL.md','SOURCE_OF_TRUTH.md','SUIVI.md']],
     ['src/index.ts',['ARCHITECTURE.md','DEPLOYMENT_PRODUCTION.md','MONITORING.md','SOURCE_OF_TRUTH.md','SUIVI.md']],
-    ['tests/currentToolCatalog.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','MCP_TOOLS.md','SUIVI.md']]
+    ['tests/currentToolCatalog.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','MCP_TOOLS.md','SUIVI.md']],
+    ['src/deploy/documentaryRuntimeEvidence.ts',['docs/governance/program-backlog-convergence.json','DEPLOYMENT_PRODUCTION.md','SOURCE_OF_TRUTH.md','LOOP_ENGINEERING.md','MCP_SECURITY_MODEL.md','SUIVI.md']],
+    ['tests/documentaryRuntimeEvidence.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md']]
   ]);
   for(const path of changed){
     const row=rowByPath.get(path);

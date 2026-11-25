@@ -3,7 +3,7 @@ import test from 'node:test';
 import { mkdtemp,writeFile,symlink,rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { readExistingDocumentaryStore,observeDocumentaryRuntimeAuthorities,compareRetainedAuthorityRelations } from '../src/deploy/documentaryRuntimeEvidence.js';
+import { readExistingDocumentaryStore,observeDocumentaryRuntimeAuthorities,compareRetainedAuthorityRelations,projectProgramBacklogObservation } from '../src/deploy/documentaryRuntimeEvidence.js';
 import { createEmptyTaskStoreDocument,createEmptySessionStoreDocument,createEmptyLockStoreDocument,TaskStoreDocumentSchema } from '../src/operationalMemory/types.js';
 import type { GitRegistryProjectEvidence } from '../src/github/registry.js';
 const sha='a'.repeat(40),jobId='mcp-s1-123-'+sha.slice(0,12);
@@ -47,4 +47,26 @@ test('nonterminal task dependencies and lock owners are checked without rewritin
   locks.locks=[{lockId:'lock1',status:'ACTIVE',expiresAt:new Date(Date.now()+60000).toISOString(),governedSessionId:'absent'}] as typeof locks.locks;
   assert.deepEqual(compareRetainedAuthorityRelations({registry,tasks,sessions:createEmptySessionStoreDocument(),locks},Date.now()),[
     {code:'ACTIVE_LOCK_OWNER_UNRESOLVED',count:1},{code:'NONTERMINAL_TASK_DEPENDENCY_UNRESOLVED',count:1}]);
+});
+
+test('program backlog uses the actual deployed projection and readiness library, not a new registry',async()=>{
+  const {loadProgramProjection,loadReadinessLibrary}=await import('../src/governance/programBlueprintMaterialization.js');
+  const snapshot=await loadProgramProjection(),library=await loadReadinessLibrary();
+  const program=projectProgramBacklogObservation(snapshot,library);
+  assert.equal(program.status,'OBSERVED');
+  assert.equal(program.readinessStatus,'MATCHED');
+  assert.equal(program.coverage,'PROGRAM_BACKLOG_ONLY');
+  assert.ok((program.recordCount??0)>0);
+  assert.equal(program.digest,snapshot.digest);
+  const observed=await observeDocumentaryRuntimeAuthorities({sha,jobId,stateVersion:5,readers:{...readers,programBacklog:async()=>program}});
+  assert.equal(observed.status,'OBSERVED');assert.equal(observed.authorities.length,4);
+  assert.deepEqual(observed.programBacklog,program);assert.equal(observed.semanticCoverageComplete,false);
+  const unavailable=await observeDocumentaryRuntimeAuthorities({sha,jobId,stateVersion:5,readers:{...readers,programBacklog:async()=>{throw Error('missing');}}});
+  assert.equal(unavailable.status,'OBSERVED');assert.equal(unavailable.programBacklog?.status,'UNVERIFIED');
+  let count=0;
+  const changed=await observeDocumentaryRuntimeAuthorities({sha,jobId,stateVersion:5,readers:{...readers,programBacklog:async()=>({...program,digest:String(++count).repeat(64)})}});
+  assert.equal(changed.status,'OBSERVED');assert.equal(changed.programBacklog?.status,'UNVERIFIED');
+  const bad=structuredClone(snapshot) as {projection:{authority:{createsRuntimeTasks:boolean}};digest:string};
+  bad.projection.authority.createsRuntimeTasks=true;
+  assert.equal(projectProgramBacklogObservation(bad,library).status,'UNVERIFIED');
 });
