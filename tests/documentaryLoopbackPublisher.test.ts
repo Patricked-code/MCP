@@ -62,3 +62,18 @@ test('admission recomputes exact candidate, rejects drift and returns no write a
   const unchanged=inspectLoopbackPublication(fixture([]));
   assert.equal(unchanged.status,'NO_CHANGE');assert.equal(unchanged.candidateContentDigest,null);
 });
+
+test('checkpoint input round-trips exact Git bytes, including BOM and CRLF', async () => {
+  const {decodeLoopbackSource} = await import('../scripts/documentary-loopback.mjs');
+  const source = Buffer.from('\uFEFF# Suivi\r\nÉtat vérifié\r\n', 'utf8');
+  assert.deepEqual(Buffer.from(decodeLoopbackSource(source), 'utf8'), source);
+});
+
+test('invalid UTF-8 cannot be silently replaced while deriving or verifying a checkpoint', async () => {
+  const {decodeLoopbackSource} = await import('../scripts/documentary-loopback.mjs');
+  const validSource = Buffer.from(raw, 'utf8');
+  for (const invalid of [Buffer.from([0xff]), Buffer.from([0xc3])]) {
+    assert.throws(() => decodeLoopbackSource(Buffer.concat([validSource, invalid])),
+      /LOOPBACK_SOURCE_ENCODING_UNVERIFIED/);
+  }
+});

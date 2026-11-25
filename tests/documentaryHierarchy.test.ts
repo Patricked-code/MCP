@@ -288,3 +288,22 @@ test('documentary closure tests route to their exact document authorities withou
   assert.equal(plan.coverage.semanticCoverageComplete,false);
   assert.equal(plan.closureAttested,false);
 });
+
+for (const [path, targets] of [
+  ['scripts/documentary-loopback-publisher.mjs',
+    ['LOOP_ENGINEERING.md','SUIVI.md','SOURCE_OF_TRUTH.md','DEPLOYMENT_PRODUCTION.md']],
+  ['tests/documentaryLoopbackPublisher.test.ts',
+    ['TESTS.md','CODE_REVIEW.md','SUIVI.md','DEPLOYMENT_PRODUCTION.md']]
+] as const) {
+  test('routes same-run admission changes to documentary reviewers: '+path, () => {
+    const {input} = fixture([...targets],[path]);
+    const entries = [...input.entries,{path,mode:'100644',type:'blob',oid:sha,size:10}];
+    const plan = buildCommonDocumentaryPlan({...input,entries});
+    assert.ok(!plan.issues.some((issue:{path:string}) => issue.path === path));
+    for (const name of targets) {
+      const row = plan.documents.find((doc:{path:string}) => doc.path === name);
+      assert.equal(row.impactReviewRequired,true);
+      assert.equal(row.semanticStatus,'UNVERIFIED');
+    }
+  });
+}

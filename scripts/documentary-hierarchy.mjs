@@ -536,6 +536,8 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     ['tests/deployWorkflow.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md']],
     ['tests/g1MergeAdmission.test.ts',['TESTS.md','CODE_REVIEW.md','MCP_GITHUB_GOVERNANCE.md','SUIVI.md']],
     ['tests/g1OpenCorrection.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','SUIVI.md']],
+    ['scripts/documentary-loopback-publisher.mjs',['LOOP_ENGINEERING.md','SUIVI.md','SOURCE_OF_TRUTH.md','DEPLOYMENT_PRODUCTION.md']],
+    ['tests/documentaryLoopbackPublisher.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md','DEPLOYMENT_PRODUCTION.md']],
     ['scripts/documentary-loopback.mjs',['LOOP_ENGINEERING.md','SUIVI.md','memory/LOOPBACK_WEALTHTECH_CURRENT.md','SOURCE_OF_TRUTH.md','DEPLOYMENT_PRODUCTION.md']],
     ['tests/documentaryLoopback.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md','LOOP_ENGINEERING.md']],
     ['scripts/current-state-evidence.mjs',['MCP_REPO_INVENTORY.md','ARCHITECTURE.md','SOURCE_OF_TRUTH.md','SUIVI.md']],
