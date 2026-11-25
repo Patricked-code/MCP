@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { collectCurrentStateEvidence } from './current-state-evidence.mjs';
 import { buildCommonDocumentaryPlan, observeLoopbackCheckpoint } from './documentary-hierarchy.mjs';
 import { decodeLoopbackSource, deriveLoopbackCandidate } from './documentary-loopback.mjs';
-import { validateMarkdownBaseline, extractCanonicalState, validateRequiredCanonicalStates,
+import { classifyMarkdownPath, validateMarkdownBaseline, extractCanonicalState, validateRequiredCanonicalStates,
   validateProductionState, detectHistoricalMirrors, validateHistoricalMirrorBanner, canonicalStateKeys }
   from './doc-governance-lib.mjs';
 
@@ -254,8 +254,30 @@ export function observeDocumentAuthorities({trackedPaths, readText, productionSt
   const json=trackedPaths.filter(p=>p.endsWith('.json')&&!SENSITIVE_PATH.test(p)).sort();
   for(const path of json.slice(0,MAX_JSON_CHECKS)){
     try {
-      JSON.parse(readText(path));
+      const parsed = JSON.parse(readText(path));
       mark(path,'JSON_SYNTAX',true,null);
+      if (path === 'memory/manifest.json') {
+        const files = parsed?.files;
+        const validList = Array.isArray(files) && files.length > 0 && files.length <= LIMIT;
+        let ok = validList;
+        if (!validList) add(path,'files','MEMORY_REFERENCE_LIST_INVALID',null,'bounded non-empty list');
+        else {
+          const seen = new Set();
+          for (const [index, reference] of files.entries()) {
+            let reason;
+            if (!validPath(reference) || !reference.startsWith('memory/') || SENSITIVE_PATH.test(reference)) {
+              reason = 'MEMORY_REFERENCE_INVALID';
+            } else if (seen.has(reference)) reason = 'MEMORY_REFERENCE_DUPLICATE';
+            else if (!tracked.has(reference)) reason = 'MEMORY_REFERENCE_ABSENT_FROM_TREE';
+            if (reason) {
+              ok = false;
+              add(path,'files['+index+']',reason,null,'unique versioned memory path');
+            }
+            seen.add(reference);
+          }
+        }
+        mark(path,'MEMORY_MANIFEST_REFERENCES',ok,'MEMORY_REFERENCE_REVIEW_REQUIRED');
+      }
     } catch {
       mark(path,'JSON_SYNTAX',false,'JSON_INVALID_OR_UNREADABLE');
       add(path,'$syntax','JSON_INVALID_OR_UNREADABLE',null,'valid JSON');
@@ -404,7 +426,18 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
   const absent = [...declaredSet].filter(p => !actualSet.has(p)).sort();
   const duplicates = declared.length !== declaredSet.size;
   const baselineCheck = validateMarkdownBaseline(inventory.entries, markdown);
-  const inventoryAligned = baselineCheck.ok && !missing.length && !absent.length && !duplicates &&
+  // The generator records aggregate counts as well as individual classifications.
+  // Compare those counts independently against paths in this Git tree.
+  const categoryCounts = new Map();
+  for (const path of markdown) {
+    const category = classifyMarkdownPath(path);
+    if (category) categoryCounts.set(category, (categoryCounts.get(category) ?? 0) + 1);
+  }
+  const declaredCategories = inventory.categories;
+  const countsMatch = declaredCategories && typeof declaredCategories === 'object' &&
+    !Array.isArray(declaredCategories) && Object.keys(declaredCategories).length === categoryCounts.size &&
+    [...categoryCounts].every(([category, count]) => declaredCategories[category] === count);
+  const inventoryAligned = (!trackedPaths.includes(INVENTORY) || countsMatch === true) && baselineCheck.ok && !missing.length && !absent.length && !duplicates &&
     inventory.trackedCount === declared.length && inventory.trackedCount === markdown.length;
   const byPath = new Map(inventory.entries.map(e => [e.path, e.category]));
   const changed = new Map();
@@ -447,6 +480,14 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     const findings = differencesByPath.get(path) ?? [];
     const hasConflict = findings.some(finding => ['CANONICAL_STATE_CONFLICT', 'LIVE_AUTHORITY_VALUE_MISMATCH'].includes(finding.reason));
     const preserved = preservedByPath.get(path);
+    const inventoryEvidence = path === INVENTORY ? {
+      headSha, authority: 'GIT_TREE_AND_DOCUMENT_GOVERNANCE_CLASSIFICATION',
+      fields: ['trackedCount', 'entries[].path', 'entries[].category', 'categories'],
+      observedCategories: Object.fromEntries(categoryCounts),
+      declaredMarkdownCount: inventory.trackedCount, observedMarkdownCount: markdown.length,
+      status: baselineCheck.unclassified.length ? 'QUALIFICATION_REQUIRED' :
+        inventoryAligned ? 'MATCHED' : 'DRIFT'
+    } : null;
     let verdict = 'UNVERIFIED';
     let nextAction = 'RESOLVE_OWNER_AND_VALIDATE_IMPACT';
     if (hasConflict) {
@@ -455,6 +496,9 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
     } else if (findings.length && findings.every(finding => finding.reason === 'G1_DOCUMENTATION_DRIFT')) {
       verdict = 'RECONCILIATION_REQUIRED';
       nextAction = 'REUSE_GW60_GW61';
+    } else if (!findings.length && inventoryEvidence?.status === 'DRIFT') {
+      verdict = 'UPDATE_REQUIRED';
+      nextAction = 'REGENERATE_WITH_SCRIPTS_GENERATE_DOC_GOVERNANCE_BASELINE';
     } else if (!findings.length && preserved) {
       verdict = 'HISTORICAL_PRESERVATION';
       nextAction = preserved.nextAction;
@@ -463,6 +507,7 @@ export function buildDocumentaryClosureReport({headSha, baselineSha, trackedPath
       path, category: byPath.get(path) ?? 'AUTHORITY_UNVERIFIED',
       change: changed.get(path) ?? 'NO_DIRECT_GIT_CHANGE',
       verdict, semanticStatus: 'UNVERIFIED', staticChecks: pathChecks.get(path) ?? [],
+      ...(inventoryEvidence ? {inventoryEvidence} : {}),
       differences: findings, nextAction
     };
   });

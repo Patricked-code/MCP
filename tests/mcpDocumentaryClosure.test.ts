@@ -13,7 +13,7 @@ function input(overrides = {}) {
   return {
     headSha: HEAD, baselineSha: BASE,
     trackedPaths: ['SUIVI.md', 'docs/OLD.md', '.mcp/registry.json', 'PRODUCTION_STATE.json', 'src/index.ts'],
-    inventory: {schemaVersion: 1, trackedCount: 2, entries: [
+    inventory: {schemaVersion: 1, trackedCount: 2, categories: {canonical: 1, documentation: 1}, entries: [
       {path:'SUIVI.md',category:'canonical'}, {path:'docs/OLD.md',category:'documentation'}
     ]},
     changes: [{code:'M',path:'src/index.ts',previousPath:null}],
@@ -288,4 +288,47 @@ test('an unreadable source cannot become a conflict or an eligible G1 correction
   assert.equal(row.verdict,'UNVERIFIED');
   assert.equal(row.nextAction,'RESOLVE_OWNER_AND_VALIDATE_IMPACT');
   assert.equal(row.differences.length,3);
+});
+
+test('routes Markdown inventory drift to its owner and keeps unclassified paths pending qualification', () => {
+  const fixture = input();
+  const owner = 'docs/governance/markdown-inventory.json';
+  const trackedPaths = [...fixture.trackedPaths, owner];
+  const row = (paths: string[], inventory: typeof fixture.inventory) =>
+    buildDocumentaryClosureReport(input({trackedPaths: paths, inventory})).documents
+      .find((doc: {path: string}) => doc.path === owner);
+  const valid = row(trackedPaths, fixture.inventory);
+  assert.equal(valid.inventoryEvidence.status, 'MATCHED');
+  assert.equal(valid.inventoryEvidence.headSha, HEAD);
+  assert.equal(valid.semanticStatus, 'UNVERIFIED');
+
+  const wrongCounts = row(trackedPaths, {...fixture.inventory, categories: {canonical: 2, documentation: 0}});
+  assert.equal(wrongCounts.verdict, 'UPDATE_REQUIRED');
+  assert.deepEqual(wrongCounts.inventoryEvidence.observedCategories, {canonical: 1, documentation: 1});
+
+  const drift = row([...trackedPaths, 'docs/NEW.md'], fixture.inventory);
+  assert.equal(drift.verdict, 'UPDATE_REQUIRED');
+  assert.equal(drift.inventoryEvidence.status, 'DRIFT');
+  assert.equal(drift.inventoryEvidence.observedMarkdownCount, 3);
+
+  const unknown = row([...trackedPaths, 'unclassified/NEW.md'], fixture.inventory);
+  assert.equal(unknown.verdict, 'UNVERIFIED');
+  assert.equal(unknown.inventoryEvidence.status, 'QUALIFICATION_REQUIRED');
+});
+
+test('checks each historical memory manifest reference against Git without updating the archive', () => {
+  const path = 'memory/manifest.json';
+  const trackedPaths = [path, 'memory/old.md'];
+  const observe = (files: unknown) => observeDocumentAuthorities({
+    trackedPaths, productionState: null,
+    readText: () => JSON.stringify({files})
+  });
+  assert.equal(observe(['memory/old.md']).checks.find((c: {check: string}) =>
+    c.check === 'MEMORY_MANIFEST_REFERENCES').status, 'PASS');
+  for (const files of [[], null, ['memory/old.md','memory/old.md'], ['../private'], ['memory/missing.md']]) {
+    const result = observe(files);
+    assert.ok(result.differences.some((d: {path: string, field: string}) =>
+      d.path === path && d.field.startsWith('files')));
+    assert.equal(result.coverage.complete, false);
+  }
 });
