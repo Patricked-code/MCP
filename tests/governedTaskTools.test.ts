@@ -198,3 +198,107 @@ test('task mutation holds the shared lifecycle coordinator through persistence',
   assert.equal(ranBeforeTaskPersistenceCompleted, false);
   assert.equal(lifecycleMutationRan, true);
 });
+
+
+const TARGET_TASK = 'TASK-20261124-002';
+const TARGET_INPUT = {
+  governedSessionId: SESSION_ID,
+  expectedSessionRevision: 3,
+  expectedBootstrapReceiptId: RECEIPT_ID,
+  expectedStateVersion: 9,
+  expectedStoreRevision: 4,
+  targetTask: { taskId: TARGET_TASK, expectedTaskRevision: 1 }
+};
+
+function targetedSession(overrides: Record<string, unknown> = {}) {
+  const session = visibleSession();
+  return {
+    ...session, repository: 'Patricked-code/MCP', taskScope: TARGET_TASK,
+    identityAssurance: 'oauth_subject', ownerPrincipalId: 'oauth:test',
+    lastAcknowledgedStateVersion: 9,
+    bootstrapReceipt: {
+      ...session.bootstrapReceipt, status: 'ACKNOWLEDGED',
+      governedSessionId: SESSION_ID, repository: 'Patricked-code/MCP'
+    },
+    ...overrides
+  };
+}
+
+function targetedCapture(options: {
+  session?: ReturnType<typeof targetedSession>;
+  binding?: string | null;
+  repository?: string;
+  error?: string;
+  absent?: boolean;
+} = {}) {
+  const calls: { exact: unknown[][]; next: number } = { exact: [], next: 0 };
+  const { handlers } = capture({
+    sessions: {
+      async getVisibleSession() { return options.session ?? targetedSession(); },
+      lookupGovernedSessionId() { return options.binding === undefined ? SESSION_ID : options.binding; }
+    },
+    queue: {
+      async getVisibleTask() {
+        return options.absent ? null : { taskId: TARGET_TASK, repository: options.repository ?? 'Patricked-code/MCP' };
+      },
+      async claimNextTask() { calls.next += 1; return null; },
+      async claimTaskById(...args: unknown[]) {
+        calls.exact.push(args);
+        if (options.error) throw new Error(options.error);
+        return { taskId: TARGET_TASK, status: 'CLAIMED' };
+      }
+    }
+  });
+  return { claim: handlers.get('mcp_claim_next_governed_task')!, calls };
+}
+
+test('explicit exact task claim reuses the queue with both CAS revisions and never calls global selection', async () => {
+  const { claim, calls } = targetedCapture();
+  const result = await claim(TARGET_INPUT, EXTRA);
+  assert.equal(result.isError, undefined);
+  assert.deepEqual(JSON.parse(result.content[0].text).result, { taskId: TARGET_TASK, status: 'CLAIMED' });
+  assert.deepEqual(calls.exact, [[SESSION_ID, TARGET_TASK, 1, 4, { sessionTargetScope: null }]]);
+  assert.equal(calls.next, 0);
+});
+
+test('legacy claim remains priority/sequence selection without targetTask', async () => {
+  const { claim, calls } = targetedCapture();
+  const { targetTask: _target, ...legacy } = TARGET_INPUT;
+  await claim(legacy, EXTRA);
+  assert.equal(calls.next, 1);
+  assert.equal(calls.exact.length, 0);
+});
+
+test('exact task claim rejects unbound, paused, unrelated scope, principal or repository before mutation', async () => {
+  const scenarios = [
+    { options: { binding: null }, code: 'TARGET_CLAIM_SESSION_NOT_BOUND' },
+    { options: { session: targetedSession({ ownerPrincipalId: 'oauth:other' }) }, code: 'TARGET_CLAIM_SESSION_NOT_BOUND' },
+    { options: { session: targetedSession({ identityAssurance: 'shared_credential' }) }, code: 'TARGET_CLAIM_SESSION_NOT_BOUND' },
+    { options: { session: targetedSession({ status: 'PAUSED' }) }, code: 'TARGET_CLAIM_SESSION_NOT_ACTIVE' },
+    { options: { session: targetedSession({ taskScope: 'TASK-20261124-001' }) }, code: 'TARGET_CLAIM_TASK_SCOPE_MISMATCH' },
+    { options: { session: targetedSession({ lastAcknowledgedStateVersion: 8 }) }, code: 'TARGET_CLAIM_BOOTSTRAP_MISMATCH' },
+    { options: { repository: 'other/repo' }, code: 'TARGET_CLAIM_REPOSITORY_MISMATCH' },
+    { options: { absent: true }, code: 'TASK_NOT_FOUND' }
+  ];
+  for (const { options, code } of scenarios) {
+    const { claim, calls } = targetedCapture(options);
+    const result = await claim(TARGET_INPUT, EXTRA);
+    assert.equal(result.isError, true, code);
+    assert.equal(JSON.parse(result.content[0].text).error.code, code);
+    assert.equal(calls.exact.length, 0);
+    assert.equal(calls.next, 0);
+  }
+});
+
+test('exact task claim fails closed on queue CAS, ownership, scope or lock errors', async () => {
+  for (const error of ['TASK_STORE_REVISION_MISMATCH', 'TASK_REVISION_MISMATCH', 'TASK_SCOPE_MISMATCH',
+    'TASK_OWNED_BY_OTHER_SESSION', 'TASK_SESSION_ALREADY_OWNS_OTHER_TASK', 'TASK_NOT_EXECUTABLE',
+    'TASK_RESOURCE_CONFLICT', 'TASK_LOCK_CONFLICT']) {
+    const { claim, calls } = targetedCapture({ error });
+    const result = await claim(TARGET_INPUT, EXTRA);
+    assert.equal(result.isError, true);
+    assert.equal(JSON.parse(result.content[0].text).error.code, error);
+    assert.equal(calls.exact.length, 1);
+    assert.equal(calls.next, 0);
+  }
+});
