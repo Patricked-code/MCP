@@ -21,3 +21,11 @@ Artefacts : [14910676522](https://github.com/Patricked-code/MCP/actions/runs/453
 - Source : [checkpoint 7129998632](https://github.com/Patricked-code/MCP/issues/441#issuecomment-7129998632). Main/S1/runtime `ccb205b80ee0f4ddaf5fb8a6e5699650169cf958`, v1571 FULLY_ALIGNED, préflight sans blocage à 11:21:01Z ; observation à revalider à chaque reprise.
 - Governed Deploy 45378897576 : attestation technique réussie, rapport documentaire bloqué sur G1 non vérifié au moment du workflow ; aucun verdict exhaustif. Cette différence temporelle reste à expliquer. Task réelle READY non attribuée.
 - Dossier local admis en branche/PR GitHub-first ; préserver l'inventaire commun et les neuf PR historiques. **NEXT_ACTION** : vérifier la publication/CI et les protections, fusion admissible, déploiement et test réel de reprise par ID ; traiter ensuite le publisher et les vérifications sémantiques. Aucun DONE ni droit runtime implicite.
+
+## Preuves du 25 novembre 2026
+
+| Objet | Observation datée | Preuve |
+| --- | --- | --- |
+| Propagation REC-06 après #481 | 472 candidats, 5 périmètres, 468 lectures structurelles, 84 documents concernés par ce diff et 0 obligation structurelle. Six comparaisons concordantes à la deuxième tentative. | [Rapport de production 15046202354](https://github.com/Patricked-code/MCP/actions/runs/45606595880/artifacts/15046202354) |
+| Réattestation après #482 | G1 ALIGNED, six comparaisons concordantes, candidat Loopback prêt. Certification sémantique et registres encore ouverts. | [Rapport de production 15047870072](https://github.com/Patricked-code/MCP/actions/runs/45664417213/artifacts/15047870072) |
+| Contrôles des catégories Markdown et du manifeste mémoire | #483 fusionnée sur `2be2f99784926f0ea770b737a37546c68c7cc6d0`. La CI du candidat a réussi ses 1 651 tests. | [PR #483](https://github.com/Patricked-code/MCP/pull/483) · [CI du candidat](https://github.com/Patricked-code/MCP/actions/runs/45664550412) · [Deploy #483](https://github.com/Patricked-code/MCP/actions/runs/45665247297) |

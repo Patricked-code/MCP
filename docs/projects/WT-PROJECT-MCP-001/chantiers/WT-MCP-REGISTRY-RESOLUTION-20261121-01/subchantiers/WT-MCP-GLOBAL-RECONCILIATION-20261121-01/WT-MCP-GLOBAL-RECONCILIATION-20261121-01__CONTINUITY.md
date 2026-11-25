@@ -20,3 +20,9 @@ Continuité enfant `WT-MCP-GLOBAL-RECONCILIATION-20261121-01`, parent `WT-MCP-RE
 - Source : [checkpoint 7129998632](https://github.com/Patricked-code/MCP/issues/441#issuecomment-7129998632). Main/S1/runtime `ccb205b80ee0f4ddaf5fb8a6e5699650169cf958`, v1571 FULLY_ALIGNED, préflight sans blocage à 11:21:01Z ; observation à revalider à chaque reprise.
 - Governed Deploy 45378897576 : attestation technique réussie, rapport documentaire bloqué sur G1 non vérifié au moment du workflow ; aucun verdict exhaustif. Cette différence temporelle reste à expliquer. Task réelle READY non attribuée.
 - Dossier local admis en branche/PR GitHub-first ; préserver l'inventaire commun et les neuf PR historiques. **NEXT_ACTION** : vérifier la publication/CI et les protections, fusion admissible, déploiement et test réel de reprise par ID ; traiter ensuite le publisher et les vérifications sémantiques. Aucun DONE ni droit runtime implicite.
+
+## Reprise par identifiant du 25 novembre 2026
+
+Le lecteur de continuité a retrouvé le dossier sur `2be2f99784926f0ea770b737a37546c68c7cc6d0` à 17:30:42 UTC. Il a rendu `PARTIAL`, identifié le parent et indexé 16 documents. Les rattachements Project Binding, installation CUG et tâche restaient à attester. Le lecteur documentaire a aussi signalé l’absence de checkpoint vérifié. Sa liste vide de tâches rattachées doit être rapprochée de la file opérationnelle avant toute conclusion sur leur existence.
+
+La reprise opérationnelle part de la dernière section **POINT DE REPRISE LOCAL** du [suivi](WT-MCP-GLOBAL-RECONCILIATION-20261121-01__SUIVI.md). Conserver les entrées du 24 novembre pour retracer les travaux déjà intégrés. Le [fil #441](https://github.com/Patricked-code/MCP/issues/441) porte les observations ultérieures.
