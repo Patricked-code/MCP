@@ -427,6 +427,21 @@ export function buildMcpServer(pairing?:PleskWebTransportPairing): McpServer {
   return server;
 }
 
+/** Register the actual HTTP profile before accepting requests or collecting
+ * Live State. The first unconnected server is reused exactly once; subsequent
+ * transports receive fresh SDK servers with the same registration contract.
+ * No tool handler is invoked and no governed session or transport is created.
+ */
+export function createHttpMcpServerFactory(pairing: PleskWebTransportPairing): () => McpServer {
+  let first: McpServer | undefined = buildMcpServer(pairing);
+  return () => {
+    if (!first) return buildMcpServer(pairing);
+    const server = first;
+    first = undefined;
+    return server;
+  };
+}
+
 export async function startHttpServer(): Promise<void> {
   if (operationalMemoryConfig.enabled) {
     await getGovernedTaskToolDependencies().ready();
@@ -437,6 +452,7 @@ export async function startHttpServer(): Promise<void> {
     lookupSessionId:id=>getGovernedSessionToolDependencies().sessions.lookupGovernedSessionId(id),
     inspectOauth:inspectOauthAccessToken
   });
+  const createTransportServer = createHttpMcpServerFactory(pairing);
   const app = express();
   app.use(createGithubDeployRouter({
     verifyOidc: verifyGithubOidcToken,
@@ -1073,7 +1089,7 @@ export async function startHttpServer(): Promise<void> {
           }
         };
 
-        const mcpServer = buildMcpServer(pairing);
+        const mcpServer = createTransportServer();
         await mcpServer.connect(transport);
       } else {
         res.status(400).json({ error: 'Invalid or missing MCP session' });

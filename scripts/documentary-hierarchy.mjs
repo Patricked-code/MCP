@@ -541,7 +541,14 @@ export function buildCommonDocumentaryPlan({headSha,entries,candidatePaths,chang
     ['scripts/documentary-loopback.mjs',['LOOP_ENGINEERING.md','SUIVI.md','memory/LOOPBACK_WEALTHTECH_CURRENT.md','SOURCE_OF_TRUTH.md','DEPLOYMENT_PRODUCTION.md']],
     ['tests/documentaryLoopback.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md','LOOP_ENGINEERING.md']],
     ['scripts/current-state-evidence.mjs',['MCP_REPO_INVENTORY.md','ARCHITECTURE.md','SOURCE_OF_TRUTH.md','SUIVI.md']],
-    ['tests/currentStateEvidence.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md']]
+    ['tests/currentStateEvidence.test.ts',['TESTS.md','CODE_REVIEW.md','SUIVI.md']],
+    // Exact claim and cold-start catalogue changes create review obligations;
+    // they never establish semantic equivalence or runtime admission.
+    ['src/tools/governedTasks.ts',['MCP_TOOLS.md','.mcp/function-cartography.json','TASKS.md','AGENTS_ARCHITECTURE.md','MCP_SECURITY_MODEL.md','SOURCE_OF_TRUTH.md','SUIVI.md','LOOP_ENGINEERING.md']],
+    ['tests/governedTaskTools.test.ts',['TESTS.md','CODE_REVIEW.md','MCP_SECURITY_MODEL.md','TASKS.md','SUIVI.md']],
+    ['src/server.ts',['ARCHITECTURE.md','MCP_TOOLS.md','.mcp/function-cartography.json','DEPLOYMENT_PRODUCTION.md','MCP_SECURITY_MODEL.md','SOURCE_OF_TRUTH.md','SUIVI.md']],
+    ['src/index.ts',['ARCHITECTURE.md','DEPLOYMENT_PRODUCTION.md','MONITORING.md','SOURCE_OF_TRUTH.md','SUIVI.md']],
+    ['tests/currentToolCatalog.test.ts',['TESTS.md','CODE_REVIEW.md','DEPLOYMENT_PRODUCTION.md','MCP_TOOLS.md','SUIVI.md']]
   ]);
   for(const path of changed){
     const row=rowByPath.get(path);

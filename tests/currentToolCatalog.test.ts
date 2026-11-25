@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
@@ -183,4 +184,35 @@ test('P2: authenticated Plesk pairing tool is visible in the real MCP tool catal
   assert.equal(registered.length,1);
   assert.equal(registered[0]?.surface,'operational-write');
   assert.ok(registered[0]?.inputSchema);
+});
+
+test('HTTP cold start registers the real catalogue before any client connects and preserves isolated servers', async () => {
+  const { createHttpMcpServerFactory } = await import('../src/server.js');
+  const { createPleskWebTransportPairing } = await import('../src/provisioning/pleskWebTransportPairing.js');
+  const { collectCapabilityObservation } = await import('../src/liveState/collect.js');
+  resetToolCatalogForTests();
+  assert.equal(collectCapabilityObservation().status, 'UNAVAILABLE');
+  const pairing = createPleskWebTransportPairing({
+    now: () => 0, lookupSessionId: () => null, inspectOauth: () => null
+  });
+  const nextServer = createHttpMcpServerFactory(pairing);
+  const cold = collectCapabilityObservation();
+  assert.equal(cold.status, 'CURRENT');
+  assert.ok(cold.registeredToolCount > 0);
+  assert.ok(cold.tools.some(t => t.name === 'mcp_issue_plesk_web_pairing_proof'));
+  assert.ok(cold.tools.some(t => t.name === 'mcp_claim_next_governed_task'));
+  const first = nextServer(), second = nextServer();
+  assert.notEqual(first, second);
+  assert.equal(collectCapabilityObservation().catalogueDigest, cold.catalogueDigest);
+  assert.equal(collectCapabilityObservation().registeredToolCount, cold.registeredToolCount);
+});
+
+test('process startup wires registration ahead of the HTTP listener and periodic Live State collection', () => {
+  const server = readFileSync('src/server.ts', 'utf8');
+  const entry = readFileSync('src/index.ts', 'utf8');
+  const boot = server.indexOf('const createTransportServer = createHttpMcpServerFactory(pairing);');
+  const listener = server.indexOf('app.listen(env.PORT');
+  assert.ok(boot >= 0 && listener > boot);
+  assert.ok(server.includes('const mcpServer = createTransportServer();'));
+  assert.match(entry, /startHttpServer\(\)\.then\(\(\) => \{\s*startLiveStateEngine\(\);/);
 });

@@ -307,3 +307,19 @@ for (const [path, targets] of [
     }
   });
 }
+
+test('targeted claim and cold-start implementation changes propagate exact review duties without semantic promotion', () => {
+  const paths=['src/tools/governedTasks.ts','tests/governedTaskTools.test.ts','src/server.ts','src/index.ts','tests/currentToolCatalog.test.ts'];
+  const targets=['MCP_TOOLS.md','.mcp/function-cartography.json','MCP_SECURITY_MODEL.md','TESTS.md','CODE_REVIEW.md'];
+  const {input}=fixture(targets,paths);
+  const entries=[...input.entries,...paths.map(path=>({path,mode:'100644',type:'blob',oid:sha,size:10}))];
+  const plan=buildCommonDocumentaryPlan({...input,entries});
+  assert.ok(paths.every(path=>!plan.issues.some((i:{path:string,code:string})=>i.path===path&&i.code==='CHANGE_IMPACT_UNRESOLVED')));
+  for(const path of [...targets,'DEPLOYMENT_PRODUCTION.md','TASKS.md','AGENTS_ARCHITECTURE.md','ARCHITECTURE.md','MONITORING.md','SUIVI.md','SOURCE_OF_TRUTH.md']){
+    const row=plan.documents.find((d:{path:string})=>d.path===path);
+    assert.equal(row.impactReviewRequired,true,path);
+    assert.equal(row.semanticStatus,'UNVERIFIED',path);
+  }
+  assert.equal(plan.closureAttested,false);
+  assert.equal(plan.coverage.transversalDependencyCoverageComplete,false);
+});
