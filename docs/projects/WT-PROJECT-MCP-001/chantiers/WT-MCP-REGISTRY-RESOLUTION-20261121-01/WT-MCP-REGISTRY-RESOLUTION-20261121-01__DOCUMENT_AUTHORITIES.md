@@ -44,3 +44,12 @@ Tous les chemins ci-dessus portant `__` sont relatifs à ce répertoire. **Statu
 Entrée `continuityId` → vérifier l'identité de mission → consulter cet index → retourner par type `{ownerScope, sourcePath, ref, sha, state, observedAt}` → lire les documents du périmètre uniquement → établir les jointures opérationnelles séparément et fail-closed. `MISSING`, `UNVERIFIED`, `INACCESSIBLE` et `CONFLICT` sont des résultats valides ; aucune recherche de nom similaire ne crée une autorité.
 
 L'index n'a pas vocation à déclarer qu'il sait lire automatiquement toutes les conversations. Une nouvelle source significative doit être capturée depuis un canal réellement accessible, avec provenance et consentements applicables. Tout ajout met à jour la présente carte, les références de mémoire et le checkpoint **après** contrôle de non-duplication.
+
+## 2026-11-22 — D39 : correction des autorités de reprise (successeur)
+
+> Les assertions « #444 branch-only », « D01–D38 seulement » et « résolveur NON IMPLÉMENTÉ » des sections antérieures sont des états historiques, **superseded** pour l'état présent.
+
+- [DECISIONS D01–D39](./WT-MCP-REGISTRY-RESOLUTION-20261121-01__DECISIONS.md) est sur main depuis #444 ; #445 a livré le lecteur MCP et #446 a livré G1. Le premier readback parent/enfant est réel mais PARTIAL, pas une certification des jointures.
+- Les treize documents locaux de `WT-MCP-AUTONOMY-24X7-20261121-01` comprennent `MANDATE`, `ARCHITECTURE` et `CARTOGRAPHY`. Les documents `MISSION`, `IMPLEMENTATION_PLAN` et `DOCUMENT_AUTHORITIES` du parent sont des **références héritées**, avec propriétaire parent, non des copies locales enfant. Les intentions, tâches et décisions Dxx du parent ne sont pas locales à l'enfant.
+- Source checkpoint : [#7073160993](https://github.com/Patricked-code/MCP/pull/430#issuecomment-7073160993). Vérifier l'existence/auteur/date de la source GitHub, mais traiter les affirmations textuelles qu'elle contient comme DECLARED jusqu'à attestation par leurs autorités.
+- PR #447 corrige le lecteur existant sans GitRegistry, Queue ni magasin supplémentaire ; code en Draft, pas déployé. Toute jointure Project Binding/CUG/Task Queue nécessite ses propres preuves.

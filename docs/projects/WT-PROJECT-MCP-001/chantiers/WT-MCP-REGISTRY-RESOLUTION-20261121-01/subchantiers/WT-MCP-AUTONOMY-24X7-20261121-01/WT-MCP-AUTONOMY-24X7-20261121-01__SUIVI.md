@@ -14,3 +14,14 @@
 
 ## Conditions de reprise
 Relire d'abord la mission racine, ses 56 opérations et les dernières PR; recontrôler Live State, puis consulter les autorisations de la cible UAES. Préférer toute tranche lecture seule indépendante admissible à un déploiement non prouvé. Chaque jalon doit append uniquement ses preuves/commits/CI/owners et pointer la prochaine opération.
+
+## 2026-11-22 — Recette froide isolée : enfant A24 (additif)
+
+- État documentaire courant du scope enfant : 13 documents récupérés par appel MCP réel, parent référencé, décisions A24 omises par le résolveur avant correctif #447. `projectId=null`, `realTaskIds=[]`, `automaticExecutionAuthorized=false`. Les dix décisions existent dans le `__DECISIONS.md` local et doivent y rester propriétaires.
+- Le Live State MCP v1458 prouve l'alignement du serveur MCP à cet instant, **pas** la présence d'un hôte agent UAES 24×7 ni C27 certifié ; les anciens snapshots de G1 drift étaient datés.
+- Attendre test enfant post-#447, puis contrôle UAES U02/hôte isolé/ports C26/Task Queue/locks ; ne pas absorber les REG-WP de la mère. Le statut du worker reste **NOT_CERTIFIED** jusqu'à preuve indépendante.
+- **NEXT_ACTION_CURRENT enfant (documentaire)** : certifier d'abord la lecture des 10 A24, du MANDATE et des trois liens hérités, puis reprendre la chaîne RG-043…056 par admission gouvernée réelle.
+
+## NEXT_ACTION_CURRENT — scope enfant
+
+**Opération :** valider la projection des décisions A24-01…A24-10, des 13 fichiers locaux et des liens d'héritage par une nouvelle recette froide MCP après #447. Ensuite seulement qualifier U02, C26/P2, hôte isolé et C27 sous owner distinct. **Statut :** DOCUMENTARY_DECLARED, NO_RUNTIME_ADMISSION, NOT_CERTIFIED.

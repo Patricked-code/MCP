@@ -8,7 +8,7 @@ process.env.S1_KEY_PATH ??= '/tmp/mcp-unit-test-s1-key';
 process.env.S2_HOST ??= '127.0.0.1';
 process.env.S2_KEY_PATH ??= '/tmp/mcp-unit-test-s2-key';
 
-const { recoverMissionFromGithub } = await import('../src/tools/missionContinuity.js');
+const { recoverMissionFromGithub, applyObservedMissionLiveState } = await import('../src/tools/missionContinuity.js');
 
 const SHA='7f0ae4d35daec8d85a430b5280abd16eda6a42c8';
 const P='WT-MCP-REGISTRY-RESOLUTION-20261121-01';
@@ -26,13 +26,17 @@ const old=[
   {path: child+C+'__SUIVI.md',content:'# Child suivi\nNo action marker in this file\n'},
   {path: child+C+'__TASKS.md',content:'# Child tasks\n'}
 ];
-function reader(files=old, privateRepo=false): GithubContinuityReader {
+function reader(files=old, privateRepo=false, comments: Record<string, unknown>[]=[]): GithubContinuityReader {
   return async endpoint => {
     if(endpoint==='/repos/Patricked-code/MCP') {
       return {ok:true,status:200,json:{id:1285534440,private:privateRepo,full_name:'Patricked-code/MCP'}};
     }
     if(endpoint==='/repos/Patricked-code/MCP/git/ref/heads/main') {
       return {ok:true,status:200,json:{object:{sha:SHA}}};
+    }
+    if(endpoint.startsWith('/repos/Patricked-code/MCP/issues/430/comments?')) {
+      const page=Number(new URL('https://example.invalid'+endpoint).searchParams.get('page')||'1');
+      return {ok:true,status:200,json:page===1?comments:[]};
     }
     const prefix='/repos/Patricked-code/MCP/contents/';
     if(endpoint.startsWith(prefix)) {
@@ -134,4 +138,140 @@ test('invalid offset and Continuity ID are rejected before any network requests'
   const deny: GithubContinuityReader=async()=>{throw new Error('UNEXPECTED_NETWORK_REQUEST');};
   await assert.rejects(()=>recoverMissionFromGithub('../bad',deny),/CONTINUITY_ID_INVALID/);
   await assert.rejects(()=>recoverMissionFromGithub(P,deny,{historyLimit:101}),/CONTINUITY_HISTORY_PAGE_INVALID/);
+});
+
+
+test('child A24-01…A24-10 decisions, local mandate and inherited parent authorities remain separate',async()=>{
+  const localTypes=[
+    'AGENTS','ARCHITECTURE','CARTOGRAPHY','CONTINUITY','DECISIONS',
+    'EVIDENCE_INDEX','MANDATE','MEMORY','ROADMAP','SOURCE_OF_TRUTH',
+    'SUIVI','TASKS','TODO'
+  ];
+  const docs=[
+    ...old.filter(x=>x.path.startsWith(ROOT)&&!x.path.includes('/subchantiers/')),
+    {path:ROOT+P+'__DOCUMENT_AUTHORITIES.md',content:'# Parent document authorities'},
+    ...localTypes.map(type=>({path:child+C+'__'+type+'.md',content:
+      type==='DECISIONS'
+        ? '# Child decisions\n'+Array.from({length:10},(_,i)=>
+            '- A24-'+String(i+1).padStart(2,'0')+' — Child-only decision').join('\n')
+        : type==='TASKS'
+        ? '| Groupe documentaire | Références parent |\n|---|---|\n| HOST_PREPARATION | RG-046–047 |\n'
+        : type==='CONTINUITY'
+        ? '# Child continuity\n**NEXT_ACTION** : audit isolation U02\n'
+        : '# '+type+'\n'}))
+  ].filter((x,i,a)=>a.findIndex(y=>y.path===x.path)===i);
+  const parent=await recoverMissionFromGithub(P,reader(docs),{observedAt:'2026-11-22T03:00:00.000Z'});
+  const result=await recoverMissionFromGithub(C,reader(docs),{observedAt:'2026-11-22T03:00:00.000Z'});
+  assert.equal(result.parentContinuityId,P);
+  assert.equal(result.documentationIndex.length,13);
+  assert.deepEqual(result.historicalDecisions.map(x=>x.id),
+    Array.from({length:10},(_,i)=>'A24-'+String(i+1).padStart(2,'0')));
+  assert.ok(result.historicalDecisions.every(x=>x.source.includes('/subchantiers/')));
+  assert.equal(result.inheritedDocumentationIndex.length,3);
+  assert.ok(result.inheritedDocumentationIndex.every(x=>x.ownerContinuityId===P&&x.inherited));
+  assert.ok(result.inheritedDocumentationIndex.every(x=>!x.path.includes('/subchantiers/')));
+  assert.ok(!result.missingAuthorities.some(x=>x.startsWith('DOCUMENT_MISSING:')));
+  assert.deepEqual(result.workPackages.map(x=>x.id),['HOST_PREPARATION']);
+  assert.ok(parent.historicalDecisions.every(x=>x.id.startsWith('D')));
+  assert.ok(parent.documentationIndex.every(x=>!x.path.includes('/subchantiers/')));
+  assert.match(result.documentaryNextAction?.text??'',/audit isolation U02/);
+  assert.equal(result.projectId,null);
+  assert.deepEqual(result.realTaskIds,[]);
+  assert.equal(result.automaticExecutionAuthorized,false);
+});
+
+test('NEXT_ACTION_CURRENT marker defeats historical comparison tables',async()=>{
+  const suivi=[
+    '# Mission SUIVI',
+    '## Variations de priorité et historique',
+    '| Ancienne prochaine action | Nouvelle prochaine action |',
+    '|---|---|',
+    '| G1 | P2 |',
+    '',
+    '## NEXT_ACTION_CURRENT — scope mission',
+    '**Opération :** vérifier Project Binding/CUG, puis recette de continuité.',
+    '',
+    '## Protocole de tenue',
+    'historique'
+  ].join('\n');
+  const docs=[...old,{path:ROOT+P+'__SUIVI.md',content:suivi}];
+  const result=await recoverMissionFromGithub(P,reader(docs),{
+    observedAt:'2026-11-22T03:00:00.000Z'
+  });
+  assert.match(result.documentaryNextAction?.text??'',/NEXT_ACTION_CURRENT/);
+  assert.match(result.documentaryNextAction?.text??'',/Project Binding\/CUG/);
+  assert.ok(!result.documentaryNextAction?.text.includes('Ancienne prochaine action'));
+  assert.ok(result.documentaryNextAction?.source.endsWith('__SUIVI.md#L7'));
+  assert.equal(result.documentaryNextAction?.verification,'DECLARED');
+});
+
+test('canonical #430 source checkpoint is verified but its claims stay DECLARED',async()=>{
+  const checkpoint={
+    id:7073160993,created_at:'2026-11-22T02:50:11Z',
+    user:{login:'Patricked-code'},
+    body:'### Checkpoint final D39 — WT-MCP-REGISTRY-RESOLUTION-20261121-01\n'
+      +'**NEXT_ACTION_CURRENT** : découvrir Project Binding et CUG avant toute écriture'
+  };
+  const spoof={...checkpoint,id:7074000000,user:{login:'unknown-user'}};
+  const docsWithoutCurrentAction=old.map(x=>x.path.endsWith(P+'__CONTINUITY.md')
+    ? {...x,content:'# Continuity without a current-action marker'}:x);
+  const result=await recoverMissionFromGithub(P,reader(docsWithoutCurrentAction,false,[checkpoint,spoof]),{
+    observedAt:'2026-11-22T03:00:00.000Z'
+  });
+  assert.equal(result.latestVerifiedCheckpoint?.id,'7073160993');
+  assert.equal(result.checkpointHistory.length,1);
+  assert.equal(result.latestVerifiedCheckpoint?.sourceVerification,'VERIFIED');
+  assert.equal(result.latestVerifiedCheckpoint?.claimsVerification,'DECLARED');
+  assert.equal(result.documentaryNextAction?.verification,'DECLARED');
+  assert.match(result.documentaryNextAction?.text??'',/découvrir Project Binding/);
+  assert.ok(!result.blockers.includes('VERIFIED_CHECKPOINT_MISSING'));
+  const childResult=await recoverMissionFromGithub(C,reader(old,false,[checkpoint]),{
+    observedAt:'2026-11-22T03:00:00.000Z'
+  });
+  assert.equal(childResult.latestVerifiedCheckpoint,null);
+  assert.equal(childResult.checkpointHistory.length,0);
+});
+
+test('live state clears NOT_OBSERVED on readback, never promotes task or action permissions',async()=>{
+  const result=await recoverMissionFromGithub(P,reader(),{
+    observedAt:'2026-11-22T03:00:00.000Z'
+  });
+  assert.ok(result.missingAuthorities.includes('LIVE_STATE_NOT_OBSERVED'));
+  const current={
+    stateVersion:1458,observedAt:'2026-11-22T02:55:00.000Z',
+    freshness:'CURRENT',alignment:'FULLY_ALIGNED',
+    githubHead:SHA,s1Head:SHA,runtimeRevision:SHA,runtimeHealth:'healthy'
+  };
+  const merged=applyObservedMissionLiveState(result,current);
+  assert.ok(!merged.missingAuthorities.includes('LIVE_STATE_NOT_OBSERVED'));
+  assert.ok(!merged.blockers.includes('LIVE_STATE_NOT_OBSERVED'));
+  assert.equal(merged.liveState?.stateVersion,1458);
+  assert.equal(merged.documentaryNextAction?.verification,'DECLARED');
+  assert.equal(merged.projectId,null);
+  assert.deepEqual(merged.realTaskIds,[]);
+  assert.equal(merged.automaticExecutionAuthorized,false);
+  const stale=applyObservedMissionLiveState(result,{
+    ...current,freshness:'STALE',githubHead:'a'.repeat(40)
+  });
+  assert.ok(stale.blockers.includes('LIVE_STATE_STALE'));
+  assert.ok(stale.blockers.includes('GITHUB_LIVE_SHA_MISMATCH'));
+  assert.equal(stale.automaticExecutionAuthorized,false);
+});
+
+test('scoped SUIVI current action takes precedence over an older checkpoint declaration',async()=>{
+  const checkpoint={
+    id:7073160993,created_at:'2026-11-22T02:50:11Z',user:{login:'Patricked-code'},
+    body:'### Checkpoint D39 — WT-MCP-REGISTRY-RESOLUTION-20261121-01\n'
+      +'**NEXT_ACTION_CURRENT** : historical action only'
+  };
+  const files=[...old,{path:ROOT+P+'__SUIVI.md',
+    content:'# SUIVI\n## NEXT_ACTION_CURRENT — current scope\n'
+      +'**Opération :** latest scoped action (no Task admission)\n'}];
+  const result=await recoverMissionFromGithub(P,reader(files,false,[checkpoint]),{
+    observedAt:'2026-11-22T03:00:00.000Z'
+  });
+  assert.equal(result.latestVerifiedCheckpoint?.id,'7073160993');
+  assert.match(result.documentaryNextAction?.text??'',/latest scoped action/);
+  assert.ok(!result.documentaryNextAction?.text.includes('historical action only'));
+  assert.equal(result.documentaryNextAction?.verification,'DECLARED');
 });
