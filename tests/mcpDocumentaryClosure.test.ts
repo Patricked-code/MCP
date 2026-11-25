@@ -332,3 +332,33 @@ test('checks each historical memory manifest reference against Git without updat
     assert.equal(result.coverage.complete, false);
   }
 });
+
+test('partial program proof independently compares exact blob digest and keeps GWC/UAC unverified',async()=>{
+  const {observeDocumentaryRuntimeAuthorities}=await import('../src/deploy/documentaryRuntimeEvidence.js');
+  const {createEmptyTaskStoreDocument,createEmptySessionStoreDocument,createEmptyLockStoreDocument}=await import('../src/operationalMemory/types.js');
+  const now=Date.now(),d='d'.repeat(64),jobId='mcp-s1-123-'+HEAD.slice(0,12);
+  const program={status:'OBSERVED' as const,coverage:'PROGRAM_BACKLOG_ONLY' as const,sourceVersion:2 as const,
+    recordCount:94,digest:d,readinessStatus:'MATCHED' as const,readinessDriftCount:0};
+  const runtimeEvidence=await observeDocumentaryRuntimeAuthorities({sha:HEAD,jobId,stateVersion:5,now:()=>now,readers:{
+    registry:async()=>({available:true,sourceSchemaVersion:1,digest:d,candidateDigest:d,mappings:[],projects:[],activationReadiness:[]}),
+    tasks:async()=>createEmptyTaskStoreDocument(),sessions:async()=>createEmptySessionStoreDocument(),
+    locks:async()=>createEmptyLockStoreDocument(),programBacklog:async()=>program
+  }});
+  const authorityEvidence={schemaVersion:1,sha:HEAD,stateVersion:5,observedAt:new Date(now).toISOString(),
+    inventoryDigest:d,documentationDigest:d,governanceDigest:d,testSuiteDigest:d,catalogueDigest:d,toolCount:160};
+  const existingEvidence={ok:true,evidenceHead:HEAD,sourceDigest:d,documentationDigest:d,governanceDigest:d,
+    testSuiteDigest:d,catalogueDigest:d,toolCount:160,programBacklogDigest:d};
+  const g1={status:'ALIGNED',authorityEvidence,runtimeEvidence};
+  const matched=compareLiveAuthorities({headSha:HEAD,g1,existingEvidence,expectedJobId:jobId,now});
+  assert.equal(matched.matchedCount,6);assert.equal(matched.programBacklogComparison.status,'MATCHED');
+  assert.equal(matched.programBacklogComparison.gwcCoverage,'UNVERIFIED');
+  assert.equal(matched.programBacklogComparison.uacCoverage,'UNVERIFIED');
+  assert.equal(matched.complete,false);
+  const mismatch=compareLiveAuthorities({headSha:HEAD,g1,existingEvidence:{...existingEvidence,programBacklogDigest:'e'.repeat(64)},expectedJobId:jobId,now});
+  assert.equal(mismatch.programBacklogComparison.status,'CONFLICT');
+  assert.equal(mismatch.differences[0].path,'docs/governance/program-backlog-convergence.json');
+  const unavailable=compareLiveAuthorities({headSha:HEAD,g1,existingEvidence,expectedJobId:'wrong',now});
+  assert.equal(unavailable.programBacklogComparison.status,'UNVERIFIED');
+  const tampered={...g1,runtimeEvidence:{...runtimeEvidence,programBacklog:{...program,recordCount:95}}};
+  assert.equal(validateRuntimeAuthorityObservation({headSha:HEAD,g1:tampered,expectedJobId:jobId,now}),null);
+});

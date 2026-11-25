@@ -323,3 +323,17 @@ test('targeted claim and cold-start implementation changes propagate exact revie
   assert.equal(plan.closureAttested,false);
   assert.equal(plan.coverage.transversalDependencyCoverageComplete,false);
 });
+
+test('runtime evidence changes route to existing program and production documentary authorities',()=>{
+  const paths=['src/deploy/documentaryRuntimeEvidence.ts','tests/documentaryRuntimeEvidence.test.ts'];
+  const program='docs/governance/program-backlog-convergence.json';
+  const {input}=fixture([program,'MCP_SECURITY_MODEL.md','TESTS.md'],paths);
+  const entries=[...input.entries,...paths.map(path=>({path,mode:'100644',type:'blob',oid:sha,size:10}))];
+  const plan=buildCommonDocumentaryPlan({...input,entries});
+  assert.ok(paths.every(path=>!plan.issues.some((i:{path:string,code:string})=>i.path===path&&i.code==='CHANGE_IMPACT_UNRESOLVED')));
+  for(const path of [program,'DEPLOYMENT_PRODUCTION.md','SOURCE_OF_TRUTH.md','TESTS.md']){
+    const row=plan.documents.find((d:{path:string})=>d.path===path);
+    assert.equal(row.impactReviewRequired,true,path);assert.equal(row.semanticStatus,'UNVERIFIED',path);
+  }
+  assert.equal(plan.closureAttested,false);
+});

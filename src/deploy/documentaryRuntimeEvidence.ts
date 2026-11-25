@@ -5,6 +5,7 @@ import type { z } from 'zod';
 import { GITHUB_OIDC_POLICY } from './githubOidc.js';
 import { canonicalJson } from '../currentState/toolCatalog.js';
 import type { GitRegistryProjectEvidence } from '../github/registry.js';
+import {loadProgramProjection,loadReadinessLibrary,type ProgramProjectionSnapshot,type ReadinessLibrary} from '../governance/programBlueprintMaterialization.js';
 import {
   TaskStoreDocumentSchema, SessionStoreDocumentSchema, LockStoreDocumentSchema,
   type TaskStoreDocument, type SessionStoreDocument, type LockStoreDocument
@@ -46,23 +47,72 @@ type AuthorityRow=Readonly<{
   authority:AuthorityName; status:'OBSERVED'|'UNVERIFIED'; sourceVersion:number|null;
   recordCount:number|null; digest:string|null; coverage:'RETAINED_RECORDS'|'BOUNDED_REGISTRY_PROJECTION'|'UNVERIFIED';
 }>;
+// This is a bounded planning projection, not a certification of GWC/UAC
+// or an admission into the runtime Task Queue. Preserve the four primary
+// authority readers and their independent stability verdict.
+type ProgramBacklogObservation=Readonly<{
+  status:'OBSERVED'|'UNVERIFIED'; coverage:'PROGRAM_BACKLOG_ONLY'|'UNVERIFIED';
+  sourceVersion:2|null; recordCount:number|null; digest:string|null;
+  readinessStatus:'MATCHED'|'CONFLICT'|'UNVERIFIED'; readinessDriftCount:number|null;
+}>;
+const unverifiedProgram=():ProgramBacklogObservation=>({
+  status:'UNVERIFIED',coverage:'UNVERIFIED',sourceVersion:null,recordCount:null,digest:null,
+  readinessStatus:'UNVERIFIED',readinessDriftCount:null
+});
+const PLANNING_STATES=new Set(['DONE','READY','BLOCKED','DEFERRED','CONDITIONAL']);
+export function projectProgramBacklogObservation(snapshot:ProgramProjectionSnapshot,library:ReadinessLibrary):ProgramBacklogObservation {
+  const p=snapshot.projection as {schemaVersion?:unknown;repository?:unknown;
+    authority?:{kind?:unknown;createsRuntimeTasks?:unknown;replacesTaskQueue?:unknown};
+    executionModel?:{automaticRuntimeTaskCreation?:unknown;currentReadyBlueprintIds?:unknown};
+    taskBlueprints?:Array<{id:string;readiness:{state:string};dependsOn:string[];materialization:{createsRuntimeTask:boolean;runtimeAuthority:string}}> }|null;
+  if(p?.schemaVersion!==2||p.repository!==GITHUB_OIDC_POLICY.repository||!DIGEST.test(snapshot.digest)||
+    p.authority?.kind!=='DERIVED_NON_EXECUTABLE_PROJECTION'||p.authority.createsRuntimeTasks!==false||
+    p.authority.replacesTaskQueue!==false||p.executionModel?.automaticRuntimeTaskCreation!==false||
+    !Array.isArray(p.taskBlueprints)||!p.taskBlueprints.length||p.taskBlueprints.length>10000||
+    !Array.isArray(p.executionModel.currentReadyBlueprintIds))return unverifiedProgram();
+  const records=p.taskBlueprints,ids=new Set(records.map(b=>b?.id));
+  if(ids.size!==records.length||records.some(b=>typeof b?.id!=='string'||!b.id||b.id.length>160||
+    !PLANNING_STATES.has(b.readiness?.state)||!Array.isArray(b.dependsOn)||
+    b.dependsOn.some(d=>typeof d!=='string')||b.materialization?.createsRuntimeTask!==false||
+    b.materialization.runtimeAuthority!=='Governed Task Queue'))return unverifiedProgram();
+  const storedReady=p.executionModel.currentReadyBlueprintIds;
+  if(storedReady.some(id=>typeof id!=='string')||new Set(storedReady).size!==storedReady.length)return unverifiedProgram();
+  const derived=library.deriveProgramReadiness(snapshot.projection);
+  if(!Array.isArray(derived.blueprints)||derived.blueprints.length!==records.length||
+    !Array.isArray(derived.readyBlueprintIds)||new Set(derived.blueprints.map(b=>b.id)).size!==records.length||
+    derived.blueprints.some(b=>!ids.has(b.id)||!PLANNING_STATES.has(b.currentState)||!PLANNING_STATES.has(b.derivedState))||
+    derived.readyBlueprintIds.some(id=>!ids.has(id))||new Set(derived.readyBlueprintIds).size!==derived.readyBlueprintIds.length)
+    return unverifiedProgram();
+  const byId=new Map(records.map(b=>[b.id,b]));
+  const drift=derived.blueprints.filter(b=>b.currentState!==byId.get(b.id)?.readiness.state||
+    b.currentState!==b.derivedState||byId.get(b.id)?.dependsOn.some(d=>!ids.has(d))).length+
+    (storedReady.length!==derived.readyBlueprintIds.length||storedReady.some((id,i)=>id!==derived.readyBlueprintIds[i])?1:0);
+  return {status:'OBSERVED',coverage:'PROGRAM_BACKLOG_ONLY',sourceVersion:2,recordCount:records.length,
+    digest:snapshot.digest,readinessStatus:drift?'CONFLICT':'MATCHED',readinessDriftCount:drift};
+}
+async function readProgramBacklogObservation():Promise<ProgramBacklogObservation> {
+  return projectProgramBacklogObservation(await loadProgramProjection(),await loadReadinessLibrary());
+}
 type Snapshot={
   registry:GitRegistryProjectEvidence|null;
   tasks:TaskStoreDocument|null;
   sessions:SessionStoreDocument|null;
   locks:LockStoreDocument|null;
+  programBacklog?:ProgramBacklogObservation|null;
 };
 export type RuntimeAuthorityReaders={
   registry:()=>Promise<GitRegistryProjectEvidence>;
   tasks:()=>Promise<TaskStoreDocument>;
   sessions:()=>Promise<SessionStoreDocument>;
   locks:()=>Promise<LockStoreDocument>;
+  programBacklog?:()=>Promise<ProgramBacklogObservation>;
 };
 export type RuntimeAuthorityEvidence=Readonly<{
   schemaVersion:1; repository:typeof GITHUB_OIDC_POLICY.repository; sha:string; jobId:string; stateVersion:number;
   observedAt:string; status:'OBSERVED'|'UNVERIFIED'|'CONFLICT'; stableRead:boolean;
   authorities:readonly AuthorityRow[]; conflicts:readonly {code:string;count:number}[];
   coverage:'RETAINED_AUTHORITY_RECORDS_ONLY'; semanticCoverageComplete:false; mutationPerformed:false;
+  programBacklog?:ProgramBacklogObservation;
   evidenceDigest:string;
 }>;
 function unknownRow(authority:AuthorityName):AuthorityRow {
@@ -139,10 +189,11 @@ export function compareRetainedAuthorityRelations(s:Snapshot,now:number) {
 }
 async function readSnapshot(readers:RuntimeAuthorityReaders):Promise<Snapshot> {
   const safe=<T>(fn:()=>Promise<T>)=>Promise.resolve().then(fn).catch(()=>null);
-  const [registry,tasks,sessions,locks]=await Promise.all([
-    safe(readers.registry),safe(readers.tasks),safe(readers.sessions),safe(readers.locks)
+  const [registry,tasks,sessions,locks,programBacklog]=await Promise.all([
+    safe(readers.registry),safe(readers.tasks),safe(readers.sessions),safe(readers.locks),
+    readers.programBacklog?safe(readers.programBacklog):Promise.resolve(null)
   ]);
-  return {registry,tasks,sessions,locks};
+  return {registry,tasks,sessions,locks,programBacklog};
 }
 async function defaultReaders():Promise<RuntimeAuthorityReaders> {
   const [{operationalMemoryConfig:config},{readGitRegistryProjectEvidence}]=await Promise.all([
@@ -153,7 +204,7 @@ async function defaultReaders():Promise<RuntimeAuthorityReaders> {
   return {registry:readGitRegistryProjectEvidence,
     tasks:()=>read(config.taskStorePath,TaskStoreDocumentSchema),
     sessions:()=>read(config.sessionStorePath,SessionStoreDocumentSchema),
-    locks:()=>read(config.lockStorePath,LockStoreDocumentSchema)};
+    locks:()=>read(config.lockStorePath,LockStoreDocumentSchema),programBacklog:readProgramBacklogObservation};
 }
 export async function observeDocumentaryRuntimeAuthorities(input:{
   sha:string;jobId:string;stateVersion:number;readers?:RuntimeAuthorityReaders;now?:()=>number
@@ -171,11 +222,15 @@ export async function observeDocumentaryRuntimeAuthorities(input:{
     r.status==='OBSERVED'&&r.digest===firstRows[i]?.digest&&r.sourceVersion===firstRows[i]?.sourceVersion&&
     end>=start&&end-start<=MAX_OBSERVATION_MS?r:unknownRow(r.authority));
   const conflicts=stableRead?compareRetainedAuthorityRelations(second,end):[];
+  const programBacklog=first.programBacklog?.status==='OBSERVED'&&second.programBacklog?.status==='OBSERVED'&&
+    end>=start&&end-start<=MAX_OBSERVATION_MS&&digest(first.programBacklog)===digest(second.programBacklog)
+    ?second.programBacklog:unverifiedProgram();
   const projection={
     schemaVersion:1 as const,repository:GITHUB_OIDC_POLICY.repository,sha:input.sha,jobId:input.jobId,stateVersion:input.stateVersion,
     observedAt:new Date(end).toISOString(),status:!stableRead?'UNVERIFIED' as const:conflicts.length?'CONFLICT' as const:'OBSERVED' as const,
     stableRead,authorities,conflicts,coverage:'RETAINED_AUTHORITY_RECORDS_ONLY' as const,
-    semanticCoverageComplete:false as const,mutationPerformed:false as const
+    semanticCoverageComplete:false as const,mutationPerformed:false as const,
+    ...(readers.programBacklog?{programBacklog}:{})
   };
   return {...projection,evidenceDigest:digest(projection)};
 }

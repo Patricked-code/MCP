@@ -356,10 +356,19 @@ export function validateRuntimeAuthorityObservation({headSha,g1,expectedJobId,no
     ?Object.fromEntries(Object.entries(value).filter(([,v])=>v!==undefined).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>[k,canonical(v)])):value;
   const expected=digest(canonical(body));
   if(expected!==evidenceDigest)return null;
+  const p=e.programBacklog;
+  // Old four-authority envelopes remain valid. An auxiliary proof must
+  // have a bounded shape and cannot weaken the original authority verdict.
+  const programBacklog=p&&p.status==='OBSERVED'&&p.coverage==='PROGRAM_BACKLOG_ONLY'&&p.sourceVersion===2&&
+    Number.isSafeInteger(p.recordCount)&&p.recordCount>0&&p.recordCount<=10000&&DIGEST.test(p.digest??'')&&
+    Number.isSafeInteger(p.readinessDriftCount)&&p.readinessDriftCount>=0&&p.readinessDriftCount<=p.recordCount+1&&
+    p.readinessStatus===(p.readinessDriftCount===0?'MATCHED':'CONFLICT')
+    ?{status:p.status,coverage:p.coverage,sourceVersion:p.sourceVersion,recordCount:p.recordCount,
+      digest:p.digest,readinessStatus:p.readinessStatus,readinessDriftCount:p.readinessDriftCount}:null;
   return {sha:e.sha,jobId:e.jobId,stateVersion:e.stateVersion,observedAt:e.observedAt,status:e.status,
     stableRead:e.stableRead,evidenceDigest,coverage:e.coverage,semanticCoverageComplete:false,
     authorities:e.authorities.map(({authority,status,sourceVersion,recordCount,digest,coverage})=>({authority,status,sourceVersion,recordCount,digest,coverage})),
-    conflicts:e.conflicts.map(({code,count})=>({code,count}))};
+    conflicts:e.conflicts.map(({code,count})=>({code,count})),programBacklog};
 }
 export function compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobId=null,now=Date.now()}) {
   const e=g1?.authorityEvidence;
@@ -399,13 +408,25 @@ export function compareLiveAuthorities({headSha,g1,existingEvidence,expectedJobI
       status:!bound||!valid(declared)||!valid(observed)?'UNVERIFIED':declared===observed?'MATCHED':'CONFLICT'};
   });
   const runtimeObservation=bound?validateRuntimeAuthorityObservation({headSha,g1,expectedJobId,now}):null;
+  const p=runtimeObservation?.programBacklog;
+  const programPath='docs/governance/program-backlog-convergence.json';
+  const expectedProgramDigest=existingEvidence?.programBacklogDigest;
+  const programStatus=!bound||!p||!DIGEST.test(expectedProgramDigest??'')?'UNVERIFIED':
+    p.digest===expectedProgramDigest&&p.readinessStatus==='MATCHED'?'MATCHED':'CONFLICT';
+  const programBacklogComparison={authority:'PROGRAM_BACKLOG_GWC_UAC',coverage:'PROGRAM_BACKLOG_ONLY',
+    status:programStatus,sourceObservation:p??null,expectedDigest:DIGEST.test(expectedProgramDigest??'')?expectedProgramDigest:null,
+    gwcCoverage:'UNVERIFIED',uacCoverage:'UNVERIFIED',semanticCoverageComplete:false};
+  if(programStatus==='CONFLICT')differences.push({path:programPath,field:'programBacklogProjection',
+    declared:expectedProgramDigest,observed:p.digest,reason:'LIVE_AUTHORITY_VALUE_MISMATCH',
+    source:'PROGRAM_BACKLOG_GWC_UAC',nextAction:'RESOLVE_AUTHORITY_AND_RECONCILE'});
   const observedByAuthority=new Map((runtimeObservation?.authorities??[]).map(r=>[r.authority,r]));
   const unresolvedRuntime=RUNTIME_AUTHORITIES.map(([authority,source])=>({
     authority,source,status:'UNVERIFIED',sourceObservation:observedByAuthority.get(authority)??null,reason:'SOURCE_BOUND_SEMANTIC_RECONCILIATION_NOT_ATTESTED',
-    nextAction:'REUSE_EXISTING_AUTHORITY_READER_AND_COMPARE_PROJECTIONS'
+    nextAction:'REUSE_EXISTING_AUTHORITY_READER_AND_COMPARE_PROJECTIONS',
+    ...(authority==='PROGRAM_BACKLOG_GWC_UAC'?{partialObservation:programBacklogComparison}:{})
   }));
   return {bound,headSha,observedAt:bound?e.observedAt:null,stateVersion:bound?e.stateVersion:null,
-    checks,differences,inventoryDiagnostics,runtimeObservation,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
+    checks,differences,inventoryDiagnostics,runtimeObservation,programBacklogComparison,unresolvedRuntime,matchedCount:checks.filter(c=>c.status==='MATCHED').length,
     complete:false};
 }
 
@@ -647,7 +668,12 @@ export function main(env = process.env) {
           encoding:'utf8',maxBuffer:MAX_BUFFER,timeout:45000,stdio:['ignore','pipe','ignore']}));
         cartographyProfile=verifyCartographyProfiles({versioned:cartography,standalone:generate([]),httpRuntime:generate(['--http-runtime'])});
       } catch {cartographyProfile={ok:false,reason:'CARTOGRAPHY_PROFILE_GENERATOR_UNAVAILABLE'};}
-      existingEvidence={ok:state.evidenceHead===headSha&&state.contradictions.length===0,
+      // Bind the shipped program projection to the exact Git blob bytes,
+      // independently of the runtime's own readiness recomputation.
+      let programBacklogDigest=null;
+      try {programBacklogDigest=createHash('sha256').update(readBytes(entriesByPath.get('docs/governance/program-backlog-convergence.json'))).digest('hex');}
+      catch {/* no program source proof */}
+      existingEvidence={ok:state.evidenceHead===headSha&&state.contradictions.length===0,programBacklogDigest,
         evidenceHead:state.evidenceHead,sourceDigest:state.sourceDigest,
         architectureDigest:state.architecture.digest,sourceGeneratedAt:state.generatedAt,
         documentationDigest:state.documentation.digest,governanceDigest:state.governance.digest,
