@@ -37,7 +37,7 @@ export const viewportTag = '<meta name="viewport" content="width=device-width, i
 export function consoleNav() {
   return `<header class="wt-header"><nav class="wt-nav" aria-label="Navigation principale">
     <a class="wt-brand" href="/dashboard">WealthTech MCP</a>
-    <a href="/admissions">Admissions</a><a href="/git">Registre Git</a><a href="/github">GitHub</a>
+    <a href="/admissions">Admissions</a><a href="/git">Registre Git</a><a href="/registry-cockpit">Registres fédérés</a><a href="/github">GitHub</a>
     <a href="/provisioning/project-runtime">Provisionnement</a><a href="/guide/cug-grt">Guide</a><a href="/logout">Déconnexion</a>
   </nav></header>`;
 }

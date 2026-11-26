@@ -9,6 +9,10 @@ import type { RepositoryMappingCompletion } from '../governedContext/contextComp
 import {
   assessGitRegistryV2ActivationReadiness,
   dryRunGitRegistryV2,
+  GitRegistryV1Schema,
+  RegistryProjectSchema,
+  validateGitRegistryV2,
+  type GitRegistryV1,
   type GitRegistryV2,
   type GitRegistryV2ActivationReasonCode,
   type RegistryCapabilities
@@ -206,6 +210,46 @@ async function readBoundedGitRegistryEvidenceFile(path: string): Promise<string>
   } finally {
     await file.close();
   }
+}
+
+/**
+ * Federated cockpit reads the original schema, not the legacy V1-shaped UI
+ * projection. V2 retains its repository and mapping arrays; V1 keeps its
+ * historical partial-coverage handling. A malformed V2 fails closed.
+ * This is a reader over the existing single registry file, not another store.
+ */
+export async function readFederatedGitRegistrySource(): Promise<{
+  registry: GitRegistryV1 | GitRegistryV2;
+  omittedMappings: number;
+  omittedProjects: number;
+}> {
+  const raw = JSON.parse(await readBoundedGitRegistryEvidenceFile(rf())) as unknown;
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)
+    && (raw as { schemaVersion?: unknown }).schemaVersion === 2) {
+    return { registry: validateGitRegistryV2(raw), omittedMappings: 0, omittedProjects: 0 };
+  }
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)
+    || (raw as { version?: unknown }).version !== 1) throw Error('FEDERATION_REGISTRY_SCHEMA_UNSUPPORTED');
+  // Filter untrusted raw arrays BEFORE norm()/attach() dereferences a mapping.
+  // One null or malformed entry must not hide unrelated valid declarations.
+  const source = raw as Record<string, unknown>;
+  if (!Array.isArray(source.repoMappings)
+    || (source.projects !== undefined && !Array.isArray(source.projects))
+    || typeof source.updatedAt !== 'string') throw Error('FEDERATION_LEGACY_REGISTRY_INVALID');
+  const mappings = source.repoMappings.filter(mapping =>
+    GitRegistryV1Schema.shape.repoMappings.element.safeParse(mapping).success);
+  const rawProjects = Array.isArray(source.projects) ? source.projects : [];
+  const projects = rawProjects.filter(project =>
+    RegistryProjectSchema.safeParse(project).success);
+  const registry = GitRegistryV1Schema.parse({
+    version: 1, updatedAt: source.updatedAt, accounts: [], repoMappings: mappings,
+    auditEvents: [], projects
+  });
+  return {
+    registry,
+    omittedMappings: source.repoMappings.length - mappings.length,
+    omittedProjects: rawProjects.length - projects.length
+  };
 }
 
 export async function readGitRegistryEvidence(): Promise<GitRegistryEvidence> {
