@@ -121,7 +121,7 @@ export function projectRetentionStage(input: {
   partialTransitPresent: boolean;
 }): Stage {
   if (input.verifiedCompletionReceipt) {
-    return input.startMarkerPresent && input.restoreReceiptPresent
+    return input.startMarkerPresent && input.restoreReceiptPresent && input.offsiteReceiptPresent
       ? 'RETENTION_VERIFIED' : 'PARTIAL';
   }
   if (input.startMarkerPresent) return 'RETENTION_STARTED';
