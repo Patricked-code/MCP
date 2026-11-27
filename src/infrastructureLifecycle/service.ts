@@ -1,4 +1,5 @@
 import { observeMcpCapacity, sameObservedFilesystem, type Host, type CapacityObservation } from './capacityProbe.js';
+import { observeDockerReferences, type DockerReferenceObservation } from './dockerInventory.js';
 import { DockerBackupBounds } from './maintenancePlan.js';
 
 export const AILM_TOOL = 'mcp_infrastructure_lifecycle';
@@ -21,12 +22,12 @@ const unavailable = [
   'GOVERNED_EFFECT_EXECUTOR_REQUIRED'
 ] as const;
 export function createInfrastructureLifecycleService(
-  capacity:CapacityReader, cleanup:CleanupReader, now:()=>number=Date.now
+  capacity:CapacityReader, cleanup:CleanupReader, now:()=>number=Date.now, docker?: (host:Host)=>Promise<DockerReferenceObservation>
 ) {
   // A single active read cycle per server. No queued or overlapping SSH scans.
   const active=new Set<Host>();
   async function observe(host:Host, operation:AilmOperation) {
-    if(active.has(host)) return {host,status:'BUSY' as const,measurements:[],aliases:[],cleanup:null};
+    if(active.has(host)) return {host,status:'BUSY' as const,measurements:[],aliases:[],cleanup:null,dockerReferences:null};
     active.add(host);
     try {
       const measurements:CapacityObservation[]=[];
@@ -42,12 +43,16 @@ export function createInfrastructureLifecycleService(
         const previous=measurements.slice(0,i).find(x=>sameObservedFilesystem(x,current));
         if(previous) aliases.push({target:current.target,sameAs:previous.target});
       }
+      let dockerReferences:DockerReferenceObservation|null=null;
+      if(docker) {
+        try {dockerReferences=await docker(host);} catch {dockerReferences={status:'UNVERIFIED',reason:'DOCKER_INVENTORY_UNAVAILABLE',writesPerformed:false};}
+      }
       let review:unknown=null;
       if(operation==='plan') {
         try { review=await cleanup(host); } catch { review={status:'UNVERIFIED',reasonCode:'CLEANUP_OBSERVATION_UNAVAILABLE'}; }
       }
       return {host,status:measurements.every(x=>x.status==='OBSERVED')?'OBSERVED' as const:'PARTIAL' as const,
-        measurements,aliases,cleanup:review};
+        measurements,aliases,cleanup:review,dockerReferences};
     } finally {active.delete(host);}
   }
   return async function run(scope:unknown,operation:unknown) {
@@ -62,7 +67,7 @@ export function createInfrastructureLifecycleService(
       prc17:{nextStep:'WAIT',reasons:unavailable,bounds:DockerBackupBounds},
       capabilities:{capacity:'CALLABLE',cleanupPlan:'CALLABLE_READ_ONLY',receiptVerification:'MODULE_DEPLOYED_ADAPTER_REQUIRED',
         scriptRevision:'MODULE_DEPLOYED_ADAPTER_REQUIRED',maintenancePlanner:'MODULE_DEPLOYED_TRUSTED_OBSERVATIONS_REQUIRED',
-        deduplication:'FILESYSTEM_ALIAS_OBSERVATION_ONLY',transfer:'NOT_CONNECTED',retention:'NOT_CONNECTED',
+        deduplication:'FILESYSTEM_AND_DOCKER_REFERENCE_OBSERVATION_ONLY',transfer:'NOT_CONNECTED',retention:'NOT_CONNECTED',
         schedule:'NOT_CONNECTED',executor:'NOT_CONNECTED'},
       limitations:['No physical totals are added across mounts or hosts.','No complete backup or file inventory is claimed.',
         'No client-supplied path, command, receipt, permission or destructive operation accepted.']
@@ -73,5 +78,5 @@ export const runInfrastructureLifecycle=createInfrastructureLifecycleService(
   observeMcpCapacity,async host=>{
     const {observeServerCleanupPlan}=await import('../tools/cleanupPlan.js');
     return observeServerCleanupPlan(host);
-  }
+  },Date.now,observeDockerReferences
 );
