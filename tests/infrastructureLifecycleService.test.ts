@@ -37,3 +37,15 @@ test('AILM probe failures are partial and never authorize cleanup',async()=>{
   assert.equal(x.observations[0]?.status,'PARTIAL');assert.equal(x.effectAuthorized,false);
   assert.ok(!JSON.stringify(x).includes('private'));
 });
+
+test('AILM scopes private receipt observations to S2 and never turns historical structure into authority',async()=>{
+  let reads=0;
+  const run=createInfrastructureLifecycleService(observed,async()=>null,()=>1000,undefined,undefined,async()=>{
+    reads++;return {status:'OBSERVED',observedAtMs:1000,stage:'RESTORE_VERIFIED',receiptStructure:'PAIR_STRUCTURE_VERIFIED',
+      independentlyVerified:false,completionCertified:false,effectAuthorized:false,writesPerformed:false};
+  });
+  await run('s1','audit');await run('all','status');assert.equal(reads,0);
+  const x=await run('s2','plan');assert.equal(reads,1);
+  assert.equal(x.observations[0]?.privateReceipts?.status,'OBSERVED');
+  assert.equal(x.prc17.nextStep,'WAIT');assert.equal(x.effectAuthorized,false);
+});
