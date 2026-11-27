@@ -22,8 +22,9 @@ const sha40 = /^[a-f0-9]{40}$/;
 const sha256 = /^[a-f0-9]{64}$/;
 const base = '/repos/' + PROGRAM_REPOSITORY;
 
-export async function verifyMaintenanceScriptRevision(
-  candidate: MaintenanceScriptCandidate, read: GithubRead
+async function checkMaintenanceScriptRevision(
+  candidate: MaintenanceScriptCandidate, read: GithubRead,
+  validateBytes?: (bytes:Buffer)=>Promise<boolean>
 ): Promise<ScriptRevisionResult> {
   const fail = (reason: string): ScriptRevisionResult =>
     ({status:'UNVERIFIED',reason,effectAuthorized:false});
@@ -90,9 +91,18 @@ export async function verifyMaintenanceScriptRevision(
     const digest=createHash('sha256').update(bytes).digest('hex');
     if(blob!==value.sha || blob!==entries[0].sha || digest!==candidate.sha256)
       return fail('SCRIPT_SOURCE_DIGEST_MISMATCH');
+    if(validateBytes && !(await validateBytes(bytes))) return fail('SCRIPT_SYNTAX_NOT_VERIFIED');
     return {status:'SOURCE_VERIFIED',revision:candidate.revision,sourcePath:candidate.sourcePath,
       sha256:digest,bytes:bytes.length,effectAuthorized:false};
   } catch {
     return fail('SCRIPT_SOURCE_UNAVAILABLE');
   }
+}
+
+export function verifyMaintenanceScriptRevision(candidate:MaintenanceScriptCandidate,read:GithubRead):Promise<ScriptRevisionResult>{
+  return checkMaintenanceScriptRevision(candidate,read);
+}
+/** Internal syntax checker only; validated source bytes never leave this server-side pipeline. */
+export async function validateMaintenanceScriptRevision(candidate:MaintenanceScriptCandidate,read:GithubRead,validateBytes:(bytes:Buffer)=>Promise<boolean>):Promise<ScriptRevisionResult>{
+  return checkMaintenanceScriptRevision(candidate,read,validateBytes);
 }
