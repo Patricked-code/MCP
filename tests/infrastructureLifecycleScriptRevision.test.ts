@@ -11,13 +11,15 @@ const check={name:'validate',head_sha:revision,status:'completed',conclusion:'su
 const file={type:'file',path:sourcePath,encoding:'base64',size:bytes.length,
   content:bytes.toString('base64'),
   sha:createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex')};
-function reader(options:{checks?:unknown[];file?:unknown;branch?:string;comparison?:string;status?:string}={}):GithubRead {
+function reader(options:{checks?:unknown[];file?:unknown;branch?:string;comparison?:string;status?:string;tree?:unknown}={}):GithubRead {
   return async endpoint=>{
     const ok=(json:unknown)=>({ok:true,status:200,json});
     if(endpoint.includes('/branches/'))return ok({commit:{sha:options.branch??revision}});
     if(endpoint.includes('/compare/'))return ok({status:options.comparison??'diverged'});
     if(endpoint.includes('/check-runs?'))return ok({total_count:(options.checks??[check]).length,check_runs:options.checks??[check]});
     if(endpoint.endsWith('/status'))return ok({state:options.status??'pending',total_count:options.status?1:0});
+    if(endpoint.includes('/git/trees/'))return ok(options.tree??{truncated:false,
+      tree:[{path:sourcePath,type:'blob',mode:'100755',sha:file.sha}]});
     if(endpoint.includes('/contents/')){assert.ok(endpoint.endsWith('?ref='+revision));return ok(options.file??file);}
     throw Error('unexpected endpoint');
   };
@@ -52,4 +54,13 @@ test('AILM script source rejects substituted bytes, blob hash, size, path and li
 });
 test('AILM script source fails closed on unavailable transport',async()=>{
   assert.equal((await verifyMaintenanceScriptRevision(candidate,async()=>{throw Error('offline');})).status,'UNVERIFIED');
+});
+
+test('AILM script source rejects symlink, truncated tree and mismatched tree blob',async()=>{
+  for(const tree of [
+    {truncated:false,tree:[{path:sourcePath,type:'blob',mode:'120000',sha:file.sha}]},
+    {truncated:true,tree:[]},
+    {truncated:false,tree:[{path:sourcePath,type:'blob',mode:'100755',sha:'b'.repeat(40)}]},
+    {truncated:false,tree:[]}
+  ]) assert.equal((await verifyMaintenanceScriptRevision(candidate,reader({tree}))).status,'UNVERIFIED');
 });

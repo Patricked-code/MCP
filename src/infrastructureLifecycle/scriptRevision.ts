@@ -49,10 +49,25 @@ export async function verifyMaintenanceScriptRevision(
         typeof data.total_count!=='number' || !Number.isSafeInteger(data.total_count) ||
         data.total_count!==data.check_runs.length || data.total_count>100)
       return fail('SCRIPT_REQUIRED_CHECK_UNVERIFIED');
+    if(data.check_runs.some(x=>!x || x.status!=='completed' ||
+        !['success','neutral','skipped'].includes(x.conclusion)))
+      return fail('SCRIPT_REQUIRED_CHECK_UNVERIFIED');
     const validation=data.check_runs.filter(x=>x && x.name==='validate');
     if(validation.length!==1 || validation[0].head_sha!==candidate.revision ||
         validation[0].status!=='completed' || validation[0].conclusion!=='success')
       return fail('SCRIPT_REQUIRED_CHECK_UNVERIFIED');
+    // Contents API can follow an in-repository symlink. Verify the actual
+    // Git tree mode and exact blob identity before accepting its response.
+    const treeResponse=await read(base+'/git/trees/'+candidate.revision+'?recursive=1');
+    const tree=treeResponse.json as {truncated?:unknown;tree?:unknown};
+    if(!treeResponse.ok || !tree || tree.truncated!==false ||
+        !Array.isArray(tree.tree) || tree.tree.length>20000)
+      return fail('SCRIPT_TREE_UNVERIFIED');
+    const entries=tree.tree.filter(x=>x && x.path===candidate.sourcePath);
+    if(entries.length!==1 || entries[0].type!=='blob' ||
+        !['100644','100755'].includes(entries[0].mode) ||
+        typeof entries[0].sha!=='string' || !sha40.test(entries[0].sha))
+      return fail('SCRIPT_TREE_ENTRY_UNVERIFIED');
     const path=candidate.sourcePath.split('/').map(encodeURIComponent).join('/');
     const response=await read(base+'/contents/'+path+'?ref='+candidate.revision);
     const value=response.json as {type?:unknown;path?:unknown;encoding?:unknown;
@@ -72,7 +87,7 @@ export async function verifyMaintenanceScriptRevision(
       return fail('SCRIPT_SOURCE_UNVERIFIED');
     const blob=createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex');
     const digest=createHash('sha256').update(bytes).digest('hex');
-    if(blob!==value.sha || digest!==candidate.sha256)
+    if(blob!==value.sha || blob!==entries[0].sha || digest!==candidate.sha256)
       return fail('SCRIPT_SOURCE_DIGEST_MISMATCH');
     return {status:'SOURCE_VERIFIED',revision:candidate.revision,sourcePath:candidate.sourcePath,
       sha256:digest,bytes:bytes.length,effectAuthorized:false};
