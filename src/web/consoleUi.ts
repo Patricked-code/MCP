@@ -38,6 +38,7 @@ export function consoleNav() {
   return `<header class="wt-header"><nav class="wt-nav" aria-label="Navigation principale">
     <a class="wt-brand" href="/dashboard">WealthTech MCP</a>
     <a href="/admissions">Admissions</a><a href="/git">Registre Git</a><a href="/github">GitHub</a>
+    <a href="/infrastructure-maintenance">Infrastructure &amp; maintenance</a>
     <a href="/provisioning/project-runtime">Provisionnement</a><a href="/guide/cug-grt">Guide</a><a href="/logout">Déconnexion</a>
   </nav></header>`;
 }

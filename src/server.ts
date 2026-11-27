@@ -21,6 +21,7 @@ import {
   verifyWebConsentTicket
 } from './oauth.js';
 import { logger } from './logger.js';
+import { createInfrastructureLifecycleRouter } from './web/infrastructureLifecycle.js';
 import { registerReadOnlyTools } from './tools/readOnly.js';
 import { registerScopedWriteTools } from './tools/writeScoped.js';
 import { registerE2AutomaticActivationTool } from './tools/e2Activation.js';
@@ -550,6 +551,7 @@ export async function startHttpServer(): Promise<void> {
   }));
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: false, limit: '64kb' }));
+  app.use(createInfrastructureLifecycleRouter(requireWebLogin));
 
   registerOauthRoutes(app, {
     isAuthenticated: isWebAuthenticated

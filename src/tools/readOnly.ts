@@ -31,6 +31,8 @@ import { extendProjectContextWithUniversalCapabilities } from '../provisioning/u
 import { probeExistingAdminReadCapabilities } from '../provisioning/universalAdminLiveProbe.js';
 import { EXTERNAL_GOVERNED_RECOVERY_FULL_NAME } from '../governedContext/githubFirstOperationalContinuity.js';
 
+import { registerInfrastructureLifecycleTool } from './infrastructureLifecycle.js';
+
 async function run(serverId: ServerId, command: string) {
   const result = await runReadOnlyCommand(serverId, command);
   return asText(commandResultToText(result));
@@ -123,4 +125,5 @@ export function registerReadOnlyTools(server: McpServer): void {
   registerLegacyFundsScopedTools(server);
   registerNigeriaScopedTools(server);
   registerScopedReadOnlyTools(server);
+  registerInfrastructureLifecycleTool(server);
 }
