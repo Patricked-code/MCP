@@ -1,0 +1,45 @@
+name: MCP Registry Independent Review Request
+
+on:
+  workflow_run:
+    workflows: [MCP CI]
+    types: [completed]
+
+# Trusted default-branch workflow, not PR-controlled scripts.
+# This permission posts a bounded request for the already-installed reviewer.
+# It cannot approve, merge, write repository content or deploy.
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+concurrency:
+  group: mcp-registry-review-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  request-review:
+    if: >-
+      github.repository == 'Patricked-code/MCP' &&
+      github.event.workflow_run.name == 'MCP CI' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      startsWith(github.event.workflow_run.head_branch, 'mcp/registry-')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout trusted main, never untrusted PR code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate review dispatcher and fail-closed guards
+        run: node --test tests/registryAutoReview.test.mjs
+      - name: Request independent review for exact successful PR SHA
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/registry-auto-review.mjs
