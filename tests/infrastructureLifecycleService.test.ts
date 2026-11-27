@@ -32,8 +32,31 @@ test('AILM rejects destructive operations, arbitrary targets and overlapping rea
   release();await first;assert.equal(calls,4);
 });
 test('AILM probe failures are partial and never authorize cleanup',async()=>{
-  const run=createInfrastructureLifecycleService(async()=>{throw Error('private');},async()=>{throw Error('private');},()=>1000);
+  const run=createInfrastructureLifecycleService(async()=>{throw Error('AILM_FIXTURE_CONFIDENTIAL_ERROR_79');},async()=>{throw Error('AILM_FIXTURE_CONFIDENTIAL_ERROR_79');},()=>1000);
   const x=await run('s2','plan');
   assert.equal(x.observations[0]?.status,'PARTIAL');assert.equal(x.effectAuthorized,false);
-  assert.ok(!JSON.stringify(x).includes('private'));
+  assert.ok(!JSON.stringify(x).includes('AILM_FIXTURE_CONFIDENTIAL_ERROR_79'));
+});
+
+test('AILM scopes private receipt observations to S2 and never turns historical structure into authority',async()=>{
+  let reads=0;
+  const run=createInfrastructureLifecycleService(observed,async()=>null,()=>1000,undefined,undefined,async()=>{
+    reads++;return {status:'OBSERVED',observedAtMs:1000,stage:'RESTORE_VERIFIED',receiptStructure:'PAIR_STRUCTURE_VERIFIED',
+      independentlyVerified:false,completionCertified:false,effectAuthorized:false,writesPerformed:false};
+  });
+  await run('s1','audit');await run('all','status');assert.equal(reads,0);
+  const x=await run('s2','plan');assert.equal(reads,1);
+  assert.equal(x.observations[0]?.privateReceipts?.status,'OBSERVED');
+  assert.equal(x.prc17.nextStep,'WAIT');assert.equal(x.effectAuthorized,false);
+});
+
+test('AILM scopes destination capacity observation and never derives effect permission',async()=>{
+  let reads=0;
+  const run=createInfrastructureLifecycleService(observed,async()=>null,()=>1000,undefined,undefined,undefined,async()=>{
+    reads++;return {status:'OBSERVED',observedAtMs:1000,totalBytes:1000,usedBytes:600,availableBytes:300,
+      destinationIdentity:'CONFIGURED_PARTITION',writesPerformed:false};
+  });
+  await run('s1','audit');await run('s2','audit');await run('all','status');assert.equal(reads,0);
+  const result=await run('freebox','audit');assert.equal(reads,1);assert.equal(result.freebox.status,'OBSERVED');
+  assert.equal(result.prc17.nextStep,'WAIT');assert.equal(result.effectAuthorized,false);
 });
