@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { PROGRAM_REPOSITORY } from '../governance/programBlueprintMaterialization.js';
 import { admitProvisioningRevision, type GithubRead } from '../provisioning/revisionAdmission.js';
 
 /**
@@ -19,7 +20,7 @@ export type ScriptRevisionResult =
 const MAX_BYTES = 256 * 1024;
 const sha40 = /^[a-f0-9]{40}$/;
 const sha256 = /^[a-f0-9]{64}$/;
-const base = '/repos/Patricked-code/MCP';
+const base = '/repos/' + PROGRAM_REPOSITORY;
 
 export async function verifyMaintenanceScriptRevision(
   candidate: MaintenanceScriptCandidate, read: GithubRead
@@ -37,7 +38,7 @@ export async function verifyMaintenanceScriptRevision(
   try {
     // Reuse the official main revision gate; no manual-consent fallback.
     const admitted = await admitProvisioningRevision({
-      repositoryId:'github:Patricked-code/MCP', revision:candidate.revision, branch:'main'
+      repositoryId:'github:' + PROGRAM_REPOSITORY, revision:candidate.revision, branch:'main'
     },read);
     if (!admitted.admitted || admitted.kind !== 'CI_GATE')
       return fail('SCRIPT_REVISION_CI_NOT_ATTESTED');
