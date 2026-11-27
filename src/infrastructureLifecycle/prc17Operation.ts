@@ -59,18 +59,25 @@ function validLease(lease:Prc17Lease|null,op:Prc17Effect,plan:string,now:number)
 export async function dispatchPrc17Operation(ports:Prc17RuntimePorts):Promise<Prc17DispatchOutcome> {
   const result=(status:Prc17DispatchOutcome['status'],reason:string,operation:Prc17Effect|null=null):Prc17DispatchOutcome=>({status,reason,operation,effectCompleted:false});
   let operation:Prc17Effect|null=null;
+  const clock=ports.now??Date.now;
+  const currentCandidate=async()=>{
+    const evidence=await ports.observe();
+    const now=clock();
+    // Re-evaluate freshness against the server clock, not a stale snapshot clock.
+    return projectPrc17Operation({...evidence,observation:{...evidence.observation,nowMs:now}});
+  };
   try {
-    const first=projectPrc17Operation(await ports.observe());
+    const first=await currentCandidate();
     operation=first.operation;
     if(!operation)return result('BLOCKED',first.reasons.join(','),null);
     const plan=first.decision.planDigest;
     const lease=await ports.admit(operation,plan);
-    if(!validLease(lease,operation,plan,(ports.now??Date.now)()))return result('BLOCKED','GOVERNED_ADMISSION_REQUIRED',operation);
-    const latest=projectPrc17Operation(await ports.observe());
+    if(!validLease(lease,operation,plan,clock()))return result('BLOCKED','GOVERNED_ADMISSION_REQUIRED',operation);
+    const latest=await currentCandidate();
     if(latest.operation!==operation||latest.decision.planDigest!==plan)
       return result('BLOCKED','PLAN_OR_STAGE_CHANGED',operation);
     const current=await ports.admit(operation,plan);
-    if(!validLease(current,operation,plan,(ports.now??Date.now)())||
+    if(!validLease(current,operation,plan,clock())||
       current.taskId!==lease.taskId||current.sessionId!==lease.sessionId||
       current.fencingToken!==lease.fencingToken||current.scriptSha256!==lease.scriptSha256)
       return result('BLOCKED','LEASE_OR_SCRIPT_CHANGED',operation);

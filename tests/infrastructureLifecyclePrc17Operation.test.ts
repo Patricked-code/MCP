@@ -36,3 +36,9 @@ test('PRC17 ambiguous worker submission demands reconciliation and is not retrie
   const r=await dispatchPrc17Operation(ports({submit:async()=>{calls++;throw Error('lost');}}));
   assert.equal(r.status,'RECONCILE_REQUIRED');assert.equal(r.effectCompleted,false);assert.equal(calls,1);
 });
+
+test('PRC17 stale observation cannot be revived by its historical snapshot clock',async()=>{
+  let submissions=0;
+  const r=await dispatchPrc17Operation(ports({now:()=>now+2000,submit:async()=>{submissions++;return {status:'ACCEPTED'};}}));
+  assert.equal(r.status,'BLOCKED');assert.equal(submissions,0);
+});
