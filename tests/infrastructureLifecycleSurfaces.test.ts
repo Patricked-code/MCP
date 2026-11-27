@@ -28,7 +28,7 @@ test('AILM cockpit requires existing login, validates scope, escapes results and
     if(req.headers.cookie==='fixture=valid')next();else res.sendStatus(401);
   },async(scope,op)=>{
     calls++;const value=await runInfrastructureLifecycle(scope,op);
-    return {...value,limitations:['<script>alert(1)</script>']};
+    return {...value,limitations:['<ScRiPt>alert(1)</ScRiPt>','<script>alert(1)</script>']};
   }));
   const server=app.listen(0,'127.0.0.1');
   try{
@@ -40,7 +40,7 @@ test('AILM cockpit requires existing login, validates scope, escapes results and
     assert.equal((await fetch(url,{headers,method:'POST'})).status,404);assert.equal(calls,0);
     const response=await fetch(url,{headers});assert.equal(response.status,200);assert.equal(calls,1);
     assert.match(response.headers.get('cache-control')??'',/no-store/);
-    const html=await response.text();assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+    const html=await response.text();assert.match(html,/&lt;script&gt;/);assert.ok(html.includes('&lt;ScRiPt&gt;'));assert.equal(html.toLowerCase().includes('<script'),false);
     assert.match(html,/Programmation et exécution/);
   }finally{await new Promise<void>((resolve,reject)=>server.close(e=>e?reject(e):resolve()));}
 });
