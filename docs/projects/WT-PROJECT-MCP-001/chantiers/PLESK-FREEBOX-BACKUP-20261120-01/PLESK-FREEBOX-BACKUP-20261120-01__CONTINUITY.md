@@ -16,3 +16,11 @@ This document makes the existing mission discoverable by the native continuity f
 Operational priority P0 remains PRC17A/B: trusted observation, noninteractive bounded execution, externalization, exact isolated restoration, then eligible targeted retention and measured certification. Existing scripts and safety guards remain authoritative. No production effect is attested by this change.
 
 NEXT_ACTION: attest exact-head CI and reconcile intake #492 in the existing Program Backlog V2; verify native cold rejoin after authorized integration, then connect the existing script lifecycle and trusted receipt adapters. Preserve the existing continuity ID and require separately attested runtime authority before effects.
+
+## Checkpoint documentaire 27/11/2026
+
+PR #493 et #495 déployées, 161 outils observés au Live State V1660 FULLY_ALIGNED, main/runtime dfb5c0aa567236b0db81d9a953cafb87ac87f7ea. PR #497 fusionnée sur 4ae9832e85d06bd57035b9da81f71be4a5412a3c, CI #5190 et CI main #5191 SUCCESS, déploiement #276 en cours à la dernière observation. Aucun transfert, suppression ou gain attesté.
+
+Familles documentaires complétées sur cette branche, aucun rattachement runtime implicite.
+
+NEXT_ACTION: Attester le déploiement #497 ; raccorder les preuves privées et la capacité Freebox ; admettre l'installation et l'exécution bornées des scripts par les autorités existantes. P0 PRC17A/B indépendant ; ne pas rejouer le lot Plesk.
