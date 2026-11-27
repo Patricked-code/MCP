@@ -29,3 +29,9 @@ NEXT_ACTION: resolve GitHub verified-email gate; open the one PR from this exist
 Parent: `612ad71f78b0f75188cbe424172302e5d35ad70b`. CI #5163 on parent: SUCCESS; main/runtime previously observed aligned on `776a2713cf22a86b6bccf1849b9554a7cd29aecd`. Existing branch only; no new authority, runtime task, server effect or deletion. Added structural cross-receipt comparison: exact plan, mission, checkpoint, counts, encrypted and raw archive hashes/sizes, private destination equality and chronology; rejects independently valid receipts referring to distinct archives. Tests added for positive and negative cases; exact new HEAD CI is required, not yet attested in this commit. No private operational receipt content published.
 
 NEXT_ACTION: verify exact-head CI, then connect authoritative private evidence adapters and reconcile canonical intake/continuity; retain existing script guards and claims/locks. Pair verification is not physical restoration or retention authorization.
+
+## Increment — script revision evidence (AILM-05)
+
+Parent `2b3aaafc79701aa45cd54e932ea19e0806474088`. Existing provisioning revision admission reused for official main and CI; additional exact successful validate check, strict source path, bounded source read, Git blob identity and SHA-256 verification. No source body returned, no arbitrary execution surface and no installation or permission granted. Six new tests. The candidate still needs exact-head CI and must not be used as runtime authorization. Private PRC17A/B script admission and machine execution remain to be integrated through existing authorities.
+
+NEXT_ACTION: exact-head CI; converge intake, then connect admitted script identity and trusted live observations to the existing governed effect path.
