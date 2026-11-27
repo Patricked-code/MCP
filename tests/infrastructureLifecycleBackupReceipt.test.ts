@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import { parseDockerReceipt, projectRetentionStage, type DockerReceiptInput }
+import { parseDockerReceipt, projectRetentionStage, verifyDockerReceiptPair, type DockerReceiptInput }
   from '../src/infrastructureLifecycle/backupReceipt.js';
 
 const plan = 'a'.repeat(64), cipher = 'b'.repeat(64), tar = 'c'.repeat(64);
@@ -77,4 +77,35 @@ test('previous retention start prevents another removal',()=>{
   assert.equal(projectRetentionStage({...ready,verifiedCompletionReceipt:true}),'PARTIAL');
   assert.equal(projectRetentionStage({...ready,startMarkerPresent:true,verifiedCompletionReceipt:true,offsiteReceiptPresent:false}),'PARTIAL');
   assert.equal(projectRetentionStage({...ready,startMarkerPresent:true,verifiedCompletionReceipt:true}),'RETENTION_VERIFIED');
+});
+
+test('receipt pair binds exactly one archive without granting authority',()=>{
+  const result=verifyDockerReceiptPair(input(offsite,'OFFSITE'),input());
+  assert.equal(result.status,'PAIR_STRUCTURE_VERIFIED');
+  assert.equal(result.effectAuthorized,false);
+  assert.equal('remotePath' in result,false);
+});
+test('receipt pair rejects separately valid receipts for different archives',()=>{
+  const source=input(offsite,'OFFSITE');
+  for(const changed of [
+    restored.replaceAll(cipher,'d'.repeat(64)).replace(cipher.slice(0,16),'d'.repeat(16)),
+    restored.replace('TAR_SHA256='+tar,'TAR_SHA256='+'d'.repeat(64)),
+    restored.replace('TAR_BYTES=456','TAR_BYTES=457'),
+    restored.replace('GPG_BYTES=123','GPG_BYTES=124'),
+    restored.replace('backup/docker/','backup/other/'),
+    restored.replace('2026-01-15T04:00:00Z','2026-01-15T03:59:59Z')
+  ]){
+    const candidate=input(changed);
+    assert.equal(parseDockerReceipt(candidate).status,'STRUCTURE_VERIFIED');
+    assert.equal(verifyDockerReceiptPair(source,candidate).status,'UNVERIFIED');
+  }
+});
+test('receipt pair rejects scope divergence, swapped phases and corrupt digest',()=>{
+  const source=input(offsite,'OFFSITE'), target=input();
+  for(const changed of [
+    {...target,scope:{...target.scope,imageCount:80}},
+    {...target,scope:{...target.scope,checkpoint:'other-checkpoint'}},
+    {...target,expectedReceiptDigest:tar}
+  ]) assert.equal(verifyDockerReceiptPair(source,changed).status,'UNVERIFIED');
+  assert.equal(verifyDockerReceiptPair(target,source).status,'UNVERIFIED');
 });

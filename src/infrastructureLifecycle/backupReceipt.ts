@@ -25,7 +25,7 @@ export type DockerReceiptResult =
   | { status: 'UNVERIFIED'; reason: string; effectAuthorized: false }
   | { status: 'STRUCTURE_VERIFIED'; stage: Extract<Stage,
       'OFFSITE_VERIFIED' | 'RESTORE_VERIFIED'>;
-      receiptDigest: string; planDigest: string; archiveDigest: string;
+      receiptDigest: string; planDigest: string; archiveDigest: string; tarDigest: string;
       rawArchiveBytes: number; encryptedArchiveBytes: number; recordedAtMs: number;
       effectAuthorized: false };
 const sha = /^[a-f0-9]{64}$/;
@@ -106,7 +106,7 @@ export function parseDockerReceipt(input: DockerReceiptInput): DockerReceiptResu
   }
   return {
     status:'STRUCTURE_VERIFIED', stage:kind==='OFFSITE'?'OFFSITE_VERIFIED':'RESTORE_VERIFIED',
-    receiptDigest:actual, planDigest:scope.planDigest, archiveDigest,
+    receiptDigest:actual, planDigest:scope.planDigest, archiveDigest, tarDigest,
     rawArchiveBytes, encryptedArchiveBytes, recordedAtMs, effectAuthorized:false
   };
 }
@@ -128,4 +128,37 @@ export function projectRetentionStage(input: {
   if (input.restoreReceiptPresent) return input.offsiteReceiptPresent ? 'RESTORE_VERIFIED' : 'PARTIAL';
   if (input.offsiteReceiptPresent) return 'OFFSITE_VERIFIED';
   return input.partialTransitPresent ? 'PARTIAL' : 'EMPTY';
+}
+
+/**
+ * Bind both independently obtained receipts to one immutable archive and plan.
+ * This is structural evidence only; it cannot grant retention permission.
+ * The runtime adapter must supply authoritative receipt bytes/digests and
+ * independently verify the remote readback and restored references.
+ */
+export function verifyDockerReceiptPair(
+  offsite: DockerReceiptInput, restore: DockerReceiptInput
+): { status: 'UNVERIFIED'; reason: string; effectAuthorized: false } |
+   { status: 'PAIR_STRUCTURE_VERIFIED'; planDigest: string; archiveDigest: string;
+     offsiteReceiptDigest: string; restoreReceiptDigest: string; effectAuthorized: false } {
+  const fail = (reason: string) => ({status:'UNVERIFIED' as const, reason, effectAuthorized:false as const});
+  if (offsite.kind !== 'OFFSITE' || restore.kind !== 'RESTORE')
+    return fail('RECEIPT_KIND_MISMATCH');
+  const a = offsite.scope, b = restore.scope;
+  if (a.mission !== b.mission || a.checkpoint !== b.checkpoint ||
+      a.planDigest !== b.planDigest || a.imageCount !== b.imageCount || a.tagCount !== b.tagCount)
+    return fail('RECEIPT_SCOPE_MISMATCH');
+  const x = parseDockerReceipt(offsite), y = parseDockerReceipt(restore);
+  if (x.status !== 'STRUCTURE_VERIFIED' || y.status !== 'STRUCTURE_VERIFIED')
+    return fail('RECEIPT_STRUCTURE_UNVERIFIED');
+  if (x.archiveDigest !== y.archiveDigest || x.tarDigest !== y.tarDigest ||
+      x.rawArchiveBytes !== y.rawArchiveBytes || x.encryptedArchiveBytes !== y.encryptedArchiveBytes)
+    return fail('ARCHIVE_IDENTITY_MISMATCH');
+  // The parser has already enforced a unique REMOTE_PATH field on each receipt.
+  const path = (s: string) => s.split('\n').find(line => line.startsWith('REMOTE_PATH='));
+  if (path(offsite.receipt) !== path(restore.receipt)) return fail('ARCHIVE_LOCATION_MISMATCH');
+  if (y.recordedAtMs < x.recordedAtMs) return fail('RESTORE_PRECEDES_OFFSITE');
+  return {status:'PAIR_STRUCTURE_VERIFIED', planDigest:x.planDigest,
+    archiveDigest:x.archiveDigest, offsiteReceiptDigest:x.receiptDigest,
+    restoreReceiptDigest:y.receiptDigest, effectAuthorized:false};
 }
