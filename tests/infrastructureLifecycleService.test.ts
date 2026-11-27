@@ -32,10 +32,10 @@ test('AILM rejects destructive operations, arbitrary targets and overlapping rea
   release();await first;assert.equal(calls,4);
 });
 test('AILM probe failures are partial and never authorize cleanup',async()=>{
-  const run=createInfrastructureLifecycleService(async()=>{throw Error('private');},async()=>{throw Error('private');},()=>1000);
+  const run=createInfrastructureLifecycleService(async()=>{throw Error('AILM_FIXTURE_CONFIDENTIAL_ERROR_79');},async()=>{throw Error('AILM_FIXTURE_CONFIDENTIAL_ERROR_79');},()=>1000);
   const x=await run('s2','plan');
   assert.equal(x.observations[0]?.status,'PARTIAL');assert.equal(x.effectAuthorized,false);
-  assert.ok(!JSON.stringify(x).includes('private'));
+  assert.ok(!JSON.stringify(x).includes('AILM_FIXTURE_CONFIDENTIAL_ERROR_79'));
 });
 
 test('AILM scopes private receipt observations to S2 and never turns historical structure into authority',async()=>{
