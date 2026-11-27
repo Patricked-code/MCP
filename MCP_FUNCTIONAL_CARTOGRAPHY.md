@@ -36,6 +36,7 @@ MCP WealthTech SSH Bridge
   - list_large_files_s1 / list_large_files_s2
   - list_backups_s1 / list_backups_s2
   - curl_domain
+  - mcp_infrastructure_lifecycle : parcours AILM read-only (status/audit/plan), partagé avec /infrastructure-maintenance authentifié ; aucun transfert, suppression ni programmation.
 
 - Auto-gestion MCP
   - mcp_bridge

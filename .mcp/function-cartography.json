@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "generatedFrom": "runtime-registration",
   "catalogueVersion": 1,
-  "catalogueDigest": "043de0b7033c35c9b8d649ce69c92dd0e6721b49e4da561eaf0c957e3751e300",
-  "registeredToolCount": 159,
-  "readOnlyToolCount": 102,
+  "catalogueDigest": "2a2948dcdb0992855421b8094c57f95ea47030996b5b99ebf2016b9ee2687118",
+  "registeredToolCount": 160,
+  "readOnlyToolCount": 103,
   "writeToolCount": 57,
   "resourceCount": 2,
   "tools": [
@@ -3733,6 +3733,45 @@
         "additionalProperties": false
       },
       "contractDigest": "3986770a7c7916b552103a406af5db7b64459b08c30d6e92e90ccb1dc24d2ec6"
+    },
+    {
+      "name": "mcp_infrastructure_lifecycle",
+      "title": "AILM — Infrastructure & maintenance",
+      "description": "Parcours AILM en lecture seule : statut, capacités et plans de nettoyage S1/S2. Freebox, exécution et programmation restent non raccordées ; aucune suppression.",
+      "surface": "read",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "s1",
+              "s2",
+              "freebox",
+              "all"
+            ]
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "status",
+              "audit",
+              "plan"
+            ]
+          }
+        },
+        "required": [
+          "scope",
+          "operation"
+        ],
+        "additionalProperties": false
+      },
+      "contractDigest": "b13dc4f851bd5c8f53f1a9a231655dfe7bf66cfa9c1edacd6ad98d2896218980"
     },
     {
       "name": "mcp_list_governed_sessions",
