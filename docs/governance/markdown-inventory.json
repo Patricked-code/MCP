@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 283,
+  "trackedCount": 296,
   "categories": {
     "canonical": 7,
-    "documentation": 132,
+    "documentation": 145,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -575,7 +575,59 @@
       "category": "documentation"
     },
     {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__AGENTS.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__CONTINUITY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__DECISIONS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__DOCUMENT_AUTHORITIES.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__EVIDENCE_INDEX.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__IMPLEMENTATION_PLAN.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__INTENTIONS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__MEMORY.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__MISSION.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__ROADMAP.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__SOURCE_OF_TRUTH.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__SUIVI.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__TASKS.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__TODO.md",
       "category": "documentation"
     },
     {
