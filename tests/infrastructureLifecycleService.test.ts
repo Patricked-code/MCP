@@ -49,3 +49,14 @@ test('AILM scopes private receipt observations to S2 and never turns historical 
   assert.equal(x.observations[0]?.privateReceipts?.status,'OBSERVED');
   assert.equal(x.prc17.nextStep,'WAIT');assert.equal(x.effectAuthorized,false);
 });
+
+test('AILM scopes destination capacity observation and never derives effect permission',async()=>{
+  let reads=0;
+  const run=createInfrastructureLifecycleService(observed,async()=>null,()=>1000,undefined,undefined,undefined,async()=>{
+    reads++;return {status:'OBSERVED',observedAtMs:1000,totalBytes:1000,usedBytes:600,availableBytes:300,
+      destinationIdentity:'CONFIGURED_PARTITION',writesPerformed:false};
+  });
+  await run('s1','audit');await run('s2','audit');await run('all','status');assert.equal(reads,0);
+  const result=await run('freebox','audit');assert.equal(reads,1);assert.equal(result.freebox.status,'OBSERVED');
+  assert.equal(result.prc17.nextStep,'WAIT');assert.equal(result.effectAuthorized,false);
+});

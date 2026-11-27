@@ -2,6 +2,7 @@ import { observeMcpCapacity, sameObservedFilesystem, type Host, type CapacityObs
 import { observeDockerReferences, type DockerReferenceObservation } from './dockerInventory.js';
 import { observeBackupAutomation, type BackupAutomationObservation } from './backupAutomation.js';
 import { observePrivateReceipts, type PrivateReceiptObservation } from './privateReceiptObservation.js';
+import { observeFreeboxCapacity, type FreeboxCapacityObservation } from './freeboxCapacity.js';
 import { DockerBackupBounds } from './maintenancePlan.js';
 
 export const AILM_TOOL = 'mcp_infrastructure_lifecycle';
@@ -24,10 +25,11 @@ const unavailable = [
   'GOVERNED_EFFECT_EXECUTOR_REQUIRED'
 ] as const;
 export function createInfrastructureLifecycleService(
-  capacity:CapacityReader, cleanup:CleanupReader, now:()=>number=Date.now, docker?: (host:Host)=>Promise<DockerReferenceObservation>, backupAutomation?:()=>Promise<BackupAutomationObservation>, privateReceipts?:()=>Promise<PrivateReceiptObservation>
+  capacity:CapacityReader, cleanup:CleanupReader, now:()=>number=Date.now, docker?: (host:Host)=>Promise<DockerReferenceObservation>, backupAutomation?:()=>Promise<BackupAutomationObservation>, privateReceipts?:()=>Promise<PrivateReceiptObservation>, freeboxCapacity?:()=>Promise<FreeboxCapacityObservation>
 ) {
   // A single active read cycle per server. No queued or overlapping SSH scans.
   const active=new Set<Host>();
+  let freeboxActive=false;
   async function observe(host:Host, operation:AilmOperation) {
     if(active.has(host)) return {host,status:'BUSY' as const,measurements:[],aliases:[],cleanup:null,dockerReferences:null,privateReceipts:null};
     active.add(host);
@@ -69,11 +71,20 @@ export function createInfrastructureLifecycleService(
     if(operation!=='status'&&(scope==='s2'||scope==='all')&&backupAutomation){
       try{existingBackupAutomation=await backupAutomation();}catch{existingBackupAutomation={status:'UNVERIFIED',reason:'TIMER_PROBE_UNAVAILABLE',writesPerformed:false};}
     }
+    let freebox:FreeboxCapacityObservation={status:'UNVERIFIED',reason:'DESTINATION_CAPACITY_ADAPTER_REQUIRED',writesPerformed:false};
+    if(operation!=='status'&&(scope==='all'||scope==='freebox')&&freeboxCapacity){
+      if(freeboxActive)freebox={status:'UNVERIFIED',reason:'FREEBOX_OBSERVATION_BUSY',writesPerformed:false};
+      else{
+        freeboxActive=true;
+        try{freebox=await freeboxCapacity();}catch{freebox={status:'UNVERIFIED',reason:'FREEBOX_API_UNAVAILABLE_OR_NOT_ADMITTED',writesPerformed:false};}
+        finally{freeboxActive=false;}
+      }
+    }
     return {
       schemaVersion:1,scope,operation,observedAt:new Date(now()).toISOString(),
       status:operation==='status'?'CAPABILITY_STATUS':'PARTIAL_READ_ONLY',
       writesPerformed:false,effectAuthorized:false,automaticExecutionAuthorized:false,
-      observations,existingBackupAutomation,freebox:{status:'UNVERIFIED',reason:'DESTINATION_CAPACITY_ADAPTER_REQUIRED'},
+      observations,existingBackupAutomation,freebox,
       prc17:{nextStep:'WAIT',reasons:unavailable,bounds:DockerBackupBounds},
       capabilities:{capacity:'CALLABLE',cleanupPlan:'CALLABLE_READ_ONLY',receiptVerification:'PRIVATE_STRUCTURE_READER_CONFIG_REQUIRED',
         scriptRevision:'MODULE_DEPLOYED_ADAPTER_REQUIRED',maintenancePlanner:'MODULE_DEPLOYED_TRUSTED_OBSERVATIONS_REQUIRED',
@@ -88,5 +99,5 @@ export const runInfrastructureLifecycle=createInfrastructureLifecycleService(
   observeMcpCapacity,async host=>{
     const {observeServerCleanupPlan}=await import('../tools/cleanupPlan.js');
     return observeServerCleanupPlan(host);
-  },Date.now,observeDockerReferences,observeBackupAutomation,observePrivateReceipts
+  },Date.now,observeDockerReferences,observeBackupAutomation,observePrivateReceipts,observeFreeboxCapacity
 );
