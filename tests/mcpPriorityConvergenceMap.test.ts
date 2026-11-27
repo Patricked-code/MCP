@@ -47,10 +47,25 @@ test('priority map references every existing blueprint in Program Backlog V2 exa
   const map = await loadJson(path);
   const backlog = await loadJson('docs/governance/program-backlog-convergence.json');
   const original = backlog.taskBlueprints.map((item: any) => item.id);
-  const snapshot = map.planningSnapshot.allBlueprintsInExistingProgramOrder;
+  const historical = map.planningSnapshot.allBlueprintsInExistingProgramOrder;
+  const extensions = map.planningSnapshotExtensions ?? [];
+  const snapshot = [...historical, ...extensions.flatMap((e: any) => e.allBlueprintsInExistingProgramOrder)];
+  assert.equal(historical.length, 94);
+  let offset = historical.length;
+  for (const e of extensions) {
+    assert.equal(e.kind, 'NON_AUTHORITATIVE_ADDITIVE_PLANNING_SNAPSHOT');
+    assert.equal(e.baselineCount, offset);
+    assert.equal(e.total, e.allBlueprintsInExistingProgramOrder.length);
+    assert.equal(e.createsRuntimeTasks, false);
+    assert.equal(e.grantsPermission, false);
+    assert.ok(e.stageRefs.every((id: string) => map.stages.some((s: any) => s.id === id)));
+    assert.deepEqual(e.readyCandidateIdsInProgramOrder,
+      e.allBlueprintsInExistingProgramOrder.filter((v: any) => v.planningStateAsObserved === 'READY').map((v: any) => v.id));
+    offset += e.total;
+  }
   assert.equal(map.planningSnapshot.snapshotType, 'READ_ONLY_COPY_OF_PROGRAM_BACKLOG_ORDER_NOT_RUNTIME_QUEUE');
   assert.equal(snapshot.length, backlog.taskBlueprints.length);
-  assert.equal(map.planningSnapshot.total, snapshot.length);
+  assert.equal(map.planningSnapshot.total, historical.length);
   assert.deepEqual(snapshot.map((item: any) => item.id), original);
   assert.equal(new Set(original).size, original.length);
   assert.deepEqual(snapshot.map((item: any) => item.programOrdinal), original.map((_: string, i: number) => i));
@@ -58,7 +73,7 @@ test('priority map references every existing blueprint in Program Backlog V2 exa
   for (const stage of map.stages) {
     for (const id of stage.blueprints) assert.ok(known.has(id), 'unknown mapped blueprint ' + id);
   }
-  const readyAtSnapshot = snapshot.filter((item: any) => item.planningStateAsObserved === 'READY').map((item: any) => item.id);
+  const readyAtSnapshot = historical.filter((item: any) => item.planningStateAsObserved === 'READY').map((item: any) => item.id);
   assert.deepEqual(map.planningSnapshot.readyCandidateIdsInProgramOrder, readyAtSnapshot);
   assert.equal(snapshot.some((item: any) => !Array.isArray(item.collisionDomains)), false);
 });

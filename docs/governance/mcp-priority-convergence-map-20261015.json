@@ -2049,5 +2049,223 @@
     ],
     "traceabilityBoundary": "GitHub issues/PR/commits and runtime receipts are shared durable records, but not a push notification bus to every chat; connected agents must poll/read them on admission and at checkpoints.",
     "collisionResolution": "Same scope or Task means do not write; coordinate through existing owner/authority, or select a different READY candidate in canonical program order."
-  }
+  },
+  "planningSnapshotExtensions": [
+    {
+      "id": "AILM-492-20261127",
+      "kind": "NON_AUTHORITATIVE_ADDITIVE_PLANNING_SNAPSHOT",
+      "sourceIssue": 492,
+      "sourcePullRequest": 493,
+      "sourceCandidateSha": "8186352957b2e041095abbc3eb37532b6b031a76",
+      "baselineCount": 94,
+      "total": 13,
+      "stageRefs": [
+        "PCM-09",
+        "PCM-10",
+        "PCM-11",
+        "PCM-12",
+        "PCM-13",
+        "PCM-14"
+      ],
+      "allBlueprintsInExistingProgramOrder": [
+        {
+          "programOrdinal": 94,
+          "id": "TB-W3-AILM-01",
+          "title": "Inventory and trusted capacity observations",
+          "planningStateAsObserved": "READY",
+          "dependsOn": [
+            "TB-W3-D3-01"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-01"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 95,
+          "id": "TB-W3-AILM-02",
+          "title": "Observability and resource forecasting",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-01"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-02"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 96,
+          "id": "TB-W3-AILM-03",
+          "title": "Classification and dependencies",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-01"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-03"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 97,
+          "id": "TB-W3-AILM-04",
+          "title": "Recovery-aware retention policy",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-03"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-04"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 98,
+          "id": "TB-W3-AILM-05",
+          "title": "Versioned script lifecycle and admission",
+          "planningStateAsObserved": "READY",
+          "dependsOn": [
+            "TB-W3-F-03"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-05"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 99,
+          "id": "TB-W3-AILM-06",
+          "title": "Bounded persistent executor and machine identity",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-05",
+            "TB-W3-DISPATCH-03",
+            "TB-W3-D2-01"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-06",
+            "github-first:server-write",
+            "orchestration:task-dispatch"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 100,
+          "id": "TB-W3-AILM-07",
+          "title": "Backup and offsite transfer",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-01",
+            "TB-W3-AILM-05",
+            "TB-W3-AILM-06"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-07",
+            "infrastructure:backup-retention"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 101,
+          "id": "TB-W3-AILM-08",
+          "title": "Isolated restore and exact attestation",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-07"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-08",
+            "infrastructure:backup-retention"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 102,
+          "id": "TB-W3-AILM-09",
+          "title": "Targeted cleanup and retention execution",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-04",
+            "TB-W3-AILM-08"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-09",
+            "infrastructure:backup-retention"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 103,
+          "id": "TB-W3-AILM-10",
+          "title": "Remote storage capacity and retention",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-04",
+            "TB-W3-AILM-07",
+            "TB-W3-AILM-08"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-10",
+            "infrastructure:backup-retention"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 104,
+          "id": "TB-W3-AILM-11",
+          "title": "Resource admission and drift",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-03",
+            "TB-W3-AILM-07"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-11"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 105,
+          "id": "TB-W3-AILM-12",
+          "title": "Cockpit and audit",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-02",
+            "TB-W3-AILM-06",
+            "TB-W3-AILM-07",
+            "TB-W4-K-01"
+          ],
+          "collisionDomains": [
+            "cockpit:ailm",
+            "cockpit:observability"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        },
+        {
+          "programOrdinal": 106,
+          "id": "TB-W3-AILM-13",
+          "title": "End-to-end infrastructure lifecycle certification",
+          "planningStateAsObserved": "BLOCKED",
+          "dependsOn": [
+            "TB-W3-AILM-09",
+            "TB-W3-AILM-10",
+            "TB-W3-AILM-11",
+            "TB-W3-AILM-12"
+          ],
+          "collisionDomains": [
+            "infrastructure:ailm-certification"
+          ],
+          "integrationSlot": "infrastructure.lifecycle"
+        }
+      ],
+      "readyCandidateIdsInProgramOrder": [
+        "TB-W3-AILM-01",
+        "TB-W3-AILM-05"
+      ],
+      "createsRuntimeTasks": false,
+      "grantsPermission": false,
+      "instruction": "Historical 15 October snapshot stays unchanged; current Program Backlog V2 is authoritative for readiness. This extension records the 13 additive planning blueprints, not live ownership or certification."
+    }
+  ]
 }
