@@ -52,7 +52,9 @@ export function parseCapacityOutput(stdout: string, kind: CapacityKind): Capacit
   if(n<=0 || u>n || a>n || a>n-u || p>100) return null;
   // GNU df uses used/(used+available), rounded up, not used/total.
   const denominator=u+a;
-  if(denominator===0 || Math.ceil(100*(u/denominator))!==p) return null;
+  if(denominator===0) return null;
+  const d=BigInt(denominator);
+  if(Number((100n*BigInt(u)+d-1n)/d)!==p) return null;
   return {filesystem,mount,total:n,used:u,available:a,usedPercent:p};
 }
 
@@ -84,8 +86,13 @@ export async function collectCapacity(
 
 /** Real adapter: reused MCP SSH transport, not a new command execution surface. */
 export async function observeMcpCapacity(host: Host, target: CapacityTarget, kind: CapacityKind) {
-  const {runReadOnlyCommand}=await import('../ssh/client.js');
-  return collectCapacity(runReadOnlyCommand,host,target,kind);
+  try {
+    const {runReadOnlyCommand}=await import('../ssh/client.js');
+    return await collectCapacity(runReadOnlyCommand,host,target,kind);
+  } catch {
+    return {status:'UNVERIFIED',host,target,kind,
+      reason:'TRANSPORT_UNAVAILABLE',writesPerformed:false} as const;
+  }
 }
 
 /** Same mount/device is evidence of aliases; differing labels alone do not prove independent storage. */
