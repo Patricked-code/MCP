@@ -3,6 +3,7 @@ import { observeDockerReferences, type DockerReferenceObservation } from './dock
 import { observeBackupAutomation, type BackupAutomationObservation } from './backupAutomation.js';
 import { observePrivateReceipts, type PrivateReceiptObservation } from './privateReceiptObservation.js';
 import { observeFreeboxCapacity, type FreeboxCapacityObservation } from './freeboxCapacity.js';
+import { observeScriptValidation,type ScriptValidationObservation } from './scriptValidation.js';
 import { DockerBackupBounds } from './maintenancePlan.js';
 
 export const AILM_TOOL = 'mcp_infrastructure_lifecycle';
@@ -25,11 +26,12 @@ const unavailable = [
   'GOVERNED_EFFECT_EXECUTOR_REQUIRED'
 ] as const;
 export function createInfrastructureLifecycleService(
-  capacity:CapacityReader, cleanup:CleanupReader, now:()=>number=Date.now, docker?: (host:Host)=>Promise<DockerReferenceObservation>, backupAutomation?:()=>Promise<BackupAutomationObservation>, privateReceipts?:()=>Promise<PrivateReceiptObservation>, freeboxCapacity?:()=>Promise<FreeboxCapacityObservation>
+  capacity:CapacityReader, cleanup:CleanupReader, now:()=>number=Date.now, docker?: (host:Host)=>Promise<DockerReferenceObservation>, backupAutomation?:()=>Promise<BackupAutomationObservation>, privateReceipts?:()=>Promise<PrivateReceiptObservation>, freeboxCapacity?:()=>Promise<FreeboxCapacityObservation>, scriptValidation?:()=>Promise<ScriptValidationObservation>
 ) {
   // A single active read cycle per server. No queued or overlapping SSH scans.
   const active=new Set<Host>();
   let freeboxActive=false;
+  let scriptValidationActive=false;
   async function observe(host:Host, operation:AilmOperation) {
     if(active.has(host)) return {host,status:'BUSY' as const,measurements:[],aliases:[],cleanup:null,dockerReferences:null,privateReceipts:null};
     active.add(host);
@@ -80,14 +82,19 @@ export function createInfrastructureLifecycleService(
         finally{freeboxActive=false;}
       }
     }
+    let scripts:ScriptValidationObservation|null=null;
+    if(operation==='plan'&&scope==='all'&&scriptValidation&&!scriptValidationActive){
+      scriptValidationActive=true;
+      try{scripts=await scriptValidation();}finally{scriptValidationActive=false;}
+    }
     return {
       schemaVersion:1,scope,operation,observedAt:new Date(now()).toISOString(),
       status:operation==='status'?'CAPABILITY_STATUS':'PARTIAL_READ_ONLY',
       writesPerformed:false,effectAuthorized:false,automaticExecutionAuthorized:false,
-      observations,existingBackupAutomation,freebox,
+      observations,existingBackupAutomation,freebox,scripts,
       prc17:{nextStep:'WAIT',reasons:unavailable,bounds:DockerBackupBounds},
       capabilities:{capacity:'CALLABLE',cleanupPlan:'CALLABLE_READ_ONLY',receiptVerification:'PRIVATE_STRUCTURE_READER_CONFIG_REQUIRED',
-        scriptRevision:'MODULE_DEPLOYED_ADAPTER_REQUIRED',maintenancePlanner:'MODULE_DEPLOYED_TRUSTED_OBSERVATIONS_REQUIRED',
+        scriptRevision:'SOURCE_AND_SYNTAX_VALIDATION_CONFIG_REQUIRED',maintenancePlanner:'MODULE_DEPLOYED_TRUSTED_OBSERVATIONS_REQUIRED',
         deduplication:'FILESYSTEM_AND_DOCKER_REFERENCE_OBSERVATION_ONLY',transfer:'NOT_CONNECTED',retention:'NOT_CONNECTED',
         schedule:'NOT_CONNECTED',executor:'NOT_CONNECTED'},
       limitations:['No physical totals are added across mounts or hosts.','No complete backup or file inventory is claimed.',
@@ -99,5 +106,5 @@ export const runInfrastructureLifecycle=createInfrastructureLifecycleService(
   observeMcpCapacity,async host=>{
     const {observeServerCleanupPlan}=await import('../tools/cleanupPlan.js');
     return observeServerCleanupPlan(host);
-  },Date.now,observeDockerReferences,observeBackupAutomation,observePrivateReceipts,observeFreeboxCapacity
+  },Date.now,observeDockerReferences,observeBackupAutomation,observePrivateReceipts,observeFreeboxCapacity,observeScriptValidation
 );
