@@ -1,5 +1,6 @@
 import { observeMcpCapacity, sameObservedFilesystem, type Host, type CapacityObservation } from './capacityProbe.js';
 import { observeDockerReferences, type DockerReferenceObservation } from './dockerInventory.js';
+import { observeBackupAutomation, type BackupAutomationObservation } from './backupAutomation.js';
 import { DockerBackupBounds } from './maintenancePlan.js';
 
 export const AILM_TOOL = 'mcp_infrastructure_lifecycle';
@@ -22,7 +23,7 @@ const unavailable = [
   'GOVERNED_EFFECT_EXECUTOR_REQUIRED'
 ] as const;
 export function createInfrastructureLifecycleService(
-  capacity:CapacityReader, cleanup:CleanupReader, now:()=>number=Date.now, docker?: (host:Host)=>Promise<DockerReferenceObservation>
+  capacity:CapacityReader, cleanup:CleanupReader, now:()=>number=Date.now, docker?: (host:Host)=>Promise<DockerReferenceObservation>, backupAutomation?:()=>Promise<BackupAutomationObservation>
 ) {
   // A single active read cycle per server. No queued or overlapping SSH scans.
   const active=new Set<Host>();
@@ -59,11 +60,15 @@ export function createInfrastructureLifecycleService(
     if(!isAilmScope(scope)||!isAilmOperation(operation)) throw Error('AILM_INVALID_REQUEST');
     const hosts:Host[]=scope==='all'?['s1','s2']:scope==='freebox'?[]:[scope];
     const observations=operation==='status'?[]:await Promise.all(hosts.map(host=>observe(host,operation)));
+    let existingBackupAutomation:BackupAutomationObservation|null=null;
+    if(operation!=='status'&&(scope==='s2'||scope==='all')&&backupAutomation){
+      try{existingBackupAutomation=await backupAutomation();}catch{existingBackupAutomation={status:'UNVERIFIED',reason:'TIMER_PROBE_UNAVAILABLE',writesPerformed:false};}
+    }
     return {
       schemaVersion:1,scope,operation,observedAt:new Date(now()).toISOString(),
       status:operation==='status'?'CAPABILITY_STATUS':'PARTIAL_READ_ONLY',
       writesPerformed:false,effectAuthorized:false,automaticExecutionAuthorized:false,
-      observations,freebox:{status:'UNVERIFIED',reason:'DESTINATION_CAPACITY_ADAPTER_REQUIRED'},
+      observations,existingBackupAutomation,freebox:{status:'UNVERIFIED',reason:'DESTINATION_CAPACITY_ADAPTER_REQUIRED'},
       prc17:{nextStep:'WAIT',reasons:unavailable,bounds:DockerBackupBounds},
       capabilities:{capacity:'CALLABLE',cleanupPlan:'CALLABLE_READ_ONLY',receiptVerification:'MODULE_DEPLOYED_ADAPTER_REQUIRED',
         scriptRevision:'MODULE_DEPLOYED_ADAPTER_REQUIRED',maintenancePlanner:'MODULE_DEPLOYED_TRUSTED_OBSERVATIONS_REQUIRED',
@@ -78,5 +83,5 @@ export const runInfrastructureLifecycle=createInfrastructureLifecycleService(
   observeMcpCapacity,async host=>{
     const {observeServerCleanupPlan}=await import('../tools/cleanupPlan.js');
     return observeServerCleanupPlan(host);
-  },Date.now,observeDockerReferences
+  },Date.now,observeDockerReferences,observeBackupAutomation
 );
