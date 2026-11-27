@@ -63,7 +63,7 @@
     "NEEDS_DECISION"
   ],
   "summary": {
-    "workItems": 41,
+    "workItems": 42,
     "todoUnchecked": 35,
     "roadmapLots": 34,
     "gwcBlueprints": 18,
@@ -74,7 +74,7 @@
     "externalActiveRecords": 25,
     "dispositionCounts": {
       "DONE": 22,
-      "PARTIALLY_IMPLEMENTED": 5,
+      "PARTIALLY_IMPLEMENTED": 6,
       "KNOWN_NOT_ANALYZED": 4,
       "DESIGNED_NOT_IMPLEMENTED": 5,
       "CONDITIONAL": 2,
@@ -1348,6 +1348,15 @@
         "coveredBy": "PB-K",
         "disposition": "DESIGNED_NOT_IMPLEMENTED",
         "observedMainSha": "121fba9c4ff7ddfb7526a00673ca67b253c9cd4b"
+      },
+      {
+        "sourceKey": "issue:492",
+        "sourceId": "#492",
+        "title": "[PROGRAM INTAKE] MCP AILM — gestion autonome des capacités, sauvegardes, maintenance et rétention",
+        "coveredBy": "PB-AILM",
+        "disposition": "PARTIALLY_IMPLEMENTED",
+        "observedMainSha": "776a2713cf22a86b6bccf1849b9554a7cd29aecd",
+        "inventoryPath": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__CONTINUITY.md"
       }
     ]
   },
@@ -2533,6 +2542,49 @@
         "No parallel authority, store or second orchestration loop",
         "createsRuntimeTask=false"
       ]
+    },
+    {
+      "id": "PB-AILM",
+      "title": "AILM — governed infrastructure lifecycle management (intake #492)",
+      "disposition": "PARTIALLY_IMPLEMENTED",
+      "integrationSlot": "infrastructure.lifecycle",
+      "implementationMode": "EXTEND",
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "dependsOn": [
+        "PB-D2",
+        "PB-DISPATCH",
+        "PB-F"
+      ],
+      "nextAction": "Continue isolated AILM-01 and AILM-05, then trusted evidence and bounded executor integration; independently preserve and resume existing PRC17A/B only when their actual gates are satisfied.",
+      "subtasks": [
+        "AILM-01",
+        "AILM-02",
+        "AILM-03",
+        "AILM-04",
+        "AILM-05",
+        "AILM-06",
+        "AILM-07",
+        "AILM-08",
+        "AILM-09",
+        "AILM-10",
+        "AILM-11",
+        "AILM-12",
+        "AILM-13"
+      ],
+      "nonRegression": [
+        "No second program, task queue, session, lock, claim, scheduler or permission authority.",
+        "No free shell, arbitrary root access, secret publication, global prune or deletion based on age or pressure alone.",
+        "Do not replay verified or ambiguous effects; protect last recoverable copy, active references and restore chains.",
+        "P0 PRC17A/B is an independent operational path; no prerequisite requiring completion of all AILM lots."
+      ]
     }
   ],
   "executionModel": {
@@ -2636,6 +2688,8 @@
       "TB-W3-GGCC-GH-RELEASES-DEPLOYMENTS",
       "TB-W3-GGCC-GH-ISSUES-PROJECTS",
       "TB-W3-GGCC-GH-ORG",
+      "TB-W3-AILM-01",
+      "TB-W3-AILM-05",
       "TB-W4-H-01",
       "TB-W4-K-01"
     ],
@@ -2887,7 +2941,8 @@
             "TB-W3-F-05",
             "TB-W4-I3-01",
             "TB-W4-GGCC-E2E",
-            "TB-W3-OAUTH-WRITE-SCOPE-01"
+            "TB-W3-OAUTH-WRITE-SCOPE-01",
+            "TB-W3-AILM-13"
           ],
           "scope": "Project Reality, governance and effective capabilities, receipts, guided completion, provisioning, Git/GitHub E2E, tracing, monitoring, alerts and OAuth write scope, with every ancestor lot DONE."
         },
@@ -10993,7 +11048,8 @@
         "TB-W4-J2-01",
         "TB-W4-K-12",
         "TB-W4-GGCC-E2E",
-        "TB-W3-OAUTH-WRITE-SCOPE-01"
+        "TB-W3-OAUTH-WRITE-SCOPE-01",
+        "TB-W3-AILM-13"
       ],
       "existingAuthorities": [
         "Program Backlog V2 derived readiness",
@@ -11058,6 +11114,1022 @@
         "Live State",
         "SUIVI.md, CHANGELOG.md and DECISIONS_LOG.md"
       ]
+    },
+    {
+      "id": "TB-W3-AILM-01",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-01",
+      "title": "Inventory and trusted capacity observations",
+      "objective": "Inventory exact resources, deduplicate physical storage, measure source, relay and destination capacity with freshness/provenance.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-D3-01"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-01"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-01"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "READY",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-01 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Inventory exact resources, deduplicate physical storage, measure source, relay and destination capacity with freshness/provenance.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-02",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-02",
+      "title": "Observability and resource forecasting",
+      "objective": "Measure RAM/swap, OOM, CPU, I/O, disk and inode pressure, growth, reserves and bounded alerts.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-01"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-02"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-02"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-02 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Measure RAM/swap, OOM, CPU, I/O, disk and inode pressure, growth, reserves and bounded alerts.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-03",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-03",
+      "title": "Classification and dependencies",
+      "objective": "Classify live, reconstructible, historical, protected and unknown resources with ownership and dependencies.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-01"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-03"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-03"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-03 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Classify live, reconstructible, historical, protected and unknown resources with ownership and dependencies.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-04",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-04",
+      "title": "Recovery-aware retention policy",
+      "objective": "Bind local and remote retention to recovery points, chain dependencies, legal obligations, capacity and the last recoverable copy.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-03"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-04"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-04"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-04 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Bind local and remote retention to recovery points, chain dependencies, legal obligations, capacity and the last recoverable copy.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-05",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-05",
+      "title": "Versioned script lifecycle and admission",
+      "objective": "Reuse revision admission and existing catalog to create, version, validate and test immutable script candidates with exact digest and typed arguments.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-F-03"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-05"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-05"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [],
+      "outputCapabilities": [],
+      "runtimeRequired": false,
+      "githubOnlyPossible": true,
+      "readiness": {
+        "state": "READY",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-05 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Reuse revision admission and existing catalog to create, version, validate and test immutable script candidates with exact digest and typed arguments.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-06",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-06",
+      "title": "Bounded persistent executor and machine identity",
+      "objective": "Install and dispatch admitted operations using least privilege, existing Task Queue, sessions, claims, leases, fencing, locks, receipts and recovery; no arbitrary shell.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-05",
+        "TB-W3-DISPATCH-03",
+        "TB-W3-D2-01"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-06"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-06",
+        "github-first:server-write",
+        "orchestration:task-dispatch"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-06 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Install and dispatch admitted operations using least privilege, existing Task Queue, sessions, claims, leases, fencing, locks, receipts and recovery; no arbitrary shell.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-07",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-07",
+      "title": "Backup and offsite transfer",
+      "objective": "Connect existing backup scripts, encryption, verified TLS, bounded transfer, manifest, remote readback and resume.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-01",
+        "TB-W3-AILM-05",
+        "TB-W3-AILM-06"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-07"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-07",
+        "infrastructure:backup-retention"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-07 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Connect existing backup scripts, encryption, verified TLS, bounded transfer, manifest, remote readback and resume.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-08",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-08",
+      "title": "Isolated restore and exact attestation",
+      "objective": "Certify recoverability and exact restored references with private receipts; no restoration to production.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-07"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-08"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-08",
+        "infrastructure:backup-retention"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-08 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Certify recoverability and exact restored references with private receipts; no restoration to production.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-09",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-09",
+      "title": "Targeted cleanup and retention execution",
+      "objective": "Revalidate protected references and policy under canonical locks, perform only exact admitted effects, measure gain and health.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-04",
+        "TB-W3-AILM-08"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-09"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-09",
+        "infrastructure:backup-retention"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-09 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Revalidate protected references and policy under canonical locks, perform only exact admitted effects, measure gain and health.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-10",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-10",
+      "title": "Remote storage capacity and retention",
+      "objective": "Measure destination capacity, preserve recovery chains, handle remote failure, safe expiry and independent critical recovery strategy.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-04",
+        "TB-W3-AILM-07",
+        "TB-W3-AILM-08"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-10"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-10",
+        "infrastructure:backup-retention"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-10 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Measure destination capacity, preserve recovery chains, handle remote failure, safe expiry and independent critical recovery strategy.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-11",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-11",
+      "title": "Resource admission and drift",
+      "objective": "Extend existing coverage observation for new resources, classify and protect before sensitive effects; no duplicate timers.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-03",
+        "TB-W3-AILM-07"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-11"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-11"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-11 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Extend existing coverage observation for new resources, classify and protect before sensitive effects; no duplicate timers.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-12",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-12",
+      "title": "Cockpit and audit",
+      "objective": "Compose existing cockpit and audit surfaces for observations, plans, effects, receipts and alerts.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-02",
+        "TB-W3-AILM-06",
+        "TB-W3-AILM-07",
+        "TB-W4-K-01"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "cockpit:ailm"
+      ],
+      "collisionDomains": [
+        "cockpit:ailm",
+        "cockpit:observability"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-12 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Compose existing cockpit and audit surfaces for observations, plans, effects, receipts and alerts.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
+    },
+    {
+      "id": "TB-W3-AILM-13",
+      "workItemId": "PB-AILM",
+      "waveId": "W3",
+      "lotId": "AILM-13",
+      "title": "End-to-end infrastructure lifecycle certification",
+      "objective": "Prove bounded execution, crash/reboot recovery, concurrency, failures, restore, non-regression and exact governed deployment.",
+      "integrationSlot": "infrastructure.lifecycle",
+      "integrationStrategy": "REUSE_WRAP_GENERALIZE_EXTEND",
+      "dependsOn": [
+        "TB-W3-AILM-09",
+        "TB-W3-AILM-10",
+        "TB-W3-AILM-11",
+        "TB-W3-AILM-12"
+      ],
+      "existingAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "resourceScopes": [
+        "infrastructure:ailm-certification"
+      ],
+      "collisionDomains": [
+        "infrastructure:ailm-certification"
+      ],
+      "readAuthorities": [
+        "Governed Task Queue",
+        "Governed Session",
+        "Governed Lock Service",
+        "Live State",
+        "GitHub exact-head CI",
+        "existing scoped WRITE Gate",
+        "existing backup scripts and private receipts"
+      ],
+      "writeAuthorities": [
+        "Existing governed operation-specific admission only"
+      ],
+      "outputCapabilities": [],
+      "runtimeRequired": true,
+      "githubOnlyPossible": false,
+      "readiness": {
+        "state": "BLOCKED",
+        "autoPromotable": true,
+        "requiredExplicitGates": [],
+        "reason": "Planning only; existing runtime admission and operation gates remain mandatory."
+      },
+      "materialization": {
+        "mode": "ON_DEMAND_AFTER_REOBSERVATION",
+        "createsRuntimeTask": false,
+        "runtimeAuthority": "Governed Task Queue",
+        "requiresRuntimeAuthorityReobservation": true,
+        "requiresCollisionCheck": true
+      },
+      "redTests": [
+        "Prove absent or unsafe behavior for AILM-13 against exact observed code; test unknown, stale and conflicting evidence."
+      ],
+      "greenAcceptance": [
+        "Prove bounded execution, crash/reboot recovery, concurrency, failures, restore, non-regression and exact governed deployment.",
+        "No new authority, privilege widening, secret disclosure or regression; independent development does not authorize an effect."
+      ],
+      "regressionSuites": [
+        "targeted RED/GREEN tests",
+        "MCP CI exact-head",
+        "governance/docs/secrets/read-only safety/whitespace gates"
+      ],
+      "definitionOfDone": [
+        "Exact-head CI and evidence-based review; preserve existing safety gates.",
+        "Required runtime effects and restoration verified only when actually executed under existing authorities.",
+        "Checkpoint exact results and re-evaluate dependents; no automatic DONE from planning."
+      ],
+      "handoff": {
+        "onSuccess": "Checkpoint evidence and re-evaluate only direct dependents for READY.",
+        "onFailure": "Record blocker/finding with exact head; do not release or transfer unrelated ownership."
+      }
     }
   ],
   "reconciliationBaseline": {
@@ -11853,6 +12925,176 @@
       "createsParallelProgram": false,
       "createsRuntimeTasks": false,
       "authorizesRuntimeMutation": false
+    },
+    {
+      "id": "INTAKE-492",
+      "issue": 492,
+      "title": "[PROGRAM INTAKE] MCP AILM — gestion autonome des capacités, sauvegardes, maintenance et rétention",
+      "status": "CONVERGENCE_CANDIDATE",
+      "observedMainSha": "776a2713cf22a86b6bccf1849b9554a7cd29aecd",
+      "relatedPullRequest": 493,
+      "continuityId": "PLESK-FREEBOX-BACKUP-20261120-01",
+      "discoveryReceipt": "https://github.com/Patricked-code/MCP/issues/492#issuecomment-7206112014",
+      "integrationVerdict": "ACCEPT_WITH_ADAPTATION",
+      "integrationRule": "Extends the single Program Backlog V2 through PB-AILM and reuses existing execution, provisioning, authorization, observability and cockpit authorities; no new runtime authority. Candidate requires exact-head integration and reobservation before current-main convergence can be attested.",
+      "targetBlueprintIds": [
+        "TB-W3-AILM-01",
+        "TB-W3-AILM-02",
+        "TB-W3-AILM-03",
+        "TB-W3-AILM-04",
+        "TB-W3-AILM-05",
+        "TB-W3-AILM-06",
+        "TB-W3-AILM-07",
+        "TB-W3-AILM-08",
+        "TB-W3-AILM-09",
+        "TB-W3-AILM-10",
+        "TB-W3-AILM-11",
+        "TB-W3-AILM-12",
+        "TB-W3-AILM-13"
+      ],
+      "lotMapping": [
+        {
+          "lotId": "AILM-01",
+          "blueprintId": "TB-W3-AILM-01",
+          "title": "Inventory and trusted capacity observations",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-02",
+          "blueprintId": "TB-W3-AILM-02",
+          "title": "Observability and resource forecasting",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-03",
+          "blueprintId": "TB-W3-AILM-03",
+          "title": "Classification and dependencies",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-04",
+          "blueprintId": "TB-W3-AILM-04",
+          "title": "Recovery-aware retention policy",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-05",
+          "blueprintId": "TB-W3-AILM-05",
+          "title": "Versioned script lifecycle and admission",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-GITHUB-FIRST-WRITE"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-06",
+          "blueprintId": "TB-W3-AILM-06",
+          "title": "Bounded persistent executor and machine identity",
+          "existingIntegrationReferences": [
+            "PB-DISPATCH",
+            "PB-GITHUB-FIRST-WRITE",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-07",
+          "blueprintId": "TB-W3-AILM-07",
+          "title": "Backup and offsite transfer",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-08",
+          "blueprintId": "TB-W3-AILM-08",
+          "title": "Isolated restore and exact attestation",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-09",
+          "blueprintId": "TB-W3-AILM-09",
+          "title": "Targeted cleanup and retention execution",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-10",
+          "blueprintId": "TB-W3-AILM-10",
+          "title": "Remote storage capacity and retention",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-11",
+          "blueprintId": "TB-W3-AILM-11",
+          "title": "Resource admission and drift",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-12",
+          "blueprintId": "TB-W3-AILM-12",
+          "title": "Cockpit and audit",
+          "existingIntegrationReferences": [
+            "PB-K",
+            "PB-H",
+            "PB-I"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        },
+        {
+          "lotId": "AILM-13",
+          "blueprintId": "TB-W3-AILM-13",
+          "title": "End-to-end infrastructure lifecycle certification",
+          "existingIntegrationReferences": [
+            "PB-F",
+            "PB-D2"
+          ],
+          "status": "PLANNED_NOT_RUNTIME_TASK"
+        }
+      ],
+      "createsParallelProgram": false,
+      "createsRuntimeTasks": false,
+      "authorizesRuntimeMutation": false,
+      "operationalPriority": {
+        "id": "PRC17A/B",
+        "independentOfFullAilmCompletion": true,
+        "requiresExistingRuntimeGates": true,
+        "completionAttested": false
+      }
     }
   ],
   "w3A22InventoryHandoff": {
