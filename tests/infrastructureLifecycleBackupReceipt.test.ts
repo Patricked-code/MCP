@@ -75,5 +75,6 @@ test('previous retention start prevents another removal',()=>{
   assert.equal(projectRetentionStage(ready),'RESTORE_VERIFIED');
   assert.equal(projectRetentionStage({...ready,startMarkerPresent:true}),'RETENTION_STARTED');
   assert.equal(projectRetentionStage({...ready,verifiedCompletionReceipt:true}),'PARTIAL');
+  assert.equal(projectRetentionStage({...ready,startMarkerPresent:true,verifiedCompletionReceipt:true,offsiteReceiptPresent:false}),'PARTIAL');
   assert.equal(projectRetentionStage({...ready,startMarkerPresent:true,verifiedCompletionReceipt:true}),'RETENTION_VERIFIED');
 });
