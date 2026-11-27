@@ -95,41 +95,41 @@ export function buildServerCleanupPlan(
   };
 }
 
-async function cleanupPlan(serverId: ServerId) {
+export async function observeServerCleanupPlan(serverId: ServerId) {
   // No user-supplied path, free shell, file content read, deletion or mutation.
   const fixedInventoryCommand =
     "find /var/www/vhosts -mindepth 1 -maxdepth 2 -type d -printf '%f\\n'";
   try {
     const inventory = await runReadOnlyCommand(serverId, fixedInventoryCommand, 30_000, 100_000);
     if (inventory.code !== 0 || inventory.stdout.includes('...[sortie plafonnée par le MCP]')) {
-      return asText(JSON.stringify({
+      return {
         server: serverId,
         status: 'UNVERIFIED',
         deletionAllowed: false,
         reasonCode: 'INVENTORY_FAILED_OR_TRUNCATED'
-      }));
+      };
     }
     const disk = await runReadOnlyCommand(serverId, 'df -P -h /var/www/vhosts', 15_000, 10_000);
     if (disk.code !== 0) {
-      return asText(JSON.stringify({
+      return {
         server: serverId,
         status: 'UNVERIFIED',
         deletionAllowed: false,
         reasonCode: 'DISK_OBSERVATION_FAILED'
-      }));
+      };
     }
-    return asText(JSON.stringify(buildServerCleanupPlan(
+    return buildServerCleanupPlan(
       serverId,
       inventory.stdout.split(/\r?\n/),
       disk.stdout.trim()
-    ), null, 2));
+    );
   } catch {
-    return asText(JSON.stringify({
+    return {
       server: serverId,
       status: 'UNVERIFIED',
       deletionAllowed: false,
       reasonCode: 'SSH_OBSERVATION_UNAVAILABLE'
-    }));
+    };
   }
 }
 
@@ -138,12 +138,12 @@ export function registerCleanupPlanReadOnlyTools(server: McpServer): void {
     'cleanup_plan_s1',
     'Prépare un plan de nettoyage S1 en lecture seule, avec protections, inventaire et prérequis; aucune suppression.',
     {},
-    async () => cleanupPlan('s1')
+    async () => asText(JSON.stringify(await observeServerCleanupPlan('s1'), null, 2))
   );
   server.tool(
     'cleanup_plan_s2',
     'Prépare un plan de nettoyage S2 en lecture seule, avec cibles historiques et protections; aucune suppression.',
     {},
-    async () => cleanupPlan('s2')
+    async () => asText(JSON.stringify(await observeServerCleanupPlan('s2'), null, 2))
   );
 }
