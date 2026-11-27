@@ -45,7 +45,13 @@ test('history guide retains source anchors for the historical chain, and gaps ca
     assert.ok(guide.toLowerCase().includes(phrase.toLowerCase()), 'missing coverage boundary: ' + phrase);
   }
   const program = JSON.parse(await read('docs/governance/program-backlog-convergence.json'));
-  assert.equal(program.taskBlueprints.length, 94);
+  const trace = JSON.parse(await read('docs/governance/gwb04-94-blueprint-source-test-trace-20261015.json'));
+  assert.equal(trace.coverage.total, 94);
+  assert.equal(trace.blueprints.length, 94);
+  assert.deepEqual(program.taskBlueprints.slice(0, 94).map((v: any) => v.id),
+    trace.blueprints.map((v: any) => v.id));
+  // Later intakes must not alter the dated 94-blueprint historical coverage.
+  // Complete present-day navigation is independently checked by the priority-map suite.
   const history = JSON.parse(await read('docs/governance/architecture-chronology-issue65-20261009.json'));
   assert.equal(history.kind, 'NON_AUTHORITATIVE_ARCHITECTURE_CHRONOLOGY_AND_HANDOFF_INDEX');
 });

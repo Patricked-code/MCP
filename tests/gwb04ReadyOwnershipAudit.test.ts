@@ -6,7 +6,14 @@ const json = async (path: string): Promise<any> => JSON.parse(await readFile(pat
 test('GWB04 18 READY remains program-ordered planning evidence, not a Task Queue or claim', async () => {
   const backlog = await json('docs/governance/program-backlog-convergence.json');
   const audit = await json('docs/governance/gwb04-ready-ownership-20261015.json');
-  const original = backlog.taskBlueprints.map((v: any, i: number) => ({ ...v, ordinal: i })).filter((v: any) => v.readiness?.state === 'READY');
+  // The dated 15 October ownership report is a historical receipt, not live readiness.
+  const map = await json('docs/governance/mcp-priority-convergence-map-20261015.json');
+  const historical = map.planningSnapshot.allBlueprintsInExistingProgramOrder;
+  assert.equal(historical.length, 94);
+  assert.deepEqual(backlog.taskBlueprints.slice(0, historical.length).map((v: any) => v.id),
+    historical.map((v: any) => v.id));
+  const original = historical.filter((v: any) => v.planningStateAsObserved === 'READY')
+    .map((v: any) => ({ ...v, ordinal: v.programOrdinal }));
   assert.equal(audit.kind, 'GWB04_18_READY_BLUEPRINTS_WORK_OWNERSHIP_RECONCILIATION_NON_AUTHORITATIVE');
   assert.equal(original.length, 18);
   assert.equal(audit.readyInExistingProgramOrder.length, original.length);
