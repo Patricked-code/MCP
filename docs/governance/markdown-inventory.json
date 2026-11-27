@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "generatedBy": "git ls-files '*.md'",
-  "trackedCount": 282,
+  "trackedCount": 283,
   "categories": {
     "canonical": 7,
-    "documentation": 131,
+    "documentation": 132,
     "engineering-plan": 8,
     "engineering-spec": 10,
     "history": 1,
@@ -572,6 +572,10 @@
     },
     {
       "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/AILM-492_IMPLEMENTATION_CHECKPOINT.md",
+      "category": "documentation"
+    },
+    {
+      "path": "docs/projects/WT-PROJECT-MCP-001/chantiers/PLESK-FREEBOX-BACKUP-20261120-01/PLESK-FREEBOX-BACKUP-20261120-01__CONTINUITY.md",
       "category": "documentation"
     },
     {
